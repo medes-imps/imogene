@@ -414,7 +414,7 @@ public class SynchronizationService extends WakefulIntentService {
 			QueryBuilder b = ImogOpenHelper.getHelper().queryBuilder(uri);
 			b.where().gt(ImogBean.Columns.MODIFIED, date).and().eq(ImogBean.Columns.MODIFIEDFROM, hardwareId);
 			b.orderBy(ImogBean.Columns.MODIFIED, true);
-			ImogBeanCursor cursor = (ImogBeanCursor) builder.query();
+			ImogBeanCursor cursor = (ImogBeanCursor) b.query();
 			for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
 				converter.serialize(serializer, cursor.newBean());
 				count++;

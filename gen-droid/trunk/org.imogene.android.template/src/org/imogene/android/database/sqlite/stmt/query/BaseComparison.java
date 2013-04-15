@@ -52,7 +52,8 @@ abstract class BaseComparison implements Comparison {
 	protected void appendArgOrValue(StringBuilder sb, List<Object> argList, Object argOrValue) {
 		sb.append('?');
 		sb.append(' ');
-		argList.add(argOrValue);
+		// TODO
+		argList.add(argOrValue != null ? argOrValue.toString() : null);
 	}
 
 	@Override
