@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group">
+
+	<ui:style src="../../../css/ImogCss.css">
+		
+		.imogene-field {
+			margin-left: 10px;
+		}
+
+		.createDFTemplateButton {
+			width: 60px;
+			text-align: center;
+			font-size: 12px;
+			margin-top: 5px;
+			padding: 4px 2px 4px 2px;
+			-moz-opacity: 0.8;
+			opacity: 0.8;
+		}
+
+	</ui:style>
+
+	<imo3:FieldGroupPanel ui:field="listSection" >
+	    
+			<g:VerticalPanel ui:field="listContainer"  stylePrimaryName="{style.imogene-field}"/>
+		
+			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
+				<g:PushButton ui:field="createDFTemplateButton" styleName="{style.imogButton} {style.imogButton1} {style.createDFTemplateButton}" />
+			</g:SimplePanel>	
+			    
+	</imo3:FieldGroupPanel>
+
+</ui:UiBinder> 
+
+
+
+

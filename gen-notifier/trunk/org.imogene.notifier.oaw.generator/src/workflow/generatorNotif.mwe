@@ -1,0 +1,52 @@
+<workflow>
+	<!-- Property definition -->
+	<property name="modelName" value="model" />
+	<property name="projectName" value="${modelName}" />
+	<property name="modelFullPath" value="model.imog" />	
+	<property name="imogeneMetaModel" value="metamodel/ImogeneModel.ecore"/>
+	<property name="model" value="${modelFullPath}" />
+	<property name="home-gen" value="../WebModel" />
+	<property name="packageName" value="org.imogene"  />
+	<property name="packagePath" value="org/imogene" />	
+	<property name="gkey" value="NO_KEY"/>
+	<property name="gmaps" value="false"/>
+	<property name="JDBCDRIVER" value="driver"/>
+	<property name="JDBCPATH" value="path"/>
+	<property name="JDBCLOGIN" value="login"/>
+	<property name="JDBCPASSWORD" value="password"/>
+	<property name="HIBERNATEDIALECT" value="password"/>
+	<property name="applicationType" value="notifier"/>
+
+	<!-- model reader -->
+	<component file="workflow/modelReader.mwe" inheritAll="true" />
+	
+	<!-- Generate entites and DAO -->
+	<component file="workflow/generatorDao.mwe" inheritAll="true" />
+	
+	<!-- persistence -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='notifier::template::config::persistence_xml::generate("${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/resources/META-INF/" />
+		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+	</component>
+
+	<!--dao-context.xml generator -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='notifier::template::config::dao_context_xml::generate("${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />
+		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+	</component>
+	
+	<!-- application properties -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='notifier::template::config::application_properties::generate("${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMTPSERVER}") FOR project' />
+		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />
+	</component>
+	
+</workflow>

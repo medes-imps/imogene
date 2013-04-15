@@ -1,0 +1,452 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String canDelete, String canModify, String projectName) FOR CardEntity»
+«FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "View.java"»
+package org.imogene.android.«projectName.toLowerCase()-».app;
+
+import greendroid.widget.ActionBar;
+import greendroid.widget.ActionBarItem;
+import greendroid.widget.NormalActionBarItem;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import org.imogene.android.Constants.Extras;
+import org.imogene.android.app.ViewPagerIndicatorActivity;
+import org.imogene.android.domain.DynamicFieldManager;
+import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.util.IamLost;
+import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.database.DatabaseUtils;
+import org.imogene.android.util.dialog.DialogFactory;
+import org.imogene.android.widget.ImogPagerAdapter;
+import org.imogene.android.widget.InfoAdapter;
+import org.imogene.android.widget.field.FieldManager;
+import org.imogene.android.widget.field.FieldManager.FieldContainer;
+import org.imogene.android.widget.field.view.AddressFieldView;
+import org.imogene.android.widget.field.view.BinaryFieldView;
+import org.imogene.android.widget.field.view.BooleanFieldView;
+import org.imogene.android.widget.field.view.DateFieldView;
+import org.imogene.android.widget.field.view.DateTimeFieldView;
+import org.imogene.android.widget.field.view.EmailFieldView;
+import org.imogene.android.widget.field.view.EnumMultipleFieldView;
+import org.imogene.android.widget.field.view.EnumSingleFieldView;
+import org.imogene.android.widget.field.view.FloatFieldView;
+import org.imogene.android.widget.field.view.GeoFieldView;
+import org.imogene.android.widget.field.view.IntegerFieldView;
+import org.imogene.android.widget.field.view.LocalizedTextFieldView;
+import org.imogene.android.widget.field.view.PhoneFieldView;
+import org.imogene.android.widget.field.view.RelationManyFieldView;
+import org.imogene.android.widget.field.view.RelationOneFieldView;
+import org.imogene.android.widget.field.view.TextFieldView;
+import org.imogene.android.widget.field.view.TimeFieldView;
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
+«EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
+import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+«IF getMoreFields(groups.fields).size > 0 -»
+«FOREACH getMoreFields(groups.fields) AS f-»
+import org.imogene.android.«projectName.toLowerCase()».roles.«f.entity.name.toFirstUpper()»Roles;
+«ENDFOREACH-»
+«ENDIF-»
+
+public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements
+		FieldContainer, OnClickListener {
+
+	private static final int ACTIONBAR_EDIT_ID = 1;
+	private static final int ACTIONBAR_SYNC_ID = 2;
+
+	private static final int DIALOG_DELETE_ID = 1;
+	private static final int DIALOG_INFO_ID = 2;
+	private static final int DIALOG_IAMLOST_ID = 3;
+	
+	private final Handler mHandler = new Handler();
+
+	private final ContentObserver mContentObserver = new ContentObserver(mHandler) {
+		public void onChange(boolean selfChange) {
+			refresh();
+		};
+	};
+	
+	private boolean mCanDelete;
+	private boolean mCanModify;
+
+	private FieldManager mManager;
+	«IF hasDynamicFields-»
+	private DynamicFieldManager mDynamicFieldManager;
+	
+	private ViewGroup mDynamicFieldList;
+	«ENDIF-»
+	
+	private ImogPagerAdapter mAdapter;
+
+	«FOREACH groups.fields AS f-»
+	private «EXPAND nameViewField FOR f» «f.name.toFirstLower()»;
+	«ENDFOREACH»
+	
+	private «name.toFirstUpper()» mEntity = null;
+	
+	public «name.toFirstUpper()»View() {
+		super(ActionBar.Type.Empty);
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		DatabaseUtils.markAs(getContentResolver(), getIntent().getData(), false);
+		getContentResolver().registerContentObserver(getIntent().getData(),
+				false, mContentObserver);
+
+		IamLost.getInstance().add(getTitle().toString());
+		
+		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean canDelete = prefs.getBoolean(getString(R.string.«name.toLowerCase()-»_delete), «canDelete»);
+		boolean canModify = prefs.getBoolean(getString(R.string.«name.toLowerCase()-»_modify), «canModify»);
+		
+		«IF creators.size > 0-»
+		mCanDelete = canDelete && «name.toFirstUpper()-»Roles.canCreate(this);
+		mCanModify = canModify && «name.toFirstUpper()-»Roles.canWrite(this);
+		«ELSE-»
+		boolean canWrite = «name.toFirstUpper()-»Roles.canWrite(this);
+		mCanDelete = canDelete && canWrite;
+		mCanModify = canModify && canWrite;
+		«ENDIF-»
+		
+		mManager = new FieldManager(this, 100);
+		«IF hasDynamicFields-»
+		mDynamicFieldManager = new DynamicFieldManager(this);
+		«ENDIF-»
+		
+		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()-»_view, getViewPager(), true);
+
+		«FOREACH groups.fields AS f-»
+			«f.name.toFirstLower()» = («EXPAND nameViewField FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+		«ENDFOREACH-»
+
+		«FOREACH groups.fields AS f-»
+			«EXPAND specificInit FOR f-»
+			«EXPAND dependency FOREACH f.fieldDependentVisibility-»
+			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
+		«ENDFOREACH-»
+		
+		if (mCanModify) {
+			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_edit), ACTIONBAR_EDIT_ID);
+		}
+
+		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
+		
+		mAdapter = new ImogPagerAdapter(this);
+		«FOREACH groups AS group-»
+		mAdapter.addPage(R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group», R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»);
+		«ENDFOREACH-»
+		
+		«IF hasDynamicFields-»
+		mAdapter.addPage(R.string.«name.toLowerCase()»_dynamic_field_group, R.id.«name.toLowerCase()»_dynamic_field_group);
+		mDynamicFieldList = (ViewGroup) findViewById(R.id.«name.toLowerCase()»_dynamic_field_list);
+		mDynamicFieldManager.attachViewsForView(mDynamicFieldList, mManager);
+		«ENDIF-»
+		
+		getViewPager().setAdapter(mAdapter);
+		getViewPager().setOffscreenPageLimit(«groups.size - 1»);
+		
+		refresh();
+	}
+	
+	@Override
+	public final void startActivity(Intent intent) {
+		try {
+			super.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	public final void startActivityForResult(Intent intent, int requestCode) {
+		try {
+			super.startActivityForResult(intent, requestCode);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		mManager.dispatchActivityResult(requestCode, resultCode, data);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		getContentResolver().unregisterContentObserver(mContentObserver);
+		IamLost.getInstance().remove();
+		mManager.dispatchActivityDestroy();
+	}
+	
+	private void refresh() {
+		mEntity = new «name.toFirstUpper()»(getIntent().getData());
+		«IF hasDynamicFields-»
+		mDynamicFieldManager.clear();
+		mDynamicFieldManager.loadInstancesUris(mEntity.getDynamicFieldValues());
+		«ENDIF-»
+		
+		«FOREACH groups AS group ITERATOR i-»
+		if («name.toFirstUpper()»Roles.canRead«group.name.toFirstUpper()»(this)) {
+			boolean visible = false;
+			«FOREACH group.fields AS f-»
+			«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
+			«ENDFOREACH-»
+			
+			«FOREACH group.fields AS f-»
+			visible |= «f.name.toFirstLower()».getVisibility() == View.VISIBLE;
+			«ENDFOREACH-»
+			
+			mAdapter.setPageVisible(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group», visible);
+		} else {
+			mAdapter.setPageVisible(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group», false);
+		}
+		«ENDFOREACH-»
+		
+		«IF hasDynamicFields-»
+		if (mDynamicFieldList != null) {
+			mDynamicFieldList.removeAllViews();
+			mDynamicFieldManager.attachViewsForView(mDynamicFieldList, mManager);
+			boolean visible = false;
+			for (int i = 0; i < mDynamicFieldList.getChildCount(); i++) {
+				visible |= mDynamicFieldList.getChildAt(i).getVisibility() == View.VISIBLE;
+			}
+			mAdapter.setPageVisible(R.id.«name.toLowerCase()»_dynamic_field_group, visible);
+		}
+		«ENDIF-»
+		
+		mAdapter.notifyDataSetChanged();
+		changePageIfNeeded();
+	}
+	
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+		switch (item.getItemId()) {
+		case ACTIONBAR_EDIT_ID:
+			startActivity(new Intent(Intent.ACTION_EDIT, getIntent().getData()));
+			return true;
+		case ACTIONBAR_SYNC_ID:
+			SynchronizationService.startServiceManually(this);
+			return true;
+		default:
+			return super.onHandleActionBarItemClick(item, position);
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean result = super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.ig_menu_info_item, menu);
+		if (mCanDelete) {
+			getMenuInflater().inflate(R.menu.ig_menu_delete_item, menu);
+		}
+		getMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
+		boolean hasMoreMenu = false;
+		«IF getMoreFields(groups.fields).size > 0-»
+		«FOREACH getMoreFields(groups.fields) AS f-»
+		«IF f.entity.creators.size > 0-»
+		hasMoreMenu |= «f.entity.name.toFirstUpper()»Roles.canCreate(this);
+		«ELSE-»
+		hasMoreMenu |= «f.entity.name.toFirstUpper()»Roles.canWrite(this);
+		«ENDIF-»
+		«ENDFOREACH-»
+		if (hasMoreMenu) {
+			getMenuInflater().inflate(R.menu.«name.toLowerCase()»_more_menu, menu.addSubMenu(R.string.ig_menu_actions).setIcon(android.R.drawable.ic_menu_more));
+			«FOREACH getMoreFields(groups.fields) AS f-»
+			menu.findItem(R.id.menu_action_new_«f.name.toLowerCase()»).setVisible(«f.entity.name.toFirstUpper()»Roles.canWrite(this));
+			«ENDFOREACH-»
+		}
+		«ENDIF-»
+		return result;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.ig_menu_delete:
+			showDialog(DIALOG_DELETE_ID);
+			return true;
+		case R.id.ig_menu_info:
+			showDialog(DIALOG_INFO_ID);
+			return true;
+		case R.id.ig_menu_iamlost:
+			showDialog(DIALOG_IAMLOST_ID);
+			return true;
+		«IF getMoreFields(groups.fields).size > 0-»
+		«FOREACH getMoreFields(groups.fields) AS f-»
+		case R.id.menu_action_new_«f.name.toLowerCase()»: {
+			Intent intent = new Intent(Intent.ACTION_INSERT, «f.entity.name.toFirstUpper()».Columns.CONTENT_URI)
+				.addCategory(PreferenceHelper.getEditionCategory(this));
+			«IF f.oppositeRelationField.cardinality == 1 || f.commonFields.size > 0-»
+			Bundle bundle = new Bundle();
+			«FOREACH f.commonFields AS c ITERATOR i-»
+			«IF (mod2(i.counter0) == 0)-»
+			«IF f.commonFields.get(i.counter0).cardinality == 1-»
+			bundle.putParcelable(
+				«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR f.commonFields.get(i.counter1)»,
+				mEntity.get«f.commonFields.get(i.counter0).name.toFirstUpper()»());
+			«ELSE-»
+			bundle.putParcelableArrayList(
+				«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR f.commonFields.get(i.counter1)», 
+				mEntity.get«f.commonFields.get(i.counter0).name.toFirstUpper()»());
+			«ENDIF-»
+			«ENDIF-»
+			«ENDFOREACH-»
+			«IF f.oppositeRelationField.cardinality == 1-»
+			bundle.putParcelable(
+				«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR f.oppositeRelationField»,
+				getUri());
+			«ENDIF-»
+			intent.putExtra(Extras.EXTRA_ENTITY, bundle);
+			«ENDIF-»
+			startActivity(intent);
+			return false;
+		}
+		«ENDFOREACH-»
+		«ENDIF»
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_DELETE_ID:
+			return new AlertDialog.Builder(this)
+			.setTitle(R.string.ig_delete_confirmation_title)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setMessage(R.string.ig_delete_confirmation)
+			.setNegativeButton(android.R.string.cancel, null)
+			.setPositiveButton(android.R.string.ok, this)
+			.setCancelable(false)
+			.create();
+		case DIALOG_INFO_ID:
+			return new AlertDialog.Builder(this)
+			.setTitle(R.string.ig_menu_info)
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setAdapter(new InfoAdapter(this, mEntity),	null)
+			.setPositiveButton(android.R.string.ok, null)
+			.create();
+		case DIALOG_IAMLOST_ID:
+			return DialogFactory.createIamLostDialog(this);
+		default:
+			return super.onCreateDialog(id);
+		}
+	}
+	
+	
+	public void onClick(DialogInterface dialog, int which) {
+		if (which == Dialog.BUTTON_POSITIVE) {
+			setResult(RESULT_CANCELED);
+			finish();
+			getContentResolver().unregisterContentObserver(mContentObserver);
+			getContentResolver().delete(getIntent().getData(), null, null);
+		}
+	}
+	
+	public Activity getActivity() {
+		return this;
+	}
+	
+	public String getId() {
+		return mEntity.getId();
+	}
+	
+	public Uri getUri() {
+		return getIntent().getData();
+	}
+	
+	public Uri getContentUri() {
+		return «name.toFirstUpper()».Columns.CONTENT_URI;
+	}
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«DEFINE nameViewField FOR FieldEntity-»Nothing«ENDDEFINE»
+
+«DEFINE nameViewField FOR StringField-»TextFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR TextField»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE nameViewField FOR AddressField-»AddressFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR EmailField-»EmailFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR PhoneField-»PhoneFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR GeoField-»GeoFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR BooleanField-»BooleanFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE nameViewField FOR DateField»DateFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR TimeField»TimeFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR DateTimeField»DateTimeFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR BinaryField»BinaryFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR FloatField»FloatFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR IntegerField»IntegerFieldView«ENDDEFINE»
+
+«DEFINE nameViewField FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldView«ELSE»RelationManyFieldView«ENDIF»«ENDDEFINE»
+
+
+
+
+
+«DEFINE specificInit FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE specificInit FOR RelationFieldEntity-»
+«name.toFirstLower()».setDrawable(«entity.name.toFirstUpper()-».Columns.COLOR);
+«IF cardinality != 1»
+«name.toFirstLower()».setContentUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI);
+«ENDIF»
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE dependency FOR FieldDependentVisibility-»
+«IF !dependencyField.hidden-»
+«dependencyField.name.toFirstLower()».registerDependent(«parentFieldEntity.name.toFirstLower()», "«dependencyFieldValue»");
+«ENDIF-»
+«ENDDEFINE»

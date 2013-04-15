@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.imogene.tools.maven.objectContribution1"
+            nameFilter="org.imogene.library"
+            objectClass="org.eclipse.core.resources.IProject">
+         <menu
+               id="org.imogene.tools"
+               label="Imogene tools"
+               path="addition">
+            <groupMarker
+                  name="actions">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.imogene.tools.maven.UpdateLibrayAction"
+               id="org.imogene.tools.maven.action1"
+               label="Add/update library from pom.xml"
+               menubarPath="org.imogene.tools/actions">
+         </action>
+         <action
+               class="org.imogene.tools.maven.CleanLibraryAction"
+               id="org.imogene.tools.maven.action2"
+               label="Clean unused jars"
+               menubarPath="org.imogene.tools/actions"
+               tooltip="Clean unused jars">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

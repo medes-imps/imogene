@@ -1,0 +1,87 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/handler/DataHandlerManagerImpl.java"»
+package org.imogene.«projectName.toLowerCase()».handler;
+
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.common.filter.ClientFilter;
+import org.imogene.lib.common.user.DefaultUser;
+import org.imogene.lib.sync.binary.file.BinaryFileHandler;
+import org.imogene.lib.sync.clientfilter.ClientFilterHandler;
+import org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandler;
+import org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandler;
+import org.imogene.lib.sync.handler.DataHandlerManager;
+import org.imogene.lib.sync.handler.DefaultUserHandler;
+import org.imogene.lib.sync.handler.ImogBeanHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+public class DataHandlerManagerImpl implements DataHandlerManager {
+
+	«FOREACH entities AS e»
+	@Autowired
+	@Qualifier(value = "«e.name.toFirstLower()»Handler")
+	private «e.name.toFirstUpper()»Handler «e.name.toFirstLower()»Handler;
+	«ENDFOREACH»
+	
+	@Autowired
+	@Qualifier(value = "defaultUserHandler")
+	private DefaultUserHandler defaultUserHandler;
+
+	@Autowired
+	@Qualifier(value = "binaryHandler")
+	private BinaryFileHandler binaryHandler;
+	
+	@Autowired
+	@Qualifier(value = "clientFilterHandler")
+	private ClientFilterHandler clientFilterHandler;
+	
+	@Autowired
+	@Qualifier(value = "dynamicFieldInstanceHandler")
+	private DynamicFieldInstanceHandler dynamicFieldInstanceHandler;
+	
+	@Autowired
+	@Qualifier(value = "dynamicFieldTemplateHandler")
+	private DynamicFieldTemplateHandler dynamicFieldTemplateHandler;
+	
+	@Override
+	public ImogBeanHandler<? extends ImogBean> getHandler(Class<?> clazz) {
+		if (BinaryFile.class.equals(clazz)) {
+			return binaryHandler;
+		} else if (DefaultUser.class.equals(clazz)) {
+			return defaultUserHandler;
+		} else if (ClientFilter.class.equals(clazz)) {
+			return clientFilterHandler;
+		} else if (DynamicFieldInstance.class.equals(clazz)) {
+			return dynamicFieldInstanceHandler;
+		} else if (DynamicFieldTemplate.class.equals(clazz)) {
+			return dynamicFieldTemplateHandler;
+		} else
+		«FOREACH entities AS e SEPARATOR "else"-»
+		if («e.name.toFirstUpper()».class.equals(clazz)) {
+			return «e.name.toFirstLower()»Handler;
+		}
+		«ENDFOREACH-»
+		return null;
+	}
+
+	@Override
+	public ImogBeanHandler<? extends ImogBean> getHandler(String className) {
+		try {
+			Class<?> clazz = Class.forName(className);
+			return getHandler(clazz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+}
+
+«ENDFILE»
+«ENDDEFINE»

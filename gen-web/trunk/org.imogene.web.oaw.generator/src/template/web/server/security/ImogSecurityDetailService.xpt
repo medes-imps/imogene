@@ -1,0 +1,160 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/server/security/ImogSecurityDetailService.java"»
+package org.imogene.«projectName.toLowerCase()».server.security;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.user.DefaultUser;
+import org.imogene.web.server.handler.GenericHandler;
+import org.imogene.web.server.security.ImogUserDetails;
+import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.ServerConstants;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+
+«FOREACH entities AS e -»
+  «EXPAND importForActor(projectName) FOR e -»
+«ENDFOREACH -»		
+	
+
+/**
+ * Manages the application access through spring security
+ * @author MEDES-IMPS
+ */
+public class ImogSecurityDetailService implements UserDetailsService {
+
+	private Logger logger = Logger.getLogger(ImogSecurityDetailService.class);
+	
+	private GenericHandler genericHandler;
+	«FOREACH entities AS e -»
+		«EXPAND declareForDao FOR e -»
+	«ENDFOREACH -»	
+	
+	@Override
+	public UserDetails loadUserByUsername(String login)
+			throws UsernameNotFoundException, DataAccessException {
+		
+		ImogActor current = null;
+
+		logger.debug("Validating auhtentication for user: " + login);
+		
+		«FOREACH entities AS e»
+			«EXPAND loginValidation FOR e-»
+		«ENDFOREACH-»			
+		
+		/* Default User */
+		current = validateForDefaultUser(login);		
+		if (current != null)
+			return setSessionUser(current);
+		
+		return null;
+	}
+
+	/**
+	 * Sets the current user in session
+	 * @param actor the current user
+	 * @return
+	 */
+	private ImogUserDetails setSessionUser(ImogActor actor) {
+		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_USER, actor);
+		return new ImogUserDetails(actor);
+	}
+	
+	«EXPAND loginValidationMethod FOREACH this.entities-»
+		
+	/**
+	 * Validates the login for the default actor
+	 * @param login the entered login
+	 * @return the DefaultUser
+	 */
+	private DefaultUser validateForDefaultUser(String login) {
+		List<DefaultUser> actors = (List<DefaultUser>) genericHandler
+				.find(DefaultUser.class);
+		if (actors.size() > 1) {
+			for (ImogActor it : actors) {
+				if (it.getLogin().equals(login))
+					return (DefaultUser) it;
+			}
+		}
+		if (actors.size() == 1) {
+			if (actors.get(0).getLogin().equals(login))
+				return actors.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * @param genericHandler
+	 */
+	public void setGenericHandler(GenericHandler genericHandler) {
+		this.genericHandler = genericHandler;
+	}
+	
+	«FOREACH entities AS e -»
+  		«EXPAND actorDao FOR e -»
+	«ENDFOREACH -»	
+}	
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«REM» Imports for actor «ENDREM»
+«DEFINE importForActor(String projectName) FOR CardEntity -»«ENDDEFINE»
+«DEFINE importForActor(String projectName) FOR Actor -»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».server.handler.«name.toFirstUpper()»Handler;
+«ENDDEFINE»
+
+«REM» Declare actor dao «ENDREM»
+«DEFINE declareForDao FOR CardEntity -»«ENDDEFINE»
+«DEFINE declareForDao FOR Actor -»
+private «name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
+«ENDDEFINE»
+
+«REM» Set actor dao «ENDREM»
+«DEFINE actorDao FOR CardEntity -»«ENDDEFINE»
+«DEFINE actorDao FOR Actor -»
+	/**
+	 * Setter for bean injection
+	 */
+	public void set«name.toFirstUpper()»Handler(«name.toFirstUpper()»Handler «name.toFirstLower()»Handler) {
+		this.«name.toFirstLower()»Handler = «name.toFirstLower()»Handler;
+	}
+«ENDDEFINE»
+
+«REM» Login validation for actor «ENDREM»
+«DEFINE loginValidation FOR CardEntity -»«ENDDEFINE»
+«DEFINE loginValidation FOR Actor -»
+		/* «name.toFirstUpper()» */
+		current = validateFor«name.toFirstUpper()»(login);	
+		if (current != null)
+			return setSessionUser(current);	
+«ENDDEFINE»
+
+«REM» Login validation method for Actor«ENDREM»
+«DEFINE loginValidationMethod FOR CardEntity»«ENDDEFINE»
+«DEFINE loginValidationMethod FOR Actor»
+	/**
+	 * Validates the login for a «name.toFirstUpper()» actor
+	 * @param login the entered login
+	 * @return the «name.toFirstUpper()»Actor
+	 */
+	private «name.toFirstUpper()» validateFor«name.toFirstUpper()»(String login) {
+		List<«name.toFirstUpper()»> actors = «name.toFirstLower()»Handler.loadFromLogin(login);
+		if (actors.size() > 1)
+			System.out.println("Can't process authentification, several users use the same login ! ");
+		if (actors.size() == 1) {
+			if (actors.get(0).getLogin().equals(login))
+				return actors.get(0);
+		}
+		return null;
+	}
+«ENDDEFINE»

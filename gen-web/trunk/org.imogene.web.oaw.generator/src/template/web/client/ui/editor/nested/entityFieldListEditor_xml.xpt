@@ -1,0 +1,72 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+
+	«EXPAND createListEditor(packageName, projectName) FOREACH groups.fields»
+
+«ENDDEFINE»
+
+
+«DEFINE createListEditor(String packageName, String projectName) FOR FieldEntity»«ENDDEFINE»
+«DEFINE createListEditor(String packageName, String projectName) FOR RelationFieldEntity»
+«IF nestedForm && entity.nestedFields!=null && !entity.nestedFields.isEmpty && cardinality==-1 || cardinality>1-»
+«FILE projectName.toLowerCase()+ "/client/ui/editor/nested/" + parentGroup.parentCard.name.toFirstUpper() + name.toFirstUpper() + "ListEditor.ui.xml"-»
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group">
+
+	<ui:style>
+		.imog-AddImage {
+			cursor: pointer;
+			cursor: hand;
+			margin-left: 2px;
+		}
+
+		.fieldGroup-ListEditor {
+			margin-top: 5px;
+		}
+
+		.header {
+			width: 217px;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		@external .fieldGroup-ListEditor;
+	</ui:style>
+
+	<imo3:FieldGroupPanel ui:field="listSection" >
+	    <g:HorizontalPanel>
+			<g:VerticalPanel>
+	
+				«REM»<g:HorizontalPanel  verticalAlignment="middle" >
+				
+					«FOREACH entity.nestedFields AS f -»
+					<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    <g:Label ui:field="«EXPAND template::CommonFieldUtil::propertyName FOR f»Label" stylePrimaryName="{style.header}"/>
+					</g:cell>
+					«ENDFOREACH -»«ENDREM»	
+									
+					«REM»<g:cell verticalAlignment="middle" horizontalAlignment="left" width="24px">«ENDREM»
+					<g:cell verticalAlignment="middle" horizontalAlignment="right">
+					    <g:Image ui:field="addItem" stylePrimaryName="{style.imog-AddImage}" width="24px" />		
+					</g:cell>
+				«REM»</g:HorizontalPanel>	«ENDREM»	    
+			    
+				<g:VerticalPanel ui:field="listContainer" />
+				
+			</g:VerticalPanel>
+			
+		</g:HorizontalPanel>
+	</imo3:FieldGroupPanel>
+
+</ui:UiBinder> 
+
+
+
+
+«ENDFILE»
+«ENDIF-»
+«ENDDEFINE»

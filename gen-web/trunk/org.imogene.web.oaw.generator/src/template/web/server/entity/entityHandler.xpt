@@ -1,0 +1,967 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/server/handler/" + this.name.toFirstUpper() + "Handler.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».server.handler;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.lib.common.constants.CommonConstants;
+import org.imogene.lib.common.constants.CriteriaConstants;
+import org.imogene.lib.common.criteria.BasicCriteria;
+import org.imogene.lib.common.criteria.ImogConjunction;
+import org.imogene.lib.common.criteria.ImogDisjunction;
+import org.imogene.lib.common.criteria.ImogJunction;
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.web.server.security.ImogBeanFilterHandler;
+import org.imogene.web.server.util.FilterFieldsHelper;
+import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.ServerConstants;
+«IF isBinaryFieldPresent(this.groups.fields) -»
+import org.imogene.lib.common.binary.Binary;
+import org.imogene.lib.common.binary.BinaryDao;
+«ENDIF-»
+«IF hasDynamicFields -»
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.web.server.handler.DynamicFieldInstanceHandler;
+import org.imogene.web.server.handler.DynamicFieldTemplateHandler;
+«ENDIF-»
+«EXPAND importsForFilterFields(projectName) FOR this -»
+«EXPAND importsForRelation(projectName) FOREACH groups.fields-»
+«EXPAND importForeignKeyCard(this,projectName) FOR this.eContainer-»
+import org.springframework.transaction.annotation.Transactional;
+«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+import org.imogene.admin.server.security.SecurityUtils;
+«ENDIF-»
+
+
+
+/**
+ * A data handler for the «name.toFirstUpper()» beans 
+ * @author Medes-IMPS
+ */
+public class «name.toFirstUpper()»Handler {
+	
+	private «name.toFirstUpper()»Dao dao;
+	«IF isBinaryFieldPresent(this.groups.fields) -»
+	/* BinaryDao for Binary Deletion */
+	private BinaryDao<Binary> binaryDao;
+	«ENDIF-»
+	«EXPAND declareDaoForForeignKeyDeletion(this) FOR this.eContainer-»		
+	«EXPAND declareHandlerForRelation(projectName) FOREACH groups.fields-»
+	«IF hasDynamicFields -»
+	/* Handlers for dynamic field management */
+	private DynamicFieldInstanceHandler dynamicFieldValuesHandler;
+	private DynamicFieldTemplateHandler dynamicFieldTemplateHandler;
+	«ENDIF-»
+	
+	
+	/**
+	 * Loads the entity with the specified id
+	 * @param entityId the entity id
+	 * @return the entity or null
+	 */
+	@Transactional(readOnly=true)
+	public «name.toFirstUpper()» findById(String entityId) {
+		return dao.load(entityId);
+	}
+
+	/**
+	 * Saves or updates the entity
+	 * @param entity the entity to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */	
+	@Transactional
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	public void save(«name.toFirstUpper()» entity, boolean isNew, boolean passwordChanged) {	
+	«ELSE-»
+	public void save(«name.toFirstUpper()» entity, boolean isNew) {	
+	«ENDIF-»
+		
+	    «FOREACH groups.fields AS f-»
+	    «IF f.calculationFunctionName!=null && f.calculationFunctionName.length>0 -»
+ 		entity.«EXPAND template::CommonFieldUtil::setterName FOR f-»(«f.calculationFunctionName-»());   
+	    «ENDIF-»
+	    «ENDFOREACH-»
+	    
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		
+		if (entity != null) {
+		
+			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+			if(passwordChanged)
+				entity.setPassword(SecurityUtils.passwordHashAsBase64(entity.getPassword(), entity.getLogin()));
+			«ENDIF-»		
+			
+			if(isNew) {
+				entity.setCreated(new Date(System.currentTimeMillis()));
+				entity.setCreatedBy(actor.getLogin());			
+			}
+
+			entity.setModified(new Date(System.currentTimeMillis()));
+			entity.setModifiedBy(actor.getLogin());
+			entity.setModifiedFrom(CommonConstants.IS_WEB);
+			
+			«IF hasDynamicFields -»
+			// manage dynamic fields
+			List<DynamicFieldInstance> dfValues = entity.getDynamicFieldValues();
+			if (dfValues != null && dfValues.size()>0) {
+				for (DynamicFieldInstance dfValue : dfValues) {
+					if(dfValue!=null) {
+						dfValue.setModified(new Date(System.currentTimeMillis()));
+						dfValue.setModifiedBy(actor.getLogin());
+						dfValue.setModifiedFrom(CommonConstants.IS_WEB);
+						if (dfValue.getCreatedBy() == null) {
+							dfValue.setCreatedBy(actor.getLogin());
+						}
+					}
+				}
+			}
+			«ENDIF-»
+			
+			«EXPAND updateChilds FOREACH groups.fields-»
+			
+			«EXPAND removeFromParent FOREACH groups.fields-»	
+		
+			dao.saveOrUpdate(entity, isNew);				
+		}			
+	}
+	
+	/**
+	 * Lists the entities of type «name.toFirstUpper()»
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @return list of «name.toFirstLower()»
+	 */	
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(String sortProperty, boolean sortOrder) {
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);	
+		
+		List<«name.toFirstUpper()»> beans = dao.load(sortProperty, sortOrder, junction);
+
+		return beans;
+	}
+
+	/**
+	 * Lists the entities of type «name.toFirstUpper()»
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @return list of «name.toFirstLower()»
+	 */	
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder) {
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);	
+		
+		List<«name.toFirstUpper()»> beans = dao.load(i, j, sortProperty, sortOrder, junction);
+
+		return beans;
+	}
+	
+	/**
+	 * Lists the entities of type «name.toFirstUpper()»
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @param criterions request criteria	 
+	 * @return list of «name.toFirstLower()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions) {
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);
+		if(criterions!=null)
+			junction.add(criterions);		
+		
+		List<«name.toFirstUpper()»> beans = dao.load(i, j, sortProperty, sortOrder, junction);
+
+		return beans;		
+	}
+	
+	/**
+	 * Lists the entities of type «name.toFirstUpper()»
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @param criterions request criteria	 
+	 * @return list of «name.toFirstLower()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, List<BasicCriteria> criterions) {
+	
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);
+		
+		ImogJunction junctionForCrit = new ImogConjunction();
+		if(criterions!=null) {
+			for(BasicCriteria crit:criterions)
+				junctionForCrit.add(crit);
+		}
+		junction.add(junctionForCrit);		
+		
+		List<«name.toFirstUpper()»> beans = dao.load(i, j, sortProperty, sortOrder, junction);
+
+		return beans;		
+	}
+	
+	/**
+	 * Lists the non affected entities of type «name.toFirstUpper()»	
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @param criterion request criteria	 
+	 * @param property the property which is not affected
+	 * @return list of «name.toFirstLower()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> listNonAffected«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions, String property) {
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);
+		if(criterions!=null)
+			junction.add(criterions);
+
+		List<«name.toFirstUpper()»> beans = dao.loadNonAffected(i, j , sortProperty, sortOrder, property, junction);
+
+		return beans;
+	}
+	
+	/**
+	 * Lists the non affected entities of type «name.toFirstUpper()»	
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @param property the property which is not affected
+	 * @return list of «name.toFirstLower()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> listNonAffected«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, String property) {
+		return listNonAffected«name.toFirstUpper()»(i, j, sortProperty, sortOrder, null, property);
+	}
+	
+	/**
+	 * Used when «name.toFirstUpper()» is involved in a Relation 1 <-> 1 
+	 * Association and is the ReverseRelationField of the Relation
+	 * Return all instance of «name.toFirstUpper()» non affected
+	 * regarding specified property.	
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @param ImogJunction request criteria
+	 * @param property the property which is not affected	 
+	 * @return list of «name.toFirstLower()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> listNonAffected«name.toFirstUpper()»Reverse(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions, String property) {
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);
+		if(criterions!=null)
+			junction.add(criterions);
+
+		List<«name.toFirstUpper()»> beans = dao.loadNonAffectedReverse(i, j , sortProperty, sortOrder, property, junction);
+
+		return beans;
+	}	
+	
+	/**
+	 * Used when «name.toFirstUpper()» is involved in a Relation 1 <-> 1 
+	 * Association and is the ReverseRelationField of the Relation
+	 * Return all instance of «name.toFirstUpper()» non affected
+	 * regarding specified property.	
+	 * @param i first index to retrieve
+	 * @param j nb of items to retrieve
+	 * @param sortProperty the property used to sort the collection
+	 * @param sortOrder true for an ascendant sort
+	 * @param property the property which is not affected	 
+	 * @return list of «name.toFirstLower()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> listNonAffected«name.toFirstUpper()»Reverse(int i, int j, String sortProperty, boolean sortOrder, String property) {
+		return listNonAffected«name.toFirstUpper()»Reverse(i, j, sortProperty, sortOrder, null, property);
+	}
+	
+	/**
+	 * Gets an empty list of «name.toFirstUpper()»	
+	 * @return an empty list of «name.toFirstUpper()»
+	 */
+	@Transactional(readOnly=true)
+	public List<«name.toFirstUpper()»> get«name.toFirstUpper()»EmptyList() {
+		return new ArrayList<«name.toFirstUpper()»>();
+	}	
+	
+	/**
+	 * Counts the number of «name.toFirstLower()» in the database
+	 * @return the count
+	 */
+	@Transactional(readOnly=true)
+	public Long count«name.toFirstUpper()»() {			
+		return  count«name.toFirstUpper()»(null);
+	}
+
+	/**
+	 * Counts the number of «name.toFirstLower()» in the database, 
+	 * that match the criteria
+	 * @return the count
+	 */
+	@Transactional(readOnly=true)
+	public Long count«name.toFirstUpper()»(ImogJunction criterions) {
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);		
+		ImogJunction junction = createFilterJuntion(actor);
+		if(criterions!=null)
+			junction.add(criterions);
+			
+		return dao.count(junction);
+	}
+	
+	/**
+	 * Counts the number of non affected «name.toFirstLower()» entities in the database
+	 * @param property the property which is not affected
+	 * @param criterion request criteria
+	 * @return the count
+	 */
+	@Transactional(readOnly=true)
+	public Long countNonAffected«name.toFirstUpper()»(String property, ImogJunction criterions) {
+
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);	
+		ImogJunction junction = createFilterJuntion(actor);
+		if(criterions!=null)
+			junction.add(criterions);
+
+		return dao.countNonAffected(property, junction);
+	}
+	
+	/**
+	 * Counts the number of non affected «name.toFirstLower()» entities in the database
+	 * @param property the property which is not affected
+	 * @return the count
+	 */
+	@Transactional(readOnly=true)
+	public Long countNonAffected«name.toFirstUpper()»(String property) {
+		return countNonAffected«name.toFirstUpper()»(property, null);
+	}
+	
+	/**
+	 * Counts the number of non affected «name.toFirstLower()» entities in the database
+	 * @param property the property which is not affected
+	 * @param criterion request criteria
+	 * @return the count
+	 */
+	@Transactional(readOnly=true)
+	public Long countNonAffected«name.toFirstUpper()»Reverse(String property, ImogJunction criterions) {
+
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);
+		if (criterions!=null)
+			junction.add(criterions);
+		return dao.countNonAffectedReverse(property, junction);
+	}
+	
+	/**
+	 * Counts the number of non affected «name.toFirstLower()» entities in the database
+	 * @param property the property which is not affected
+	 * @return the count
+	 */
+	@Transactional(readOnly=true)
+	public Long countNonAffected«name.toFirstUpper()»Reverse(String property) {
+		return countNonAffected«name.toFirstUpper()»Reverse(property, null);
+	}
+
+	/**
+	 * Deletes a group of entities identified by their IDs
+	 * @param ids Entities to delete IDs
+	 * @return The list of deleted entities IDs
+	 */
+	@Transactional
+	public void delete(Set<«name.toFirstUpper()»> entities) {
+		if(entities!=null) {
+			for(«name.toFirstUpper()» entity:entities)
+				delete(entity);
+		}
+	}
+
+	/**
+	 * Removes the specified entity from the database 
+	 * @param entity The entity to be deleted
+	 */
+	@Transactional
+	public void delete(«name.toFirstUpper()» entity) {
+	
+	   	«IF isBinaryFieldPresent(this.groups.fields) -»
+   			«FOREACH this.groups.fields AS f-»
+				«EXPAND deleteAttachedBinaries FOR f-»
+			«ENDFOREACH-»
+		«ENDIF-»
+	   
+	   «EXPAND deleteForeignKeyReference(this) FOR this.eContainer-»   
+	
+		dao.delete(entity);
+	}
+
+	/**
+	 * Lists the entities of type «name.toFirstUpper()» for the CSV export  
+	 */	
+	@Transactional(readOnly = true)
+	public List<«name.toFirstUpper()»> listForCsv(String sortProperty, boolean sortOrder 
+		«FOREACH columnFields AS c ITERATOR iter -»
+		«EXPAND declareSearchParameter((Project)this.eContainer, "") FOR c-»
+		«ENDFOREACH -»	
+		) {	
+	
+		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogJunction junction = createFilterJuntion(actor);
+		
+		«FOREACH columnFields AS c ITERATOR iter -»
+		«EXPAND createSearchCriteria((Project)this.eContainer, "") FOR c-»
+		«ENDFOREACH -»
+		
+		List<«name.toFirstUpper()»> beans = dao.load(sortProperty, sortOrder, junction);
+		List<«name.toFirstUpper()»> securedBeans = ImogBeanFilterHandler.getInstance().getFilter().<«name.toFirstUpper()»> toSecure(beans, actor);
+		return securedBeans;				
+	}		
+			
+	
+	«IF Actor.isAssignableFrom(metaType)-»
+	/**
+	 * Lists the entities of type «name.toFirstUpper()» that have a given login
+	 * @param login the login of the «name.toFirstUpper()»
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<«name.toFirstUpper()»> loadFromLogin(String login) {
+		return dao.loadFromLogin(login);
+	}
+	«ENDIF-»
+	
+	/**
+	 * Creates a junction based on the filter field declarations, for the current actor.
+	 * @param actor the current actor
+	 */
+	 private ImogJunction createFilterJuntion(ImogActor actor){
+	 	ImogConjunction filterConjunction = new ImogConjunction();
+	 	«EXPAND handleFilterField(this.name) FOREACH this.actorFilterFields -»
+	 	return filterConjunction;
+	 } 
+	 
+	 «EXPAND methodsForRelation(applicationType, adminType) FOREACH groups.fields-»
+	 
+	«IF hasDynamicFields -»
+	/**
+	 * Saves entity of type DynamicFieldInstance
+	 * @param entity the DynamicFieldInstance to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	public void saveDynamicFieldValues(DynamicFieldInstance entity, boolean isNew) {
+		dynamicFieldValuesHandler.save(entity, isNew);
+	}
+
+	/**
+	 * Deletes entity of type DynamicFieldInstance
+	 * @param toDelete the DynamicFieldInstance to be deleted
+	 */
+	public void deleteDynamicFieldValues(DynamicFieldInstance toDelete) {
+		dynamicFieldValuesHandler.delete(toDelete);
+	}
+	
+	/**
+	 * Activates entity of type DynamicFieldInstance
+	 * @param entity the entity to be activated of not
+	 * @param activate true if the entity has to be enabled, false if it has to be disabled
+	 */
+	public void activateDynamicFieldTemplate(DynamicFieldTemplate entity, boolean activate) {
+		entity.setIsActivated(activate);
+		dynamicFieldTemplateHandler.save(entity, false);
+	}
+	«ENDIF-»	 
+
+	/**
+	 * Setter for bean injection
+	 * @param dao the «name.toFirstUpper()» Dao
+	 */
+	public void setDao(«name.toFirstUpper()»Dao dao) {
+		this.dao = dao;
+	}
+	
+	«IF isBinaryFieldPresent(this.groups.fields) -»
+	/**
+	 * Setter for bean injection
+	 * @param binaryDao the Binary Dao
+	 */
+	public void setBinaryDao(BinaryDao<Binary> binaryDao) {
+		this.binaryDao = binaryDao;
+	}
+	«ENDIF-»
+	
+	«IF hasDynamicFields -»
+	/**
+	 * Setter for bean injection
+	 * @param dynamicFieldValuesHandler the DynamicFieldInstance Handler
+	 */
+	public void setDynamicFieldValuesHandler(DynamicFieldInstanceHandler dynamicFieldValuesHandler) {
+		this.dynamicFieldValuesHandler = dynamicFieldValuesHandler;
+	}
+	
+	/**
+	 * Setter for bean injection
+	 * @param dynamicFieldTemplateHandler the DynamicFieldTemplateHandler Handler
+	 */
+	public void setDynamicFieldTemplateHandler(DynamicFieldTemplateHandler dynamicFieldTemplateHandler) {
+		this.dynamicFieldTemplateHandler = dynamicFieldTemplateHandler;
+	}
+	«ENDIF-»
+	
+	«REM» Calculation of field value «ENDREM»
+    «FOREACH groups.fields AS f-»
+    «IF f.calculationFunctionName!=null && f.calculationFunctionName.length>0 -» 
+   «REM» «PROTECT CSTART '/*' CEND '*/' ID 'calcul' + f.shortName »   «ENDREM»    			   	
+	/**
+	 * Procedure to calculate the value of the field «f.name»
+	 */	
+	private «EXPAND template::domain::DaoFieldUtil::entityFieldType FOR f-» «f.calculationFunctionName-»(){	
+		«EXPAND template::domain::DaoFieldUtil::entityFieldType FOR f-» result = null;	
+		return result;
+	}    	 
+	«REM» «ENDPROTECT»   «ENDREM» 
+    «ENDIF-»
+    «ENDFOREACH»
+	
+	«EXPAND setDaoForForeignKeyDeletion(this) FOR this.eContainer-»
+	
+	«EXPAND setHandlerForRelation FOREACH groups.fields-»
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«REM»---------------------------------------------------- «ENDREM»
+«REM»-------------------- RELATION FIELDS---------------- «ENDREM»
+«REM»---------------------------------------------------- «ENDREM»
+
+«REM» Imports implied by the relation fields «ENDREM»
+«DEFINE importsForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE importsForRelation(String projectName) FOR RelationFieldEntity»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirstUpper()»;
+«ENDDEFINE»
+
+«DEFINE declareHandlerForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE declareHandlerForRelation(String projectName) FOR RelationFieldEntity»
+private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
+«ENDDEFINE»
+
+«DEFINE methodsForRelation(String applicationType, String adminType) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE methodsForRelation(String applicationType, String adminType) FOR RelationFieldEntity»
+	/**
+	 * Saves entity of type «entity.name.toFirstUpper()»
+	 * @param entity the «entity.name.toFirstUpper()» to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	public void save«name.toFirstUpper()»(«entity.name.toFirstUpper()» entity, boolean isNew) {
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(entity.metaType)-»
+		«name.toFirstLower()»Handler.save(entity, isNew, false);	
+		«ELSE-»
+		«name.toFirstLower()»Handler.save(entity, isNew);
+		«ENDIF-»	
+	}
+	
+	/**
+	 * Deletes entity of type «entity.name.toFirstUpper()»
+	 * @param toDelete the «entity.name.toFirstUpper()» to be deleted
+	 */
+	public void delete«name.toFirstUpper()»(«entity.name.toFirstUpper()» toDelete) {
+		«name.toFirstLower()»Handler.delete(toDelete);
+	}
+«ENDDEFINE»
+
+«DEFINE setHandlerForRelation FOR FieldEntity-»«ENDDEFINE»
+«DEFINE setHandlerForRelation FOR RelationFieldEntity»
+	/**
+	 * Setter for bean injection
+	 * @param «name.toFirstLower()»Handler the «entity.name.toFirstUpper()» Handler
+	 */
+	public void set«name.toFirstUpper()»Handler(«entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler) {
+		this.«name.toFirstLower()»Handler = «name.toFirstLower()»Handler;
+	}
+«ENDDEFINE»
+
+«REM» no affection possible from the reverse side of a one-to-one relation«ENDREM»
+«DEFINE removeFromParent FOR FieldEntity-»«ENDDEFINE»
+«DEFINE removeFromParent FOR ReverseRelationFieldEntity»
+«IF cardinality==1 && oppositeRelationField.cardinality==1-»
+		// no affection possible from the reverse side of a one-to-one relation
+		entity.«EXPAND template::CommonFieldUtil::setterName FOR this»(null);
+«ENDIF-»
+«ENDDEFINE»
+
+«REM» «ENDREM»
+«DEFINE updateChilds FOR FieldEntity-»«ENDDEFINE»
+«DEFINE updateChilds FOR RelationFieldEntity»
+«IF nestedForm-»
+			// manage related «name.toFirstLower()»
+«IF cardinality==1-»
+			«entity.name.toFirstUpper()» «name.toFirstLower()» = entity.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+			if(«name.toFirstLower()»!=null) {
+				«name.toFirstLower()».setModified(new Date(System.currentTimeMillis()));
+				«name.toFirstLower()».setModifiedBy(actor.getLogin());
+				«name.toFirstLower()».setModifiedFrom(CommonConstants.IS_WEB);
+				if(«name.toFirstLower()».getCreatedBy()==null){
+					«name.toFirstLower()».setCreatedBy(actor.getLogin());
+				}
+				entity.«EXPAND template::CommonFieldUtil::setterName FOR this»(«name.toFirstLower()»);
+			}	
+«ELSE-»
+			List<«entity.name.toFirstUpper()»> list«name.toFirstUpper()» = entity.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+			if (list«name.toFirstUpper()» != null && list«name.toFirstUpper()».size()>0) {
+				for («entity.name.toFirstUpper()» item : list«name.toFirstUpper()») {
+					if (item != null) {						
+						
+						item.setModified(new Date(System.currentTimeMillis()));
+						item.setModifiedBy(actor.getLogin());
+						item.setModifiedFrom(CommonConstants.IS_WEB);
+						if (item.getCreatedBy() == null) {
+							item.setCreatedBy(actor.getLogin());
+						}
+					}
+				}
+			}
+«ENDIF-»	
+«ENDIF-»
+«ENDDEFINE»
+
+
+«REM»---------------------------------------------------- «ENDREM»
+«REM»-------------------- FILTER FIELDS ----------------- «ENDREM»
+«REM»---------------------------------------------------- «ENDREM»
+
+«REM» Imports for filter fields «ENDREM»
+«DEFINE importsForFilterFields(String projectName) FOR CardEntity -»
+	«FOREACH actorFilterFields AS actorField-»
+	«IF actorField.actorField!=null-»
+	import org.imogene.«projectName.toLowerCase()».domain.entity.«actorField.actorField.parentActor.name.toFirstUpper()»;
+	import org.imogene.«projectName.toLowerCase()».domain.entity.«actorField.entityField.entity.name.toFirstUpper()»;
+	«ENDIF-»
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«REM» Filter field handling «ENDREM»
+«DEFINE handleFilterField(String entityName) FOR ActorFilter -»
+	«IF actorField!=null-»
+	/* add filter field for actor «actorField.parentActor.name.toFirstUpper()» */
+	if(actor instanceof «actorField.parentActor.name.toFirstUpper()»){	
+		ImogJunction «actorField.name.toFirstLower()»«entityField.name.toFirstUpper()» = new ImogDisjunction();
+		Set<«entityField.entity.name.toFirstUpper()»> filters = ((«actorField.parentActor.name.toFirstUpper()»)actor).«EXPAND template::CommonFieldUtil::getterName FOR actorField»();
+		if(filters!=null && !filters.isEmpty()){
+			for(Object «entityField.entity.name.toFirstLower()»:filters){
+				BasicCriteria criteria = new BasicCriteria();
+				criteria.setOperation(CriteriaConstants.STRING_OPERATOR_EQUAL);
+				criteria.setField("«EXPAND template::CommonFieldUtil::propertyName FOR entityField».id");
+				criteria.setValue(((«entityField.entity.name.toFirstUpper()»)«entityField.entity.name.toFirstLower()»).getId());
+				«actorField.name.toFirstLower()»«entityField.name.toFirstUpper()».add(criteria);
+			}
+		}else{
+			FilterFieldsHelper.addEmptyFilter(«actorField.name.toFirstLower()»«entityField.name.toFirstUpper()»);
+		}
+		if(«actorField.name.toFirstLower()»«entityField.name.toFirstUpper()».getCriterions()!=null && «actorField.name.toFirstLower()»«entityField.name.toFirstUpper()».getCriterions().size()>0)
+			filterConjunction.add(«actorField.name.toFirstLower()»«entityField.name.toFirstUpper()»);
+	}
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» ----------------------------------------------------------------------------------- «ENDREM»
+«REM» ------------------------------     DELETE FOREIGN KEYS      ----------------------- «ENDREM»
+«REM» ----------------------------------------------------------------------------------- «ENDREM»
+
+
+«REM» ------------------------------------------ 
+      Imports classes for foreign key deletion
+------------------------------------------------«ENDREM»
+«DEFINE importForeignKeyCard(CardEntity cardEntity, String projectName) FOR emf::EObject-»
+«ENDDEFINE»
+«DEFINE importForeignKeyCard(CardEntity cardEntity, String projectName) FOR Project-»
+		«FOREACH entities AS e-»				
+			 «FOREACH e.groups.fields AS field-»		 
+			 	«EXPAND importForeignKeyCardReference(cardEntity,projectName) FOR field-»
+			«ENDFOREACH-» 	   	   
+	    «ENDFOREACH-»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE importForeignKeyCardReference(CardEntity cardEntity, String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE importForeignKeyCardReference(CardEntity cardEntity, String projectName) FOR RelationFieldEntity-»
+«IF cardEntity.name==this.entity.name -»	
+	«IF (this.cardinality == 1 && !(ReverseRelationFieldEntity.isAssignableFrom(this.metaType) && (getOppositeCardinality(this) == 1)))
+	|| (this.cardinality != 1 && (getOppositeCardinality(this) != 1))-»	
+import org.imogene.«projectName.toLowerCase()».domain.entity.«this.parentGroup.parentCard.name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.parentCard.name.toFirstUpper()»Dao;
+     «ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+«REM» ------------------------------------------ «ENDREM»
+
+«REM» ------------------------------------------ 
+      Declare DAO for foreign key deletion
+------------------------------------------------«ENDREM»
+«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
+«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR Project-»
+		«FOREACH entities AS e-»		
+			 «FOREACH e.groups.fields AS field-»
+			 	«EXPAND declareDaoForForeignKey(cardEntity) FOR field-»
+			«ENDFOREACH-» 	   	   
+	    «ENDFOREACH-»	    
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR RelationFieldEntity-»
+«IF cardEntity.name==this.entity.name -»	
+	«IF (this.cardinality == 1 && !(ReverseRelationFieldEntity.isAssignableFrom(this.metaType) && (getOppositeCardinality(this) == 1)))
+	|| (this.cardinality != 1 && (getOppositeCardinality(this) != 1))-»	
+	/* «this.parentGroup.parentCard.name.toFirstUpper()»Dao for Foreign Key Deletion */	
+	private «this.parentGroup.parentCard.name.toFirstUpper()»Dao «this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao;	
+     «ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+«REM» ------------------------------------------ «ENDREM»
+
+«REM» ------------------------------------------ 
+      Set DAO for foreign key deletion
+------------------------------------------------«ENDREM»
+«DEFINE setDaoForForeignKeyDeletion(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
+«DEFINE setDaoForForeignKeyDeletion(CardEntity cardEntity) FOR Project-»
+		«FOREACH entities AS e-»		
+			 «FOREACH e.groups.fields AS field-»
+			 	«EXPAND setDaoForForeignKey(cardEntity) FOR field-»
+			«ENDFOREACH-» 	   	   
+	    «ENDFOREACH-»	    
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE setDaoForForeignKey(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE setDaoForForeignKey(CardEntity cardEntity) FOR RelationFieldEntity-»
+«IF cardEntity.name==this.entity.name -»	
+	«IF (this.cardinality == 1 && !(ReverseRelationFieldEntity.isAssignableFrom(this.metaType) && (getOppositeCardinality(this) == 1)))
+	|| (this.cardinality != 1 && (getOppositeCardinality(this) != 1))-»	
+	/**
+	 * Setter for bean injection
+	 * @param «this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao the «this.parentGroup.parentCard.name.toFirstUpper()» Dao
+	 */
+	public void set«this.parentGroup.parentCard.name.toFirstUpper()»«this.name.toFirstUpper()»Dao(«this.parentGroup.parentCard.name.toFirstUpper()»Dao «this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao) {
+		this.«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao = «this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao;
+	}	
+     «ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+«REM» ------------------------------------------ «ENDREM»
+
+«REM» ------------------------------------------ 
+      Delete foreign key references
+------------------------------------------------«ENDREM»
+«DEFINE deleteForeignKeyReference(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
+«DEFINE deleteForeignKeyReference(CardEntity cardEntity) FOR Project-»
+		«FOREACH entities AS e-»		
+			 «FOREACH e.groups.fields AS field-»
+			 	«EXPAND deleteRelationFieldCard1Reference(cardEntity) FOR field-»
+			«ENDFOREACH-» 	   	   
+	    «ENDFOREACH-»    
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+«DEFINE deleteRelationFieldCard1Reference(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE deleteRelationFieldCard1Reference(CardEntity cardEntity) FOR RelationFieldEntity-»
+«IF cardEntity.name==this.entity.name -»	
+	«IF this.cardinality == 1 && !(ReverseRelationFieldEntity.isAssignableFrom(this.metaType) && (getOppositeCardinality(this) == 1))-»
+	«REM»OK for cardinality==1 with the exception of the reverseRelationField of a 1:1 relation«ENDREM»
+		«EXPAND deleteForeignKeyCard1 FOR this-»
+	«ELSE -»	
+		«IF this.cardinality != 1 && (getOppositeCardinality(this) != 1)-»
+			«EXPAND deleteForeignKeyCardN FOR this-»		
+		«ENDIF -»	
+    «ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+«DEFINE deleteForeignKeyCard1 FOR FieldEntity-»
+
+		// Delete foreign key reference for field «this.name» of entity «this.parentGroup.parentCard.name»
+ 
+        ImogJunction searchCriterionsFor«this.parentGroup.parentCard.name»«this.name» = new ImogConjunction();
+		BasicCriteria criteria«this.parentGroup.parentCard.name»«this.name» = new BasicCriteria();
+		criteria«this.parentGroup.parentCard.name»«this.name».setOperation(CriteriaConstants.RELATIONFIELD_OPERATOR_EQUAL);
+		criteria«this.parentGroup.parentCard.name»«this.name».setValue(entity.getId());
+		criteria«this.parentGroup.parentCard.name»«this.name».setField("«EXPAND template::CommonFieldUtil::propertyName FOR this-».id");
+		searchCriterionsFor«this.parentGroup.parentCard.name»«this.name».add(criteria«this.parentGroup.parentCard.name»«this.name»);    
+
+		List<«this.parentGroup.parentCard.name.toFirstUpper()»> resultFor«this.parentGroup.parentCard.name»«this.name» = «this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.load("«EXPAND template::CommonFieldUtil::getFirstSortField FOR this.parentGroup.parentCard-»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this.parentGroup.parentCard-»,searchCriterionsFor«this.parentGroup.parentCard.name»«this.name»);
+		if (resultFor«this.parentGroup.parentCard.name»«this.name»!=null)
+		{
+			for («this.parentGroup.parentCard.name.toFirstUpper()» foreignEntity: resultFor«this.parentGroup.parentCard.name»«this.name»)
+			{
+	           	foreignEntity.setModified(new Date());
+	           	foreignEntity.«EXPAND template::CommonFieldUtil::setterName FOR this-»(null);
+	           	«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.saveOrUpdate(foreignEntity, false);      
+        	}	
+		}
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+«DEFINE deleteForeignKeyCardN FOR FieldEntity-»
+
+		// Delete foreign key reference for field «this.name» of entity «this.parentGroup.parentCard.name»
+ 
+		List<«this.parentGroup.parentCard.name.toFirstUpper()»> resultFor«this.parentGroup.parentCard.name»«this.name» = «this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao
+		.loadAffectedCardNProperty("«EXPAND template::CommonFieldUtil::propertyName FOR this-»", entity.getId());
+		if (resultFor«this.parentGroup.parentCard.name»«this.name»!=null)
+		{
+			for («this.parentGroup.parentCard.name.toFirstUpper()» foreignEntity: resultFor«this.parentGroup.parentCard.name»«this.name»)
+			{
+	           	foreignEntity.setModified(new Date());
+	           	foreignEntity.removeFrom«EXPAND template::CommonFieldUtil::propertyName FOR this-»(entity);
+	           	«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.saveOrUpdate(foreignEntity, false);      
+        	}	
+		}
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+«DEFINE deleteAttachedBinaries FOR FieldEntity-»«ENDDEFINE»
+«DEFINE deleteAttachedBinaries FOR BinaryField-»
+		// Delete attached binary for field «this.name»
+		Binary «this.name.toFirstLower()» = entity.«EXPAND template::CommonFieldUtil::getterName FOR this-»();
+		if («this.name.toFirstLower()»!=null)
+			binaryDao.delete(«this.name.toFirstLower()»);
+
+«ENDDEFINE»
+
+
+«REM» ************************ «ENDREM»
+«DEFINE declareSearchParameter(Project p, String property) FOR FieldEntity-»
+		, String «property»«EXPAND template::CommonFieldUtil::propertyName FOR this»
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR TextField-»
+		«IF translatable-»
+			«FOREACH p.languages AS l ITERATOR iter-»
+		, String «property»«EXPAND template::CommonFieldUtil::propertyName FOR this»_«l.name.toFirstLower()»			
+			«ENDFOREACH-»
+		«ELSE-»
+		, String «property»«EXPAND template::CommonFieldUtil::propertyName FOR this»
+		«ENDIF-»
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR DatesField-»
+		, String «property»«EXPAND template::CommonFieldUtil::propertyName FOR this»Before
+		, String «property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND declareSearchParameter(p, property + name.toFirstLower() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR BinaryField-»«ENDDEFINE»
+
+
+«REM» ************************ «ENDREM»
+«DEFINE createSearchCriteria(Project p, String property) FOR FieldEntity-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this» != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»);
+			junction.add(criteria);
+		}
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR IntegerField-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this» != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.INT_OPERATOR_EQUAL);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»);
+			junction.add(criteria);
+		}
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR FloatField-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this» != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.FLOAT_OPERATOR_EQUAL);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»);
+			junction.add(criteria);
+		}
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR BooleanField-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this» != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.BOOLEAN_OPERATOR_EQUAL);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»);
+			junction.add(criteria);
+		}
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR TextField-»
+		«IF translatable-»
+			«FOREACH p.languages AS l ITERATOR iter-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this»_«l.name.toFirstLower()» != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»_«l.name.toFirstLower()».isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this».«l.name.toFirstLower()»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»_«l.name.toFirstLower()»);
+			junction.add(criteria);
+		}					
+			«ENDFOREACH-»
+		«ELSE-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this» != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»);
+			junction.add(criteria);
+		}
+		«ENDIF-»
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR DatesField-»
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this»Before != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»Before.isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.DATE_OPERATOR_BEFORE);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»Before);
+			junction.add(criteria);
+		}
+		if («property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After != null && !«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After.isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.DATE_OPERATOR_AFTER);
+			criteria.setField("«property.replaceAll("_", ".")»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			criteria.setValue(«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After);
+			junction.add(criteria);
+		}
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND createSearchCriteria(p, property + name.toFirstLower() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE createSearchCriteria(Project p, String property) FOR BinaryField-»«ENDDEFINE»

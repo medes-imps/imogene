@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<templates>
+	<template name="Imogene web application project" version="1.0">
+		<description>Create an Imogene web project</description>
+		<natures>
+			<nature>nothing</nature>
+		</natures>
+		<content>medanyWeb.zip</content>
+ 		<parseSet>
+              <include filenames=".project,.classpath,.factorypath,org.eclipse.wst.common.component,log4j.xml,ImogNotif.gwt.xml,ImogBase.gwt.xml"/>
+              <exclude extensions="jar"/>
+        </parseSet>		
+	</template>
+</templates>

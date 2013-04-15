@@ -1,0 +1,419 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«EXTENSION template::CommonFieldUtilExt» 
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/dataprovider/" + name.toFirstUpper() + "DataProvider.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.dataprovider;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.lib.common.constants.CriteriaConstants;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.table.ImogBeanDataProvider;
+import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
+import org.imogene.web.shared.proxy.criteria.ImogConjunctionProxy;
+import org.imogene.web.shared.proxy.criteria.ImogCriterionProxy;
+import org.imogene.web.shared.proxy.criteria.ImogDisjunctionProxy;
+import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+import org.imogene.web.client.util.DateUtil;
+
+import com.google.web.bindery.requestfactory.shared.Request;
+import com.google.web.bindery.requestfactory.shared.RequestContext;
+
+«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+import org.imogene.admin.client.i18n.AdminNLS;
+«ENDIF-»
+
+
+/**
+ * Data provider to feed the «name.toFirstUpper()» entry Table and Selection List
+ * @author MEDES-IMPS
+ */
+public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«name.toFirstUpper()»Proxy> {
+
+
+	private final «projectName.toFirstUpper()»RequestFactory requestFactory;
+	private boolean nonAffected = false;
+	private boolean searchInReverse = false;
+	private String property = null;
+
+	/**
+	 * For Relation Fields
+	 * Provides instances of entity «name.toFirstUpper()» with pagination
+	 */	
+	public «name.toFirstUpper()»DataProvider(«projectName.toFirstUpper()»RequestFactory requestFactory) {
+		this.requestFactory = requestFactory;
+	}
+	
+	
+	/**
+	 * For Relation Fields
+	 * Provides instances of entity «name.toFirstUpper()» that have non affected values for a given property (RelationField with card==1) with pagination
+	 * @param pProperty the property for which non affected values are searched
+	 */
+	public «name.toFirstUpper()»DataProvider(«projectName.toFirstUpper()»RequestFactory requestFactory, String pProperty) {
+		this.requestFactory = requestFactory;
+		nonAffected = true;
+		property = pProperty;
+	}
+	
+	
+	/**
+	 * For Relation Fields
+	 * Provides filtered instances of entity «name.toFirstUpper()» that have non affected values for a given property (RelationField with card==1) with pagination
+	 * @param pProperty the property for which non affected values are searched
+	 * @param searchInReverse true for 1:1 relations, if the property for which non affected values are searched shall be looked in reverse relation
+	 */
+	public «name.toFirstUpper()»DataProvider(«projectName.toFirstUpper()»RequestFactory requestFactory, String pProperty, boolean searchInReverse) {
+		this.requestFactory = requestFactory;
+		nonAffected = true;
+		property = pProperty;
+		this.searchInReverse = searchInReverse;
+	}	
+		
+
+	/**
+	 * Called by Relation Boxes
+	 */
+	@Override
+	public Request<List<«name.toFirstUpper()»Proxy>> getList(int start, int numRows) {
+	
+		«name.toFirstUpper()»Request request = («name.toFirstUpper()»Request) getContext();
+		Request<List<«name.toFirstUpper()»Proxy>> result = null;
+		
+		if (isFiltered) {
+			/* permanently filtered - hierarchical lists */
+			if (filterCriteria != null) {
+			
+				if (searchCriterions != null) {
+					/* permanent filter added to search criterion */
+					if (nonAffected) {
+						if (!searchInReverse)
+							result = request.listNonAffected«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», searchCriterions, property);
+						else
+							result = request.listNonAffected«name.toFirstUpper()»Reverse(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», searchCriterions, property);
+					} else
+						result = request.list«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», searchCriterions);
+				}
+				else {
+					/* permanent filter only */
+					if (nonAffected) {
+						if (!searchInReverse)
+							result = request.listNonAffected«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», filterCriteria, property);
+						else
+							result = request.listNonAffected«name.toFirstUpper()»Reverse(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», filterCriteria, property);
+					} else
+						result = request.list«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», filterCriteria);								
+				}
+
+			} else
+				result = request.get«name.toFirstUpper()»EmptyList();	
+		} else {
+			if (searchCriterions != null) {
+
+				if (nonAffected) {
+					if (!searchInReverse)
+						result = request.listNonAffected«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», searchCriterions, property);
+					else
+						result = request.listNonAffected«name.toFirstUpper()»Reverse(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», searchCriterions, property);
+				} else
+					result = request.list«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», searchCriterions);
+			} else {
+
+				if (nonAffected) {
+					if (!searchInReverse)
+						result = request.listNonAffected«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», property);
+					else
+						result = request.listNonAffected«name.toFirstUpper()»Reverse(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this», property);
+				} else
+					result = request.list«name.toFirstUpper()»(start, numRows, "«EXPAND template::CommonFieldUtil::getFirstSortField FOR this»", «EXPAND template::CommonFieldUtil::getFirstSortFieldOrderDirection FOR this»);
+			}
+		}		
+
+		«REM»«IF isSimpleRelationFieldPresent(groups.fields)-»«ENDREM»
+		if (isFiltered){
+			«EXPAND fetchRelatedEntities FOREACH columnFields.union(mainFields)-»
+		}
+		«REM»«IF isSimpleRelationFieldPresent(mainFields)-»«ENDREM»
+		else {
+			«EXPAND fetchRelatedEntities FOREACH mainFields-»
+		}
+		«REM»«ENDIF-»
+		«ENDIF-»«ENDREM»
+		return result;	
+	}
+
+	/**
+	 * Called by Dynatable
+	 */
+	@Override
+	public Request<List<«name.toFirstUpper()»Proxy>> getList(String property, int start, int numRows, boolean asc) {
+
+		«name.toFirstUpper()»Request request = («name.toFirstUpper()»Request) getContext();
+		Request<List<«name.toFirstUpper()»Proxy>> result = null;
+		if (getSearchCriterions() == null)
+			result = request.list«name.toFirstUpper()»(start, numRows, property, asc);
+		else
+			result = request.list«name.toFirstUpper()»(start, numRows, property, asc,	getSearchCriterions());
+		«EXPAND fetchRelatedEntities FOREACH columnFields.union(mainFields)»
+		return result;
+	}
+
+	@Override
+	public Request<Long> getTotalRowCount() {
+		«name.toFirstUpper()»Request request = («name.toFirstUpper()»Request) getContext();
+		
+
+		if (isFiltered) {
+			/* permanently filtered - hierarchical lists */
+			if (filterCriteria != null) {
+				
+				if (searchCriterions != null) {		
+					/* permanent filter added to search criterion */			
+					if (nonAffected) {
+						if (!searchInReverse)
+							return request.countNonAffected«name.toFirstUpper()»(property, searchCriterions);
+						else
+							return request.countNonAffected«name.toFirstUpper()»Reverse(property, searchCriterions);
+					} else
+						return request.count«name.toFirstUpper()»(searchCriterions);	
+				}
+				else {
+					/* permanent filter only */
+					if (nonAffected) {
+						if (!searchInReverse)
+							return request.countNonAffected«name.toFirstUpper()»(property, filterCriteria);
+						else
+							return request.countNonAffected«name.toFirstUpper()»Reverse(property, filterCriteria);
+					} else
+						return request.count«name.toFirstUpper()»(filterCriteria);									
+				}
+	
+			}
+			else
+				return request.countNonAffected«name.toFirstUpper()»("id");
+		}
+		else {
+			
+			if (searchCriterions != null) {
+				if (nonAffected) {
+					if (!searchInReverse)
+						return request.countNonAffected«name.toFirstUpper()»(property, searchCriterions);
+					else
+						return request.countNonAffected«name.toFirstUpper()»Reverse(property, searchCriterions);
+				} else
+					return request.count«name.toFirstUpper()»(searchCriterions);
+			} else {
+
+				if (nonAffected) {
+					if (!searchInReverse)
+						return request.countNonAffected«name.toFirstUpper()»(property);
+					else
+						return request.countNonAffected«name.toFirstUpper()»Reverse(property);
+				} else
+					return request.count«name.toFirstUpper()»();
+			}			
+		}		
+	}
+
+	@Override
+	public RequestContext getEntityContext() {
+		return requestFactory.«name.toFirstLower()»Request();
+	}
+
+	@Override
+	public String fullTextSearch(String text) {
+
+		boolean fullTextSearch = false;
+		StringBuffer buffer = new StringBuffer(BaseNLS.constants().label_filtered() + " ");
+		
+		if (text == null || (text != null && text.equals(""))) {
+			setSearchCriterions(null);
+		} else {	
+			«REM»«IF isTranslatableFieldPresent(columnFields)-»«ENDREM»
+			String locale = NLS.constants().locale();	
+			«REM»«ENDIF -»«ENDREM»
+
+			«name.toFirstUpper()»Request request = («name.toFirstUpper()»Request) getContext();
+			newRequest = false;
+			
+			ImogJunctionProxy disJunction = request.create(ImogDisjunctionProxy.class);
+			List<ImogCriterionProxy> criterionList = new ArrayList<ImogCriterionProxy>();
+			
+			«FOREACH columnFields AS c-»
+				«EXPAND createListCriteria((Project)eContainer, "", "", projectName) FOR c»
+			«ENDFOREACH -»
+			
+			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+			// Search field Login
+			BasicCriteriaProxy loginCrit = request.create(BasicCriteriaProxy.class);
+			loginCrit.setField("login");
+			loginCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			loginCrit.setValue(text);
+			buffer.append("(" + AdminNLS.constants().imogActor_field_login() + ": "	+ text + ") " + SYMBOL_OR + " ");
+			criterionList.add(loginCrit);	
+			«ENDIF-»				
+
+			disJunction.setCriterions(criterionList);
+			fullTextSearch = true;
+			
+			//add FilterCriteria if exists
+			if (isFiltered && filterCriteria != null) 
+				setSearchCriterions(mergeFilterCriteriaAndFullTextSearchCriterion(request, disJunction));
+			else
+				setSearchCriterions(disJunction);
+			
+		}
+		if (fullTextSearch) {
+			String message = buffer.toString();
+			int lastSymbolIndex = message.lastIndexOf(SYMBOL_OR);
+			return message.substring(0, lastSymbolIndex);
+		}
+		else
+			return null;
+	}
+	 
+
+}
+«ENDLET»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» Fetch the related entities «ENDREM»
+«DEFINE fetchRelatedEntities FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR TextField-»
+	«IF translatable-»
+				result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR BinaryField-»
+				result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR GeoField-»
+				result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR RelationFieldEntity-»
+	«IF cardinality == 1 -»
+		result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«IF isSimpleRelationFieldPresent(entity.mainFields)-»
+			«FOREACH entity.mainFields AS mf-»		
+				«EXPAND fetchRelatedEntitiesWithMainFields(this) FOR mf-»
+			«ENDFOREACH-»
+		«ENDIF-»
+		«FOREACH entity.mainFields AS nf-»
+			«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
+			result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
+			«ENDIF-»
+		«ENDFOREACH-»	
+	«ENDIF -»
+«ENDDEFINE»
+
+«REM» If the related entity has relation fields in its mainfields, fetch the corresponding entity «ENDREM»
+«DEFINE fetchRelatedEntitiesWithMainFields(RelationFieldEntity parent) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntitiesWithMainFields(RelationFieldEntity parent) FOR RelationFieldEntity-»
+«IF cardinality==1-»
+result.with("«EXPAND template::CommonFieldUtil::propertyName FOR parent».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Create the search full text function «ENDREM»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR TextField-»
+	// Search field «name»
+	BasicCriteriaProxy «prefix + name.toFirstLower()»Crit = request.create(BasicCriteriaProxy.class);
+		«IF translatable-»
+			«FOREACH p.languages AS l-»
+	if (locale.equals("«l.isoCode»"))
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».«l.name.toFirstLower()»");		
+			«ENDFOREACH-»
+		«ELSE-»
+	«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«ENDIF-»
+	«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+	«prefix + name.toFirstLower()»Crit.setValue(text);
+	buffer.append("(" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + ": " + text + ") "+ SYMBOL_OR +  " ");
+	criterionList.add(«prefix + name.toFirstLower()»Crit);
+«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR IntegerField-»
+	// Search field «name»
+	try{
+		Integer.valueOf(text);
+		BasicCriteriaProxy «prefix + name.toFirstLower()»Crit = request.create(BasicCriteriaProxy.class);
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.INT_OPERATOR_EQUAL);
+		«prefix + name.toFirstLower()»Crit.setValue(text);
+		buffer.append("(" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + ": " + text + ") "+ SYMBOL_OR +  " ");
+		criterionList.add(«prefix + name.toFirstLower()»Crit);
+	}catch(Exception ex){/*criteria not added*/}
+«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR FloatField-»
+	// Search field «name»
+	try{
+		Float.valueOf(text);
+		BasicCriteriaProxy «prefix + name.toFirstLower()»Crit = request.create(BasicCriteriaProxy.class);
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.FLOAT_OPERATOR_EQUAL);
+		«prefix + name.toFirstLower()»Crit.setValue(text);
+		buffer.append("(" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + ": " + text + ") "+ SYMBOL_OR +  " ");
+		criterionList.add(«prefix + name.toFirstLower()»Crit);		
+	}catch(Exception ex){/*criteria not added*/}
+«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR DateField-»
+	// Search field «name»
+	try{
+		DateUtil.parseDate(text);
+		BasicCriteriaProxy «prefix + name.toFirstLower()»Crit = request.create(BasicCriteriaProxy.class);
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.DATE_OPERATOR_EQUAL);
+		«prefix + name.toFirstLower()»Crit.setValue(text);
+		buffer.append("(" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + ": " + text + ") "+ SYMBOL_OR +  " ");
+		criterionList.add(«prefix + name.toFirstLower()»Crit);		
+	}catch(Exception ex){/*criteria not added*/}
+«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR BooleanField-»
+	// Search field «name»
+	if (text.toLowerCase().equals("true") || text.toLowerCase().equals("false")) {
+		BasicCriteriaProxy «prefix + name.toFirstLower()»Crit = request.create(BasicCriteriaProxy.class);
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.BOOLEAN_OPERATOR_EQUAL);
+		«prefix + name.toFirstLower()»Crit.setValue(text);
+		buffer.append("(" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + ": " + text + ") "+ SYMBOL_OR +  " ");
+		criterionList.add(«prefix + name.toFirstLower()»Crit);		
+	}
+«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR EnumField-»
+	// Search field «name»
+	«FOREACH enumValues AS enumValue ITERATOR iter-»	
+	if (text.toLowerCase().equals(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option().toLowerCase())) {
+		BasicCriteriaProxy «prefix + name.toFirstLower()»Crit = request.create(BasicCriteriaProxy.class);
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«IF multipleSelection==true-»
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+		«ELSE -»
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.STRING_OPERATOR_EQUAL);
+		«ENDIF -»			
+		«prefix + name.toFirstLower()»Crit.setValue(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»);
+		buffer.append("(" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + ": " + text + ") "+ SYMBOL_OR +  " ");
+		criterionList.add(«prefix + name.toFirstLower()»Crit);				
+	}
+	«ENDFOREACH -»	
+«ENDDEFINE»
+«DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND createListCriteria(p, parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_", property + name.toFirstLower() + ".", projectName) FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+

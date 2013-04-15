@@ -1,0 +1,30 @@
+«IMPORT core»
+«DEFINE generate(String projectName) FOR Project»
+«FILE "persistence.xml"-»
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+        http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+
+	<!-- A JPA Persistence Unit -->
+	<persistence-unit name="«projectName.toLowerCase()»"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<!-- JPA entities must be registered here -->
+		<class>org.imogene.lib.common.binary.file.BinaryFile</class>
+		<class>org.imogene.lib.common.dynamicfields.DynamicFieldTemplate</class>
+		<class>org.imogene.lib.common.dynamicfields.DynamicFieldInstance</class>
+		<class>org.imogene.lib.common.filter.ClientFilter</class>
+		<class>org.imogene.lib.common.notification.Notification</class>
+		<class>org.imogene.lib.common.role.ImogRole</class>
+		<class>org.imogene.lib.common.sync.entity.SynchronizableEntity</class>
+		<class>org.imogene.lib.common.user.DefaultUser</class>
+		«FOREACH entities AS e-»
+		<class>org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»</class>
+		«ENDFOREACH-»
+	</persistence-unit>
+</persistence>
+«ENDFILE-»
+«ENDDEFINE»

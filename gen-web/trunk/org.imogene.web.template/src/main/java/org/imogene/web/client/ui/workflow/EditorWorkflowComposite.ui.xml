@@ -1,0 +1,66 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+
+	<ui:with field='imogResources' type='org.imogene.web.client.css.ImogResources' />
+	
+	
+	<ui:style>
+		.imogene-Form { 
+			width: 90%;
+			vertical-align: top;
+			height: 100%;
+		}
+
+		@if user.agent ie6 ie8 {
+			.imogene-FormMetadata {
+				height: 22px;
+				margin-left: 10px;
+				padding-bottom: 5px;
+			}
+		}
+		@else {
+			.imogene-FormMetadata {
+				height: 22px;
+				padding-bottom: 5px;
+			}
+		}
+	
+		
+		.imogene-Form-content {
+			width: 100%;
+			vertical-align: top;
+		}
+		
+		.imogene-greytext {
+			color: #777777;
+			font-size: 11px;
+		}
+		
+		.imogene-greytext b {
+			color: #777777;
+			font-size: 11px;
+		}
+		
+		.imogene-Form-button {
+			/*width: 45px;*/
+		}	
+		
+		@external .imogene-Form-button;
+	</ui:style>
+
+	<g:VerticalPanel ui:field="layout" styleName="{style.imogene-Form}">
+
+		<g:VerticalPanel ui:field="metaInfoPanel" stylePrimaryName="{style.imogene-FormMetadata}">
+			<g:HTML ui:field="idLabel" stylePrimaryName="{style.imogene-greytext}" />
+			<g:HTML ui:field="creationLabel" stylePrimaryName="{style.imogene-greytext}" />
+			<g:HTML ui:field="modificationLabel" stylePrimaryName="{style.imogene-greytext}" />
+		</g:VerticalPanel>
+
+		<g:VerticalPanel ui:field="formContent" stylePrimaryName="{style.imogene-Form-content}" />
+
+	</g:VerticalPanel>
+
+
+</ui:UiBinder> 

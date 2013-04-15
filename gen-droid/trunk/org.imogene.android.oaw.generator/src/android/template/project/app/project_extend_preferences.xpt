@@ -1,0 +1,93 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate FOR Project »
+«IF hasFilter(this)»
+«FILE "/" + name.toLowerCase() + "/app/ExtendedPreferences.java"-»
+package org.imogene.android.«name.toLowerCase()-».app;
+
+import android.os.Bundle;
+
+import org.imogene.android.app.Preferences;
+import org.imogene.android.«name.toLowerCase()».R;
+«FOREACH entities AS e-»
+«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+import org.imogene.android.«name.toLowerCase()».roles.«e.name.toFirstUpper()»Roles;
+«ENDIF-»
+«ENDFOREACH-»
+
+public class ExtendedPreferences extends Preferences {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		switch (mLayoutId) {
+		case R.xml.preferences:
+			findPreference("screen_filters").setEnabled(isPreferenceScreenFilterEnabled());
+			break;
+		case R.xml.preferences_screen_filters:
+			«FOREACH entities AS e-»
+			«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+			findPreference("«e.name.toLowerCase()»_filters").setEnabled(isPreferenceScreen«e.name.toFirstUpper()»FilterEnabled());
+			«ENDIF-»		
+			«ENDFOREACH-»
+			break;
+		«FOREACH entities AS e-»
+		«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+		case R.xml.preferences_screen_«e.name.toLowerCase()»_filters:
+			preparePreferenceScreen«e.name.toFirstUpper()»Filter();
+			break;
+		«ENDIF-»		
+		«ENDFOREACH-»
+		}
+	}
+	
+	private boolean isPreferenceScreenFilterEnabled() {
+		«FOREACH entities AS e-»
+		«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+		if (isPreferenceScreen«e.name.toFirstUpper()»FilterEnabled()) {
+			return true;
+		}
+		«ENDIF»
+		«ENDFOREACH»
+		return false;
+	}
+	
+	«FOREACH entities AS e-»
+	«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+	private boolean isPreferenceScreen«e.name.toFirstUpper()»FilterEnabled() {
+		if («e.name.toFirstUpper()»Roles.canRead(this)) {
+			«IF e.clientPeriodFilterable-»
+			return true;
+			«ELSE-»
+			«FOREACH getFilteredGroups(e.clientFilterFields) AS g-»
+			if («e.name.toFirstUpper()»Roles.canRead«g.name.toFirstUpper()»(this)) {
+				return true;
+			}
+			«ENDFOREACH-»
+			«ENDIF-»
+		}
+		return false;
+	}
+	«ENDIF-»
+	«ENDFOREACH-»
+	
+	«FOREACH entities AS e-»
+	«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+	private void preparePreferenceScreen«e.name.toFirstUpper()»Filter() {
+		«FOREACH getFilteredGroups(e.clientFilterFields) AS g-»
+		boolean canRead«g.name.toFirstUpper()» = «e.name.toFirstUpper()»Roles.canRead«g.name.toFirstUpper()»(this);
+		«FOREACH e.clientFilterFields AS f-»
+		«IF g.fields.contains(f)-»
+		findPreference("«f.name.toLowerCase()»_filter").setEnabled(canRead«g.name.toFirstUpper()»);
+		«ENDIF-»
+		«ENDFOREACH-»
+		«ENDFOREACH-»
+	}
+	«ENDIF-»
+	«ENDFOREACH-»
+	
+}
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item name="ig_title" type="id"/>
+    <item name="ig_value" type="id"/>
+    <item name="ig_arrow" type="id"/>
+    <item name="ig_icon" type="id"/>
+    <item name="ig_help" type="id"/>
+    <item name="ig_required" type="id"/>
+    <item name="ig_unit" type="id"/>
+    
+    <item name="ig_dynamic_template" type="id"/>
+
+</resources>

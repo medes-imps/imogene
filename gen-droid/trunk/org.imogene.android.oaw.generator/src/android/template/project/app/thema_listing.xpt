@@ -1,0 +1,244 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(boolean multilogin) FOR Project »
+«FILE "/" + name.toLowerCase() + "/app/" + name.toFirstUpper() + "Listing.java"-»
+package org.imogene.android.«name.toLowerCase()-».app;
+
+import greendroid.app.GDExpandableListActivity;
+import greendroid.widget.ActionBar;
+import greendroid.widget.ActionBarItem;
+import greendroid.widget.NormalActionBarItem;
+
+import java.util.ArrayList;
+
+import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.widget.ThemaExpandableListAdapter;
+import org.imogene.android.widget.ThemaExpandableListAdapter.EntityChild;
+«FOREACH entities AS entity-»
+«IF entity.topLevel || entity.directAccess.size > 0-»
+import org.imogene.android.«name.toLowerCase()».entities.«entity.name.toFirstUpper()»;
+«ENDIF-»
+«IF entity.directAccess.size > 0-»
+import org.imogene.android.«name.toLowerCase()».roles.«entity.name.toFirstUpper()»Roles;
+«ENDIF-»
+«ENDFOREACH-»
+import org.imogene.android.«name.toLowerCase()».R;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.database.ContentObserver;
+import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.View;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+
+public class «name.toFirstUpper()»Listing extends GDExpandableListActivity implements OnSharedPreferenceChangeListener {
+
+	private	static final int ACTIONBAR_SYNC_ID = 1;
+	
+	private static final int DIALOG_EXIT_ID = 1;
+	
+	private final Handler mHandler = new Handler();
+	
+	private final ContentObserver mObserver = new ContentObserver(mHandler) {
+	
+		@Override
+		public boolean deliverSelfNotifications() {
+			return true;
+		}
+	
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			((BaseExpandableListAdapter) getExpandableListAdapter()).notifyDataSetChanged();
+		}
+	};
+	
+	private SharedPreferences mPreferences;
+	
+	public «name.toFirstUpper()»Listing() {
+		super(ActionBar.Type.Empty);
+	}
+	
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		fillData();
+
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		mPreferences.registerOnSharedPreferenceChangeListener(this);
+		
+		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		getContentResolver().unregisterContentObserver(mObserver);
+		mPreferences.unregisterOnSharedPreferenceChangeListener(this);
+	}
+	
+	@Override
+	public final void startActivity(Intent intent) {
+		try {
+			super.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	public final void startActivityForResult(Intent intent, int requestCode) {
+		try {
+			super.startActivityForResult(intent, requestCode);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	public final void restart() {
+		startActivity(getIntent());
+		finish();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean result = super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.ig_menu_thema_listing, menu);
+	    «IF hasQRCode(this)-»
+		menu.findItem(R.id.ig_menu_search).setVisible(true);
+		«ENDIF-»
+		«IF multilogin-»
+		menu.findItem(R.id.ig_menu_change_user).setVisible(true).setIntent(new Intent(this, MultiUserListing.class));
+		«ENDIF-»
+		menu.findItem(R.id.ig_menu_preferences).setIntent(new Intent(this, «IF hasFilter(this)»ExtendedPreferences«ELSE»Preferences«ENDIF».class));
+		return result;
+	}
+
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+		switch (item.getItemId()) {
+		case ACTIONBAR_SYNC_ID:
+			SynchronizationService.startServiceManually(this);
+			return true;
+		default:
+			return super.onHandleActionBarItemClick(item, position);
+		}
+	}
+	
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+		EntityChild entity = (EntityChild) getExpandableListAdapter().getChild(groupPosition, childPosition);
+		startActivity(new Intent(Intent.ACTION_VIEW, entity.getContentUri()));
+		return true;
+	}
+	
+	@Override
+	public void onBackPressed() {
+		showDialog(DIALOG_EXIT_ID);
+	}
+
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (getString(R.string.ig_sync_server_url_key).equals(key))
+			finish();
+		else if (getString(R.string.ig_current_roles_key).equals(key))
+			restart();
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_EXIT_ID:
+			return new AlertDialog.Builder(this)
+			.setTitle(android.R.string.dialog_alert_title)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setMessage(R.string.ig_dialog_quit)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					finish();
+				}
+			})
+			.setNegativeButton(android.R.string.no, null)
+			.create();
+		default:
+			return super.onCreateDialog(id);
+		}
+	}
+	
+	protected final void fillData() {
+		ArrayList<Integer> groupData = new ArrayList<Integer>();
+		ArrayList<ArrayList<EntityChild>> childData = new ArrayList<ArrayList<EntityChild>>();
+		
+		«IF hasMiscellaneousThema(entities, themas)-»
+		ArrayList<EntityChild> themaMiscellaneous = new ArrayList<EntityChild>();
+		«ENDIF-»
+		«FOREACH themas AS thema-»
+		ArrayList<EntityChild> thema«thema.name.toFirstUpper()-» = new ArrayList<EntityChild>();
+		«ENDFOREACH-»
+
+		«FOREACH entities AS entity-»
+		«IF entity.topLevel || entity.directAccess.size > 0-»
+			«IF entity.directAccess.size > 0-»
+			if («entity.name.toFirstUpper()»Roles.directAccess(this)) {
+			«ENDIF-»
+			getContentResolver().registerContentObserver(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, true, mObserver);
+			«IF isInMiscellaneousThema(themas, entity)-»
+			themaMiscellaneous.add(new EntityChild(
+				«entity.name.toFirstUpper()-».Columns.CONTENT_URI,
+				«entity.name.toFirstUpper()-».Columns.TABLE_NAME,
+				R.string.«entity.name.toLowerCase()-»_des_pl,
+				«IF entity.icon.length > 0-»R.drawable.«entity.icon.split("\\.").get(0).toLowerCase()»«ELSE-»0«ENDIF-»,
+				«entity.name.toFirstUpper()-».Columns.COLOR));
+			«ELSE-»
+			«FOREACH themas AS thema-»
+				«IF thema.entities.contains(entity)-»
+				thema«thema.name.toFirstUpper()-».add(new EntityChild(
+					«entity.name.toFirstUpper()-».Columns.CONTENT_URI,
+					«entity.name.toFirstUpper()-».Columns.TABLE_NAME,
+					R.string.«entity.name.toLowerCase()-»_des_pl,
+					«IF entity.icon.length > 0-»R.drawable.«entity.icon.split("\\.").get(0).toLowerCase()»«ELSE-»0«ENDIF-»,
+					«entity.name.toFirstUpper()-».Columns.COLOR));
+				«ENDIF-»
+			«ENDFOREACH-»
+			«ENDIF-»
+			«IF entity.directAccess.size > 0-»
+			}
+			«ENDIF-»
+		«ENDIF-»
+		«ENDFOREACH-»
+		
+		«IF hasMiscellaneousThema(entities, themas)-»
+		if (!themaMiscellaneous.isEmpty()) {
+			groupData.add(R.string.thema_miscellaneous);
+			childData.add(themaMiscellaneous);
+		}
+		«ENDIF-»
+		«FOREACH themas AS thema-»
+		if (!thema«thema.name.toFirstUpper()-».isEmpty()) {
+			groupData.add(R.string.thema_«thema.name.toLowerCase()-»);
+			childData.add(thema«thema.name.toFirstUpper()-»);
+		}
+		«ENDFOREACH-»
+
+		ThemaExpandableListAdapter adapter = new ThemaExpandableListAdapter(this, groupData, childData);
+		setListAdapter(adapter);
+
+    }
+    
+}
+«ENDFILE-»
+«ENDDEFINE»

@@ -1,0 +1,180 @@
+.dataGridWidget {
+	
+}
+
+.dataGridFirstColumn { /*	width: 28px;*/
+	
+}
+
+.dataGridLastColumn {
+	
+}
+
+.dataGridFooter { /*border-top: 2px solid #6f7277;
+	padding: 3px 15px;
+	text-align: left;
+	color: #4b4a4a;
+	text-shadow: #ddf 1px 1px 0;
+	overflow: hidden;
+	white-space: nowrap;*/
+	
+}
+
+.dataGridHeader {
+	border-left: 1px solid #BEBEBE;
+	border-right: 1px solid #BEBEBE;
+	border-top: 1px solid #BEBEBE;
+	border-bottom: 1px solid #BEBEBE;
+	padding: 4px 4px 4px 4px;
+	text-align: center;
+	color: #4b4a4a;
+	font-size: 14px;
+	font-weight: bold;
+	/*text-shadow: #ddf 1px 1px 0;*/
+	overflow: hidden;
+	white-space: nowrap;
+	-webkit-border-top-left-radius: 4px;
+	-moz-border-top-left-radius: 4px;
+	border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+	-moz-border-top-right-radius: 4px;
+	border-top-right-radius: 4px;
+	/*font-weight: bold;*/ /*padding: 3px 15px;*/
+	/*background-color: #E6E6E6;*/
+	background-repeat: no-repeat;
+	background-image: literal("-webkit-gradient(") linear, 0 0, 0 100%,
+		literal("from(") white literal(")"), literal("color-stop(") 25%, white
+		literal(")"), literal("to(") #E6E6E6 literal(")") literal(")");
+	background-image: literal("-webkit-linear-gradient(") white, white 25%,
+		#E6E6E6 literal(")");
+	background-image: literal("-moz-linear-gradient(") top, white, white 25%,
+		#E6E6E6 literal(")");
+	background-image: literal("-ms-linear-gradient(") white, white 25%,
+		#E6E6E6 literal(")");
+	background-image: literal("-o-linear-gradient(") white, white 25%,
+		#E6E6E6 literal(")");
+	background-image: literal("linear-gradient(") white, white 25%, #E6E6E6
+		literal(")");
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',	endColorstr='#e6e6e6', GradientType=0 );*/
+	/*text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	color: #333;
+	line-height: normal;*/ /*border-bottom: 1px solid #BEBEBE;*/
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
+		rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
+		rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
+		rgba(0, 0, 0, 0.05);
+	-webkit-transition: .1s linear all;
+	-moz-transition: .1s linear all;
+	-ms-transition: .1s linear all;
+	-o-transition: .1s linear all;
+	transition: .1s linear all;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	background-color: #E6E6E6;
+}
+
+.dataGridCell { /*padding: 2px 15px;
+  overflow: hidden;
+  cursor: pointer;*/
+	font-size: 14px;
+	/*color: #335c7e;*/
+	color: #4b4a4a;
+	padding: 2px 4px 2px 4px;
+	cursor: pointer;
+	text-align: center;
+	vertical-align: middle;
+	/*border: 1px solid #FFFFFF;*/
+	border: 1px solid #BEBEBE;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+.dataGridFirstColumnFooter {
+	
+}
+
+.dataGridFirstColumnHeader {
+	
+}
+
+.dataGridLastColumnFooter {
+	
+}
+
+.dataGridLastColumnHeader {
+	
+}
+
+.dataGridSortableHeader {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.dataGridSortableHeader:hover { 
+	/*text-shadow: 0 2px 0 rgba(150, 150, 150, 0.5);*/
+	background-position: 0 -15px;
+}
+
+.dataGridSortedHeaderAscending { 
+	/*text-shadow: 0 2px 0 rgba(150, 150, 150, 0.5);*/
+	
+}
+
+.dataGridSortedHeaderDescending { 
+	/*text-shadow: 0 2px 0 rgba(150, 150, 150, 0.5);*/
+}
+
+.dataGridEvenRow {
+	background: #dedede;
+}
+
+.dataGridEvenRowCell {
+	
+}
+
+.dataGridOddRow {
+	background: #efefef;
+}
+
+.dataGridOddRowCell {
+	
+}
+
+.dataGridHoveredRow {
+	font-weight: bold;
+	/*text-shadow: 0 1px 0 rgba(150, 150, 150, 0.5);*/
+	/*background: #efefef;*/
+}
+
+.dataGridHoveredRowCell {
+	
+}
+
+.dataGridKeyboardSelectedRow { /*background: #ffc;*/
+	
+}
+
+.dataGridKeyboardSelectedRowCell {
+	
+}
+
+.dataGridSelectedRow { /*background: #628cd5;
+	color: white;
+	height: auto;
+	overflow: auto;*/
+	background: #ffc;
+}
+
+.dataGridSelectedRowCell {
+	background: #ffc;
+}
+
+/**
+ * The keyboard selected cell is visible over selection.
+ */
+.dataGridKeyboardSelectedCell {
+	
+}
+@external .dataGridHeader, .dataGridSortableHeader;

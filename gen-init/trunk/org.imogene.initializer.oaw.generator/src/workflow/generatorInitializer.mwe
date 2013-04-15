@@ -1,0 +1,39 @@
+<workflow>
+
+	<!-- property definition -->
+	<property name="modelName" value="onsil" />
+	<property name="projectName" value="${modelName}" />
+	<property name="imogeneMetaModel" value="metamodel/ImogeneModel.ecore"/>
+	<property name="model" value="${modelFullPath}" />
+	<property name="home-gen" value="../SpringOnsil" />
+	<!-- packageName is the one used for the synchro server, used to set up the synchronizable entities -->
+	<property name="packageName" value="org.imogene.${modelName}"/>
+	<property name="JDBCDRIVER" value="driver"/>
+	<property name="JDBCPATH" value="path"/>
+	<property name="JDBCLOGIN" value="login"/>
+	<property name="JDBCPASSWORD" value="password"/>
+
+	<!-- model reader -->
+	<component file="workflow/modelReader.mwe" inheritAll="true" />
+	
+	<!-- ======================================================================================================================== -->
+	<!-- ===================================================== JAVA files part =============================== -->
+	<!-- ======================================================================================================================== -->
+
+	<!-- SqlInsert class -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::initializer::generate("${gen-project-name}", "${ADMINPASSWORD}", "${packageName}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/org/imogene/initializer" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
+	
+	<!-- AddEnumerationTables SQL script -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::enumerationValuesTable_sql::generate("${modelName}") FOR project' />
+		<genPath value="${home-gen}/sql" />
+	</component>
+</workflow>

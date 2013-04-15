@@ -1,0 +1,431 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity»
+«FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "Edit.java"»
+package org.imogene.android.«projectName.toLowerCase()-».app;
+
+import greendroid.widget.ActionBar;
+import greendroid.widget.ActionBarItem;
+import greendroid.widget.NormalActionBarItem;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import org.imogene.android.Constants.Extras;
+import org.imogene.android.domain.DynamicFieldInstance;
+import org.imogene.android.domain.DynamicFieldManager;
+import org.imogene.android.app.ViewPagerIndicatorActivity;
+import org.imogene.android.util.IamLost;
+import org.imogene.android.util.content.ContentUrisUtils;
+import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.database.DatabaseUtils;
+import org.imogene.android.util.dialog.DialogFactory;
+import org.imogene.android.widget.ErrorAdapter;
+import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
+import org.imogene.android.widget.ImogPagerAdapter;
+import org.imogene.android.widget.field.FieldManager;
+import org.imogene.android.widget.field.FieldManager.FieldContainer;
+import org.imogene.android.widget.field.edit.BaseFieldEdit;
+import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.edit.BarcodeFieldEdit;
+import org.imogene.android.widget.field.edit.BinaryFieldEdit;
+import org.imogene.android.widget.field.edit.BooleanFieldEdit;
+import org.imogene.android.widget.field.edit.BoundedIntegerFieldEdit;
+import org.imogene.android.widget.field.edit.DateFieldEdit;
+import org.imogene.android.widget.field.edit.DateTimeFieldEdit;
+import org.imogene.android.widget.field.edit.EnumMultipleFieldEdit;
+import org.imogene.android.widget.field.edit.EnumSingleFieldEdit;
+import org.imogene.android.widget.field.edit.FloatFieldEdit;
+import org.imogene.android.widget.field.edit.GeoFieldEdit;
+import org.imogene.android.widget.field.edit.IntegerFieldEdit;
+import org.imogene.android.widget.field.edit.LocalizedTextFieldEdit;
+import org.imogene.android.widget.field.edit.RelationManyFieldEdit;
+import org.imogene.android.widget.field.edit.RelationOneFieldEdit;
+import org.imogene.android.widget.field.edit.TextFieldEdit;
+import org.imogene.android.widget.field.edit.TimeFieldEdit;
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
+«EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
+import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+
+public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity implements 
+		OnClickListener, FieldContainer, OnValueChangeListener {
+
+	private static final int ACTIONBAR_SAVE_ID = 1;
+	
+	private static final int DIALOG_UNSAVED_ID = 1;
+	private static final int DIALOG_ERROR_ID = 2;
+	private static final int DIALOG_IAMLOST_ID = 3;
+	
+	private final ArrayList<ErrorEntry> mErrors = new ArrayList<ErrorEntry>();
+	private ErrorAdapter mAdapter;
+	
+	private FieldManager mManager;
+	«IF hasDynamicFields-»
+	private DynamicFieldManager mDynamicFieldManager;
+	
+	private ViewGroup mDynamicFieldList;
+	«ENDIF-»
+	
+	«FOREACH groups.fields AS f-»
+	private «EXPAND android::template::EditorsUtil::nameEditField FOR f» «f.name.toFirstLower()»;
+	«ENDFOREACH»
+	
+	private «name.toFirstUpper()» mEntity;
+	
+	public «name.toFirstUpper()»Edit() {
+		super(ActionBar.Type.Empty);
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		if (!Intent.ACTION_INSERT.equals(getIntent().getAction()))
+			DatabaseUtils.markAs(getContentResolver(), getIntent().getData(), false);
+		IamLost.getInstance().add(getTitle().toString());
+		
+		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+		
+		«IF hasDynamicFields-»
+		SavedState state = (SavedState) getLastNonConfigurationInstance();
+		mEntity = state != null ? state.first : null;
+		«ELSE-»
+		mEntity = («name.toFirstUpper()») getLastNonConfigurationInstance();
+		«ENDIF-»
+		if (mEntity == null) {
+			if (Intent.ACTION_INSERT.equals(getIntent().getAction())) {
+				if (getIntent().hasExtra(Extras.EXTRA_ENTITY)) {
+					mEntity = new «name.toFirstUpper()»(getIntent().getBundleExtra(Extras.EXTRA_ENTITY));
+				} else {
+					mEntity = new «name.toFirstUpper()»();
+				}
+			} else {
+				mEntity = new «name.toFirstUpper()»(getIntent().getData());
+			}
+		}
+		
+		mManager = new FieldManager(this, 100);
+		«IF hasDynamicFields-»
+		mDynamicFieldManager = new DynamicFieldManager(this);
+		mDynamicFieldManager.loadTemplates(«name.toFirstUpper()».Columns.BEAN_TYPE);
+		if (state != null) {
+			mDynamicFieldManager.loadInstances(state.second);
+		} else {
+			mDynamicFieldManager.loadInstancesUris(mEntity.getDynamicFieldValues());
+		}
+		«ENDIF-»
+		
+		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()»_edit, getViewPager(), true);
+		
+		«FOREACH groups.fields AS f-»
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::nameEditField FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+		«ENDFOREACH-»
+	
+		«FOREACH groups.fields AS f-»
+			«EXPAND android::template::EditorsUtil::specificInit FOR f-»
+			«EXPAND android::template::EditorsUtil::dependency FOREACH f.fieldDependentVisibility-»
+			«f.name.toFirstLower()».setOnValueChangeListener(this);
+			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
+		«ENDFOREACH»
+		
+		«FOREACH groups.fields AS f-»
+			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
+		«ENDFOREACH»
+		
+		ImogPagerAdapter adapter = new ImogPagerAdapter(this);
+		
+		«FOREACH groups AS group»
+		if («name.toFirstUpper()-»Roles.canRead«group.name.toFirstUpper()-»(this) ||
+			«name.toFirstUpper()-»Roles.canWrite«group.name.toFirstUpper()-»(this)) {
+			adapter.addPage(R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group», R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»);
+
+			if (!«name.toFirstUpper()-»Roles.canWrite«group.name.toFirstUpper()-»(this)) {
+				«FOREACH group.fields AS f-»
+				«f.name.toFirstLower()».setReadOnly(true);
+				«ENDFOREACH-»
+			}
+		}
+		«ENDFOREACH»
+		
+		«IF hasDynamicFields-»
+		if (mDynamicFieldManager.hasTemplate()) {
+			adapter.addPage(R.string.«name.toLowerCase()»_dynamic_field_group, R.id.«name.toLowerCase()»_dynamic_field_group);
+			mDynamicFieldList = (ViewGroup) findViewById(R.id.«name.toLowerCase()»_dynamic_field_list);
+			mDynamicFieldManager.attachViewsForEdition(mDynamicFieldList, mManager);
+		}
+		«ENDIF-»
+		
+		getViewPager().setAdapter(adapter);
+		getViewPager().setOffscreenPageLimit(«groups.size - 1»);
+		
+		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_save), ACTIONBAR_SAVE_ID);
+	}
+	
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		«IF hasDynamicFields-»
+		return new SavedState(mEntity, mDynamicFieldManager.getInstances());
+		«ELSE-»
+		return mEntity;
+		«ENDIF-»
+	}
+	
+	@Override
+	public final void startActivity(Intent intent) {
+		try {
+			super.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	public final void startActivityForResult(Intent intent, int requestCode) {
+		try {
+			super.startActivityForResult(intent, requestCode);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		mManager.dispatchActivityResult(requestCode, resultCode, data);
+	}
+	
+	private void forceFinish() {
+		super.finish();
+	}
+
+	@Override
+	public void finish() {
+		showDialog(DIALOG_UNSAVED_ID);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		IamLost.getInstance().remove();
+		mManager.dispatchActivityDestroy();
+	}
+	
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+		switch (item.getItemId()) {
+		case ACTIONBAR_SAVE_ID:
+			save(false);
+			return true;
+		default:
+			return super.onHandleActionBarItemClick(item, position);
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean result = super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
+		return result;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.ig_menu_iamlost :
+				showDialog(DIALOG_IAMLOST_ID);
+				return true;
+			default :
+				return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+			case DIALOG_UNSAVED_ID :
+				return new AlertDialog.Builder(this)
+				.setTitle(android.R.string.dialog_alert_title)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setMessage(R.string.ig_unsaved_dialog_msg)
+				.setPositiveButton(android.R.string.yes, this)
+				.setNegativeButton(R.string.ig_no, this)
+				.setNeutralButton(android.R.string.cancel, null)
+				.setCancelable(false)
+				.create();
+			case DIALOG_ERROR_ID :
+				return new AlertDialog.Builder(this)
+				.setTitle(android.R.string.dialog_alert_title)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setAdapter(mAdapter = new ErrorAdapter(this, mErrors), this)
+				.setPositiveButton(android.R.string.ok, this)
+				.setCancelable(false)
+				.create();
+			case DIALOG_IAMLOST_ID :
+				return DialogFactory.createIamLostDialog(this);
+			default :
+				return super.onCreateDialog(id);
+		}
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
+		switch(id) {
+		case DIALOG_ERROR_ID:
+			if (mAdapter != null) {
+				updateErrorEntries();
+			}
+			break;
+		}
+	}
+	
+	public void onValueChange(BaseFieldEdit<?> field) {
+		switch (field.getId()) {
+		«FOREACH groups.fields AS f-»
+		case R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»:
+			mEntity.set«f.name.toFirstUpper()»(«f.name.toFirstLower()».getValue());
+			break;
+		«ENDFOREACH-»
+		default:
+			break;
+		}
+	}
+	
+	public void onClick(DialogInterface dialog, int which) {
+		switch (which) {
+		case Dialog.BUTTON_POSITIVE:
+			save(false);
+			break;
+		case Dialog.BUTTON_NEGATIVE:
+			forceFinish();
+			break;
+		default:
+			if (which >= 0) {
+				ErrorEntry entry = mAdapter.getItem(which);
+				getViewPager().setCurrentItem(((ImogPagerAdapter) getViewPager().getAdapter()).getViewPosition(entry.getTag()));
+				entry.getField().requestFocusFromTouch();
+			}
+			break;
+		}
+	}
+	
+	private void updateErrorEntries() {
+		mErrors.clear();
+		«FOREACH groups.fields AS f-»
+		«IF hasConstraint(f)-»
+		if (!«f.name.toFirstLower()».isValid()) {
+			mErrors.add(«f.name.toFirstLower()».getErrorEntry(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f.parentGroup»));
+		}
+		«ENDIF-»
+		«ENDFOREACH-»
+		«IF hasDynamicFields-»
+		if (mDynamicFieldList != null) {
+			for (int i = 0; i < mDynamicFieldList.getChildCount(); i++) {
+				BaseFieldEdit<?> field = (BaseFieldEdit<?>) mDynamicFieldList.getChildAt(i);
+				if (!field.isValid()) {
+					mErrors.add(field.getErrorEntry(R.id.«name.toLowerCase()»_dynamic_field_group));
+				}
+			}
+		}
+		«ENDIF-»
+		mAdapter.notifyDataSetChanged();
+	}
+	
+	private boolean validate() {
+		«FOREACH groups.fields AS f-»
+		«IF hasConstraint(f)-»
+		if (!«f.name.toFirstLower()».isValid()) {
+			return false;
+		}
+		«ENDIF-»
+		«ENDFOREACH-»
+		«IF hasDynamicFields-»
+		if (mDynamicFieldList != null) {
+			for (int i = 0; i < mDynamicFieldList.getChildCount(); i++) {
+				BaseFieldEdit<?> field = (BaseFieldEdit<?>) mDynamicFieldList.getChildAt(i);
+				if (!field.isValid()) {
+					return false;
+				}
+			}
+		}
+		«ENDIF-»
+		return true;
+	}
+	
+	private void save(boolean temporary) {
+		if (temporary) {
+			mEntity.prepareForSave(this);
+			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
+			mEntity.saveOrUpdate(this);
+			return;
+		}
+		if (validate()) {
+			«IF hasDynamicFields-»
+			mDynamicFieldManager.saveDynamicFields(mEntity);
+			«ENDIF-»
+			mEntity.prepareForSave(this);
+			Uri uri = mEntity.saveOrUpdate(this);
+			if (uri != null) {
+				Toast.makeText(this, R.string.«name.toLowerCase()»_des_registered, Toast.LENGTH_SHORT).show();
+				setResult(RESULT_OK, new Intent().setData(uri));
+				forceFinish();
+			} else {
+				setResult(RESULT_CANCELED);
+				forceFinish();
+			}
+		} else {
+			showDialog(DIALOG_ERROR_ID);
+		}
+	}
+	
+	public Activity getActivity() {
+		return this;
+	}
+	
+	public String getId() {
+		if (mEntity.getId() == null)
+			save(true);
+		return mEntity.getId();
+	}
+	
+	public Uri getUri() {
+		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getId());
+	}
+	
+	public Uri getContentUri() {
+		return «name.toFirstUpper()».Columns.CONTENT_URI;
+	}
+	
+	«IF hasDynamicFields-»
+	private static class SavedState extends Pair<«name.toFirstUpper()», Collection<DynamicFieldInstance>> {
+
+		public SavedState(«name.toFirstUpper()» first, Collection<DynamicFieldInstance> second) {
+			super(first, second);
+		}
+		
+	}
+	«ENDIF-»
+	
+}
+«ENDFILE»
+«ENDDEFINE»

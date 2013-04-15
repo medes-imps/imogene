@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="org.imogene.sync.client.ui.SyncView"           
+            id="Imogene.SyncView"
+            name="%view_synchronization_name">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.imogene.sync.client.ui.SyncPreferencePage"
+            id="Imogene.SyncPref"
+            name="%page_synchronization_name">
+      </page>     
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.imogene.menu.sync">
+         <command
+               commandId="org.imogene.command.synchronize"
+               icon="icons/synchronize.png"
+               label="%command_synchronize_label"
+               style="push">
+         </command>
+         <command
+               commandId="org.imogene.command.syncInit"
+               label="%command_init_sync_label"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.imogene.sync.client.SynchronizationHandler"
+            id="org.imogene.command.synchronize"
+            name="%command_synchronize_name">
+      </command>
+      <command
+            defaultHandler="org.imogene.sync.client.InitializerHandler"
+            id="org.imogene.command.syncInit"
+            name="%command_init_sync_name">
+      </command>
+   </extension>
+
+</plugin>

@@ -1,0 +1,431 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«EXTENSION template::CommonFieldUtilExt» 
+
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/filter/" + this.name.toFirstUpper() + "FilterPanel.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.ui.filter;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.imogene.«projectName.toLowerCase()».client.AccessManager;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»Renderer;
+import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.*;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.lib.common.constants.CriteriaConstants;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.field.widget.ImogBooleanAsList;
+import org.imogene.web.client.ui.table.filter.ImogFilterBox;
+import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
+import org.imogene.web.client.util.DateUtil;
+import org.imogene.web.client.util.BooleanUtil;
+import org.imogene.web.client.util.FilterCriteria;
+
+import com.google.gwt.user.client.ui.IntegerBox;
+import com.google.gwt.user.client.ui.DoubleBox;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.datepicker.client.DateBox;
+«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.web.client.util.ImogRoleUtil;
+«ENDIF-»
+
+
+
+/**
+ * Filter panel to filter the «name.toFirstUpper()» entries
+ * @author MEDES-IMPS
+ */
+public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
+	
+	/* filter widgets */
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«FOREACH columnFields AS c-»
+			«IF ((Actor)this).adminFields.contains(c)-»
+			«EXPAND declareFilter("") FOR c-»
+			«ENDIF-»
+		«ENDFOREACH -»
+	«ELSE-»
+		«FOREACH columnFields AS c-»
+		«EXPAND declareFilter("") FOR c-»
+		«ENDFOREACH -»
+	«ENDIF-»
+
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	private TextBox loginBox;
+	private ImogFilterBox loginFilterBox;
+	«ENDIF-»	
+	
+	
+	public «name.toFirstUpper()»FilterPanel() {
+		super();
+		setFieldReadAccess();
+	}
+
+	@Override
+	public void resetFilterWidgets() {
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«FOREACH columnFields AS c-»
+			«IF ((Actor)this).adminFields.contains(c)-»
+			«EXPAND resetWidget("") FOR c-»
+			«ENDIF-»
+		«ENDFOREACH -»
+	«ELSE-»
+		«FOREACH columnFields AS c-»
+		«EXPAND resetWidget("") FOR c-»
+		«ENDFOREACH »
+	«ENDIF-»	
+
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		loginBox.setValue(null);
+		«ENDIF-»	
+	}
+
+	@Override
+	public void createFilterWidgets() {
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«FOREACH columnFields AS c-»
+			«IF ((Actor)this).adminFields.contains(c)-»
+			«EXPAND createWidget("", projectName) FOR c-»
+			«ENDIF-»
+		«ENDFOREACH -»
+	«ELSE-»
+		«FOREACH columnFields AS c»
+		«EXPAND createWidget("", projectName) FOR c-»		
+		«ENDFOREACH »
+	«ENDIF-»	
+
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		loginBox = new TextBox();
+		loginFilterBox = new ImogFilterBox(loginBox);
+		loginFilterBox.setFilterLabel(AdminNLS.constants().imogActor_field_login());
+		addTableFilter(loginFilterBox);
+		«ENDIF-»
+	}
+
+	@Override
+	public List<FilterCriteria> getFilterCriteria() {
+	
+		«REM»«IF isTranslatableFieldPresent(columnFields)-»«ENDREM»
+		String locale = NLS.constants().locale();	
+		«REM»«ENDIF -»«ENDREM»
+		List<FilterCriteria> criteria = new ArrayList<FilterCriteria>();
+
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«FOREACH columnFields AS c-»
+			«IF ((Actor)this).adminFields.contains(c)-»
+			«EXPAND configureCriteria(projectName, (Project)this.eContainer, "", "") FOR c-»
+			«ENDIF-»
+		«ENDFOREACH -»
+	«ELSE-»
+		«FOREACH columnFields AS c»
+			«EXPAND configureCriteria(projectName, (Project)this.eContainer, "", "") FOR c-»		
+		«ENDFOREACH »
+	«ENDIF-»
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		FilterCriteria loginCrit = new FilterCriteria();
+		loginCrit.setField("login");
+		loginCrit.setFieldDisplayName(AdminNLS.constants().imogActor_field_login());
+		loginCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+		loginCrit.setValue(loginBox.getValue());
+		loginCrit.setValueDisplayName(loginBox.getValue());
+		criteria.add(loginCrit);
+		«ENDIF-»		
+		return criteria;
+	}
+	
+	/**
+	 * Configures the visibility of the fields 
+	 * in view mode depending on the user privileges
+	 */
+	public void setFieldReadAccess() {
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«FOREACH columnFields AS c-»
+			«IF ((Actor)this).adminFields.contains(c)-»
+			«EXPAND setAccess("") FOR c-»
+			«ENDIF-»
+		«ENDFOREACH -»
+	«ELSE-»
+		«FOREACH columnFields AS c»
+			«EXPAND setAccess("") FOR c-»
+		«ENDFOREACH»
+	«ENDIF-»
+			
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		if (!ImogRoleUtil.isAdmin())
+			loginFilterBox.setVisible(false);
+		«ENDIF-»		
+	}	
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» declare widget for filtering the corresponding field «ENDREM»
+«DEFINE declareFilter(String prefix) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR TextField-»
+	private TextBox «prefix + name.toFirstLower()»Box;
+	private ImogFilterBox «prefix + name.toFirstLower()»FilterBox;
+«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR DateField-»
+	private DateBox «prefix + name.toFirstLower()»BeforeBox;
+	private ImogFilterBox «prefix + name.toFirstLower()»BeforeFilterBox;
+	private DateBox «prefix + name.toFirstLower()»AfterBox;
+	private ImogFilterBox «prefix + name.toFirstLower()»AfterFilterBox;
+«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR IntegerField-»
+	private IntegerBox «prefix + name.toFirstLower()»Box;
+	private ImogFilterBox «prefix + name.toFirstLower()»FilterBox;
+«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR FloatField-»
+	private DoubleBox «prefix + name.toFirstLower()»Box;
+	private ImogFilterBox «prefix + name.toFirstLower()»FilterBox;
+«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR BooleanField-»
+	private ImogBooleanAsList «prefix + name.toFirstLower()»Box;
+	private ImogFilterBox «prefix + name.toFirstLower()»FilterBox;
+«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR EnumField-»
+	private ListBox «prefix + name.toFirstLower()»Box;
+	private ImogFilterBox «prefix + name.toFirstLower()»FilterBox;
+«ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND declareFilter(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Reset the widget for filtering the corresponding field «ENDREM»
+«DEFINE resetWidget(String prefix) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR TextField-»
+	«prefix + name.toFirstLower()»Box.setValue(null);
+«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR DateField-»
+	«prefix + name.toFirstLower()»BeforeBox.setValue(null);
+	«prefix + name.toFirstLower()»AfterBox.setValue(null);	
+«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR IntegerField-»
+	«prefix + name.toFirstLower()»Box.setValue(null);
+«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR FloatField-»
+	«prefix + name.toFirstLower()»Box.setValue(null);
+«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR BooleanField-»
+	«prefix + name.toFirstLower()»Box.setValue(null);
+«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR EnumField-»
+	«prefix + name.toFirstLower()»Box.setSelectedIndex(0);
+«ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND resetWidget(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Create the widget for filtering the corresponding field «ENDREM»
+«DEFINE createWidget(String prefix, String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR TextField-»
+		«prefix + name.toFirstLower()»Box = new TextBox();
+		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
+		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		addTableFilter(«prefix + name.toFirstLower()»FilterBox);		
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR DateField-»
+		«prefix + name.toFirstLower()»BeforeBox = new DateBox();
+		«prefix + name.toFirstLower()»BeforeFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»BeforeBox);
+		«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		addTableFilter(«prefix + name.toFirstLower()»BeforeFilterBox);
+		
+		«prefix + name.toFirstLower()»AfterBox = new DateBox();
+		«prefix + name.toFirstLower()»AfterFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»AfterBox);
+		«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		addTableFilter(«prefix + name.toFirstLower()»AfterFilterBox);		
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR IntegerField-»
+		«prefix + name.toFirstLower()»Box = new IntegerBox();
+		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
+		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		addTableFilter(«prefix + name.toFirstLower()»FilterBox);
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR FloatField-»
+		«prefix + name.toFirstLower()»Box = new DoubleBox();
+		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
+		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		addTableFilter(«prefix + name.toFirstLower()»FilterBox);
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR BooleanField-»
+		«prefix + name.toFirstLower()»Box = new ImogBooleanAsList();
+		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
+		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		addTableFilter(«prefix + name.toFirstLower()»FilterBox);
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR EnumField-»
+		«prefix + name.toFirstLower()»Box = new ListBox();
+		«prefix + name.toFirstLower()»Box.addItem("", BaseNLS.constants().enumeration_unknown());
+		«prefix + name.toFirstLower()»Box.setSelectedIndex(0);
+	«FOREACH enumValues AS enumValue ITERATOR iter-»	
+		«prefix + name.toFirstLower()»Box.addItem(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option(), «projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»);
+	«ENDFOREACH -»	
+		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
+		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		addTableFilter(«prefix + name.toFirstLower()»FilterBox);		
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND createWidget(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_", projectName) FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR TextField-»
+		FilterCriteria «prefix + name.toFirstLower()»Crit = new FilterCriteria();
+		«IF translatable-»
+			«FOREACH p.languages AS l-»
+			if (locale.equals("«l.isoCode»"))
+				«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this».«l.name.toFirstLower()»");		
+			«ENDFOREACH-»
+		«ELSE-»
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«ENDIF-»
+		«prefix + name.toFirstLower()»Crit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());		
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+		«prefix + name.toFirstLower()»Crit.setValue(«prefix + name.toFirstLower()»Box.getValue());
+		«prefix + name.toFirstLower()»Crit.setValueDisplayName(«prefix + name.toFirstLower()»Box.getValue());		
+		criteria.add(«prefix + name.toFirstLower()»Crit);	
+«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR DateField-»
+		
+		if(«prefix + name.toFirstLower()»BeforeBox.getValue()!=null) {
+			FilterCriteria «prefix + name.toFirstLower()»BeforeCrit = new FilterCriteria();
+			«prefix + name.toFirstLower()»BeforeCrit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			«prefix + name.toFirstLower()»BeforeCrit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+			«prefix + name.toFirstLower()»BeforeCrit.setOperation(CriteriaConstants.DATE_OPERATOR_BEFORE);
+			«prefix + name.toFirstLower()»BeforeCrit.setValue(DateUtil.getDate(«prefix + name.toFirstLower()»BeforeBox.getValue()));
+			«prefix + name.toFirstLower()»BeforeCrit.setValueDisplayName(DateUtil.getDate(«prefix + name.toFirstLower()»BeforeBox.getValue()));
+			criteria.add(«prefix + name.toFirstLower()»BeforeCrit);
+		}
+		
+		if(«prefix + name.toFirstLower()»AfterBox.getValue()!=null) {
+			FilterCriteria «prefix + name.toFirstLower()»AfterCrit = new FilterCriteria();
+			«prefix + name.toFirstLower()»AfterCrit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			«prefix + name.toFirstLower()»AfterCrit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+			«prefix + name.toFirstLower()»AfterCrit.setOperation(CriteriaConstants.DATE_OPERATOR_AFTER);
+			«prefix + name.toFirstLower()»AfterCrit.setValue(DateUtil.getDate(«prefix + name.toFirstLower()»AfterBox.getValue()));
+			«prefix + name.toFirstLower()»AfterCrit.setValueDisplayName(DateUtil.getDate(«prefix + name.toFirstLower()»AfterBox.getValue()));
+			criteria.add(«prefix + name.toFirstLower()»AfterCrit);
+		}	
+«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR IntegerField-»
+		FilterCriteria «prefix + name.toFirstLower()»Crit = new FilterCriteria();
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.INT_OPERATOR_EQUAL);
+		if(«prefix + name.toFirstLower()»Box.getValue()==null)
+			«prefix + name.toFirstLower()»Crit.setValue(null);
+		else
+			«prefix + name.toFirstLower()»Crit.setValue(String.valueOf(«prefix + name.toFirstLower()»Box.getValue()));
+		«prefix + name.toFirstLower()»Crit.setValueDisplayName(String.valueOf(«prefix + name.toFirstLower()»Box.getValue()));		
+		criteria.add(«prefix + name.toFirstLower()»Crit);	
+«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR FloatField-»
+		FilterCriteria «prefix + name.toFirstLower()»Crit = new FilterCriteria();
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.FLOAT_OPERATOR_EQUAL);
+		if(«prefix + name.toFirstLower()»Box.getValue()==null)
+			«prefix + name.toFirstLower()»Crit.setValue(null);
+		else
+			«prefix + name.toFirstLower()»Crit.setValue(String.valueOf(«prefix + name.toFirstLower()»Box.getValue()));
+		«prefix + name.toFirstLower()»Crit.setValueDisplayName(String.valueOf(«prefix + name.toFirstLower()»Box.getValue()));	
+		criteria.add(«prefix + name.toFirstLower()»Crit);	
+«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR BooleanField-»
+		FilterCriteria «prefix + name.toFirstLower()»Crit = new FilterCriteria();
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.BOOLEAN_OPERATOR_EQUAL);
+		if(«prefix + name.toFirstLower()»Box.getValue()==null)
+			«prefix + name.toFirstLower()»Crit.setValue(null);
+		else
+			«prefix + name.toFirstLower()»Crit.setValue(String.valueOf(«prefix + name.toFirstLower()»Box.getValue()));
+		«prefix + name.toFirstLower()»Crit.setValueDisplayName(BooleanUtil.getBooleanDisplayValue(«prefix + name.toFirstLower()»Box.getValue()));	
+		criteria.add(«prefix + name.toFirstLower()»Crit);	
+«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR EnumField-»
+		FilterCriteria «prefix + name.toFirstLower()»Crit = new FilterCriteria();
+		«prefix + name.toFirstLower()»Crit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«prefix + name.toFirstLower()»Crit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«IF this.multipleSelection==true-»
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+		«ELSE -»
+		«prefix + name.toFirstLower()»Crit.setOperation(CriteriaConstants.STRING_OPERATOR_EQUAL);
+		«ENDIF -»		
+		«prefix + name.toFirstLower()»Crit.setValue(«prefix + name.toFirstLower()»Box.getValue(«prefix + name.toFirstLower()»Box.getSelectedIndex()));
+		«prefix + name.toFirstLower()»Crit.setValueDisplayName(«projectName.toFirstUpper()»Renderer.get().getEnumDisplayValue(«parentGroup.parentCard.name.toFirstUpper()»Proxy.class, "«EXPAND template::CommonFieldUtil::propertyName FOR this»", «prefix + name.toFirstLower()»Box.getValue(«prefix + name.toFirstLower()»Box.getSelectedIndex())));				
+		criteria.add(«prefix + name.toFirstLower()»Crit);
+«ENDDEFINE»
+
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND configureCriteria(projectName, p, parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_", property + name.toFirstLower() + ".") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM» set access the corresponding field «ENDREM»
+«DEFINE setAccess(String prefix) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR TextField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR DateField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»")) {		
+			«prefix + name.toFirstLower()»BeforeFilterBox.setVisible(false);
+			«prefix + name.toFirstLower()»AfterFilterBox.setVisible(false);
+		}
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR IntegerField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR FloatField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR BooleanField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR EnumField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR RelationFieldEntity-»
+	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND setAccess(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+

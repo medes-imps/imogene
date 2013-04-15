@@ -1,0 +1,39 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.imogene-TimePicker {
+			border: 1px solid #777777;
+			color: #444444;
+			font-size: 12px;
+			background-color: #FFFFFF;
+			margin-left: 0px;
+			margin-right: 0px;
+		}
+		
+		.imogene-TimePicker-disabled {
+			background-color: #f2f2f2;
+		}
+		
+		.imogene-TimePicker-Label {
+			color: #444444;
+			font-size: 12px;
+			margin-left: 2px;
+			margin-right: 2px;
+		}
+		@external .imogene-TimePicker, .imogene-TimePicker-disabled;
+	</ui:style>
+
+	<g:HorizontalPanel verticalAlignment="middle">
+		<g:cell verticalAlignment="middle">
+			<g:ListBox ui:field="hours" stylePrimaryName="{style.imogene-TimePicker}" />
+		</g:cell>
+		<g:cell verticalAlignment="middle">
+			<g:Label text=":" stylePrimaryName="{style.imogene-TimePicker-Label}" />
+		</g:cell>
+		<g:cell verticalAlignment="middle" horizontalAlignment="center">
+			<g:ListBox ui:field="minutes" stylePrimaryName="{style.imogene-TimePicker}" />
+		</g:cell>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

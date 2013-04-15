@@ -1,0 +1,36 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateLogUtils FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateLogUtils FOR Project-»
+«FILE "org/imogene/sync/client/utils/LogUtils.java"-»
+package org.imogene.sync.client.utils;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.imogene.sync.client.Activator;
+
+
+public class LogUtils {
+
+	public static void logError(String pluginId, String message, Throwable th){
+		IStatus status = new Status(IStatus.ERROR, pluginId, message, th);
+		log(status);
+	}
+	
+	public static void logDebug(String pluginId,  String message){
+		IStatus status = new Status(IStatus.OK, pluginId, message);
+		log(status);
+	}
+	
+	private static void log(IStatus status){
+		Activator.getDefault().getLog().log(status);
+	}
+}
+
+«ENDFILE»
+«ENDDEFINE»

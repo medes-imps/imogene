@@ -1,0 +1,35 @@
+«IMPORT core»
+«DEFINE generate(String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter, String audioConverter) FOR Project»
+«FILE "application.properties"»
+# JDBC properties
+jdbc.driverClassName=«jdbcDriver»
+jdbc.url=«jdbcPath»
+jdbc.username=«jdbcLogin»
+jdbc.password=«jdbcPassword»
+
+# Hibernate properties
+hibernate.dialect=«hibernateDialect»
+hibernate.show_sql=false
+hibernate.format_sql=false
+hibernate.generate_statistics=false
+hibernate.hbm2ddl.auto=update
+
+# Binary management as File.
+# WARNING : On windows please use '/' in place of '\'.
+binary.file.directory = «binariesPath»
+
+# The command line used to convert the video file to the flv format.
+# ie : ffmpeg -i %IN% -f flv %OUT%
+# WARNING : On windows, if replace '\' by "/" in your path.
+converter.video=«videoConverter»
+
+# The command line used to convert the audio file to the mp3 format.
+# ie : ffmpeg -i %IN% %OUT%
+# WARNING : On windows, if replace '\' by "/" in your path.
+converter.audio=«audioConverter»
+
+
+# Notification properties
+notifier.server=«notifierUrl»
+«ENDFILE»
+«ENDDEFINE»

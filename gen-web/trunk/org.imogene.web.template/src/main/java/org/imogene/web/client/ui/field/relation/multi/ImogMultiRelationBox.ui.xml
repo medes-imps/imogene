@@ -1,0 +1,78 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+
+	<ui:style>
+		.imogNListBox-TexBox {
+			background-color: #fff;
+			border: 1px solid #777777;
+			color: #444444;
+			/*width: 206px;*/
+			width: 219px;
+			padding: 2px;
+			font-size: 12px;
+			background-color: #FFFFFF;
+			margin: 0px;
+		}
+		
+		.imogNListBox-TexBox-disabled {
+			background-color: #f2f2f2;
+		}
+		
+		.imogRelNBox-ButtonImage {
+			cursor: pointer;
+			cursor: hand;
+			text-align: left;
+		}
+		@external .imogNListBox-TexBox, .imogNListBox-TexBox-disabled, .imogRelNBox-ButtonImage;
+	</ui:style>
+
+
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+
+		<g:VerticalPanel>
+
+			<imo2:ImogErrorLabel ui:field="errorLabel" />
+
+			<g:HorizontalPanel verticalAlignment="middle"
+				width="285px">
+
+				<g:cell width="219px" horizontalAlignment="left"
+					verticalAlignment="middle">
+					<g:ListBox ui:field="list" multipleSelect="false"
+						visibleItemCount="5" stylePrimaryName="imogNListBox-TexBox" />
+				</g:cell>
+
+				<g:cell verticalAlignment="top" horizontalAlignment="left">
+					<g:VerticalPanel verticalAlignment="top" horizontalAlignment="left">
+
+						<g:cell horizontalAlignment="left" verticalAlignment="top">
+							<g:HorizontalPanel>
+								<g:cell horizontalAlignment="left" verticalAlignment="top">
+									<g:Image ui:field="affectImage" stylePrimaryName="imogRelNBox-ButtonImage" />
+								</g:cell>
+								<g:cell horizontalAlignment="left" verticalAlignment="top">
+									<g:Image ui:field="addImage" stylePrimaryName="imogRelNBox-ButtonImage" />
+								</g:cell>
+							</g:HorizontalPanel>
+						</g:cell>
+
+						<g:cell horizontalAlignment="left" verticalAlignment="top">
+							<g:Image ui:field="clearImage" stylePrimaryName="imogRelNBox-ButtonImage" />
+						</g:cell>
+
+						<g:cell horizontalAlignment="left" verticalAlignment="top">
+							<g:Image ui:field="viewImage" stylePrimaryName="imogRelNBox-ButtonImage" />
+						</g:cell>
+
+					</g:VerticalPanel>
+				</g:cell>
+
+			</g:HorizontalPanel>
+
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>
+
+</ui:UiBinder>

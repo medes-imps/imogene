@@ -1,0 +1,54 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/event/save/Save" + this.name.toFirstUpper() + "Event.java"»
+package org.imogene.«projectName.toLowerCase()».client.event.save;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«this.name.toFirstUpper()»Proxy;
+
+/**
+ * Event that is fired after that a «this.name.toFirstUpper()» form has been saved
+ * @author MEDES-IMPS
+ */
+public class Save«this.name.toFirstUpper()»Event extends GwtEvent<Save«this.name.toFirstUpper()»Event.Handler> {
+
+	public static final Type<Handler> TYPE = new Type<Handler>();
+
+
+	public interface Handler extends EventHandler {
+		void save«this.name.toFirstUpper()»(«this.name.toFirstUpper()»Proxy value);
+		void save«this.name.toFirstUpper()»(«this.name.toFirstUpper()»Proxy value, String initField);
+	}
+
+	private final «this.name.toFirstUpper()»Proxy value;
+	/* the relation field that initiated the creation or update of the value */
+	private final String initField;
+
+
+	public Save«this.name.toFirstUpper()»Event(«this.name.toFirstUpper()»Proxy value) {
+		this(value, null);
+	}
+	
+	public Save«this.name.toFirstUpper()»Event(«this.name.toFirstUpper()»Proxy value, String initField) {
+		this.value = value;
+		this.initField = initField;
+	}
+	
+	@Override
+	protected void dispatch(Handler handler) {
+		if (initField == null)
+			handler.save«this.name.toFirstUpper()»(value);
+		else
+			handler.save«this.name.toFirstUpper()»(value, initField);	
+	}	
+
+
+	@Override
+	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
+		return TYPE;
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

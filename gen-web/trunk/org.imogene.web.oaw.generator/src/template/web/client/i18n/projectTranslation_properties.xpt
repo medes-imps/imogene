@@ -1,0 +1,237 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt»
+«EXTENSION template::CommonFieldUtilExt»
+
+«REM» -------To create a property file per defined language---------- «ENDREM»
+«DEFINE generate(String projectName, String applicationType, String purpose) FOR Project»
+	«IF purpose.contains("birt") -»
+		«IF this.languages.size == 0 -»
+				«FILE projectName.toFirstUpper() + "Translations.properties"»
+					«EXPAND writeProperties(null, applicationType) FOR this-»
+				«ENDFILE»	
+		«ELSE-»
+			«FOREACH languages AS language ITERATOR iter -»	
+				«IF iter.counter0 == 0 -»
+					«FILE projectName.toFirstUpper() + "Translations.properties"»
+						«EXPAND writeProperties(language, applicationType) FOR this-»
+					«ENDFILE»
+					«REM» -- Second one used by reports ---- «ENDREM»
+					«FILE projectName.toFirstUpper() + "Translations_" + language.isoCode + ".properties"»
+						«EXPAND writeProperties(language, applicationType) FOR this-»
+					«ENDFILE»				
+				«ELSE-»
+					«FILE projectName.toFirstUpper() + "Translations_" + language.isoCode + ".properties"»
+						«EXPAND writeProperties(language, applicationType) FOR this-»
+					«ENDFILE»
+				«ENDIF-»
+			«ENDFOREACH-»	
+		«ENDIF-»
+
+	«ELSE-»
+	
+		«IF this.languages.size == 0 -»
+				«FILE projectName.toLowerCase()+"/client/i18n/"+projectName.toFirstUpper()+"Translations.properties"»
+					«EXPAND writeProperties(null, applicationType) FOR this-»
+				«ENDFILE»	
+		«ELSE-»
+			«FOREACH languages AS language ITERATOR iter -»	
+				«IF iter.counter0 == 0 -»
+					«FILE projectName.toLowerCase()+"/client/i18n/"+projectName.toFirstUpper()+"Translations.properties"»
+						«EXPAND writeProperties(language, applicationType) FOR this-»
+					«ENDFILE»
+					«REM» -- Second one used by reports ---- «ENDREM»
+					«FILE projectName.toLowerCase()+"/client/i18n/"+projectName.toFirstUpper()+"Translations_" + language.isoCode + ".properties"»
+						«EXPAND writeProperties(language, applicationType) FOR this-»
+					«ENDFILE»				
+				«ELSE-»
+					«FILE projectName.toLowerCase()+"/client/i18n/"+projectName.toFirstUpper()+"Translations_" + language.isoCode + ".properties"»
+						«EXPAND writeProperties(language, applicationType) FOR this-»
+					«ENDFILE»
+				«ENDIF-»
+			«ENDFOREACH-»	
+		«ENDIF-»
+			
+	«ENDIF-»
+
+
+«ENDDEFINE»
+«REM» ---------------------------------------------------------------- «ENDREM»
+
+
+«REM» ---------------------------------------------------------------- «ENDREM»
+«DEFINE writeProperties(core::Language currentLanguage, String applicationType) FOR Project-»
+«LET "admin" AS adminType-»
+/* ------------------------------------------------------------------- */
+/*                        FIXED TEXTS                              */
+/* ------------------------------------------------------------------- */
+
+/* Boolean texts */
+boolean_true = Yes
+boolean_false = No
+boolean_unknown = Unknown
+
+/* Enumeration texts */
+enumeration_unknown =
+
+/* ------------------------------------------------------------------- */
+/*                        GENERATED TEXTS                              */
+/* ------------------------------------------------------------------- */
+
+«EXPAND writeLanguageProperties(currentLanguage) FOR this-»
+«REM»
+format_validation_date= dd/MM/yyyy
+format_validation_time= HH:mm
+«ENDREM»
+	
+/* Thema texts */
+«FOREACH this.themas AS tema-»
+thema_«tema.name.toFirstLower()»= «getDisplayFromDescription(currentLanguage.isoCode,tema)»
+«ENDFOREACH-»	
+
+/* Application title */
+«IF applicationType.matches(adminType)-»
+application_title= Outil d'administration «getDisplayFromDescription(this)»
+«ELSE -»
+application_title= «getDisplayFromDescription(this)»
+«ENDIF -»
+
+«FOREACH entities AS e»
+«IF currentLanguage.isoCode!=null && currentLanguage.isoCode.toLowerCase().matches("fr") -»
+/* «e.name» texts */
+«e.name.toFirstLower()»_name = «getDisplayFromDescription(currentLanguage.isoCode,e)»
+«e.name.toFirstLower()»_name_plur = «getDisplayFromDescription(currentLanguage.isoCode,e)»s
+«e.name.toFirstLower()»_create_title = Nouveau «getDisplayFromDescription(currentLanguage.isoCode,e)»
+«e.name.toFirstLower()»_select_title = S\u00E9lectionner des «getDisplayFromDescription(currentLanguage.isoCode,e)»s
+«e.name.toFirstLower()»_table_text = Liste des fiches '«getDisplayFromDescription(currentLanguage.isoCode,e)»'
+«e.name.toFirstLower()»_excel_title = Exporter des «getDisplayFromDescription(currentLanguage.isoCode,e)»s vers excel
+«ELSE -»
+/* «e.name» texts */
+«e.name.toFirstLower()»_name = «getDisplayFromDescription(currentLanguage.isoCode,e)»
+«e.name.toFirstLower()»_name_plur = «getDisplayFromDescription(currentLanguage.isoCode,e)»s
+«e.name.toFirstLower()»_create_title = New «getDisplayFromDescription(currentLanguage.isoCode,e)»
+«e.name.toFirstLower()»_select_title = Select «getDisplayFromDescription(currentLanguage.isoCode,e)»s
+«e.name.toFirstLower()»_table_text = List of '«getDisplayFromDescription(currentLanguage.isoCode,e)»' entries
+«e.name.toFirstLower()»_excel_title = Export «getDisplayFromDescription(currentLanguage.isoCode,e)» entries to excel
+«ENDIF -»
+
+/* «e.name» field group texts */		
+«FOREACH e.groups AS group -»
+«e.name.toFirstLower()»_group_«group.name.toFirstLower()» = «getDisplayFromDescription(currentLanguage.isoCode,group)»
+«ENDFOREACH -»	
+
+/* «e.name» fields texts */	
+«FOREACH e.groups.fields AS field-»
+«EXPAND getFieldTexts(currentLanguage.isoCode) FOR field-»
+«ENDFOREACH-»
+«EXPAND getFilterFieldText(currentLanguage.isoCode) FOR e-»
+
+/* «e.name» table header short texts */
+«FOREACH e.columnFields.union(e.mainFields) AS f-»
+«e.name.toFirstLower()»_field_s_«f.name.toFirstLower()» = «getDisplayFromDescription(currentLanguage.isoCode,f)»
+«ENDFOREACH -»
+		
+«ENDFOREACH-»
+
+field_creationDate = Creation Date
+field_lastModificationDate = Last Modification Date
+field_id = Id
+	
+«ENDLET-»
+«ENDDEFINE»
+«REM» ---------------------------------------------------------------- «ENDREM»
+
+
+«REM» ----- get texts for entity fields ----- «ENDREM»
+«DEFINE getFieldTexts(String isoCode) FOR FieldEntity-»          
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()» = «getDisplayFromDescription(isoCode,this)»
+«ENDDEFINE»
+
+«DEFINE getFieldTexts(String isoCode) FOR TextField-»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()» = «getDisplayFromDescription(isoCode,this)»
+«FOREACH this.validationRules AS r ITERATOR i -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0» = «getDisplayFromDescription(isoCode,r)»
+«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE getFieldTexts(String isoCode) FOR IntegerField-»          
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()» = «getDisplayFromDescription(isoCode,this)»
+	«IF this.min!=null && this.min.length>0 -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min = «this.min»
+	«ENDIF-»
+	«IF this.max!=null && this.max.length>0 -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max = «this.max»
+	«ENDIF-»		                    
+«ENDDEFINE»
+
+«DEFINE getFieldTexts(String isoCode) FOR FloatField-»          
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()» = «getDisplayFromDescription(isoCode,this)»
+	«IF this.min!=null && this.min.length>0 -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min = «this.min»
+	«ENDIF-»
+	«IF this.max!=null && this.max.length>0 -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max = «this.max»
+	«ENDIF-»		
+	«IF this.DecimalNumber!=null -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber = «this.DecimalNumber»
+	«ENDIF-»	                    
+«ENDDEFINE»
+
+«DEFINE getFieldTexts(String isoCode) FOR DatesField-»          
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()» = «getDisplayFromDescription(isoCode,this)»
+	«IF this.min!=null && this.min.length>0 -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min = «this.min»
+	«ENDIF-»
+	«IF this.max!=null && this.max.length>0 -»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max = «this.max»
+	«ENDIF-»		                    
+«ENDDEFINE»
+
+«DEFINE getFieldTexts(String isoCode) FOR EnumField-»
+«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()» = «getDisplayFromDescription(isoCode,this)»
+	«FOREACH enumValues AS enumValue-»		          
+«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option = «getDisplayFromDescription(isoCode,enumValue)»
+	«ENDFOREACH-»
+«ENDDEFINE»
+«REM» ----------------------------------------- «ENDREM»
+
+«DEFINE writeLanguageProperties(core::Language curLanguage) FOR Project-»
+«IF curLanguage==null-»
+/* Languages texts */
+locale = 
+«REM»	
+format_date= dd/MM/yyyy
+format_time= HH:mm
+«ENDREM»
+«ELSE-»
+/* Languages texts */
+locale = «curLanguage.isoCode»
+«FOREACH languages AS lang -»
+menu_«lang.name.toFirstLower()»= «lang.name»
+«ENDFOREACH-»	
+«REM»
+/* Formating templates */
+«IF curLanguage.dateFormat!=null-»
+format_date= «curLanguage.dateFormat»
+«ELSE-»
+format_date= dd/MM/yyyy
+«ENDIF-»
+«IF curLanguage.timeFormat!=null-»
+format_time= «curLanguage.timeFormat»
+«ELSE-»
+format_time= HH:mm
+«ENDIF-»
+«ENDREM»
+«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE getFilterFieldText(String isoCode) FOR CardEntity-»«ENDDEFINE»
+«DEFINE getFilterFieldText(String isoCode) FOR Actor-»
+«FOREACH filters AS f-»
+«IF isoCode!=null && isoCode.toLowerCase().matches("fr") -»
+«name.toFirstLower()»_field_«EXPAND template::CommonFieldUtil::propertyName FOR f» = Filtre par «getDisplayFromDescription(isoCode,f.entity)»
+«ELSE -»
+«name.toFirstLower()»_field_«EXPAND template::CommonFieldUtil::propertyName FOR f» = Filter by «getDisplayFromDescription(isoCode,f.entity)»
+«ENDIF-»
+«ENDFOREACH-»
+«ENDDEFINE»

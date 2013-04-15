@@ -1,0 +1,350 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase() + "/client/" + projectName.toFirstUpper() + "Renderer.java"»
+
+package org.imogene.«projectName.toLowerCase()».client;
+
+import org.imogene.web.client.util.BooleanUtil;
+import org.imogene.web.client.util.DateUtil;
+import org.imogene.web.client.util.ImogBeanRenderer;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
+
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«e.name.toFirstUpper()»Proxy;
+«ENDFOREACH -»
+
+
+/**
+ * Singleton that enables to render a display value of the beans
+ * @author MEDES-IMPS
+ */
+public class «projectName.toFirstUpper()»Renderer extends ImogBeanRenderer {
+
+	private static «projectName.toFirstUpper()»Renderer instance = new «projectName.toFirstUpper()»Renderer();
+	
+	
+	private «projectName.toFirstUpper()»Renderer() {
+		super();
+	}
+	
+	public static «projectName.toFirstUpper()»Renderer get() {
+		return instance;
+	}
+
+    /**
+     * Get display representation for a ImogBeanProxy     
+     * @param bean the ImogBeanProxy
+     * @return string representation for IHM display
+     */
+	public String getDisplayValue(ImogBeanProxy bean){
+			
+		«FOREACH entities AS e -»
+		if(bean instanceof «e.name.toFirstUpper()»Proxy){
+			return getDisplayValue((«e.name.toFirstUpper()»Proxy) bean);
+		}
+		«ENDFOREACH -»		
+		return "";
+	}
+		
+	
+	«FOREACH entities AS e -»
+	/**	 */
+	private String getDisplayValue(«e.name.toFirstUpper()»Proxy bean){
+		String value = new String();
+		«IF !(e.mainFields==null) && !e.mainFields.isEmpty -»
+		«FOREACH e.mainFields AS f -»
+			«EXPAND stringRepresentation(projectName) FOR f -»
+		«ENDFOREACH -»	
+		«REM»
+		«FOREACH e.secondaryFields AS f -»
+			«EXPAND stringRepresentation FOR f -»
+		«ENDFOREACH -»	
+		«ENDREM»				
+		«ELSE -»
+		value = NLS.constants().no_display_value_text();
+		«ENDIF -»		
+		return value.trim();	
+	}
+	«ENDFOREACH»
+	
+
+
+   /**
+     * Get an enumeration representation for a ImogBeanProxy type enumeration field
+     * @param beanClass a ImogBeanProxy class type
+     * @param fieldName the ImogBeanProxy field name     
+     * @param fieldValue the bean field value    
+     * @return string representation for IHM display
+     */
+	public String getEnumDisplayValue(Class<?> beanClass, String fieldName, String fieldValue){
+
+		if (fieldValue!=null && !fieldValue.equals("")){
+			«FOREACH entities AS e»
+			if (beanClass.equals(«e.name.toFirstUpper()»Proxy.class)) {
+				return get«e.name»EnumDisplayValue(fieldName, fieldValue);
+			}		
+			«ENDFOREACH»				
+		}
+		return "";		
+	}	
+
+	
+	«FOREACH entities AS e»
+	/**
+	 *
+	 */
+	private String get«e.name»EnumDisplayValue(String fieldName, String fieldValue){
+		String value = BaseNLS.constants().enumeration_unknown();
+		«FOREACH e.groups.fields AS f»
+			«EXPAND enumStringRepresentation(projectName) FOR f»
+		«ENDFOREACH»
+		return value.trim();
+	}
+	«ENDFOREACH»
+	
+	/**
+	 * Gets the text corresponding to a given locale
+	 * @param localizedText the localizedText for which the text has to be returned
+	 * @return the text corresponding to a given locale (if empty, returns the first non empty text)
+	 */
+	public String getLocalizedText(LocalizedTextProxy localizedText) {
+
+		String locale = NLS.constants().locale();
+
+		if (localizedText != null) {
+
+			String text = "";
+			
+			«FOREACH languages AS l»
+				if (locale.equals("«l.isoCode»"))
+					text = localizedText.get«l.name.toFirstUpper()»();
+			«ENDFOREACH»
+
+			if (text != null && !text.isEmpty())
+				return text;
+			else { // return first not empty text
+			
+				«FOREACH languages AS l»
+				if(localizedText.get«l.name.toFirstUpper()»()!=null && !localizedText.get«l.name.toFirstUpper()»().isEmpty())
+					return localizedText.get«l.name.toFirstUpper()»();
+				«ENDFOREACH»
+			}
+		}
+		return "";
+	}	
+	
+	
+	/**
+	 * Internationalize the errors that are thrown on the server side
+	 * Based on the implementation that error messages are keys to i18n property files
+	 * @param key the message key
+	 * @return the internalionalized message
+	 */
+	public String getI18nErrorMessage(String key) {
+
+		if (key.equals("error_required"))
+			return BaseNLS.messages().error_required();
+			«FOREACH entities AS e-»
+				«EXPAND getErrorMessage FOREACH e.groups.fields-»								
+			«ENDFOREACH -»						
+		else
+			return key;
+	}
+
+
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» Format date/time and enumeration field to current local «ENDREM»
+«DEFINE stringRepresentation(String projectName) FOR FieldEntity -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() + " ";
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR TextField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null) {
+		«IF this.translatable -»
+		value = value + getLocalizedText(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " ";		
+		«ELSE -»
+		value = value + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() + " ";
+		«ENDIF -»
+	}
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR RelationFieldEntity -»
+	«IF cardinality==1»
+	if(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + getDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " " ;
+	«ENDIF»
+		
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR DateField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + DateUtil.getFormatedDate(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»())+	" " ;						
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR DateTimeField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + DateUtil.getFormatedDateTime(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " " ;
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR TimeField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + DateUtil.getFormatedTime(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»())+	" " ;
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR EnumField -»
+	String «name.toFirstLower()» = bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»();
+	if ( «name.toFirstLower()»!=null)
+	{	
+	«IF this.multipleSelection==true-»		
+		String[] indexesStr = «name.toFirstLower()».split(";");
+		String result = new String();
+		for(int j=0; j< indexesStr.length; j++){				
+		«FOREACH enumValues AS enumValue ITERATOR iter-»
+		«IF iter.counter1==1 -»
+			if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();
+				else
+					result = result + ", " + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();											
+			}				
+        «ELSE -»
+			else if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();
+				else
+					result = result + ", " + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();											
+			}			
+		«ENDIF -»
+		«ENDFOREACH -»									
+		}				
+		value = value + result + " ";		
+	«ELSE-»
+		«FOREACH enumValues AS enumValue ITERATOR iter-»		
+			«IF iter.counter1==1 -»
+        if («name.toFirstLower()».equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	value = value + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option()+ " ";
+        	«ELSE -»
+        else if («name.toFirstLower()».equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	 value = value + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option()+ " ";		
+			«ENDIF -»
+		«ENDFOREACH -»	
+	«ENDIF-»	
+	}
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR BooleanField»
+	value = value +  BooleanUtil.getBooleanDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " ";
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR GeoField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Latitude()!=null && bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Longitude()!=null)
+		value = value + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Latitude() + ";" + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Longitude() + " ";
+«ENDDEFINE»
+
+
+«DEFINE enumStringRepresentation(String projectName) FOR FieldEntity»«ENDDEFINE»
+«DEFINE enumStringRepresentation(String projectName) FOR EnumField»
+	if (fieldName.equals("«EXPAND template::CommonFieldUtil::propertyName FOR this-»"))
+	{
+	
+	«IF this.multipleSelection==true-»		
+		String[] indexesStr = fieldValue.split(";");
+		String result = new String();
+		for(int j=0; j< indexesStr.length; j++){				
+		«FOREACH enumValues AS enumValue ITERATOR iter-»
+		«IF iter.counter1==1 -»
+			if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();
+				else
+					result = result + ", " + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();											
+			}				
+        «ELSE -»
+			else if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();
+				else
+					result = result + ", " + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();											
+			}			
+		«ENDIF -»
+		«ENDFOREACH -»									
+		}				
+		value = result;		
+	«ELSE-»
+		«FOREACH enumValues AS enumValue ITERATOR iter-»		
+			«IF iter.counter1==1 -»
+        if (fieldValue.equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	value = NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();        	
+        	«ELSE -»
+        else if (fieldValue.equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	value = NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();        	 		
+			«ENDIF -»
+		«ENDFOREACH -»	
+	«ENDIF-»	
+		
+	}
+«ENDDEFINE»
+
+
+«DEFINE getErrorMessage FOR FieldEntity-»«ENDDEFINE»
+«DEFINE getErrorMessage FOR TextField-»
+	«FOREACH this.validationRules AS r ITERATOR i -»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0»"))
+						return NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0»();
+	«ENDFOREACH-» 
+«ENDDEFINE»
+«DEFINE getErrorMessage FOR IntegerField-»
+	«IF min!=null && min.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min"))
+						return BaseNLS.messages().error_min_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min());
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max"))
+						return BaseNLS.messages().error_max_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max());
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE getErrorMessage FOR FloatField-»
+	«IF min!=null && min.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min"))
+						return BaseNLS.messages().error_min_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min());
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max"))
+						return BaseNLS.messages().error_max_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max());
+	«ENDIF-»
+	«IF DecimalNumber!=null-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber"))
+						return BaseNLS.messages().error_float_dec(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber());	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE getErrorMessage FOR DateField-»
+	«IF min!=null && min.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min"))
+						return BaseNLS.messages().error_min_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min());
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max"))
+						return BaseNLS.messages().error_max_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max());
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE getErrorMessage FOR DateTimeField-»
+	«IF min!=null && min.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min"))
+						return BaseNLS.messages().error_min_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min());
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+					else if (key.equals("«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max"))
+						return BaseNLS.messages().error_max_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max());
+	«ENDIF-»
+«ENDDEFINE»
+
+

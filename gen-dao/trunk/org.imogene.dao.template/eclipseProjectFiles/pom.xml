@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                                     http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.imogene</groupId>
+	<artifactId>%modelName%-dao</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.1</version>
+	<description>
+	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.imogene.lib</groupId>
+			<artifactId>common-library</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<projectNameTemplate>%projectName%</projectNameTemplate>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+					<additionalProjectnatures>
+						<projectnature>org.imogene.nature.gen.dao</projectnature>
+						<projectnature>org.imogene.nature.model.%modelName%</projectnature>
+					</additionalProjectnatures>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

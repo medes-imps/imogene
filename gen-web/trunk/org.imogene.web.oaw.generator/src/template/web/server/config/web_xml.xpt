@@ -1,0 +1,143 @@
+«IMPORT core»
+«DEFINE generate(String projectName, String modelName) FOR Project»
+«FILE "web.xml" -»
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  	
+  	<display-name>«projectName.toFirstUpper()»</display-name>
+  
+  	<!-- root application context and loader -->
+ 	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/*-context.xml</param-value>
+  	</context-param>	
+  	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  	</listener>
+  
+  	<!-- welcome files -->
+  	<welcome-file-list>
+    	<welcome-file>«projectName.toFirstUpper()»Index.jsp</welcome-file>    
+  	</welcome-file-list>
+  
+  	<!-- support the scoping of beans at the request, session, 
+  		and global session levels (web-scoped beans) -->
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+  
+  	<!-- spring-security filter -->
+  	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+ 
+     
+   	<!-- filter for JPA session management  -->
+	<filter>
+		<filter-name>oemInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+		<init-param>
+			<param-name>entityManagerFactoryBeanName</param-name>
+			<param-value>entityManagerFactory</param-value>
+		</init-param>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>oemInViewFilter</filter-name>
+		<url-pattern>/gwtRequest</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>oemInViewFilter</filter-name>
+		<url-pattern>*.gupld</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>oemInViewFilter</filter-name>
+		<url-pattern>/getbinary</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>oemInViewFilter</filter-name>
+		<url-pattern>*.sprg</url-pattern>
+	</filter-mapping> 
+	<filter-mapping>
+		<filter-name>oemInViewFilter</filter-name>
+		<url-pattern>*.txt</url-pattern>
+	</filter-mapping> 	
+	
+	<!-- Servlets -->
+	
+	<!-- GWT RequestFactory servlet -->
+	<servlet>
+		<servlet-name>requestFactoryServlet</servlet-name>
+		<servlet-class>org.imogene.«modelName.toLowerCase()».server.ImogRequestFactoryServlet</servlet-class>
+		<init-param>
+			<param-name>symbolMapsDirectory</param-name>
+			<!-- You'll need to compile with -extras and move the symbolMaps directory 
+				to this location if you want stack trace deobfuscation to work -->
+			<param-value>WEB-INF/classes/symbolMaps/</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>requestFactoryServlet</servlet-name>
+		<url-pattern>/gwtRequest</url-pattern>
+	</servlet-mapping>
+  
+	<!-- Binary download servlet -->
+	<servlet>
+		<servlet-name>downloadServlet</servlet-name>
+		<servlet-class>org.imogene.web.server.servlet.BinaryDownloadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>downloadServlet</servlet-name>
+		<url-pattern>/getbinary</url-pattern>
+	</servlet-mapping>
+
+	<!-- upload file maximum size -->
+	<context-param>
+		<param-name>maxSize</param-name>
+		<param-value>100000000</param-value>
+	</context-param>
+
+	<!-- Binary upload servlet -->
+	<servlet>
+		<servlet-name>uploadServlet</servlet-name>
+		<servlet-class>org.imogene.web.server.servlet.BinaryUploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>*.gupld</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Encryption servlet -->
+    <servlet>
+        <servlet-name>encryptionServlet</servlet-name>
+        <servlet-class>org.imogene.web.server.servlet.EncryptionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>encryptionServlet</servlet-name>
+        <url-pattern>/encrypt</url-pattern>
+    </servlet-mapping>
+    
+	  <!-- Spring servlet for BIRT report generation -->
+	  <servlet>
+		<servlet-name>«projectName.toFirstUpper()»</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	  </servlet>	
+	  <servlet-mapping>
+		<servlet-name>«projectName.toFirstUpper()»</servlet-name>
+		<url-pattern>*.sprg</url-pattern>
+	  </servlet-mapping>  
+	  <servlet-mapping>
+		<servlet-name>«projectName.toFirstUpper()»</servlet-name>
+		<url-pattern>*.txt</url-pattern>
+	  </servlet-mapping> 
+ 
+  
+</web-app>
+«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,236 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateSyncPreferencePage FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateSyncPreferencePage FOR Project-»
+«FILE "org/imogene/sync/client/ui/SyncPreferencePage.java"-»
+package org.imogene.sync.client.ui;
+
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.imogene.sync.client.Activator;
+import org.imogene.sync.client.i18n.CoreMessages;
+
+public class SyncPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+
+	public static final String SYNC_URL = "SYNC_URL";
+	
+	public static final String SYNC_TYPE = "SYNC_TYPE";
+	
+	public static final String SYNC_LOOP = "SYNC_LOOP";
+	
+	public static final String SYNC_PERIOD = "SYNC_PERIOD";
+	
+	private final int DEFAULT_PERIOD = 30000;
+	
+	private Text urlText;
+	
+	private String url;
+	
+	private Button bidirectionnal;
+	
+	private Button sendOnly;
+	
+	private Button receiveOnly;
+	
+	private Button automatic;
+	
+	private Button manual;
+	
+	private Button clearCurrent;
+	
+	private Text periodText;
+	
+	private int syncType;
+	
+	private boolean loop;
+	
+	private int period;
+	
+	@Override
+	protected Control createContents(Composite parent) {
+		
+		super.setTitle(CoreMessages.getString("sync_text"));
+		
+		Composite embedded = new Composite(parent, SWT.NONE);
+		embedded.setLayout(new GridLayout());
+		createUrlGroup(embedded);
+		createLoopGroup(embedded);
+		createTypeGroup(embedded);
+		//clearCurrentGroup(embedded);
+		return embedded;
+	}
+
+	
+	private void createUrlGroup(Composite parent){
+		Group group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout(2, false));		
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setText(CoreMessages.getString("sync_group_server"));
+		Label urlLabel = new Label(group, SWT.NONE);		
+		urlLabel.setText(CoreMessages.getString("sync_field_url") + ": ");
+		urlText = new Text(group, SWT.BORDER);
+		urlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		urlText.setText(url);
+		
+	}
+	
+	private void createLoopGroup(Composite parent){
+		Group group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout(3, false));
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setText(CoreMessages.getString("sync_group_way"));		
+		manual = new Button(group, SWT.RADIO);
+		manual.setText(CoreMessages.getString("sync_way_manual"));
+		manual.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(((Button)e.widget).getSelection())
+					periodText.setEnabled(false);
+			}
+		});
+		automatic = new Button(group, SWT.RADIO);
+		automatic.setText(CoreMessages.getString("sync_way_auto"));
+		automatic.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(((Button)e.widget).getSelection())
+					periodText.setEnabled(true);
+			}
+		});
+		periodText = new Text(group, SWT.BORDER);
+		if(loop){
+			automatic.setSelection(true);
+			periodText.setEnabled(true);
+		}else{
+			manual.setSelection(true);
+			periodText.setEnabled(false);
+		}
+		if(period>0){
+			periodText.setText(String.valueOf(period));			
+		}else{
+			periodText.setText(String.valueOf(DEFAULT_PERIOD));
+		}
+	}
+	
+	private void createTypeGroup(Composite parent){
+		Group group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout());
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setText(CoreMessages.getString("sync_group_type"));
+		bidirectionnal = new Button(group, SWT.RADIO);
+		bidirectionnal.setText(CoreMessages.getString("sync_bidirectionnal"));
+		if(syncType==0) bidirectionnal.setSelection(true);
+		sendOnly = new Button(group, SWT.RADIO);
+		sendOnly.setText(CoreMessages.getString("sync_sendonly"));
+		if(syncType==1) sendOnly.setSelection(true);
+		receiveOnly = new Button(group, SWT.RADIO);
+		receiveOnly.setText(CoreMessages.getString("sync_receiveonly"));
+		if(syncType==2) receiveOnly.setSelection(true);
+		group.setEnabled(false);
+	}
+	
+	@SuppressWarnings("unused")
+	private void clearCurrentGroup(Composite parent){
+		Group group = new Group(parent, SWT.NONE);
+		group.setLayout(new GridLayout());
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setText("Clear the current synchro");
+		Label desc = new Label(group, SWT.WRAP);
+		desc.setText("Permet d'effacer la dernière synchronisation en erreur.");
+		clearCurrent = new Button(group, SWT.PUSH);
+		clearCurrent.setText("Effacer");
+//		clearCurrent.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Suppression...",
+//						"Confirmez-vous la suppression des dernières infromations de synchronisation ?")) {
+//					HistoryDao historyDao = new HistoryDaoHibernate();
+//					SyncHistory hisError = historyDao.loadLastError();
+//					if (hisError != null) {
+//						historyDao.delete(hisError);
+//					}
+//				}
+//			}			
+//		});
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 */
+	public void init(IWorkbench workbench) {
+		url = Activator.getDefault().getPreferenceStore().getString(SYNC_URL);
+		if(url==null || url.equals("")){
+			url = "http://localhost/synchoserver";
+			Activator.getDefault().getPreferenceStore().setValue(SYNC_URL, url);
+		}		
+		syncType = Activator.getDefault().getPreferenceStore().getInt(SYNC_TYPE);
+		loop = Activator.getDefault().getPreferenceStore().getBoolean(SYNC_LOOP);
+		period = Activator.getDefault().getPreferenceStore().getInt(SYNC_PERIOD);		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.preference.PreferencePage#isValid()
+	 */
+	public boolean isValid() {
+		
+		return super.isValid();		
+	}
+	
+	@Override
+	protected void performApply() {		
+		if(isValid()){			
+			Activator.getDefault().getPreferenceStore().putValue(SYNC_URL, urlText.getText());
+			if(bidirectionnal.getSelection())
+				syncType = 0;
+			if(sendOnly.getSelection())
+				syncType = 1;
+			if(receiveOnly.getSelection())
+				syncType = 2;
+			
+			if(automatic.getSelection()){
+				loop=true;				
+			}else{
+				loop = false;						
+			}
+			try{
+				period = Integer.parseInt(periodText.getText());
+			}catch(NumberFormatException ex){
+				period = DEFAULT_PERIOD;
+			}
+			Activator.getDefault().getPreferenceStore().setValue(SYNC_PERIOD, period);	
+			Activator.getDefault().getPreferenceStore().setValue(SYNC_LOOP, loop);
+			Activator.getDefault().getPreferenceStore().setValue(SYNC_TYPE, syncType);			
+		}		
+	}
+
+	@Override
+	public boolean performOk() {
+		if(isValid()){
+			performApply();
+			return true;
+		}
+		return false;
+	}
+	
+}
+«ENDFILE»
+«ENDDEFINE»

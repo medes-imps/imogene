@@ -1,0 +1,55 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateMessages FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateMessages FOR Project-»
+«FILE "org/imogene/sync/client/i18n/Messages.properties"-»
+
+/* terminal page texts */
+terminal_text = Terminal
+terminal_group_label = ID du Terminal
+terminal_field_label = ID du Terminal
+
+/* sync preferences texts */
+sync_text = Synchronisation
+sync_group_server = Adresse du serveur de synchronisation
+sync_field_url = URL
+sync_group_type = Type de synchronisation
+sync_bidirectionnal = Bidirectionnelle
+sync_sendonly = Envoi de donn\u00E9es seul
+sync_receiveonly = R\u00E9ception de donn\u00E9es seule
+sync_group_way = Automatique / manuel
+sync_way_manual = Manuel
+sync_way_auto = Automatique
+
+/* information view */
+sync_last_ok = Dernière réplication complète :
+sync_last_error = Dernière rélication en erreur : 
+sync_history_empty =  - 
+
+/* sync monitor texts */
+sync_monitor_view = Synchronisation
+job_sync_no = Aucune session de synchronisation n'est en cours
+job_sync_negociating = Demande d'une session de synchronisation...
+job_sync_receiving = R\u00E9ception de donn\u00E9es...
+job_sync_sending = Envoi de donn\u00E9es...
+job_sync_inactiv = Inactif
+job_sync_reception = R\u00E9ception
+job_sync_end = Session ferm\u00E9e
+job_sync_init = Initialisation
+job_sync_init_session = Initialisation d'une session
+job_sync_transmit = Transmission
+job_sync_recep_retry = Reprise sur erreur de la derni\u00E8re r\u00E9ception.
+job_sync_recep_retry_title = Reprise sur r\u00E9ception
+job_sync_send_retry = Reprise sur erreur du dernier envoi.
+job_sync_send_retry_title = Reprise sur envoi
+job_sync_error = Une erreur de synchronisation s'est produite.
+job_sync_auto = La synchronisation automatique est activ\u00E9e.
+sync_view_last_date = Derni\u00E8re synchronisation :
+
+«ENDFILE»
+«ENDDEFINE»

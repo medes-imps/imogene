@@ -1,0 +1,341 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«EXTENSION template::CommonFieldUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/table/panel/" + this.name.toFirstUpper() + "ListPanel.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.ui.table.panel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.imogene.«projectName.toLowerCase()».client.AccessManager;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»IconConstants;
+import org.imogene.«projectName.toLowerCase()».client.event.list.*;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.«projectName.toLowerCase()».client.ui.table.«name.toFirstUpper()»DynaTable;
+import org.imogene.«projectName.toLowerCase()».client.dataprovider.«name.toFirstUpper()»DataProvider;
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+import org.imogene.web.client.css.ImogResources;
+import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.IsTableFilteredEvent;
+import org.imogene.web.client.event.SelectMenuItemEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.panel.WrapperPanel;
+import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
+import org.imogene.web.client.ui.widget.PopupButton;
+import org.imogene.web.client.ui.widget.SimpleMenuItem;
+import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.Widget;
+
+
+
+/**
+ * Panel that contains the «name.toFirstUpper()» Dynatable
+ * @author Medes-IMPS
+ */
+public class «name.toFirstUpper()»ListPanel extends Composite {
+
+	private static final Binder uiBinder = GWT.create(Binder.class);
+
+	interface Binder extends UiBinder<Widget, «name.toFirstUpper()»ListPanel> {
+	}
+	
+	private static List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+	private final «projectName.toFirstUpper()»RequestFactory requestFactory;
+	private PopupButton filterButton;
+	private PopupButton plusButton;
+	private PopupButton listButton;
+	private PushButton goHomeButton;
+	
+	@UiField(provided=true)
+	ImogResources imogResources;	
+
+	@UiField(provided=true)
+	WrapperPanel wrapperPanel;
+	@UiField(provided=true)
+	«name.toFirstUpper()»DynaTable listComposite;
+	
+	
+	/**
+	 * Constructor
+	 * @param requestFactory
+	 * @param searchText text that will be used to filter the table entries
+	 */
+	public «name.toFirstUpper()»ListPanel(«projectName.toFirstUpper()»RequestFactory requestFactory, String searchText) {
+	
+		this.requestFactory = requestFactory;		
+		imogResources = GWT.create(ImogResources.class);
+		imogResources.imogStyle().ensureInjected();		
+
+		/* wrapper panel */		
+		wrapperPanel = new WrapperPanel();
+		wrapperPanel.setTitle(NLS.constants().«name.toFirstLower()»_table_text());
+		if(«projectName.toFirstUpper()»IconConstants.«name.toUpperCase()»_ICON!=null)
+			wrapperPanel.setIcon(«projectName.toFirstUpper()»IconConstants.«name.toUpperCase()»_ICON);
+		
+		/* data provider */		
+		«name.toFirstUpper()»DataProvider provider = new «name.toFirstUpper()»DataProvider(requestFactory);
+		String filteringMessage = configureDataProvider(provider, searchText);
+		if (filteringMessage != null)
+			wrapperPanel.setMessageLabel(filteringMessage);
+
+		/* dynatable */		
+		if (AccessManager.canDelete() && AccessManager.canEditForm("«name.toLowerCase()»"))		
+			listComposite = new «name.toFirstUpper()»DynaTable(requestFactory, provider, true);
+		else
+			listComposite = new «name.toFirstUpper()»DynaTable(requestFactory, provider, false);		
+
+		configureWrapperPanelForTable();
+		initWidget(uiBinder.createAndBindUi(this));	
+	}
+	
+	/**
+	 * Constructor
+	 * @param requestFactory
+	 */
+	public «name.toFirstUpper()»ListPanel(«projectName.toFirstUpper()»RequestFactory requestFactory) {
+		this(requestFactory, null);
+	}	
+
+
+	/**
+	 * Configures the Data provider that enables to get the data to feed the table that lists «name.toFirstUpper()» entries
+	 * @param provider
+	 * @param searchText
+	 * @return
+	 */
+	private String configureDataProvider(«name.toFirstUpper()»DataProvider provider, String searchText) {
+
+		String filteringMessage = null;
+		if (searchText != null) {
+			filteringMessage = provider.fullTextSearch(searchText);
+			LocalSession.get().setSearchCriterions(provider.getSearchCriterions(), filteringMessage);
+		} else {
+			ImogJunctionProxy searchCriterions = LocalSession.get().getSearchCriterions();
+			if (searchCriterions != null) {
+				provider.setSearchCriterions(searchCriterions);
+				filteringMessage = LocalSession.get().getFilteringMessage();
+			}
+		}
+		return filteringMessage;
+	}
+	
+	
+	/**
+	 * Configures the Wrapper panel to manage the actions that are related to the table that lists «name.toFirstUpper()» entries
+	 */
+	private void configureWrapperPanelForTable() {
+		
+		ImogFilterPanel filterPanel = listComposite.getFilterPanel();
+		Command createCommand = listComposite.getCreateCommand();
+		Command exportButton = listComposite.getCsvExportButton();
+		PushButton deleteButton = listComposite.getDeleteButton();
+
+		// add pager
+		wrapperPanel.addHeaderWidget(listComposite.getTablePager());
+
+		// add filter panel
+		setFilterButton(filterPanel);
+
+		// add create and export buttons
+		setOtherActions(createCommand, exportButton);
+
+		// add delete button
+		if (deleteButton != null)
+			wrapperPanel.addHeaderWidget(deleteButton);
+
+		«IF !(applicationType.matches(adminType))-»
+		// add list entities actions			
+		setListActions();
+		«ENDIF-»
+		
+		// add goHome button
+		wrapperPanel.addHeaderWidget(goHomeButton());
+	}
+	
+	
+	/**
+	 * Adds a Filter button that enables to filter the table entries to the wrapper panel
+	 * @param eventBus
+	 */
+	private void setFilterButton(ImogFilterPanel filterPanel) {
+
+		if (filterPanel != null) {	
+			filterButton = new PopupButton(BaseNLS.constants().button_filter());
+			filterButton.addPopupPanelContent(filterPanel);
+			wrapperPanel.addHeaderWidget(filterButton);
+		}
+	}	
+	
+	/**
+	 * Adds create and export buttons to the wrapper panel
+	 * @param createCommand
+	 * @param exportButton
+	 */
+	private void setOtherActions(Command createCommand, Command exportCommand) {
+		
+		if (createCommand != null || exportCommand != null) {
+
+			plusButton = new PopupButton(BaseNLS.constants().button_plus());
+
+			if (createCommand != null) {
+				SimpleMenuItem item = new SimpleMenuItem(requestFactory.getEventBus(), BaseNLS
+						.constants().button_create(), createCommand);
+				plusButton.addPopupPanelContent(item);
+			}
+
+			if (exportCommand != null) {
+				SimpleMenuItem item = new SimpleMenuItem(requestFactory.getEventBus(), BaseNLS.constants().button_export(), exportCommand);
+				plusButton.addPopupPanelContent(item);
+			}
+
+			wrapperPanel.addHeaderWidget(plusButton);
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param eventBus
+	 */
+	private void setListActions() {
+		
+		listButton = new PopupButton(BaseNLS.constants().button_list());
+		
+		«EXPAND setListActions(this) FOR this.eContainer» 
+			
+		wrapperPanel.addHeaderWidget(listButton);
+	}	
+	
+	
+	/**
+	 * Adds a button that enables to go the the Home panel
+	 * @param eventBus
+	 * @return
+	 */
+	private PushButton goHomeButton() {
+		
+		goHomeButton = new PushButton(BaseNLS.constants().button_home());
+		goHomeButton.setStyleName(imogResources.imogStyle().imogButton());
+		goHomeButton.addStyleName(imogResources.imogStyle().imogButton2());
+		goHomeButton.addStyleName("Dynatable-Button");
+		return goHomeButton;
+	}
+	
+	/**
+	 * 
+	 */
+	private void setButtonHandlers() {
+		
+		final EventBus eventBus = requestFactory.getEventBus();
+		
+		// Handler for filterButton
+		if(filterButton!=null) {
+			registrations.add(eventBus.addHandler(IsTableFilteredEvent.TYPE,
+					new IsTableFilteredEvent.Handler() {
+						@Override
+						public void noticeFilteringChange(Boolean isFiltered,
+								String message) {
+							if (isFiltered) {
+								filterButton.setButtonActivatedStyle();
+								wrapperPanel.setMessageLabel(message);
+							} else {
+								filterButton.removeButtonActivatedStyle();
+								wrapperPanel.clearMessageLabel();
+							}
+						}
+					}));
+		}
+		
+		// Handler for plusButton
+		if(plusButton!=null) {
+			registrations.add(eventBus.addHandler(SelectMenuItemEvent.TYPE,
+					new SelectMenuItemEvent.Handler() {
+						@Override
+						public void selectMenuItem(SimpleMenuItem menuItem) {
+							plusButton.hidePopup();
+						}
+					}));
+		}
+		
+		// Handler for listButton		
+		if(listButton!=null) {
+			registrations.add(eventBus.addHandler(SelectMenuItemEvent.TYPE,
+					new SelectMenuItemEvent.Handler() {
+						@Override
+						public void selectMenuItem(SimpleMenuItem menuItem) {
+							listButton.hidePopup();
+						}
+					}));		
+		}
+		
+		// Handler for goHomeButton	
+		if(goHomeButton!=null) {
+			registrations.add(goHomeButton.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new GoHomeEvent());
+				}
+			}));		
+		}
+		
+	}
+	
+	@Override
+	protected void onUnload() {
+		for (HandlerRegistration r : registrations)
+			r.removeHandler();
+		registrations.clear();
+		super.onUnload();
+	}
+	
+	@Override
+	protected void onLoad() {
+		setButtonHandlers();
+		super.onLoad();
+	}
+		
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«DEFINE setListActions(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
+«DEFINE setListActions(CardEntity cardEntity) FOR Project-»		
+	«FOREACH themas AS t»
+		«FOREACH t.entities AS e-»
+		«IF (e.name!=cardEntity.name) && (e.topLevel || !e.directAccess.isEmpty)-»		
+		if (AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")) {		
+			
+			Command command = new Command() {
+				public void execute() {
+					LocalSession.get().setSearchCriterions(null, null);
+					requestFactory.getEventBus().fireEvent(new List«e.name.toFirstUpper()»Event());
+				}
+			};		
+			SimpleMenuItem item = new SimpleMenuItem(requestFactory.getEventBus(), NLS.constants().«e.name.toFirstLower()»_name_plur(), command);
+			listButton.addPopupPanelContent(item);
+		} 		
+		«ENDIF»		
+		«ENDFOREACH -»		
+	 «ENDFOREACH-»	    
+«ENDDEFINE»
+
+
+

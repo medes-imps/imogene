@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="templateBuilder" default="buildZip"> 
+
+	   <!-- Generic target to build template zips  -->
+	    <target name="buildTemplateZip">
+	        <property name="zip" value="${templateName}.zip"/>     
+	        <delete file="${zip}"/>	
+	    	<!-- Recopie le jar commun imogene automatiquement dans la partie server common -->
+	    	<eclipse.convertPath resourcePath="${templateProject}" property="templatePath"/>
+			<echo message="Cree le template ${templateName} à partir du projet ${templatePath}"/>
+
+	        <!-- Zip the template -->
+	        <zip destfile="${zip}">
+	            <zipfileset dir="${templatePath}" includes="**"  excludes="bin/**,eclipseProjectFiles/**,.settings/**,**/CVS,.classpath,.project" /> 
+	        	<zipfileset dir="${templatePath}/eclipseProjectFiles" excludes="readme.txt" prefix="" />
+	        </zip>
+	    </target>
+		
+	    
+	    <target name="buildZip">
+	    	
+	    	<!-- Appeler autant de fois que necessaire le buildTemplateZip -->
+	    	
+	        <!-- Build the template for Imogene Android app -->   
+	        <antcall target="buildTemplateZip">
+	        	<!-- Nom du projet indiqué dans le templates.xml -->
+	            <param name="templateName" value="template"/> 
+	        	<!-- Nom du projet eclipse monté dans le workspace -->
+	        	<param name="templateProject" value="org.imogene.android.template"/>
+	        </antcall>
+	    	
+	    	<!-- On refresh tous les templates générés -->
+	   	  	<eclipse.refreshLocal resource="org.imogene.android.contrib/template-site" depth="one"/>
+
+	    </target>
+
+
+</project>
+
+

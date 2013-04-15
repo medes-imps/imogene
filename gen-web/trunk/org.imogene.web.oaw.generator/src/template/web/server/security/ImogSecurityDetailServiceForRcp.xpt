@@ -1,0 +1,154 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/server/security/ImogSecurityDetailServiceForRcp.java"»
+package org.imogene.«projectName.toLowerCase()».server.security;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.web.server.identity.Identity;
+import org.imogene.web.server.identity.IdentityHelper;
+import org.imogene.web.server.security.ImogUserDetails;
+import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.ServerConstants;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+
+«FOREACH entities AS e -»
+  «EXPAND importForActor(projectName) FOR e -»
+«ENDFOREACH -»		
+	
+
+/**
+ * Manages the application access through spring security
+ * @author MEDES-IMPS
+ */
+public class ImogSecurityDetailServiceForRcp implements UserDetailsService {
+
+	private Logger logger = Logger.getLogger(ImogSecurityDetailServiceForRcp.class);
+	
+	private GenericDao dao;
+	
+	@Override
+	public UserDetails loadUserByUsername(String identityId)
+			throws UsernameNotFoundException, DataAccessException {
+		
+		ImogActor current = null;
+
+		logger.debug("Validating auhtentication for user: " + identityId);
+		
+		current = validateForImogActor(identityId);
+		if (current != null)
+			return setSessionUser(current);
+
+		return null;
+	}
+
+	/**
+	 * Sets the current user in session
+	 * @param actor the current user
+	 * @return
+	 */
+	private ImogUserDetails setSessionUser(ImogActor actor) {
+		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_USER, actor);
+		return new ImogUserDetails(actor);
+	}
+	
+	
+		
+	/**
+	 * Validates the login for the default actor
+	 * @param login the entered login
+	 * @return the DefaultUser
+	 */
+	private ImogActor validateForImogActor(String identityId) {
+	
+		HttpSession session = HttpSessionUtil.getHttpSession();
+		Map<String, Identity> identities = IdentityHelper.getIdentities(session.getServletContext());
+		
+		Identity selIdentity = identities.get(identityId);
+		if(selIdentity!=null){
+			
+			String type = selIdentity.getType();
+			try {
+				ImogActor actor = (ImogActor)Class.forName(type).newInstance();
+				actor.setId(selIdentity.getId());
+				actor.setLogin(selIdentity.getLogin());
+				actor.setPassword(selIdentity.getPassword());
+				actor.setRoles(IdentityHelper.getRoles(selIdentity.getAssignedRoles()));
+				
+				«FOREACH entities AS e ITERATOR iter -»
+					«EXPAND setMissingValues(iter.counter1) FOREACH this.entities-»
+				«ENDFOREACH-»
+
+				return actor;
+				
+			} catch (InstantiationException e) {
+				logger.error(e);
+			} catch (IllegalAccessException e) {
+				logger.error(e);
+			} catch (ClassNotFoundException e) {
+				logger.error(e);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * @param dao
+	 */
+	public void setDao(GenericDao dao) {
+		this.dao = dao;
+	}
+	
+}	
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«REM» Imports for actor «ENDREM»
+«DEFINE importForActor(String projectName) FOR CardEntity -»«ENDDEFINE»
+«DEFINE importForActor(String projectName) FOR Actor -»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+«ENDDEFINE»
+
+
+«REM» Login validation for actor «ENDREM»
+«DEFINE setMissingValues(Integer i) FOR CardEntity -»«ENDDEFINE»
+«DEFINE setMissingValues(Integer i) FOR Actor -»
+	«IF i == 1 -»
+				if(type.endsWith("«name.toFirstUpper()»")) {
+	«ELSE-»			
+				else if(type.endsWith("«name.toFirstUpper()»")) {	
+	«ENDIF-»										
+					«name.toFirstUpper()» staff = dao.load(«name.toFirstUpper()».class, selIdentity.getId());
+					if(staff!=null) {
+						«name.toFirstUpper()» staffActor = («name.toFirstUpper()»)actor;
+						
+						«FOREACH groups.fields AS f -»
+							«EXPAND setRelationFieldCard1 FOR f-»
+						«ENDFOREACH-»					
+						«FOREACH this.filters AS fil -»
+						staffActor.«EXPAND template::CommonFieldUtil::setterName FOR fil»(staff.«EXPAND template::CommonFieldUtil::getterName FOR fil»());
+						«ENDFOREACH-»
+					}
+				}
+«ENDDEFINE»
+
+«DEFINE setRelationFieldCard1 FOR FieldEntity -»«ENDDEFINE»
+«DEFINE setRelationFieldCard1 FOR RelationFieldEntity -»
+	«IF cardinality==1 -»
+	staffActor.«EXPAND template::CommonFieldUtil::setterName FOR this»(staff.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+	«ENDIF-»
+«ENDDEFINE»
+
+

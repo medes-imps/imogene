@@ -1,0 +1,109 @@
+import core; 
+
+
+  // An extension to test filed with a specific type presence.
+boolean isTypePresent(List fields, String type) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isTypePresent(java.util.List, java.lang.String);
+ 
+   // An extension to test the presence of simple RelationField.
+boolean isSimpleRelationFieldPresent(List fields) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isSimpleRelationFieldPresent(java.util.List);
+
+   // An extension to test the presence of required simple RelationField.
+boolean isCommonFieldsPresent(List fields) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isCommonFieldsPresent(java.util.List);
+  
+
+   // An extension to test the presence of required simple RelationField.
+boolean isRequiredSimpleRelationFieldPresent(List fields) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isRequiredSimpleRelationFieldPresent(java.util.List);
+  
+  // An extension to get the presence of comple RelationField.
+boolean isMultiRelationFieldPresent(List fields) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isMultiRelationFieldPresent(java.util.List);
+
+  // An extension to get the bean property name according to upper first letters.
+boolean isMultiRelationFieldWithAssociationPresent(List fields) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isMultiRelationFieldWithAssociationPresent(java.util.List);
+
+  // An extension to test the presence of binary fields. 
+boolean isBinaryFieldPresent(List fields) :
+  JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isBinaryFieldPresent(java.util.List);
+ 
+  // An extension to calculate the modulo of 2 int.   
+Integer modulo(Integer param1, Integer param2) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.modulo(java.lang.Long,java.lang.Long);
+	  
+    // An extension that tells if a field is an adminField or a notifField.
+boolean isAdminOrNotifField(FieldEntity field, List adminFields, List notifInfos) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isAdminOrNotifField(org.imogene.model.core.FieldEntity,java.util.List,java.util.List);
+  
+ 	// An extension that gets the fields for actor administration to displayed in the table (admin or notif fields)
+List[FieldEntity] getAdministrationColumnFields(Actor actor) :
+ 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getAdministrationColumnFields(org.imogene.model.core.Actor);
+   
+    	// An extension that gets the fields for actor administration (admin or notif fields)
+List[FieldEntity] getAdministrationFields(Actor actor) :
+ 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getAdministrationFields(org.imogene.model.core.Actor);
+  
+     	// An extension that gets the fields for actor administration (admin or notif fields)
+String getFirstActorName(List entities) :
+ 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getFirstActorName(java.util.List);
+ 
+      	// An extension that gets the visible fields
+List getVisibleFields(CardEntity entity) :
+ 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getVisibleFields(org.imogene.model.core.CardEntity);
+ 
+     // An extension that tells if a field is an adminField or a notifField.
+boolean isEntityVisibilityParameter(FieldEntity field, List cardFields) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isEntityVisibilityParameter(org.imogene.model.core.FieldEntity,java.util.List);
+  
+     // An extension that tells if a field is an adminField or a notifField.
+boolean isFieldVisibilityParameter(FieldEntity field, List fieldConditions) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isFieldVisibilityParameter(org.imogene.model.core.FieldEntity,java.util.List);
+  
+      	// An extension that lists the roles that can access the entity which owns the groups
+List getEntityAccessibilityRoles(List groups) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getEntityAccessibilityRoles(java.util.List);
+   
+      	// An extension that gets the CardEntityUIFormat object for a given CardEntity
+CardEntityUIFormat getCardEntityUIFormat(CardEntity searchedCardEntity, Project project) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getCardEntityUIFormat(org.imogene.model.core.CardEntity, org.imogene.model.core.Project);   
+  
+      	// An extension that lists the roles that can access the entity which owns the groups
+List[RelationFieldEntity] getHierarchicalFilterChilds(RelationFieldEntity searchedField, List entityFields) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getHierarchicalFilterChilds(org.imogene.model.core.RelationFieldEntity, java.util.List);  
+
+boolean hasChildsWithVisibilityDependent(FieldEntity searchedField, List entityFields) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasChildsWithVisibilityDependent(org.imogene.model.core.FieldEntity, java.util.List);  
+
+boolean FieldDependentVisibilityContainedInList(List fieldDependentVisibilityList, List entityFields) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.FieldDependentVisibilityContainedInList(java.util.List, java.util.List);  
+	
+      	// An extension that lists the roles that can access the entity which owns the groups
+List[CardEntity] getCardEntitiesWithoutThema(Project project) :
+	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getCardEntitiesWithoutThema(org.imogene.model.core.Project); 
+	
+  		// An extension to get the presence of translatable text fields.
+boolean isTranslatableFieldPresent(List fields) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isTranslatableFieldPresent(java.util.List);
+ 
+  		// An extension to get the presence of a nested form with card n text fields.
+boolean hasNestedFormWithCardN(List fields) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasNestedFormWithCardN(java.util.List);
+  	
+  	  	// An extension to get the presence of a nested form.
+boolean hasNestedForm(List fields) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasNestedForm(java.util.List);
+  	
+  	  	// An extension to get the presence of a dynamic fields form in a list of cardentity
+boolean hasDynamicFields(List entities) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasDynamicFields(java.util.List);
+  	
+  	  	// An extension to get the presence of notification infos in a list of cardentity
+boolean hasNotifications(List entities) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasNotifications(java.util.List);
+  
+boolean logMessage(String message) :
+ 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.logMessage(java.lang.String);
+   

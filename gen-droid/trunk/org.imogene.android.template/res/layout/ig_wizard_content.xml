@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<org.imogene.android.widget.field.ImogBeanWizardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ig_wizard"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <org.imogene.android.widget.field.FieldFlipper
+        android:id="@+id/ig_flipper"
+        android:layout_width="fill_parent"
+        android:layout_height="150dip"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/ig_constraints"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ig_flipper"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:textColor="@color/ig_required_text"
+        android:textSize="@dimen/ig_text_size_small"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/ig_buttons_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="54dip"
+        android:layout_alignParentBottom="true"
+        android:background="@android:drawable/bottom_bar" >
+
+        <Button
+            android:id="@+id/ig_previous_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@drawable/ig_button_indicator_previous"
+            android:minWidth="@dimen/ig_button_minWidth"
+            android:text="@string/ig_wizard_previous" />
+
+        <Button
+            android:id="@+id/ig_next_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawableRight="@drawable/ig_button_indicator_next"
+            android:minWidth="@dimen/ig_button_minWidth"
+            android:text="@string/ig_wizard_next" />
+
+        <Button
+            android:id="@+id/ig_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawableRight="@drawable/ig_button_indicator_next"
+            android:minWidth="@dimen/ig_button_minWidth"
+            android:text="@string/ig_wizard_finish"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</org.imogene.android.widget.field.ImogBeanWizardView>

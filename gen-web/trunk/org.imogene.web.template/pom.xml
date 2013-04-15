@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- POM file generated with GWT webAppCreator -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.imogene</groupId>
+	<artifactId>org.imogene.web.template</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1</version>
+
+	<properties>
+		<gwtVersion>2.4.0</gwtVersion>
+		<springVersion>3.0.5.RELEASE</springVersion>
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<!-- GWT dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.web.bindery</groupId>
+			<artifactId>requestfactory-apt</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.web.bindery</groupId>
+			<artifactId>requestfactory-server</artifactId>
+			<version>${gwtVersion}</version>
+		</dependency>
+
+		<!-- GWT voice -->
+		<dependency>
+			<groupId>com.allen-sauer.gwt.voices</groupId>
+			<artifactId>gwt-voices</artifactId>
+			<version>2.1.8</version>
+		</dependency>
+
+		<!-- GWT upload -->
+		<dependency>
+			<groupId>com.googlecode.gwtupload</groupId>
+			<artifactId>gwtupload</artifactId>
+			<version>0.6.4</version>
+		</dependency>
+
+		<!-- Validation -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<classifier>sources</classifier>
+			<version>1.0.0.GA</version>
+		</dependency>
+
+		<!-- Imogene -->
+		<dependency>
+			<groupId>org.imogene.lib</groupId>
+			<artifactId>common-library</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.imogene.lib</groupId>
+			<artifactId>encryption</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+		<!-- Spring framework -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+
+		<!-- spring security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.6.10.Final</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>3.6.10.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.6.10.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.0.Final</version>
+		</dependency>
+
+		<!--JDBC -->
+		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+		</dependency>
+
+
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.allen-sauer.gwt.dnd</groupId>
+			<artifactId>gwt-dnd</artifactId>
+			<version>3.1.2-fix</version>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901.jdbc4</version>
+		</dependency>
+
+
+		<!-- BIRT -->
+		<dependency>
+			<groupId>org.eclipse.birt.runtime</groupId>
+			<artifactId>org.eclipse.birt.runtime</artifactId>
+			<version>4.2.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.birt.runtime.3_7_1</groupId>
+					<artifactId>org.apache.commons.codec</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.birt.runtime.3_7_1</groupId>
+					<artifactId>org.apache.commons.logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.birt.runtime.3_7_1</groupId>
+					<artifactId>org.apache.batik.pdf</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- dependencies provided directly by apache -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<!-- modified batik.pdf dependency provided by medes -->
+		<dependency>
+			<groupId>fr.medes</groupId>
+			<artifactId>org.apache.batik.pdf</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.medes</groupId>
+			<artifactId>org.eclipse.birt.report.engine.emitter.csv</artifactId>
+			<version>1.0.0.201110121016</version>
+		</dependency>
+
+		<!-- MISC -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- build -->
+	<build>
+
+		<!-- resources -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/web/resources</directory>
+			</resource>
+		</resources>
+
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+
+		<plugins>
+			<!-- GWT Maven Plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${gwtVersion}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test</goal>
+							<!-- <goal>i18n</goal> -->
+							<!-- <goal>generateAsync</goal> -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<extraJvmArgs>-Dimogene.identity.path=/tmp/imogene/identity
+						-Dimogene.binary.path=/tmp/imogene/binary -Xmx1024m
+						-XX:MaxPermSize=512m</extraJvmArgs>
+					<runTarget>TBLabWebIndex.jsp</runTarget>
+					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<port>8889</port>
+					<!--<i18nMessagesBundle>fr.medes.cadobs.scheduler.client.Messages</i18nMessagesBundle> -->
+				</configuration>
+			</plugin>
+
+			<!-- WAR plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>WEB-INF/application.properties</include>
+							</includes>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+			<!-- java compiler -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.web.bindery</groupId>
+						<artifactId>requestfactory-apt</artifactId>
+						<version>${gwtVersion}</version>
+					</dependency>
+				</dependencies>
+
+			</plugin>
+
+			<!--Generated files -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<!-- <source>.apt_generated</source> -->
+								<source>target/generated-sources/annotations</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Tomcat deployment -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<!-- Tomcat 7 URL -->
+					<warFile>${project.build.directory}/${project.build.finalName}.war</warFile>
+					<url>${server.url}</url>
+					<server>${server.server}</server>
+					<path>/${webapp.path}</path>
+				</configuration>
+			</plugin>
+
+			<!-- Maven eclipse -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+
+					<additionalBuildcommands>
+						<buildcommand>com.google.gdt.eclipse.core.webAppProjectValidator</buildcommand>
+						<buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
+					</additionalBuildcommands>
+
+					<classpathContainers>
+						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
+					</classpathContainers>
+
+					<additionalConfig>
+						<file>
+							<name>.factorypath</name>
+							<content>
+								<![CDATA[<factorypath>
+<factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
+<factorypathentry kind="WKSPJAR" id="/${project.artifactId}/gwt-deps/requestfactory-apt.jar" enabled="true" runInBatchMode="false"/>
+</factorypath>]]>
+							</content>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
+							<content>
+								<![CDATA[eclipse.preferences.version=1
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=target/generated-sources/annotations
+org.eclipse.jdt.apt.processorOptions/verbose=false
+org.eclipse.jdt.apt.reconcileEnabled=true]]>
+							</content>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.jdt.core.prefs</name>
+							<!-- instead of doing this add org.eclipse.jdt.core.compiler.processAnnotations=enabled 
+								to the file directly -->
+							<content>
+								<![CDATA[org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+eclipse.preferences.version=1
+org.eclipse.jdt.core.compiler.source=1.6
+org.eclipse.jdt.core.compiler.compliance=1.6
+org.eclipse.jdt.core.compiler.processAnnotations=enabled]]>
+							</content>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.wst.common.project.facet.core.xml</name>
+							<content>
+   								<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<faceted-project>
+  <installed facet="java" version="1.6"/>
+  <installed facet="jst.web" version="2.5"/>
+  <installed facet="wst.jsdt.web" version="1.0"/>
+</faceted-project>]]>
+							</content>
+						</file>
+						<file>
+							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
+							<content>
+   								<![CDATA[eclipse.preferences.version=1
+jarsExcludedFromWebInfLib=
+lastWarOutDir=${basedir}/target/${project.artifactId}-${project.version}
+warSrcDir=src/main/webapp
+warSrcDirIsOutput=false]]>
+							</content>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.wst.common.component</name>
+							<content>
+							<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="${project.artifactId}">
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/annotations"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/" source-path="/target/${project.artifactId}-${project.version}"/>
+        <property name="context-root" value="${project.artifactId}"/>
+        <!--<property name="java-output-path" value="/${project.artifactId}/war/WEB-INF/classes"/>-->
+    </wb-module>
+</project-modules>]]>
+							</content>
+						</file>
+					</additionalConfig>
+
+					<additionalProjectnatures>
+						<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+						<projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
+						<projectnature>org.eclipse.wst.jsdt.core.jsNature</projectnature>
+					</additionalProjectnatures>
+
+					<wtpversion>R7</wtpversion>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-war-plugin
+										</artifactId>
+										<versionRange>
+											[2.1.1,)
+										</versionRange>
+										<goals>
+											<goal>exploded</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											gwt-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.4.0,)
+										</versionRange>
+										<goals>
+											<goal>i18n</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+</project>

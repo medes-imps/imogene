@@ -1,0 +1,66 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/shared/proxy/" + this.name.toFirstUpper() + "Proxy.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».shared.proxy;
+
+import java.util.Date;
+import java.util.List;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».server.locator.«name.toFirstUpper()»Locator;
+import org.imogene.web.shared.proxy.BinaryProxy;
+«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+import org.imogene.web.shared.proxy.ImogActorProxy;
+import org.imogene.admin.client.i18n.AdminNLS;
+«ELSE-»
+import org.imogene.web.shared.proxy.ImogBeanProxy;
+«ENDIF-»
+
+import org.imogene.web.shared.proxy.GeoFieldProxy;
+«IF hasDynamicFields -»
+import org.imogene.web.shared.proxy.DynamicFieldInstanceProxy;
+«ENDIF-»
+
+import com.google.web.bindery.requestfactory.shared.ProxyFor;
+
+
+/**
+ * «name.toFirstUpper()» proxy 
+ * @author Medes-IMPS
+ */
+@ProxyFor(value=«name.toFirstUpper()».class, locator=«name.toFirstUpper()»Locator.class)
+public interface «name.toFirstUpper()»Proxy extends «IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»ImogActorProxy«ELSE-»ImogBeanProxy«ENDIF-» {
+	
+	«FOREACH groups AS g»
+	/* «g.name.toFirstUpper()» section fields */	
+	«FOREACH g.fields AS f »
+	«EXPAND template::web::WebFieldUtil::getterDeclarationForProxyField FOR f-»
+	«EXPAND template::web::WebFieldUtil::setterDeclarationForProxyField FOR f-»
+	«ENDFOREACH -»	
+	«ENDFOREACH»
+	
+	«IF hasDynamicFields -»
+	/* Dynamic fields management */
+	public List<DynamicFieldInstanceProxy> getDynamicFieldValues();
+	public void setDynamicFieldValues(List<DynamicFieldInstanceProxy> value);
+	«ENDIF-»
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»	
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+	/* FilterFields section fields */
+			«FOREACH ((Actor)this).filters AS fil-»
+	public List<«fil.entity.name.toFirstUpper()»Proxy> «EXPAND template::CommonFieldUtil::getterName FOR fil»List();
+	public void «EXPAND template::CommonFieldUtil::setterName FOR fil»List(List<«fil.entity.name.toFirstUpper()»Proxy> value);			
+			«ENDFOREACH-»
+		«ENDIF-»
+
+	«ENDIF-»
+	
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»

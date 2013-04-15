@@ -1,0 +1,268 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+
+	«EXPAND createListEditor(packageName, projectName) FOREACH groups.fields»
+
+«ENDDEFINE»
+
+
+«DEFINE createListEditor(String packageName, String projectName) FOR FieldEntity»«ENDDEFINE»
+«DEFINE createListEditor(String packageName, String projectName) FOR RelationFieldEntity»
+«IF nestedForm && entity.nestedFields!=null && !entity.nestedFields.isEmpty && cardinality==-1 || cardinality>1-»
+«FILE projectName.toLowerCase()+ "/client/ui/editor/nested/" + parentGroup.parentCard.name.toFirstUpper() + name.toFirstUpper() + "ListEditor.java"-»
+package org.imogene.«projectName.toLowerCase()».client.ui.editor.nested;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
+import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.parentCard.name.toFirstUpper()»Request;
+
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.field.ImogField;
+import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.client.util.ImogKeyGenerator;
+import org.imogene.web.shared.proxy.GeoFieldProxy;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Ignore;
+import com.google.gwt.editor.client.IsEditor;
+import com.google.gwt.editor.client.adapters.EditorSource;
+import com.google.gwt.editor.client.adapters.ListEditor;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+
+/**
+ * Editor that provides the UI components to manage the list of «entity.name.toFirstUpper()»EditorNestedForm
+ * in the «parentGroup.parentCard.name.toFirstUpper()» editor
+ * @author MEDES-IMPS
+ */
+public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor extends Composite implements IsEditor<ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm>> {
+
+	private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
+
+	interface EditorUiBinder extends UiBinder<Widget, «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor> {	}
+
+	protected final «projectName.toFirstUpper()»RequestFactory requestFactory;	
+	private «entity.name.toFirstUpper()»ListEditorSource editorSource;
+	//private ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedRow> editor;
+	private ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm> editor;
+	private «parentGroup.parentCard.name.toFirstUpper()»Request request;
+
+
+	@UiField(provided = true)
+	@Ignore
+	FieldGroupPanel listSection;
+	@UiField(provided = true)
+	VerticalPanel listContainer;
+	@UiField(provided = true)
+	@com.google.gwt.editor.client.Editor.Ignore
+	Image addItem;
+
+	«REM»/* header row (field names) */
+	«FOREACH entity.nestedFields AS f -»
+	@UiField
+	@Ignore
+	Label «EXPAND template::CommonFieldUtil::propertyName FOR f»Label;	
+	«ENDFOREACH -»«ENDREM»	
+
+	public «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor(«projectName.toFirstUpper()»RequestFactory factory) {
+
+		this.requestFactory = factory;
+		editorSource = new «entity.name.toFirstUpper()»ListEditorSource();
+		editor = ListEditor.of(editorSource);
+
+		listContainer = new VerticalPanel();
+		addItem = new Image(GWT.getModuleBaseURL() + "images/relation_add.png");
+		addItem.setTitle(BaseNLS.constants().button_add());
+
+		listSection = new FieldGroupPanel();
+		listSection.setGroupTitle(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		listSection.setLabelFontSize("12px");
+		listSection.addStyleName("fieldGroup-ListEditor");
+
+		initWidget(uiBinder.createAndBindUi(this));
+	«REM»	
+	«FOREACH entity.nestedFields AS f -»
+		«EXPAND template::CommonFieldUtil::propertyName FOR f»Label.setText(NLS.constants().«entity.name.toFirstLower()»_field_«f.name.toFirstLower()»());
+	«ENDFOREACH -»«ENDREM»	
+	}
+
+	/**
+	 * Remove the «entity.name.toFirstUpper()» at the specified index
+	 * @param index of the «entity.name.toFirstUpper()»
+	 */
+	private void remove(int index) {
+		editor.getList().remove(index);
+	}
+
+	/**
+	 * Get the «entity.name.toFirstUpper()» at the specified index
+	 * @param index of the «entity.name.toFirstUpper()»
+	 */
+	private «entity.name.toFirstUpper()»Proxy getProxy(int index) {
+		return editor.getList().get(index);
+	}
+
+	@Override
+	public ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm> asEditor() {
+		return editor;
+	}
+
+	@UiHandler("addItem")
+	void onAddClick(ClickEvent event) {
+		add();
+	}
+
+	/**
+	 * Adds a new value to the editor list
+	 * Prerequisite: Context must have been set through the SetRequestContext method
+	 */
+	private void add() {
+		«entity.name.toFirstUpper()»Proxy new«entity.name.toFirstUpper()» = request.create(«entity.name.toFirstUpper()»Proxy.class);
+		new«entity.name.toFirstUpper()».setId(ImogKeyGenerator.generateKeyId("«entity.shortName»"));
+		new«entity.name.toFirstUpper()».setVersion(0);
+		«EXPAND template::web::client::ui::editor::entityEditorWorkflow::defaultValue("new" + entity.name.toFirstUpper()) FOREACH entity.nestedFields-»
+		//request.save«name.toFirstUpper()»(new«entity.name.toFirstUpper()», true);
+		
+		addValue(new«entity.name.toFirstUpper()», true);
+	}
+	
+	/**
+	 * Adds a list of values to the editor list
+	 */
+	private void addValue(«entity.name.toFirstUpper()»Proxy value, boolean isNew) {
+		if(value!=null) {
+			if (editor.getList() == null)
+				editor.setValue(new ArrayList<«entity.name.toFirstUpper()»Proxy>());
+			editor.getList().add(value);
+			updateIndex();
+			
+			// update subeditor
+			List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+			«entity.name.toFirstUpper()»EditorNestedForm subEditor = editors.get(editors.size() - 1);
+			subEditor.setNewProxy(isNew);
+			subEditor.computeVisibility(null, true);
+			subEditor.setEdited(true);					
+		}
+	}	
+
+
+	public void up(«entity.name.toFirstUpper()»EditorNestedForm editor) {
+		int currentIndex = listContainer.getWidgetIndex(editor);
+		if (currentIndex > 0) {
+			listContainer.insert(editor, currentIndex - 1);
+			updateIndex();
+		}
+	}
+
+	public void down(«entity.name.toFirstUpper()»EditorNestedForm editor) {
+		int currentIndex = listContainer.getWidgetIndex(editor);
+		if (currentIndex < listContainer.getWidgetCount() + 1) {
+			listContainer.insert(editor, currentIndex + 2);
+			updateIndex();
+		}
+	}
+	
+	private void updateIndex() {
+		int count = listContainer.getWidgetCount();
+		for (int i = 0; i < count; i++) {
+			«entity.name.toFirstUpper()»EditorNestedForm subEditor = («entity.name.toFirstUpper()»EditorNestedForm) listContainer.getWidget(i);
+			subEditor.setIndex(i);
+		}
+	}
+
+
+	public void setRequestContext(«parentGroup.parentCard.name.toFirstUpper()»Request ctx) {
+		this.request = ctx;
+	}
+
+
+	public void setEdited(boolean isEdited) {
+
+		List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+		if (editors != null && editors.size() > 0) {
+			for («entity.name.toFirstUpper()»EditorNestedForm subEditor : editors)
+				subEditor.setEdited(isEdited);
+		}
+		addItem.setVisible(isEdited);
+	}
+	
+	public void computeVisibility(ImogField<?> source, boolean allValidation) {
+
+		List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+		if (editors != null && editors.size() > 0) {
+			for («entity.name.toFirstUpper()»EditorNestedForm subEditor : editors)
+				subEditor.computeVisibility(source, allValidation);
+		}
+	}
+	
+	/**
+	 * Validate nested forms fields values
+	 */
+	public void validateFields() {
+		
+		List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+		if (editors != null && editors.size() > 0) {
+			for («entity.name.toFirstUpper()»EditorNestedForm subEditor : editors)
+				subEditor.validateFields();
+		}	
+	}
+
+
+	/**
+	 * Internal class
+	 */
+	private class «entity.name.toFirstUpper()»ListEditorSource extends EditorSource<«entity.name.toFirstUpper()»EditorNestedForm> {
+
+		@Override
+		public «entity.name.toFirstUpper()»EditorNestedForm create(int index) {
+			
+			final «entity.name.toFirstUpper()»EditorNestedForm subEditor = new «entity.name.toFirstUpper()»EditorNestedForm(requestFactory);
+			subEditor.setIndex(index);
+			listContainer.insert(subEditor, index);
+
+			subEditor.setDeleteClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					if (Window.confirm(BaseNLS.constants().confirmation_delete())) {
+						«entity.name.toFirstUpper()»Proxy proxy = getProxy(subEditor.getIndex());
+						if(!subEditor.isNewProxy())
+							request.delete«name.toFirstUpper()»(proxy);
+						remove(subEditor.getIndex());
+						updateIndex();
+					}
+				}
+			});
+			return subEditor;
+		}
+
+		@Override
+		public void dispose(«entity.name.toFirstUpper()»EditorNestedForm subEditor) {
+			subEditor.removeFromParent();
+		}
+
+		@Override
+		public void setIndex(«entity.name.toFirstUpper()»EditorNestedForm subEditor, int index) {
+			listContainer.insert(subEditor, index);
+		}
+	}
+}
+«ENDFILE»
+«ENDIF-»
+«ENDDEFINE»

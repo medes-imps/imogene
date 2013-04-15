@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.dao.contrib.objectContribution1"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.dao.contrib.DaoGenerationAction"
+               icon="icons/dao_24.png"
+               id="org.imogene.dao.contrib.WebGenerationAction"
+               label="Dao generation"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.imogene.web.contrib.specificWorkflow" name="Specific Workflow" schema="schema/org.imogene.web.contrib.specificWorkflow.exsd"/>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.web.contrib.objectContribution1"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.web.contrib.WebGenerationAction"
+               icon="icons/web_16.png"
+               id="org.imogene.web.contrib.WebGenerationAction"
+               label="Web application generation"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="org.imogene.web.contrib.builder.GWTJarBuilder"
+         name="GWT jar import"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.imogene.web.contrib.builder.GWTJarBuilder">
+         </run>
+      </builder>
+   </extension>
+</plugin>

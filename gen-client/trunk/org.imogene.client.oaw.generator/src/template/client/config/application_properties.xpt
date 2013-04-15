@@ -1,0 +1,36 @@
+«IMPORT core»
+«DEFINE generate(String applicationType, String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter, String audioConverter) FOR Project»
+«FILE "application.properties"»
+«LET "sync.plugin" AS pluginType»
+# JDBC properties
+«IF applicationType.matches(pluginType)-»
+jdbc.driverClassName=org.apache.derby.jdbc.ClientDriver
+jdbc.url=jdbc:derby://localhost:1493/«name.toLowerCase()»;create=true
+jdbc.username=admin
+jdbc.password=admin
+«ELSE-»
+jdbc.driverClassName=org.apache.derby.jdbc.EmbeddedDriver
+jdbc.url=jdbc:derby:/home/julien/clienttest/«name.toLowerCase()»;create=true
+jdbc.username=admin
+jdbc.password=admin
+«ENDIF-»
+hibernate.dialect=org.hibernate.dialect.DerbyDialect
+
+# Binary management as File.
+# WARNING : On windows please use '/' in place of '\'.
+«IF applicationType.matches(pluginType)-»
+sync.file.directory=%PLATFORM%/sync
+«ELSE-»
+sync.file.directory=/home/julien/clienttest/sync
+«ENDIF-»
+
+# Binary management as File.
+# WARNING : On windows please use '/' in place of '\'.
+«IF  applicationType.matches(pluginType)-»
+binary.file.directory=%PLATFORM%/binary
+«ELSE-»
+binary.file.directory=«binariesPath»
+«ENDIF-»
+«ENDLET»
+«ENDFILE»
+«ENDDEFINE»

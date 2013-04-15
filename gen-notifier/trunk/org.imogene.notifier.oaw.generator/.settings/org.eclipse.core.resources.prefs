@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//src/notifier/template/config/application_properties.xpt=ISO-8859-1
+encoding//src/notifier/template/config/dao_context_xml.xpt=ISO-8859-1
+encoding//src/notifier/template/config/persistence_xml.xpt=ISO-8859-1
+encoding//src/workflow/generatorNotif.mwe=ISO-8859-1

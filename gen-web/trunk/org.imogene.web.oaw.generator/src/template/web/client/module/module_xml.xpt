@@ -1,0 +1,56 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String modelName, String projectName, String navigators, String applicationType) FOR Project-»
+«FILE modelName.toLowerCase()+"/Imog"+modelName.toFirstUpper() + ".gwt.xml"-»
+«LET "admin" AS adminType-»
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
+	
+<!-- The Imog module declaration -->
+<module rename-to="imog«projectName.toLowerCase()»"> 
+  
+  	<!-- Inherit the core Web Toolkit stuff.-->  
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.google.gwt.editor.Editor' />
+	<inherits name='com.google.gwt.logging.Logging' />
+	<inherits name='com.google.web.bindery.requestfactory.RequestFactory' />
+	<inherits name="com.google.gwt.i18n.I18N" />
+    
+	<!-- Other module inherits -->
+	<inherits name="org.imogene.web.ImogBase" />
+	<inherits name="org.imogene.lib.common.ImogeneCommon" />
+	«IF applicationType.matches(adminType)-»
+	<inherits name="org.imogene.admin.ImogAdmin" />
+	«ENDIF-»
+  
+	<!-- Available locales -->
+	«IF languages!=null && languages.size>0-»
+	«FOREACH languages AS l-»
+	<extend-property name="locale" values="«l.isoCode»"/>
+	«ENDFOREACH-»
+	<set-property name="locale" value="«FOREACH languages AS l SEPARATOR ","»«l.isoCode»«ENDFOREACH»"/>
+	«ENDIF-»
+  
+	<!-- Available Web Browsers -->
+  	<set-property name="user.agent" value="«navigators»" />
+  	
+	<!-- Logging parameters -->
+	<set-property name="gwt.logging.enabled" value="TRUE" />
+	<set-property name="gwt.logging.logLevel" value="SEVERE" />
+	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
+	<set-property name="gwt.logging.developmentModeHandler"	value="ENABLED" />
+	<set-property name="gwt.logging.firebugHandler" value="ENABLED" />
+	<set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
+	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	<set-property name="gwt.logging.systemHandler" value="ENABLED" />
+	<set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />  	
+     
+	<!-- Module Entry Point -->
+	<entry-point class='«packageName».«modelName.toLowerCase()».client.«modelName.toFirstUpper()»EntryPoint'/>
+  
+	<!-- Module sources -->
+	<source path="client"/>  
+	<source path="shared"/>  
+</module>
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»

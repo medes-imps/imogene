@@ -1,0 +1,90 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/client/ui/panel/TopBannerPanel.ui.xml"»
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:style src="../../../../web/client/css/ImogCss.css">
+		
+		.appliTopPanel {
+			height: 40px;
+			width: 100%;
+			border-bottom-width: 1px;
+			border-bottom-style: solid;
+			border-bottom-color: black;
+			padding-right: 5px;
+			padding-left: 5px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			background-color: #2D2D2D;
+			margin-bottom: 50px;
+		}
+		
+		.title {
+			color: #BBB !important;
+			font-weight: bold;
+			font-size: 14px;
+		}
+		
+		.actorInfo {
+			color: #BBB !important;
+			font-size: 12px;
+		}
+		.imogene-locBox {
+			border: 1px solid #FFFFFF;
+			color: #444444;
+			font-size: 12px;
+			background-color: #FFFFFF;
+			width: 80px;
+		}	
+
+		@if user.agent ie6 ie8 {
+			.icon {
+				height: 32px;
+				margin-left: 2px;
+			}	
+		}
+		@else {
+			.icon {
+			}
+		}
+
+		@if user.agent ie6 ie8 {
+			.topPanel-space {
+				margin-left: 10px;
+				margin-right: 4px;
+			}
+		}
+		@else {
+			.topPanel-space {
+				margin-left: 10px;
+			}
+		}
+	</ui:style>
+
+
+	<g:HorizontalPanel stylePrimaryName="{style.appliTopPanel}" verticalAlignment="middle">
+	
+		<g:cell horizontalAlignment="left" verticalAlignment="middle" width="32px" styleName="{style.icon}">
+			<g:Image ui:field="appliIcon" width="32px" styleName="{style.icon}"/>
+		</g:cell>
+		<g:cell horizontalAlignment="center" verticalAlignment="middle">
+			<g:Label ui:field="appliTitle" styleName="{style.title}"/>
+		</g:cell>
+		<g:cell horizontalAlignment="right" verticalAlignment="middle" width="70px">
+			<g:ListBox ui:field="locBox" styleName="{style.imogene-locBox}"/>
+		</g:cell>		
+		<g:cell horizontalAlignment="right" verticalAlignment="middle"  width="180px">
+			<g:HTML ui:field="actorInfo" styleName="{style.actorInfo} {style.topPanel-space}" />
+		</g:cell>
+		<g:cell horizontalAlignment="right" verticalAlignment="middle" width="80px">
+			<g:PushButton ui:field="logout" styleName="{style.imogButton} {style.imogButton2} {style.topPanel-space}" />
+		</g:cell>				
+		
+	</g:HorizontalPanel>
+
+
+</ui:UiBinder>
+«ENDFILE-»
+«ENDDEFINE»

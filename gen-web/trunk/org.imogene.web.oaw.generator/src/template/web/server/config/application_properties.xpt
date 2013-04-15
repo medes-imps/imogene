@@ -1,0 +1,24 @@
+«IMPORT core»
+«DEFINE generate(String projectName, String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter) FOR Project»
+«FILE "application.properties"»
+# JDBC properties
+jdbc.driverClassName=«jdbcDriver»
+jdbc.url=«jdbcPath»
+jdbc.username=«jdbcLogin»
+jdbc.password=«jdbcPassword»
+hibernate.dialect=«hibernateDialect»
+
+# Notification properties
+notifier.server=«notifierUrl»
+
+# The binary path 
+# WARNING : On windows, please use '/' in place of '\'
+binary.path=«binariesPath»
+
+# The command line used to convert the video file to the flv format.
+# ie : ffmpeg -i %IN% -f flv %OUT%
+# WARNING : On windows, if replace '\' by "/" in your path.
+converter.video=«videoConverter»
+
+«ENDFILE»
+«ENDDEFINE»

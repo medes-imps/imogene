@@ -1,0 +1,428 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase()+"/client/ui/panel/HomePanel.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.ui.panel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+
+import org.imogene.«projectName.toLowerCase()».client.AccessManager;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»IconConstants;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.web.client.ui.panel.EntityPanel;
+import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.util.LocalSession;
+
+«FOREACH this.entities AS e-»
+«IF e.topLevel || !e.directAccess.isEmpty-»
+import org.imogene.«projectName.toLowerCase()».client.event.create.Create«e.name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.event.list.List«e.name.toFirstUpper()»Event;
+«ENDIF-»
+«ENDFOREACH -»
+
+«IF applicationType.matches(adminType)-»
+import org.imogene.admin.client.AdminIconConstants;
+import org.imogene.admin.client.event.create.CreateNotificationEvent;
+import org.imogene.admin.client.event.list.ListNotificationEvent;
+import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.web.client.dynamicfields.i18n.DynFieldsNLS;
+import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
+import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
+import org.imogene.web.client.util.ImogRoleUtil;
+«ENDIF-»
+
+
+/**
+ * Home panel of the application
+ * @author Medes-IMPS
+ */
+public class HomePanel extends Composite {
+
+	interface Binder extends UiBinder<Widget, HomePanel> {
+	}
+
+	private static final Binder BINDER = GWT.create(Binder.class);
+	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+
+	private EventBus eventBus;
+
+	@UiField(provided = true)
+	HTML welcomeMessage;
+	@UiField
+	ScrollPanel scrollPanel;
+	
+«IF applicationType.matches(adminType)-»
+	/* thema  Users */
+	@UiField(provided = true)
+	FieldGroupPanel temaUsers;
+	«FOREACH entities AS e-»
+	«IF Actor.isAssignableFrom(e.metaType)-»
+	@UiField(provided = true)
+	EntityPanel «e.name.toFirstLower()»;	
+	«ENDIF-»
+	«ENDFOREACH -»
+
+	/* thema  Administration */
+	@UiField(provided = true)
+	FieldGroupPanel temaAdministration;
+	@UiField(provided = true)
+	EntityPanel notification;
+	@UiField(provided = true)
+	EntityPanel dynamicField_Template;
+«ELSE-»
+	«IF themas!=null && themas.size>0-»	
+		«FOREACH themas AS t»
+		/* thema  «t.name» */
+		@UiField(provided = true)	
+		FieldGroupPanel tema«t.name.toFirstUpper()»;	
+		«FOREACH t.entities AS e-»
+		«IF e.topLevel || !e.directAccess.isEmpty-»
+		@UiField(provided = true)
+		EntityPanel «e.name.toFirstLower()»;
+		«ENDIF-»
+		«ENDFOREACH -»
+		«ENDFOREACH»
+	«ELSE-»
+		/* thema  default */
+		@UiField(provided = true)	
+		FieldGroupPanel defaultTema;	
+		«FOREACH entities AS e-»
+		«IF e.topLevel || !e.directAccess.isEmpty-»
+		@UiField(provided = true)
+		EntityPanel «e.name.toFirstLower()»;
+		«ENDIF-»
+		«ENDFOREACH -»
+	«ENDIF-»
+«ENDIF-»	
+
+
+	
+	/**
+	 * 
+	 * @param eventBus
+	 */
+	public HomePanel(EventBus eventBus) {
+		
+		this.eventBus = eventBus;
+		welcomeMessage = new HTML(BaseNLS.messages().welcome_message(NLS.constants().application_title()));
+		
+«IF applicationType.matches(adminType)-»
+		/* thema  Users */
+		temaUsers = new FieldGroupPanel();
+		temaUsers.setGroupTitle(AdminNLS.constants().thema_users());
+		«FOREACH entities AS e-»
+		«IF Actor.isAssignableFrom(e.metaType)-»
+		if («projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON != null)
+			«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
+		else
+			«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name());	
+		«ENDIF-»
+		«ENDFOREACH -»		
+
+		/* thema  Administration */
+		temaAdministration = new FieldGroupPanel();
+		temaAdministration.setGroupTitle(AdminNLS.constants().thema_administration());
+		notification = new EntityPanel(AdminNLS.constants().notification_name(), AdminIconConstants.NOTIFICATION_ICON);
+		dynamicField_Template = new EntityPanel(DynFieldsNLS.constants().dynamicField_Template_name(), AdminIconConstants.DYNAMICFIELD_TEMPLATE_ICON);
+«ELSE-»
+	«IF themas!=null && themas.size>0-»		
+			«FOREACH themas AS t»
+			/* thema  «t.name» */
+			tema«t.name.toFirstUpper()» = new FieldGroupPanel();
+			tema«t.name.toFirstUpper()».setGroupTitle(NLS.constants().thema_«t.name.toFirstLower()»());
+			«FOREACH t.entities AS e-»
+			«IF e.topLevel || !e.directAccess.isEmpty-»
+			if(«projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON!=null)		
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
+			else
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name());	
+			«ENDIF-»		
+			«ENDFOREACH -»		
+			«ENDFOREACH -»
+	«ELSE-»
+			defaultTema = new FieldGroupPanel();
+			defaultTema.setGroupTitle(BaseNLS.constants().thema_default());
+			«FOREACH entities AS e-»
+			«IF e.topLevel || !e.directAccess.isEmpty-»
+			if(«projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON!=null)		
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
+			else
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name());				
+			«ENDIF-»		
+			«ENDFOREACH -»		
+	«ENDIF-»
+«ENDIF-»	
+
+
+		
+		initWidget(BINDER.createAndBindUi(this));
+
+		configMenus();
+		setVisibility();
+		
+		int height = Window.getClientHeight();
+		setPanelContentHeight(height - height / 5);		
+	}
+
+	/**
+	 * Configures the menu buttons
+	 */
+	private void configMenus() {
+
+«IF applicationType.matches(adminType)-»
+	«FOREACH entities AS e-»
+	«IF Actor.isAssignableFrom(e.metaType)-»
+	«EXPAND setActions FOR e-»	
+	«ENDIF-»
+	«ENDFOREACH -»
+
+		/* Notification Menu */
+
+		if (ImogRoleUtil.isAdmin()) {
+			notification.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateNotificationEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			notification.setCreateClickHandler(null);
+
+		if (ImogRoleUtil.isAdmin()) {
+			notification.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListNotificationEvent());
+				}
+			});
+			notification.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = notification.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListNotificationEvent(searchValue));
+				}
+			});
+		} else {
+			notification.setListClickHandler(null);
+			notification.setSearchClickHandler(null);
+		}
+		
+		/* DynamicFieldTemplate Menu */
+
+		if (ImogRoleUtil.isAdmin()) {
+			dynamicField_Template.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateDynamicFieldTemplateEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			dynamicField_Template.setCreateClickHandler(null);
+
+		if (ImogRoleUtil.isAdmin()) {
+			dynamicField_Template.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListDynamicFieldTemplateEvent());
+				}
+			});
+			dynamicField_Template.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = dynamicField_Template.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListDynamicFieldTemplateEvent(searchValue));
+				}
+			});
+		} else {
+			dynamicField_Template.setListClickHandler(null);
+			dynamicField_Template.setSearchClickHandler(null);
+		}		
+«ELSE-»
+	«IF themas!=null && themas.size>0-»	
+		«EXPAND setActions FOREACH themas.entities-»
+	«ELSE-»
+		«EXPAND setActions FOREACH entities-»
+	«ENDIF-»	
+«ENDIF-»
+		
+	}
+	
+	/**
+	 * Set the menu visibility
+	 */
+	private void setVisibility() {
+	
+«IF applicationType.matches(adminType)-»
+		/* thema  Users */
+		boolean showUsersTema = false;
+		«FOREACH entities AS e-»
+		«IF Actor.isAssignableFrom(e.metaType)-»
+			«IF e.topLevel || !e.directAccess.isEmpty-»
+			if(!(AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")))
+				«e.name.toFirstLower()».setVisible(false);
+			else
+				showUsersTema = true;
+			«ENDIF-»
+		«ENDIF-»
+		«ENDFOREACH -»
+		if (!showUsersTema)
+			temaUsers.setVisible(false);
+
+		/* thema  Administration */
+		boolean showAdministrationTema = false;
+		
+		«IF hasNotifications(entities)-»
+		if (!ImogRoleUtil.isAdmin())
+			notification.setVisible(false);
+		else
+			showAdministrationTema = true;
+		«ELSE-»
+		/* no notification defined in model, panel hidden */	
+		notification.setVisible(false);
+		«ENDIF-»
+			
+		«IF hasDynamicFields(entities)-»
+		if (!ImogRoleUtil.isAdmin())
+			dynamicField_Template.setVisible(false);
+		else
+			showAdministrationTema = true;	
+		«ELSE-»
+		/* no dynamic field defined in model, panel hidden */
+		dynamicField_Template.setVisible(false);
+		«ENDIF-»
+	
+		if (!showAdministrationTema)
+			temaAdministration.setVisible(false);
+«ELSE-»
+	«IF themas!=null && themas.size>0-»
+		«FOREACH themas AS t»
+		/* thema  «t.name» */
+		boolean show«t.name.toFirstUpper()»Tema = false;
+		«FOREACH t.entities AS e-»
+		«IF e.topLevel || !e.directAccess.isEmpty-»
+		if(!(AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")))
+			«e.name.toFirstLower()».setVisible(false);
+		else
+			show«t.name.toFirstUpper()»Tema = true;
+		«ENDIF-»
+		«ENDFOREACH -»
+		if(!show«t.name.toFirstUpper()»Tema)
+			tema«t.name.toFirstUpper()».setVisible(false);
+		«ENDFOREACH -»	
+	«ELSE-»
+		«FOREACH entities AS e-»
+		«IF e.topLevel || !e.directAccess.isEmpty-»
+		if(!(AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")))
+			«e.name.toFirstLower()».setVisible(false);
+		«ENDIF-»
+		«ENDFOREACH -»
+	«ENDIF-»
+«ENDIF-»
+
+	}
+
+	/**
+	 * Sets the height of the panel that contents the entity menus
+	 * @param height
+	 */	
+	public void setPanelContentHeight(int height) {
+		scrollPanel.getElement().getStyle().clearHeight();
+		scrollPanel.getElement().getStyle().setProperty("height", height + "px");
+	}
+	
+	/**
+	 * 
+	 */
+	private void setWindowHandler() {
+		registrations.add(Window.addResizeHandler(new ResizeHandler() {
+			@Override
+			public void onResize(ResizeEvent arg0) {
+				int height = Window.getClientHeight();
+				setPanelContentHeight(height - height / 5);
+			}			
+		}));
+	}
+	
+	@Override
+	protected void onUnload() {
+		for (HandlerRegistration r : registrations)
+			r.removeHandler();
+		registrations.clear();
+		super.onUnload();
+	}
+
+	@Override
+	protected void onLoad() {
+		setWindowHandler();
+		super.onLoad();
+	}	
+		
+}
+«ENDLET-»
+«ENDFILE-»
+«ENDDEFINE»
+
+
+«DEFINE setActions FOR CardEntity-»
+		«IF topLevel || !directAccess.isEmpty-»
+		/* «name.toFirstUpper()» Menu */
+		
+		if (AccessManager.canCreateForm("«name.toLowerCase()»") && AccessManager.canEditForm("«name.toLowerCase()»")) {		
+			«name.toFirstLower()».setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new Create«name.toFirstUpper()»Event(new GoHomeEvent()));
+				}
+			});
+		}
+		else
+			«name.toFirstLower()».setCreateClickHandler(null);
+						
+		if (AccessManager.canDirectAccessForm("«name.toLowerCase()»")	&& AccessManager.canReadForm("«name.toLowerCase()»")) {						
+			«name.toFirstLower()».setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new List«name.toFirstUpper()»Event());
+				}
+			});
+			«name.toFirstLower()».setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = «name.toFirstLower()».getSearchValue();
+					if(searchValue!=null && !searchValue.isEmpty())
+						eventBus.fireEvent(new List«name.toFirstUpper()»Event(searchValue));
+				}
+			});	
+		}
+		else {
+			«name.toFirstLower()».setListClickHandler(null);
+			«name.toFirstLower()».setSearchClickHandler(null);
+		}	
+		«ENDIF-»
+
+«ENDDEFINE»
+

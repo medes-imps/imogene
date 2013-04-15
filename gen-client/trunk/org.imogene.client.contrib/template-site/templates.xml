@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<templates>
+	<template name="Medoo Synchro Application Project" version="1.0">  <!--  Attention le nom est attendu tel quel dans SynchroProjectCreationWizard !! :-(  -->
+		<description>Création d'une application de synchronisation depuis un modèle Medany</description>
+		<natures>
+			<nature>bidon</nature>
+		</natures>
+		<content>medooSynchro.zip</content>
+<!--		<parameters>
+			<parameter name="referencedModelProjectName" displayName="Projet modèle Medany" value="medanyproject" refNature="com.anwrt.medany.studio.model.modelnature">
+				<description>Indiquez le projet contenant le modèle Medany sur lequel le projet créé sera basé</description>
+			</parameter>
+		</parameters>
+-->
+ 		<parseSet>
+              <include filenames=".project,.classpath,org.eclipse.wst.common.component,log4j.xml,pom.xml"/>
+              <exclude extensions="jar"/>
+        </parseSet>
+	</template>
+</templates>

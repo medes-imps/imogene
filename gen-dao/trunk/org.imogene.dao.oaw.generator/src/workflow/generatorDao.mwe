@@ -1,0 +1,77 @@
+<workflow>
+	<!-- property definition -->
+	<property name="modelName" value="model" />
+	<property name="projectName" value="${modelName}" />
+	<property name="modelFullPath" value="model.imog" />	
+	<property name="imogeneMetaModel" value="metamodel/ImogeneModel.ecore"/>
+	<property name="model" value="${modelFullPath}" />
+	<property name="home-gen" value="../WebModel" />
+	<property name="packageName" value="org.imogene"  />
+	<property name="packagePath" value="org/imogene" />	
+	<property name="gkey" value="NO_KEY"/>
+	<property name="gmaps" value="false"/>
+	<property name="JDBCDRIVER" value="driver"/>
+	<property name="JDBCPATH" value="path"/>
+	<property name="JDBCLOGIN" value="login"/>
+	<property name="JDBCPASSWORD" value="password"/>
+	<property name="HIBERNATEDIALECT" value="password"/>
+	<property name="applicationType" value="dao"/>
+
+	<!-- model reader -->
+	<component file="workflow/modelReader.mwe" inheritAll="true" />
+	
+	<!-- JPA entities  -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::entity::entity::generate("${modelName}","${applicationType}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
+	
+	<!-- JPA entities Bck 
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::entity::entityBck::generate("${modelName}","${applicationType}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component> -->
+	
+	<!-- DAO interfaces -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::dao::entityDao::generate("${modelName}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />		
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component> -->
+	
+	<!-- DAO JPA implementations -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::dao::entityDaoImpl::generate("${modelName}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component> -->
+	
+	<!-- Localized Texts -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::entity::localizedText::generate("${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
+	
+	<!-- persistence -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::config::persistence_xml::generate("${modelName}", "${JDBCDRIVER}", "${JDBCPATH}", "${JDBCLOGIN}", "${JDBCPASSWORD}", "${HIBERNATEDIALECT}") FOR project' />
+		<genPath value="${home-gen}/src/main/resources/META-INF/" />
+		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+	</component>
+	
+</workflow>

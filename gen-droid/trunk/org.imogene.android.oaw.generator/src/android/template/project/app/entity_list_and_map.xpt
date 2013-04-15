@@ -1,0 +1,86 @@
+«IMPORT core»
+«DEFINE generate(String canDelete, String canModify, String projectName) FOR CardEntity»
+«IF georeferenced != null-»
+«FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "ListAndMap.java"»
+package org.imogene.android.«projectName.toLowerCase()-».app;
+
+import greendroid.app.GDTabActivity;
+import greendroid.widget.ActionBarItem;
+import greendroid.widget.NormalActionBarItem;
+
+import org.imogene.android.maps.app.MapActivityWithoutActionBar;
+import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
+import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
+import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
+
+	private static final int ACTIONBAR_ADD_ID = 1;
+	private static final int ACTIONBAR_SEARCH_ID = 2;
+	private static final int ACTIONBAR_SYNC_ID = 3;
+
+	private boolean mCanCreate;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		«IF creators.size > 0-»
+		mCanCreate = «name.toFirstUpper()-»Roles.canCreate(this);
+		«ELSE-»
+		mCanCreate = «name.toFirstUpper()-»Roles.canWrite(this);
+		«ENDIF-»
+		
+		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+
+		Intent list = new Intent(this, «name.toFirstUpper()»List.class);
+		list.putExtras(getIntent());
+		addTab("LIST", "List", list);
+		
+		Intent map = new Intent(this, MapActivityWithoutActionBar.class);
+		map.setData(«name.toFirstUpper()».Columns.CONTENT_URI);
+		map.putExtras(getIntent());
+		addTab("MAP", "Map", map);
+
+		if (mCanCreate) {
+			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_add), ACTIONBAR_ADD_ID);
+		}
+		
+		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_search), ACTIONBAR_SEARCH_ID);
+				
+		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
+				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
+	}
+	
+	@Override
+	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+		switch (item.getItemId()) {
+		case ACTIONBAR_ADD_ID:
+			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
+			intent.putExtras(getIntent());
+			intent.addCategory(PreferenceHelper.getEditionCategory(this));
+			startActivity(intent);
+			return true;
+		case ACTIONBAR_SEARCH_ID:
+			startSearch(null, false, null, false);
+			return true;
+		case ACTIONBAR_SYNC_ID:
+			SynchronizationService.startServiceManually(this);
+			return true;
+		default:
+			return super.onHandleActionBarItemClick(item, position);
+		}
+	}
+	
+}
+«ENDFILE-»
+«ENDIF-»
+«ENDDEFINE»

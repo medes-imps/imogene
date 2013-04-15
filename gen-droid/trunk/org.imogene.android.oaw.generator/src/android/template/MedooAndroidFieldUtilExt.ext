@@ -1,0 +1,54 @@
+import core;
+
+// Ces extensions OAW sont utilisees par fieldUtil et ne doivent pas etre
+// appellées directement pour des raisons de simplicité...
+// Car faut dire que c'est pas simple à appeler.
+// Passer donc par un expand au niveau de fieldutil pour les gerer.
+
+Void log(Object o) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.log(java.lang.Object);
+
+int getDatabaseVersion() :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getDatabaseVersion();
+  
+boolean hasDependancyField(FieldEntity field) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasDependancyField(org.imogene.model.core.FieldEntity);
+  
+boolean hasHelp(List[Description] list) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasHelp(java.util.List);
+  
+List[RelationFieldEntity] getMoreFields(List[FieldEntity] entity) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getMoreFields(java.util.List);
+  
+boolean hasMiscellaneousThema(List[CardEntity] entities, List[Thema] themas) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasMiscellaneousThema(java.util.List, java.util.List);
+
+boolean isInMiscellaneousThema(List[Thema] themas, CardEntity entity) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.isInMiscellaneousThema(java.util.List, org.imogene.model.core.CardEntity);
+  
+boolean hasQRCode(Project project) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasQRCode(org.imogene.model.core.Project);
+  
+List[FieldEntity] getMainFields(CardEntity entity) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getMainFields(org.imogene.model.core.CardEntity);
+  
+boolean isForbiddenCase(FieldEntity field) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.isForbiddenCase(org.imogene.model.core.FieldEntity);
+  
+List[RelationFieldEntity] getFilteredFields(CardEntity entity, FieldEntity filter) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getFilteredFields(org.imogene.model.core.CardEntity, org.imogene.model.core.FieldEntity);
+  
+Integer mod2(Integer i) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.mod2(java.lang.Integer);
+  
+boolean hasFilter(Project project) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasFilter(org.imogene.model.core.Project);
+  
+List[FieldGroup] getFilteredGroups(List[FieldEntity] filters) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getFilteredGroups(java.util.List);
+  
+Integer getGeoType(GeoField field) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getGeoType(org.imogene.model.core.GeoField);
+  
+boolean hasConstraint(FieldEntity field) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasConstraint(org.imogene.model.core.FieldEntity);

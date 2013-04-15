@@ -1,0 +1,123 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "application-context.xml"-»
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Instantiate the session manager (singleton) 
+	<bean id="sessionManager" class="org.imogene.lib.sync.server.session.SyncSessionManager" factory-method="getInstance"/> -->
+	
+	<!-- Annotations Scan -->
+    <context:annotation-config/>
+
+	<!-- User Access control -->
+	<bean id="userAccessControl" class="org.imogene.«projectName.toLowerCase()».uao.UserAccessControlImpl" />
+	
+	<!-- Entity helper -->
+	<bean id="entityHelper" class="org.imogene.«projectName.toLowerCase()».domain.entity.EntityHelperImpl"/>
+
+	<!--  Initialize the DataHandler Manager -->	
+	<bean id="dataHandlerManager" class="org.imogene.«projectName.toLowerCase()».handler.DataHandlerManagerImpl"/>
+
+	<!-- Entity Handlers -->
+	<bean id="defaultUserHandler" class="org.imogene.lib.sync.handler.DefaultUserHandlerImpl" >
+		<property name="dao" ref="defaultUserDao"/>
+	</bean>
+	
+	<bean id="binaryHandler" class="org.imogene.lib.sync.binary.file.BinaryFileHandlerImpl" >
+		<property name="binaryFileDao" ref="binaryDao"/>
+	</bean>
+	
+	<bean id="clientFilterHandler" class="org.imogene.lib.sync.clientfilter.ClientFilterHandlerImpl">
+		<property name="dao" ref="clientFilterDao"/>
+	</bean>
+	
+	<bean id="dynamicFieldInstanceHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandlerImpl">
+		<property name="dao" ref="dynamicFieldInstanceDao"/>
+	</bean>
+	
+	<bean id="dynamicFieldTemplateHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandlerImpl">
+		<property name="dao" ref="dynamicFieldTemplateDao"/>
+	</bean>
+
+    «FOREACH entities AS e»
+	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" />
+	«ENDFOREACH»	
+	
+	<!-- Synchronization server -->
+	<bean id="syncServer" class="org.imogene.lib.sync.server.OptimizedSyncServerImpl">
+		<property name="dataHandlerManager" ref="dataHandlerManager"/>
+		<property name="serializer" ref="xmlSerializer"/>
+		<property name="genericDao" ref="genericDao"/>
+		<property name="historyDao" ref="syncHistoryDao"/>
+		<property name="sessionDao" ref="syncSessionDao"/>
+		<property name="entityHelper" ref="entityHelper"/>
+	</bean>
+	
+	<!--  the synchronization controller -->
+	<bean id="syncController" class="org.imogene.lib.sync.server.http.OptimizedSyncController">
+		<property name="methodNameResolver">
+			<bean class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+				<property name="paramName" value="cmd"/>
+			</bean>
+		</property>
+		<property name="syncServer" ref="syncServer"/>	
+		<property name="userAccessControl" ref="userAccessControl"/>	
+	</bean>
+	
+	<!--  Encryption system initialization -->
+	<bean id="encryptionKeyProvider" class="org.imogene.lib.sync.server.encryption.DefaultSecretKeyProvider"/>	
+	<bean id="encryptionManager" class="org.imogene.encryption.EncryptionManager" init-method="getInstance">
+		<property name="keyProvider" ref="encryptionKeyProvider"/>
+	</bean>
+	
+	<!-- Security handler --> 
+	<bean id="imogPolicy" class="org.imogene.«projectName.toLowerCase()».uao.security.ImogDefaultPolicy" />
+	
+  	<bean id="imogSecurityHandler" class="org.imogene.lib.sync.uao.security.ImogSecurityHandler" factory-method="getInstance">
+  		<property name="imogPolicy" ref="imogPolicy"/>
+  	</bean>  	
+  	
+  	<!-- Binary post operations catcher -->
+  	<!-- video conversion -->
+  	<bean id="videoConverter" class="org.imogene.sync.video.VideoConverter">
+  		<property name="commandLine" value="${converter.video}"/>
+  	</bean>
+  	<bean id="videoToFlv" class="org.imogene.sync.video.VideoToFlvOperation" />
+  	
+  	<!-- audio conversion -->
+  	<bean id="audioConverter" class="org.imogene.sync.audio.AudioConverter">
+  		<property name="commandLine" value="${converter.audio}"/>
+  	</bean>
+  	<bean id="audioToMp3" class="org.imogene.sync.audio.AudioToMp3Operation"/>
+  	
+  	<!-- photo thumbnail -->
+  	<bean id="photoToThumb" class="org.imogene.sync.photo.PhotoToThumbnailOperation"/>
+  	
+  	<!-- Binary post operations catcher -->
+  	<bean id="imogOperationCatcher" class="org.imogene.lib.sync.server.binary.BinaryOperationCatcher" factory-method="get">
+  		<property name="operations">
+    		<set>
+      			<!-- place your operations implemented binaryOperation here, like the sample bellow -->
+      			<ref bean="videoToFlv"/>
+      			<ref bean="audioToMp3"/>
+      			<ref bean="photoToThumb"/>
+    		</set>
+  		</property>
+  	</bean>	
+  	
+  	<!--  Spring-security user access control -->	
+	<bean id="imogSecurityDetailService" class="org.imogene.«projectName.toLowerCase()».uao.security.MedooSecurityDetailService" />
+
+</beans>
+«ENDFILE»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»

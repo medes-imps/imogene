@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<templates>
+	<template name="Medany SQL insert" version="1.0">
+		<description>Création d'une application d'insertion de données pour initialiser la base de données Medany (utilisateur rôles par défaut)</description>
+		<natures>
+			<nature>bidon</nature>
+		</natures>
+		<content>medanySqlInsert.zip</content>
+<!--		<parameters>
+			<parameter name="referencedModelProjectName" displayName="Projet modèle Imogene" value="medanyproject" refNature="com.anwrt.medany.studio.model.modelnature">
+				<description>Indiquez le projet contenant le modèle Imogene sur lequel le projet créé sera basé</description>
+			</parameter>
+		</parameters>
+-->
+ 		<parseSet>
+              <include filenames="pom.xml,.project,.classpath,application.properties,org.eclipse.wst.common.component"/>
+              <exclude extensions="jar"/>
+        </parseSet>
+	</template>	
+</templates>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.notifier.contrib.objectContribution6"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.notifier.contrib.NotifierGenerationAction"
+               icon="icons/bell.png"
+               id="org.imogene.notifier.contrib.NotifierGenerationAction"
+               label="Notifier Generation"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

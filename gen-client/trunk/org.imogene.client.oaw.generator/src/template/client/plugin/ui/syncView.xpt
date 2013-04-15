@@ -1,0 +1,116 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateSyncView FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateSyncView FOR Project-»
+«FILE "org/imogene/sync/client/ui/SyncView.java"-»
+package org.imogene.sync.client.ui;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.part.ViewPart;
+import org.imogene.lib.sync.history.SyncHistory;
+import org.imogene.sync.client.Activator;
+import org.imogene.sync.client.SynchroUtils;
+import org.imogene.sync.client.i18n.CoreMessages;
+import org.imogene.sync.client.utils.SyncListenerAdapter;
+
+public class SyncView extends ViewPart {
+
+	private Composite historyComposite;
+
+	private SyncListenerAdapter adapter;
+
+	private Label lastOkLabel;
+
+	private Label lastOkValue;
+
+	public SyncView() {
+		adapter = new SyncListenerAdapter() {
+
+			@Override
+			public void finish() {
+				updateData();
+			}
+		};
+		Activator.getDefault().addSyncListener(adapter);
+	}
+
+	@Override
+	public void createPartControl(Composite parent) {
+		Composite main = new Composite(parent, SWT.NONE);
+		main.setLayout(new GridLayout());
+		SyncMonitorPart monitor = new SyncMonitorPart(main, this);
+		monitor.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		buildHistoryComposite(main);
+		updateData();
+	}
+
+	private void buildHistoryComposite(Composite parent) {
+		historyComposite = new Composite(parent, SWT.BORDER);
+		historyComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		historyComposite.setLayout(new GridLayout());
+		lastOkLabel = new Label(historyComposite, SWT.NONE);
+		lastOkLabel.setText(CoreMessages.getString("sync_last_ok"));
+		lastOkValue = new Label(historyComposite, SWT.NONE);		
+	}
+
+	private void updateData() {
+		Display.getDefault().syncExec(new Runnable(){
+			@Override
+			public void run() {				
+				SynchroUtils su = Activator.getDefault().getSynchroUtils();
+				displayHistory(lastOkValue, su.lastOk());				
+			}
+			
+		});
+	}
+
+	private void displayHistory(Label field, SyncHistory sh) {
+		if (sh == null)
+			field.setText(CoreMessages.getString("sync_history_empty"));
+		else {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy - HH:mm");
+			Date date = sh.getTime();
+			field.setText(sdf.format(date));
+		}
+		field.update();
+	}
+
+	@Override
+	public void setFocus() {
+
+	}
+
+	public void addMessage(String string, int i) {
+		// TODO Auto-generated method stub
+	}
+
+	public void clearMessage() {
+		// TODO Auto-generated method stub
+	}
+
+	public void updateDate() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void dispose() {
+		Activator.getDefault().removeSyncListener(adapter);
+		super.dispose();
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.imogene.android.contrib.specificWorkflow" name="Specific android workflow" schema="schema/org.imogene.android.contrib.specificWorkflow.exsd"/>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.android.contrib.objectContribution1"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.android.contrib.AndroidGenerationAction"
+               icon="icons/android_16.png"
+               id="org.imogene.android.contrib.AndroidGenerationAction"
+               label="Generation Android"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

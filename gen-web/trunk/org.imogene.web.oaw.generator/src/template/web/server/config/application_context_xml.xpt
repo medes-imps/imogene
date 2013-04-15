@@ -1,0 +1,188 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt»
+
+«DEFINE generate(String projectName, String applicationType) FOR Project-»
+«FILE "application-context.xml"-»
+«LET "admin" AS adminType-»
+<?xml version="1.0" encoding="iso-8859-1"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop 
+     http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+     
+	<!-- Annotations Scan -->
+    <context:annotation-config/>
+
+	<!-- Application properties -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+		    <value>/WEB-INF/application.properties</value>
+		</property>
+	</bean>
+	
+	<!-- Spring-security users details provider -->
+	<bean class="org.imogene.«projectName.toLowerCase()».server.security.ImogSecurityDetailService" id="imogSecurityDetailService">
+		<property name="genericHandler" ref="genericHandler"/>
+		«FOREACH entities AS e -»
+  		  «EXPAND actorHandlder FOR e -»
+		«ENDFOREACH -»
+  	</bean>
+  	
+	<!-- Spring-security users details provider for web application in rcp container 
+	<bean class="org.imogene.«projectName.toLowerCase()».server.security.ImogSecurityDetailServiceForRcp" id="imogSecurityDetailService"> 
+	    <property name="dao" ref="genericDao"/>
+  	</bean> -->
+  	
+	<!-- Spring-security access denied handler -->
+	<bean class="org.imogene.web.server.security.ImogAccessDeniedHandler" id="imogAccessDeniedUrl">
+        <property name="accessDeniedUrl" value="jsp/WrongLogin.jsp" />
+    </bean> 
+		
+	<!-- Exported spring properties -->	
+	<bean name="exportedProperties" class="org.imogene.web.server.util.ExportedPropertiesHolder">
+		<property name="properties">
+			<map>
+				<entry key="binaryPath" value="${binary.path}"/>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- Video converter -->
+	<bean name="videoConverter" class="org.imogene.web.server.servlet.util.VideoConverter">
+		<property name="commandLine" value="${converter.video}"/>
+	</bean>
+	
+	<!-- Services -->
+	<bean id="binaryDownloadService" class="org.imogene.web.server.service.BinaryDownloadServiceImpl" />	
+	<bean id="binaryUploadService" class="org.imogene.web.server.service.BinaryUploadServiceImpl" />	
+	
+	<!-- Handlers -->
+
+	<!-- Generic handler -->	
+	<bean id="genericHandler" class="org.imogene.web.server.handler.GenericHandler">
+		<property name="dao" ref="genericDao" />
+	</bean>	
+
+	<!-- Binary handler -->		
+	<bean id="binaryHandler" class="org.imogene.web.server.handler.BinaryHandler">
+		<property name="dao" ref="binaryDao" />
+	</bean>
+
+	<!-- Role handler -->	
+	<bean id="imogRoleHandler" class="org.imogene.web.server.handler.ImogRoleHandler">
+		<property name="dao" ref="roleActorDao" />
+	</bean>	
+
+	<!-- Session handler -->	
+	<bean id="sessionHandler" class="org.imogene.web.server.handler.SessionHandler"/>
+	
+	<!-- Dynamic Fields handler -->
+	<bean id="dynamicFieldTemplateHandler" class="org.imogene.web.server.handler.DynamicFieldTemplateHandler">
+		<property name="dao" ref="dynamicFieldTemplateDaoBase" />
+		<property name="dynamicFieldInstanceFieldTemplateDao" ref="dynamicFieldInstanceDaoBase"/>		
+	</bean>		
+	<bean id="dynamicFieldInstanceHandler" class="org.imogene.web.server.handler.DynamicFieldInstanceHandler">
+		<property name="dao" ref="dynamicFieldInstanceDaoBase" />
+		<property name="fieldTemplateHandler" ref="dynamicFieldTemplateHandler" />
+	</bean>
+	
+	«IF applicationType.matches(adminType)-»
+	<!-- ImogActor handler -->
+	<bean id="imogActorHandler" class="org.imogene.web.server.handler.ImogActorHandler">
+		<property name="dao" ref="imogActorDaoBase" />
+	</bean>
+	
+	<!-- SynchronizableEntity handler -->
+	<bean id="synchronizableEntityHandler" class="org.imogene.admin.server.handler.SynchronizableEntityHandler">
+		<property name="dao" ref="synchronizableEntityDaoBase" />
+	</bean>
+	
+	<!-- Notification handler -->
+	<bean id="notificationHandler" class="org.imogene.admin.server.handler.NotificationHandler">
+		<property name="dao" ref="notificationDaoBase" />
+	</bean>		
+	«ENDIF-»		
+
+	<!-- Entity Handlers -->	
+	«FOREACH entities AS e -»
+	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».server.handler.«e.name.toFirstUpper()»Handler">
+		<property name="dao" ref="«e.name.toFirstLower()»Dao" />
+		«IF isBinaryFieldPresent(e.groups.fields) -»
+		<property name="binaryDao" ref="binaryDao" />
+		«ENDIF-»
+		«IF e.hasDynamicFields -»
+		<property name="dynamicFieldValuesHandler" ref="dynamicFieldInstanceHandler" />
+		<property name="dynamicFieldTemplateHandler" ref="dynamicFieldTemplateHandler" />
+		«ENDIF-»
+		«EXPAND declareDaoForForeignKeyDeletion(e) FOR this-»
+		«EXPAND declareHandlerForRelation(projectName) FOREACH e.groups.fields-»
+	</bean>		
+	«ENDFOREACH -»	
+	
+	<!--  encryption system initialization -->
+	<bean id="encryptionKeyProvider" class="org.imogene.web.server.identity.DefaultSecretKeyProvider"/>	
+	<bean id="encryptionManager" class="org.imogene.encryption.EncryptionManager" init-method="getInstance">
+		<property name="keyProvider" ref="encryptionKeyProvider"/>
+	</bean>
+	
+	<bean id="formUtil" class="org.imogene.«projectName.toLowerCase()».server.util.«projectName.toFirstUpper()»FormUtil"/>	
+	
+	<!-- Bean filter handler for Birt --> 
+	<bean id="filter" class="org.imogene.«projectName.toLowerCase()».server.security.«projectName.toFirstUpper()»BeanFilter" />
+	
+  	<bean id="imogSecurityHandler" class="org.imogene.web.server.security.ImogBeanFilterHandler" factory-method="getInstance">
+  		<property name="filter" ref="filter"/>
+  	</bean>  
+	
+</beans>
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+
+«REM» Set actor dao «ENDREM»
+«DEFINE actorHandlder FOR CardEntity -»«ENDDEFINE»
+«DEFINE actorHandlder FOR Actor -»
+		<property name="«name.toFirstLower()»Handler" ref="«name.toFirstLower()»Handler"/>
+«ENDDEFINE»
+
+
+«DEFINE declareHandlerForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE declareHandlerForRelation(String projectName) FOR RelationFieldEntity-»
+		<property name="«name.toFirstLower()»Handler" ref="«entity.name.toFirstLower()»Handler" />
+«ENDDEFINE»
+
+«REM» ------------------------------------------ 
+      Declare DAO for foreign key deletion
+------------------------------------------------«ENDREM»
+«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
+«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR Project-»
+		«FOREACH entities AS e-»		
+			 «FOREACH e.groups.fields AS field-»
+			 	«EXPAND declareDaoForForeignKey(cardEntity) FOR field-»
+			«ENDFOREACH-» 	   	   
+	    «ENDFOREACH-»	    
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR RelationFieldEntity-»
+«IF cardEntity.name==this.entity.name -»	
+	«IF (this.cardinality == 1 && !(ReverseRelationFieldEntity.isAssignableFrom(this.metaType) && (getOppositeCardinality(this) == 1)))
+	|| (this.cardinality != 1 && (getOppositeCardinality(this) != 1))-»
+		<property name="«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao" ref="«this.parentGroup.parentCard.name.toFirstLower()»Dao"/>		
+     «ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+«REM» ------------------------------------------ «ENDREM»
+

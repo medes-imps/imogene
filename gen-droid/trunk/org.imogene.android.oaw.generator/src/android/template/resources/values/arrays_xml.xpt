@@ -1,0 +1,91 @@
+«IMPORT core»
+«DEFINE generate FOR Project »
+«FILE 'values/arrays.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- arrays for each EnumField -->
+	«EXPAND getArray FOREACH entities.groups.fields-»
+	
+	<!-- values arrays for each EnumField -->
+	«EXPAND getValuesArray FOREACH entities.groups.fields-»
+	
+	<!-- Available languages iso codes -->
+	<string-array name="languages_iso">
+	«FOREACH languages AS l-»
+		<item>"«l.isoCode»"</item>
+	«ENDFOREACH-»
+	</string-array>
+	
+	<!-- Available languages display -->
+	<string-array name="languages_display">
+	«FOREACH languages AS l-»
+		<item>"«l.name»"</item>
+	«ENDFOREACH-»
+	</string-array>
+
+</resources>
+«ENDFILE»
+
+«FOREACH languages AS language-»
+«LET language.isoCode AS iso-»
+«FILE "values-"+iso+"/arrays.xml"-»
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- arrays for each EnumField -->
+	«EXPAND getArray(iso) FOREACH entities.groups.fields-»
+	
+</resources>
+«ENDFILE»
+«ENDLET»
+«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE getArray FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getArray FOR EnumField-»
+	<string-array name="«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»">
+	«FOREACH enumValues AS enum-»
+		<item>"«enum.name-»"</item>
+	«ENDFOREACH-»
+	</string-array>
+«ENDDEFINE»
+
+
+
+
+«DEFINE getValuesArray FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getValuesArray FOR EnumField-»
+	<integer-array name="«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values">
+	«FOREACH enumValues AS e-»
+		<item>«e.value»</item>
+	«ENDFOREACH-»
+	</integer-array>
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE getArray(String isoCode) FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getArray(String isoCode) FOR EnumField-»
+	<string-array name="«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»">
+	«FOREACH enumValues AS enum-»
+		<item>"«EXPAND getDescription(isoCode) FOR enum-»"</item>
+	«ENDFOREACH-»
+	</string-array>
+«ENDDEFINE»
+
+«DEFINE getDescription(String isoCode) FOR EnumValue-»
+«LET descriptions.locale.indexOf(isoCode) AS isoPos-»
+«IF (isoPos != -1)-»«descriptions.get(isoPos).display-»
+«ELSE»«name-»
+«ENDIF-»
+«ENDLET-»
+«ENDDEFINE»

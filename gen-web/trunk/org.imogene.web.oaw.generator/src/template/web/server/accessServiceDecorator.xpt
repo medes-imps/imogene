@@ -1,0 +1,47 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase() + "/server/AccessServiceDecorator.java"»
+package org.imogene.«projectName.toLowerCase()».server;
+
+
+import org.imogene.«projectName.toLowerCase()».server.security.Imog«projectName.toFirstUpper()»Policy;
+import org.imogene.web.server.security.ImogSecurityPolicy;
+
+import com.google.web.bindery.requestfactory.server.ServiceLayerDecorator;
+
+/**
+ * Service Decorator to control the access to the domain objects
+ * @author Medes-IMPS
+ */
+public class AccessServiceDecorator extends ServiceLayerDecorator {
+	
+	
+	private ImogSecurityPolicy securityPolicy;
+	
+	
+
+	public AccessServiceDecorator() {
+		super();
+		securityPolicy = new Imog«projectName.toFirstUpper()»Policy();
+	}
+
+	@Override
+	public Object getProperty(Object domainObject, String property) {
+		
+		if(securityPolicy.canAccessProperty(domainObject, property))
+			return super.getProperty(domainObject, property);
+		return null;		
+	}
+
+	@Override
+	public void setProperty(Object domainObject, String property, Class<?> expectedType, Object value) {
+		
+		if(securityPolicy.canUpdateProperty(domainObject, property))		
+			super.setProperty(domainObject, property, expectedType, value);
+	}
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+«REM» ---------------------------------------------------------- «ENDREM»

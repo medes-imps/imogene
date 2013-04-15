@@ -1,0 +1,63 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase() + "/client/" + projectName.toFirstUpper() + "FormTypes.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client;
+
+import java.util.ArrayList;
+import java.util.List;
+
+«IF applicationType.matches(adminType)-»
+import org.imogene.admin.client.i18n.AdminNLS;
+«ENDIF-»
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.web.client.dynamicfields.ui.field.FormType;
+import org.imogene.web.client.dynamicfields.ui.field.FormTypeUtil;
+
+/**
+ * Provides Form types codes and display values when
+ * a entity references a form type and not an instance of a form
+ * @author MEDES-IMPS
+ */
+public class «projectName.toFirstUpper()»FormTypes implements FormTypeUtil {
+	
+	private static FormTypeUtil instance = new «projectName.toFirstUpper()»FormTypes();
+	
+	
+	public static FormTypeUtil get() {
+		return instance;
+	}
+	
+	public List<FormType> getFormTypes() {
+		
+		List<FormType> list = new ArrayList<FormType>();
+		
+		«FOREACH entities AS e -»
+		FormType «e.name.toFirstLower()» = new FormType("«e.shortName»", NLS.constants().«e.name.toFirstLower()»_name());
+		list.add(«e.name.toFirstLower()»);
+		«ENDFOREACH -»
+		«IF applicationType.matches(adminType)-»
+		FormType binaryFile = new FormType("BIN", AdminNLS.constants().binary_name());
+		list.add(binaryFile);
+		«ENDIF-»
+		return list;
+	}
+	
+	public List<FormType> getDynamicFieldFormTypes() {
+		
+		List<FormType> list = new ArrayList<FormType>();
+		
+		«FOREACH entities AS e -»
+		«IF e.hasDynamicFields-»
+		FormType «e.name.toFirstLower()» = new FormType("«e.shortName»", NLS.constants().«e.name.toFirstLower()»_name());
+		list.add(«e.name.toFirstLower()»);
+		«ENDIF-»
+		«ENDFOREACH -»	
+		return list;
+	}
+
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»

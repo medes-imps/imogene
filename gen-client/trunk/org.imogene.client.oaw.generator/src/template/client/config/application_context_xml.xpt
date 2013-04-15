@@ -1,0 +1,83 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "application-context.xml"-»
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Annotations Scan -->
+    <context:annotation-config/>
+    
+	<!-- Properties placeholder -->
+	<bean id="propertyConfigurer" class="org.imogene.sync.client.MyPropertyPlaceholderConfigurer" factory-method="getInstance" />
+
+	<!--  Encryption system initialization -->
+	<bean id="encryptionKeyProvider" class="org.imogene.lib.sync.client.encryption.DefaultSecretKeyProvider"/>	
+	<bean id="encryptionManager" class="org.imogene.encryption.EncryptionManager" init-method="getInstance">
+		<property name="keyProvider" ref="encryptionKeyProvider"/>
+	</bean>
+
+	<!--  Initialize the DataHandler Manager -->	
+	<bean id="dataHandlerManager" class="org.imogene.«projectName.toLowerCase()».handler.DataHandlerManagerImpl"/>
+
+	<!-- Entity helper -->
+	<bean id="entityHelper" class="org.imogene.«projectName.toLowerCase()».entity.EntityHelperImpl"/>
+	
+	<!-- Entity Handlers -->
+	<bean id="defaultUserHandler" class="org.imogene.lib.sync.handler.DefaultUserHandlerImpl" >
+		<property name="dao" ref="defaultUserDao"/>
+	</bean>
+	
+	<bean id="binaryHandler" class="org.imogene.lib.sync.binary.file.BinaryFileHandlerImpl" >
+		<property name="binaryFileDao" ref="binaryDao"/>
+	</bean>	
+	
+	<bean id="clientFilterHandler" class="org.imogene.lib.sync.clientfilter.ClientFilterHandlerImpl">
+		<property name="dao" ref="clientFilterDao"/>
+	</bean>
+	
+	<bean id="dynamicFieldInstanceHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandlerImpl">
+		<property name="dao" ref="dynamicFieldInstanceDao"/>
+	</bean>
+	
+	<bean id="dynamicFieldTemplateHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandlerImpl">
+		<property name="dao" ref="dynamicFieldTemplateDao"/>
+	</bean>
+
+    «FOREACH entities AS e»
+	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" />
+	«ENDFOREACH»	
+	
+	<!-- Initialize the OptimizedSynchronizer -->
+	<bean id="optimizedSynchronizer" class="org.imogene.lib.sync.client.OptimizedSynchronizerImpl">
+	    <property name="directoryPath" value="${sync.file.directory}" />
+	    <property name="dataManager" ref="dataHandlerManager" />
+	    <property name="serializer" ref="xmlSerializer" />
+	    <property name="syncHistoryDao" ref="syncHistoryDao" />
+	    <property name="syncParameterDao" ref="syncParameterDao" />
+	    <property name="entityHelper" ref="entityHelper" />
+	    <property name="encryptionManager" ref="encryptionManager" />
+	</bean>
+	
+	<!-- Initialize the synchronization manager -->
+	<bean id="synchronizationManager" class="org.imogene.lib.sync.client.SynchronizationManagerImpl">
+		<property name="parameterDao" ref="syncParameterDao" />
+		<property name="synchronizer" ref="optimizedSynchronizer" />
+	</bean>
+	
+	<!-- Client Initializer -->
+	<bean id="clientInitializer" class="org.imogene.sync.client.ClientInitializerImpl" />
+	
+	<!-- Synchro utils -->
+	<bean id="synchroUtils" class="org.imogene.sync.client.SynchroUtils" />
+	
+</beans>
+«ENDFILE»
+«ENDDEFINE»

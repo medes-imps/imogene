@@ -1,0 +1,27 @@
+<workflow>
+	
+	<property name="modelName" value="onsil" />
+	<property name="modelFullPath" value="onsil.medany" />
+	<property name="imogeneMetaModel" value="metamodel/ImogeneModel.ecore"/>
+	<property name="model" value="${modelFullPath}" />
+	<property name="home-gen" value="src-gen" />
+	<property name="packageName" value="org.imogene.${modelName}"  />
+	<property name="packagePath" value="org/imogene/${modelName}" />
+
+	<!-- reader configuration -->
+	<component class="org.eclipse.xtend.typesystem.emf.XmiReader">
+		<metaModelFile value="${imogeneMetaModel}" />
+		<modelFile value="${model}" />
+		<outputSlot value="project" />
+		<firstElementOnly value="true" />
+	</component>
+
+	<!-- Checks the model validity -->
+	<component class="org.eclipse.xtend.check.CheckComponent">
+		<metaModel	class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+		<metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<checkFile value="template/checks" />
+		<emfAllChildrenSlot value="project"/>
+	</component>
+
+</workflow>

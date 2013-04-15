@@ -1,0 +1,109 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:cv='urn:import:com.google.gwt.user.cellview.client'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.panel' xmlns:imo-p='urn:import:org.imogene.web.client.ui.table.pager'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.widget'>
+
+	<ui:with field='imogResources' type='org.imogene.web.client.css.ImogResources' />
+
+	<ui:style>
+		.imogene-MultiRelationPopupPanel {
+			/*min-width: 700px;*/
+			-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+			-moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+			-webkit-transition: opacity .218s;
+			-moz-transition: opacity .218s;
+			-ms-transition: opacity .218s;
+			-o-transition: opacity .218s;
+			transition: opacity .218s;
+			border: 1px solid #CCC;
+			border: 1px solid rgba(0, 0, 0, .2);
+			cursor: default;
+			margin: 0;
+			outline: none;
+			padding: 10px 10px 10px 10px;
+			position: absolute;
+			overflow: auto;
+			z-index: 8;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			border-radius: 6px;
+		}
+		
+		.PopupPanel-content {
+			color: #404040;
+			font-size: 12px;
+		}
+		
+		.PopupPanel-Listbox {
+			width: 100%;
+			/*min-width: 500px;*/
+			height: 100%;
+			min-height: 350px;
+			border-top: 2px solid #e5e5e5;
+			border-bottom: 2px solid #e5e5e5;
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
+		
+		.imogene-MultiRelation-Filter-TextBox {
+			border: 1px solid #777777;
+			color: #444444;
+			padding-left: 2px;
+			font-size: 12px;
+			margin-left: 2px;
+			vertical-align: middle;
+		}
+		
+		.dynatable-panel {
+			padding: 5px;
+			width: 100%;
+		}
+
+		.Caption {
+			text-align: right;
+			position: relative;
+			top: -5px;
+			right: -5px;
+		}
+
+		.imogene-MultiRelation-select-checkbox {
+			width: 22px;
+		}
+
+		.imogene-MultiRelation-with-checkboxes th:first-child {
+			width: 22px;
+			background-color: #FFFFFF;
+		}
+
+		@external .imogene-MultiRelation-Filter-TextBox, .Caption, .imogene-MultiRelation-with-checkboxes, .imogene-MultiRelation-select-checkbox;
+	</ui:style>
+
+	<g:DialogBox ui:field="popup"
+		styleName="{imogResources.imogStyle.pageBackground} {style.imogene-MultiRelationPopupPanel}">
+		<g:VerticalPanel stylePrimaryName="{style.PopupPanel-content}"
+			width="100%" horizontalAlignment="center" verticalAlignment="middle">
+
+			<imo:WrapperPanel ui:field="wrapperPanel">
+				<g:VerticalPanel
+					styleName="{style.dynatable-panel} {imogResources.imogStyle.imogenePanel}">
+
+					<g:cell height="19px" horizontalAlignment="center">
+						<imo2:ImageButton ui:field="scrollTopImage"
+							width="19px" height="19px" />
+					</g:cell>
+
+					<cv:DataGrid ui:field="table" styleName="{style.PopupPanel-Listbox}" />
+
+					<g:cell height="19px" horizontalAlignment="center">
+						<imo2:ImageButton ui:field="scrollBottomImage"
+							width="19px" height="19px" />
+					</g:cell>
+
+				</g:VerticalPanel>
+			</imo:WrapperPanel>
+
+		</g:VerticalPanel>
+	</g:DialogBox>
+
+</ui:UiBinder>

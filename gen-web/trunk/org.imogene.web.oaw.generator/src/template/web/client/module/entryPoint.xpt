@@ -1,0 +1,532 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase() + "/client/" + projectName.toFirstUpper() + "EntryPoint.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.imogene.admin.client.AdminRenderer;
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».client.event.create.Create«e.name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.event.list.List«e.name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.event.view.View«e.name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.ui.workflow.panel.«e.name.toFirstUpper()»FormPanel;
+import org.imogene.«projectName.toLowerCase()».client.ui.table.panel.«e.name.toFirstUpper()»ListPanel;
+«ENDFOREACH -»
+
+import org.imogene.«projectName.toLowerCase()».client.ui.panel.TopBannerPanel;
+import org.imogene.«projectName.toLowerCase()».client.ui.panel.HomePanel;
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+
+import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.LogoutEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.dynamicfields.ui.renderer.DynFieldsRenderer;
+import org.imogene.web.client.ui.panel.MainContentPanel;
+import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.client.util.TokenHelper;
+import org.imogene.web.client.util.TokenHelper.EntityToken;
+import org.imogene.web.shared.proxy.ImogActorProxy;
+import org.imogene.web.shared.proxy.SessionInfoProxy;
+import org.imogene.web.shared.request.SessionRequest;
+
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.requestfactory.shared.Receiver;
+import com.google.web.bindery.requestfactory.shared.Request;
+import com.google.web.bindery.requestfactory.shared.ServerFailure;
+
+«IF applicationType.matches(adminType)-»
+import org.imogene.admin.client.AdminRenderer;
+import org.imogene.admin.client.event.create.CreateNotificationEvent;
+import org.imogene.admin.client.event.list.ListNotificationEvent;
+import org.imogene.admin.client.event.view.ViewNotificationEvent;
+import org.imogene.admin.client.ui.table.panel.DynamicFieldTemplateListPanel;
+import org.imogene.admin.client.ui.table.panel.NotificationListPanel;
+import org.imogene.admin.client.ui.workflow.panel.NotificationFormPanel;
+import org.imogene.web.shared.proxy.ImogActorProxy;
+import org.imogene.web.client.dynamicfields.ui.workflow.panel.DynamicFieldTemplateFormPanel;
+import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
+import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
+import org.imogene.web.client.event.ViewDynamicFieldTemplateEvent;
+import org.imogene.web.client.util.ImogRoleUtil;
+«ENDIF-»
+
+
+
+/**
+ * Entry point of the application on the client side
+ * @author Medes-IMPS
+ */
+public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, ValueChangeHandler<String> {
+
+	interface Binder extends UiBinder<Widget, «projectName.toFirstUpper()»EntryPoint> {
+	}
+
+	private static final Logger log = Logger.getLogger(«projectName.toFirstUpper()»EntryPoint.class.getName());
+	
+	private static List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+	
+	/* session cookie with a validation period of 2 days */
+	«IF applicationType.matches(adminType)-»
+	private static String COOKIE_NAME = "imogene-«projectName.toLowerCase()»-admin";
+	«ELSE-»
+	private static String COOKIE_NAME = "imogene-«projectName.toLowerCase()»";
+	«ENDIF-»
+	private final long COOKIE_DURATION = 1000 * 60 * 60 * 24 * 2;	
+
+	protected final «projectName.toFirstUpper()»RequestFactory requestFactory = GWT.create(«projectName.toFirstUpper()»RequestFactory.class);
+	protected EventBus eventBus = new SimpleEventBus();
+	
+	/* timer to check session validity */
+	private Timer sessionTimer;
+
+	@UiField
+	VerticalPanel mainPanel;
+	@UiField
+	MainContentPanel content;
+	@UiField(provided = true)
+	TopBannerPanel topPanel;
+	
+	
+	/**
+	 * This is the entry point method
+	 */
+	public void onModuleLoad() {
+
+		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			public void onUncaughtException(Throwable e) {
+				log.log(Level.SEVERE, e.getMessage(), e);
+			}
+		});
+
+		requestFactory.initialize(eventBus);
+		
+		// get session info and set info in local session
+		SessionRequest request = requestFactory.sessionInfoRequest();
+		Request<SessionInfoProxy> sessionInfoRequest = request.getSessionInfo();		
+		sessionInfoRequest.with("actor.roleList");
+		sessionInfoRequest.to(new Receiver<SessionInfoProxy>() {
+				
+			@Override
+			public void onFailure(ServerFailure error) {
+				Window.alert(BaseNLS.constants().connexion_error());
+			}
+
+			@Override
+			public void onSuccess(SessionInfoProxy sessionInfo) {
+				if (sessionInfo!=null && sessionInfo.getActor() != null) {
+					ImogActorProxy actor = sessionInfo.getActor();
+					LocalSession.get().setCurrentUser(actor);
+					displayApplication(actor);
+					initializeCookie(sessionInfo.getSessionId());
+				}
+				else
+					logout();
+			}
+		}).fire();
+	}
+	
+	/**
+	 * Initialize the cookie
+	 */
+	private void initializeCookie(String sessionId) {
+		String cookieValue = Cookies.getCookie(COOKIE_NAME);
+		if (cookieValue == null || !sessionId.equals(cookieValue)) {
+			Cookies.setCookie(COOKIE_NAME, sessionId,
+					new Date(System.currentTimeMillis() + COOKIE_DURATION));
+		}
+		launchSessionTimer();
+	}
+	
+	/**
+	 * Create the user interface
+	 */	
+	protected void displayApplication(ImogActorProxy actor) {
+		
+		registrations.add(History.addValueChangeHandler(this));
+		//History.fireCurrentHistoryState();
+				
+		// construct layout
+		topPanel = new TopBannerPanel(eventBus, actor);
+		RootLayoutPanel.get().add(GWT.<Binder> create(Binder.class).createAndBindUi(this));
+
+		// add first level panel		
+		setContentPanel(getHomePanel());
+		topPanel.hideTitle();
+		
+		«IF applicationType.matches(adminType)-»
+		// configure Admin renderer
+		AdminRenderer.get().setFormTypeUtil(«projectName.toFirstUpper()»FormTypes.get());		
+		«ENDIF-»
+		«IF hasDynamicFields(entities)-»
+		// configure Dynamic Fields renderer
+		DynFieldsRenderer.get().setFormTypeUtil(«projectName.toFirstUpper()»FormTypes.get());		
+		«ENDIF-»
+		
+		// add handlers
+		setHandlers();
+	}
+	
+	/**
+	 * Gets the module Home panel
+	 * @return
+	 */
+	protected Composite getHomePanel() {
+		return new HomePanel(eventBus);
+	}
+
+	/**
+	 * Sets the module content panel
+	 * @param c the panel to be displayed in the module content panel
+	 */
+	public void setContentPanel(Composite c) {
+		content.setContent(c);
+	}
+
+	/**
+	 * Logouts the user from the application
+	 */
+	private void logout() {
+
+		/* stop timer */
+		if (sessionTimer != null) {
+			sessionTimer.cancel();
+		}
+
+		Cookies.removeCookie(COOKIE_NAME);
+
+		/* clean local data */
+		LocalSession.get().setCurrentUser(null);
+
+		/* disconnect from the server */
+		SessionRequest request = requestFactory.sessionInfoRequest();
+		Request<Void> disconnectRequest = request.disconnect();	
+		disconnectRequest.to(new Receiver<Void>() {
+				
+			@Override
+			public void onFailure(ServerFailure error) {
+				clearModule();
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				clearModule();
+			}
+		}).fire();
+	}
+	
+	/**
+	 * Launch a timer that checks every 5s that the current user 
+	 * session is valid. If it isn't (because the session expired),
+	 * then it displays the login form.
+	 */
+	private void launchSessionTimer() {
+
+		/* set timer to check session validity and disconnect if not valid */
+		if (sessionTimer != null) {
+			//Window.alert("Session timer is not null");
+		} else {
+			sessionTimer = new Timer() {
+				public void run() {
+									
+					/* check session */
+					SessionRequest request = requestFactory.sessionInfoRequest();
+					Request<Boolean> validateSessionRequest = request.validateSession(Cookies.getCookie(COOKIE_NAME));	
+					validateSessionRequest.to(new Receiver<Boolean>() {
+							
+						@Override
+						public void onFailure(ServerFailure error) {
+							//logout();
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							if (result == null || !result) {
+								logout();
+							}
+						}
+					}).fire();
+				}
+			};
+		}
+		sessionTimer.cancel();
+		sessionTimer.scheduleRepeating(5000);
+	}
+	
+	/**
+	 * Clears the module from its panels
+	 */
+	private void clearModule() {
+		RootPanel.get().clear();
+		topPanel = null;
+		content = null;
+		mainPanel = null;
+		removeHandlers();
+		String href = GWT.getHostPageBaseURL() + "jsp/Login.jsp";
+		Window.Location.assign(href);
+	}
+	
+	/**
+	 * 
+	 * @param panel
+	 */
+	private void displayWrapperPanel(Widget panel) {
+		topPanel.showTitle();
+		topPanel.showLocaleList(false);
+		content.setContent(panel);
+	}
+	
+	/**
+	 * Remove the application level handlers
+	 */
+	protected static void removeHandlers() {
+		for (HandlerRegistration r : registrations)
+			r.removeHandler();
+		registrations.clear();
+	}	
+	
+	/**
+	 *
+	 */
+	protected <T extends EventHandler> void registerHandler(Type<T> type, T eventHandler){
+		registrations.add(eventBus.addHandler(type, eventHandler));
+	}	
+
+	/**
+	 * Set the application level handlers
+	 */
+	private void setHandlers() {
+
+		/* Handler to go to the application home page */
+		registrations.add(eventBus.addHandler(GoHomeEvent.TYPE, new GoHomeEvent.Handler() {
+			public void goHome() {				
+				content.setContent(getHomePanel());
+				topPanel.hideTitle();
+				topPanel.showLocaleList(true);
+			}
+		}));
+		
+		/* Handler to logout the application */
+		registrations.add(eventBus.addHandler(LogoutEvent.TYPE, new LogoutEvent.Handler() {
+			public void onLogout() {
+				logout();
+			}
+		}));
+		
+		«IF !applicationType.matches(adminType)-»	
+			«EXPAND setHandlers FOREACH entities»			
+		«ELSE-»
+			«FOREACH entities AS e-»
+				«IF Actor.isAssignableFrom(e.metaType)-»
+					«EXPAND setHandlers FOR e-»
+				«ENDIF-»
+			«ENDFOREACH-»
+		
+		/**
+		 * Handlers for entity Notification
+		 */
+		 
+		/* Create Notification Handler */
+		registrations.add(eventBus.addHandler(CreateNotificationEvent.TYPE,
+				new CreateNotificationEvent.Handler() {
+					public void createNewNotification(GwtEvent<?> closeEvent) {
+						if (ImogRoleUtil.isAdmin()) {						
+							NotificationFormPanel notificationFormPanel = new NotificationFormPanel(requestFactory, null, «projectName.toFirstUpper()»FormTypes.get(), «projectName.toFirstUpper()»Renderer.get());
+							notificationFormPanel.setCloseEvent(closeEvent);
+							displayWrapperPanel(notificationFormPanel);
+						}
+					}
+				}));
+
+		/* View Notification Handler */
+		registrations.add(eventBus.addHandler(ViewNotificationEvent.TYPE,
+				new ViewNotificationEvent.Handler() {
+					public void viewNotification(String entityId, GwtEvent<?> closeEvent) {
+						if (ImogRoleUtil.isAdmin()) {							
+							NotificationFormPanel notificationFormPanel = new NotificationFormPanel(requestFactory, entityId, «projectName.toFirstUpper()»FormTypes.get(), «projectName.toFirstUpper()»Renderer.get());
+							notificationFormPanel.setCloseEvent(closeEvent);
+							displayWrapperPanel(notificationFormPanel);
+						}
+					}
+				}));
+
+		/* List Notification Handler */
+		registrations.add(eventBus.addHandler(ListNotificationEvent.TYPE, new ListNotificationEvent.Handler() {
+			public void listNotification() {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new NotificationListPanel(requestFactory, «projectName.toFirstUpper()»FormTypes.get()));
+			}
+
+			public void listNotification(String searchText) {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new NotificationListPanel(requestFactory, searchText, «projectName.toFirstUpper()»FormTypes.get()));
+			}
+		}));
+
+		/**
+		 * Handlers for entity DynamicFieldTemplate
+		 */
+
+		/* Create DynamicFieldTemplate Handler */
+		registrations.add(eventBus.addHandler(
+				CreateDynamicFieldTemplateEvent.TYPE,
+				new CreateDynamicFieldTemplateEvent.Handler() {
+					public void createNewDynamicFieldTemplate(GwtEvent<?> closeEvent) {
+						if (ImogRoleUtil.isAdmin()) {						
+							DynamicFieldTemplateFormPanel dynamicField_TemplateFormPanel = new DynamicFieldTemplateFormPanel(requestFactory, null, «projectName.toFirstUpper()»FormTypes.get());
+							dynamicField_TemplateFormPanel.setCloseEvent(closeEvent);
+							displayWrapperPanel(dynamicField_TemplateFormPanel);
+						}
+					}
+				}));
+
+		/* View DynamicFieldTemplate Handler */
+		registrations.add(eventBus.addHandler(
+				ViewDynamicFieldTemplateEvent.TYPE,
+				new ViewDynamicFieldTemplateEvent.Handler() {
+					public void viewDynamicFieldTemplate(String entityId, GwtEvent<?> closeEvent) {
+						if (ImogRoleUtil.isAdmin()) {
+							DynamicFieldTemplateFormPanel dynamicField_TemplateFormPanel = new DynamicFieldTemplateFormPanel(requestFactory, entityId, «projectName.toFirstUpper()»FormTypes.get());
+							dynamicField_TemplateFormPanel.setCloseEvent(closeEvent);							
+							displayWrapperPanel(dynamicField_TemplateFormPanel);
+						}
+					}
+				}));
+
+		/* List DynamicFieldTemplate Handler */
+		registrations.add(eventBus.addHandler(ListDynamicFieldTemplateEvent.TYPE, new ListDynamicFieldTemplateEvent.Handler() {
+			public void listDynamicFieldTemplate() {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new DynamicFieldTemplateListPanel(requestFactory, «projectName.toFirstUpper()»FormTypes.get()));
+			}
+
+			public void listDynamicFieldTemplate(String searchText) {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new DynamicFieldTemplateListPanel(requestFactory, searchText, «projectName.toFirstUpper()»FormTypes.get()));
+			}
+		}));	
+		«ENDIF-»		
+	}
+
+
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		
+		String token = event.getValue();
+		EntityToken entityToken = TokenHelper.getToken(token);
+		
+		if (entityToken != null) {
+		
+		«IF !applicationType.matches(adminType)-»	
+			«EXPAND setOnValueChange FOREACH entities»			
+		«ELSE-»
+			«FOREACH entities AS e-»
+				«IF Actor.isAssignableFrom(e.metaType)-»
+					«EXPAND setOnValueChange FOR e-»
+				«ENDIF-»
+			«ENDFOREACH-»
+		«ENDIF-»
+		}
+		else
+			eventBus.fireEvent(new GoHomeEvent());
+	}
+		
+}
+«ENDLET»
+«ENDFILE-»
+«ENDDEFINE»
+
+
+«REM»«ENDREM»
+«DEFINE setHandlers FOR CardEntity-»
+		/** 
+		 * Handlers for entity «name.toFirstUpper()» 
+		 * */		
+		
+		/* Create «name.toFirstUpper()» Handler */
+		registrations.add(eventBus.addHandler(Create«name.toFirstUpper()»Event.TYPE, new Create«name.toFirstUpper()»Event.Handler() {
+					public void createNew«name.toFirstUpper()»(GwtEvent<?> closeEvent) {
+						if (AccessManager.canCreateForm("«name.toLowerCase()»") && AccessManager.canEditForm("«name.toLowerCase()»")){
+							«name.toFirstUpper()»FormPanel «name.toLowerCase()»Form = new «name.toFirstUpper()»FormPanel(requestFactory, null);	
+							«name.toLowerCase()»Form.setCloseEvent(closeEvent);												
+							displayWrapperPanel(«name.toLowerCase()»Form);
+						}
+					}
+				}));
+
+		/* View «name.toFirstUpper()» Handler */
+		registrations.add(eventBus.addHandler(View«name.toFirstUpper()»Event.TYPE, new View«name.toFirstUpper()»Event.Handler() {
+					public void view«name.toFirstUpper()»(String entityId, GwtEvent<?> closeEvent) {
+						if (AccessManager.canReadForm("«name.toLowerCase()»")){
+							«name.toFirstUpper()»FormPanel «name.toLowerCase()»Form = new «name.toFirstUpper()»FormPanel(requestFactory, entityId);	
+							«name.toLowerCase()»Form.setCloseEvent(closeEvent);
+							displayWrapperPanel(«name.toLowerCase()»Form);
+						}						
+					}
+				}));
+
+		/* List «name.toFirstUpper()» Handler	 */
+		registrations.add(eventBus.addHandler(List«name.toFirstUpper()»Event.TYPE, new List«name.toFirstUpper()»Event.Handler() {
+					public void list«name.toFirstUpper()»() {
+						if (AccessManager.canDirectAccessForm("«name.toLowerCase()»") && AccessManager.canReadForm("«name.toLowerCase()»"))
+							displayWrapperPanel(new «name.toFirstUpper()»ListPanel(requestFactory));							
+					}
+					public void list«name.toFirstUpper()»(String searchText) {
+						if (AccessManager.canDirectAccessForm("«name.toLowerCase()»") && AccessManager.canReadForm("«name.toLowerCase()»"))
+							displayWrapperPanel(new «name.toFirstUpper()»ListPanel(requestFactory, searchText));												
+					}
+				}));
+«ENDDEFINE»
+
+«REM»«ENDREM»
+«DEFINE setOnValueChange FOR CardEntity-»
+			/** actions for «name.toFirstUpper()» */
+			if (entityToken.getType().equals("«name.toLowerCase()»")) {				
+				if (AccessManager.canReadForm("«name.toLowerCase()»")) {													
+					/* view for «name.toFirstUpper()» */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new View«name.toFirstUpper()»Event(entityToken.getId()));	
+					
+					/* list for «name.toFirstUpper()» */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessForm("«name.toLowerCase()»"))			
+							eventBus.fireEvent(new List«name.toFirstUpper()»Event());
+					}	
+				}							
+				if (AccessManager.canEditForm("«name.toLowerCase()»")) {
+					/* new «name.toFirstUpper()» */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateForm("«name.toLowerCase()»"))
+							eventBus.fireEvent(new Create«name.toFirstUpper()»Event());
+					}
+				}						
+			}
+«ENDDEFINE»
+

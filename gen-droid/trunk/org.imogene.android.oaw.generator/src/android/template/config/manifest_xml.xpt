@@ -1,0 +1,377 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String versionCode, String secretCode) FOR Project »
+«FILE 'AndroidManifest.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="org.imogene.android.«name.toLowerCase()»" android:versionCode="«versionCode-»">
+	
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.CALL_PHONE" />
+	<uses-permission android:name="android.permission.CALL_PRIVILEGED" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.RECEIVE_SMS" />
+	<uses-permission android:name="android.permission.SEND_SMS" />
+	<uses-permission android:name="android.permission.VIBRATE"/>
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_SMS" />
+	
+	<uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+	
+	<application
+		android:name="org.imogene.android.«name.toLowerCase()».app.«name.toFirstUpper()»App"
+		android:icon="@drawable/ig_logo_android_s"
+		android:label="@string/app_name"
+	 	android:debuggable="true"
+	 	android:theme="@style/Theme.Imogene" >
+
+		<activity
+			android:name="org.imogene.android.app.Welcome"
+			android:label="@string/app_name" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+			
+		<activity
+			android:name="org.imogene.android.app.HighPreferences"
+			android:label="@string/ig_high_preferences" />
+		
+		<activity 
+			android:name="org.imogene.android.app.setup.AccountCheckPassword"
+			android:label="@string/ig_account_check_password_title"/>
+		
+		<activity 
+			android:name="org.imogene.android.app.setup.AccountCreationIntroduction"
+			android:label="@string/ig_account_creation_introduction_title"/>
+		
+		<activity 
+			android:name="org.imogene.android.app.setup.AccountSetupBasics"
+			android:label="@string/ig_account_setup_basics_title" />
+			
+		<activity
+			android:name="org.imogene.android.app.setup.AccountSetupShortPassword"
+			android:label="@string/ig_account_setup_shortpw_title" />
+		
+		<activity
+			android:name="org.imogene.android.app.ImageCapture"
+			android:label="@string/ig_camera"
+			android:icon="@drawable/ig_ic_launcher_camera" 
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:configChanges="orientation" >
+			<intent-filter>
+				<action android:name="android.intent.action.GET_CONTENT"/>
+				<data android:mimeType="image/*"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="org.imogene.android.«name.toLowerCase()».category.IMAGE_CATPURE"/>
+			</intent-filter>
+		</activity>
+		
+		<activity
+			android:name="org.imogene.android.app.VideoCapture"
+			android:label="@string/ig_camcorder"
+			android:icon="@drawable/ig_ic_launcher_video_camera" 
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:configChanges="orientation" >
+			<intent-filter>
+				<action android:name="android.intent.action.GET_CONTENT"/>
+				<data android:mimeType="video/*"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="org.imogene.android.«name.toLowerCase()».category.VIDEO_CATPURE"/>
+			</intent-filter>
+		</activity>
+
+		<activity 
+			android:name=".app.«name.toFirstUpper()»Listing"
+			android:label="@string/ig_list_availables_entities"
+			android:icon="@drawable/ig_logo_android_s" />
+		
+		<activity 
+		«IF hasFilter(this)-»
+			android:name=".app.ExtendedPreferences"
+		«ELSE-»
+			android:name="org.imogene.android.app.Preferences"
+		«ENDIF-»
+			android:label="@string/ig_preferences" />
+		
+		«FOREACH entities AS entity»
+		<activity
+			android:name=".app.«entity.name.toFirstUpper()-»List"
+			android:label="@string/«entity.name.toLowerCase()-»_des_pl"
+			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-» >
+			<intent-filter>
+				«IF entity.georeferenced == null-»
+				<action android:name="android.intent.action.VIEW" />
+				«ENDIF-»
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.dir/«entity.name.toLowerCase()-»"/>
+			</intent-filter>
+		</activity>
+		
+		«IF entity.georeferenced != null-»
+		<activity
+			android:name=".app.«entity.name.toFirstUpper()»ListAndMap"
+			android:label="@string/«entity.name.toLowerCase()-»_des_pl"
+			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-» >
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.dir/«entity.name.toLowerCase()-»"/>
+			</intent-filter>
+		</activity>
+		«ENDIF-»
+		
+		<activity
+			android:name=".app.«entity.name.toFirstUpper()-»View" 
+			android:label="@string/«entity.name.toLowerCase()-»_des_sg"
+			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-» >
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.item/«entity.name.toLowerCase()-»"/>
+			</intent-filter>
+		</activity>
+		
+		<activity
+			android:name=".app.«entity.name.toFirstUpper()-»Edit"
+			android:label="@string/«entity.name.toLowerCase()-»_des_new"
+			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-» >
+			<intent-filter>
+				<action android:name="android.intent.action.INSERT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.android.category.CLASSIC" />
+				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.dir/«entity.name.toLowerCase()-»"/>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.EDIT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.item/«entity.name.toLowerCase()-»"/>
+			</intent-filter>
+		</activity>
+		
+		<activity 
+			android:name=".app.«entity.name.toFirstUpper()-»Wizard"
+			android:label="@string/«entity.name.toLowerCase()-»_des_new"
+			android:theme="@style/Theme.Imogene.Wizard"
+			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-»
+			«REM»android:theme="@style/Theme.Light.Hack"comment«ENDREM» >
+			<intent-filter>
+				<action android:name="android.intent.action.INSERT" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.android.category.WIZARD" />
+				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.dir/«entity.name.toLowerCase()-»"/>
+			</intent-filter>
+		</activity>
+		
+		«ENDFOREACH»
+		
+		<activity 
+			android:name=".app.MultiUserListing"
+			android:label="UserListing" >
+			<category android:name="android.intent.category.DEFAULT"/>
+		</activity>
+		
+		<activity
+			android:name="org.imogene.android.app.OffsetActivity"
+			android:label="offset"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:configChanges="orientation|keyboardHidden" />
+		
+		<activity
+			android:name="org.imogene.android.app.AuthenticationHttpActivity"
+			android:label="authentication"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:configChanges="orientation|keyboardHidden" />
+		
+		<activity
+			android:name="org.imogene.android.app.UnSyncDialog"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+			
+        <activity
+            android:name="org.imogene.android.update.UpdateActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            
+        <activity
+            android:name="org.imogene.android.maps.app.MapActivityWithoutActionBar" />
+            
+        <activity 
+			android:name="org.imogene.android.maps.app.LocationFromSensor"
+			android:icon="@drawable/maps_gps"
+			android:label="@string/maps_gps"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.map.«name.toLowerCase()».category.GPS" />
+				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name="org.imogene.android.maps.app.LocationFromBestAvailable"
+			android:icon="@drawable/maps_best"
+			android:label="@string/maps_best"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.map.«name.toLowerCase()».category.BEST" />
+				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name="org.imogene.android.maps.app.LocationFromNetwork"
+			android:icon="@drawable/maps_network"
+			android:label="@string/maps_network"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.map.«name.toLowerCase()».category.NETWORK" />
+				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+			</intent-filter>
+		</activity>
+		
+		<activity
+			android:name="org.imogene.android.maps.app.LocationPicker"
+			android:icon="@drawable/maps_map"
+			android:label="@string/maps_map" >
+			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.map.«name.toLowerCase()».category.MAP" />
+				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+			</intent-filter>
+		</activity>
+		
+		<activity
+			android:name="org.imogene.android.maps.app.EnterManualLocation"
+			android:icon="@drawable/maps_manual"
+			android:label="@string/maps_manual"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+			<intent-filter>
+				<action android:name="android.intent.action.PICK" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="org.imogene.map.«name.toLowerCase()».category.MANUAL" />
+				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+			</intent-filter>
+		</activity>
+		
+		<activity
+			android:name="org.imogene.android.maps.app.LocationViewer"
+			android:icon="@drawable/maps_map"
+			android:label="@string/maps_map" />
+		
+		<activity
+			android:name="org.imogene.android.radar.app.RadarActivity"
+			android:icon="@drawable/maps_radar"
+			android:label="@string/maps_map"
+			android:theme="@android:style/Theme.Black.NoTitleBar" />
+			
+    	<activity
+    		android:name="org.acra.CrashReportDialog"
+        	android:theme="@android:style/Theme.Dialog"
+        	android:launchMode="singleInstance"
+        	android:excludeFromRecents="true"
+        	android:finishOnTaskLaunch="true" />
+		
+		<receiver
+			android:name="org.imogene.android.notification.MessagingNotification$OnDeletedReceiver">
+			<intent-filter>
+				<action android:name="org.imogene.android.«name.toLowerCase()».receiver.NOTIFICATION_DELETED" />
+			</intent-filter>
+		</receiver>
+		
+		<receiver
+			android:name="org.imogene.android.receiver.ServicingReceiver">
+ 			<intent-filter>
+ 				<action android:name="android.provider.Telephony.SECRET_CODE" />
+ 				<data android:scheme="android_secret_code" android:host="«secretCode»" />
+ 			</intent-filter>
+ 			<intent-filter>
+ 				<action android:name="android.intent.action.BOOT_COMPLETED" />
+ 				<action android:name="android.intent.action.CONFIGURATION_CHANGED"/>
+ 				<action android:name="org.imogene.android.«name.toLowerCase()».action.RM_SYNC_HISTORY" />
+ 				<action android:name="org.imogene.android.«name.toLowerCase()».action.RM_DATABASE" />
+ 			</intent-filter>
+ 		</receiver>
+		
+		<receiver
+			android:name="org.imogene.android.receiver.SynchronizationReceiver">
+			<intent-filter>
+				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
+				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
+				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
+			</intent-filter>
+		</receiver>
+		
+		<service
+			android:name="org.imogene.android.sync.SynchronizationService" >
+			<intent-filter>
+				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
+				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
+				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
+			</intent-filter>
+		</service>
+		
+		<activity
+            android:name="org.imogene.android.maps.app.PreCacheMap"
+            android:label="@string/maps_offline_title"
+            android:launchMode="singleTask" />
+            
+        <activity
+            android:name="org.imogene.android.maps.app.PreCacheList"
+            android:label="@string/maps_offline_title" />
+            
+        <activity
+            android:name="org.imogene.android.maps.offline.TileLoaderSettings"
+            android:label="@string/maps_offline_title"
+            android:theme="@android:style/Theme.Dialog" />
+            
+        <activity
+            android:name="org.imogene.android.maps.offline.TileLoaderActivity"
+            android:label="@string/maps_offline_title"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <service android:name="org.imogene.android.maps.offline.TileLoaderService" />
+		
+		<receiver
+			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentReceiver" />
+		
+		<receiver
+			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentFailedReceiver" />
+		
+		<provider 
+			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
+			android:name=".provider.«name.toFirstUpper()-»Provider" />
+	</application>
+	
+</manifest>
+«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Preferences messages -->
+    <string name="ig_preferences">"Preferences"</string>
+    <string name="ig_high_preferences">"Advanced Preferences"</string>
+    <string name="ig_synchro_parameters">"Connection parameters"</string>
+    <string name="ig_application_parameters">"Application parameters"</string>
+    <string name="ig_sync_user_title">"Synchronization user"</string>
+    <string name="ig_sync_roles_title">"Synchronization roles"</string>
+    <string name="ig_sync_server_title">"Synchronization URL"</string>
+    <string name="ig_sync_hardware_title">"Hardware ID"</string>
+    <string name="ig_sync_hardware_dialog_title">"Renew the hardware's id"</string>
+    <string name="ig_sync_hardware_dialog_message">"Are you sure you want to delete the old ID and replace it by a new one ?"</string>
+    <string name="ig_sync_one_shot_title">"One shot synchronization"</string>
+    <string name="ig_sync_one_shot_summary">"Launch manually a single synchronization"</string>
+    <string name="ig_sync_time_title">"Synchronization period"</string>
+    <string name="ig_sync_time_summary">"Defines the time period between two synchronizations"</string>
+    <string name="ig_sync_on_off_title">"Synchronization"</string>
+    <string name="ig_sync_on_off_summaryon">"Disable the synchronization"</string>
+    <string name="ig_sync_on_off_summaryoff">"Enable the synchronization"</string>
+    <string name="ig_sync_bidirectional_title">"Bidirectional"</string>
+    <string name="ig_sync_bidirectional_summaryon">"Disable bidirectional synchronization"</string>
+    <string name="ig_sync_bidirectional_summaryoff">"Eanble bidirectional synchronization"</string>
+    <string name="ig_app_user_title">"Application user"</string>
+    <string name="ig_app_roles_title">"Application user's roles"</string>
+    <string name="ig_app_wizard_title">"Wizard"</string>
+    <string name="ig_app_wizard_summaryon">"Disable wizard during entity creation"</string>
+    <string name="ig_app_wizard_summaryoff">"Enable wizard during insertion"</string>
+    <string name="ig_rights_title">"Modification/Suppression rights"</string>
+    <string name="ig_rights_modify_title">"Modification rights"</string>
+    <string name="ig_rights_modify_summary">"Change the modification rights of the application users by entities"</string>
+    <string name="ig_rights_delete_title">"Suppression rights"</string>
+    <string name="ig_rights_delete_summary">"Change the suppression rights of the application users by entities"</string>
+    <string name="ig_rights_modify_summaryon">"Disable modifications"</string>
+    <string name="ig_rights_modify_summaryoff">"Enable modifications"</string>
+    <string name="ig_rights_delete_summaryon">"Disable suppressions"</string>
+    <string name="ig_rights_delete_summaryoff">"Enable suppressions"</string>
+    <string name="ig_debug_title">"Debug preferences"</string>
+    <string name="ig_debug_save_title">"Save synchronization files"</string>
+    <string name="ig_debug_save_summaryon">"Synchronization files will be kept"</string>
+    <string name="ig_debug_save_summaryoff">"Synchronization files will be deleted"</string>
+    <string name="ig_renew_title">"Renew"</string>
+    <string name="ig_renew_sync_history_title">"Renew synchronization history"</string>
+    <string name="ig_renew_sync_history_summary">"Delete all synchronization history"</string>
+    <string name="ig_renew_sync_history_dialog_message">"Are you sure you want to delete all synchronization history ?"</string>
+    <string name="ig_renew_database_title">"Renew the database"</string>
+    <string name="ig_renew_database_summary">"Delete the whole database (on the device only)"</string>
+    <string name="ig_renew_database_dialog_message">"Are you sure you want to delete all database entries ? All data will be lost after performing this action."</string>
+    <string name="ig_renew_database_unsync_message">"Some data are not synchronized. Are you sure you want to perform this action ?"</string>
+    <string name="ig_ntp_title">"NTP settings"</string>
+    <string name="ig_ntp_server_title">"NTP server address"</string>
+    <string name="ig_ntp_offset_title">"Current time offset"</string>
+    <string name="ig_about">"About"</string>
+    <string name="ig_about_title">"About Imogene"</string>
+    <string name="ig_about_summary">"Display informations about the Imogene application"</string>
+	<string name="ig_about_dialog_message">
+    <b>Imogene application for Android</b>
+    \nVersion: Beta Test
+    \n<b>Informations</b>
+    \nThis version is a test release.\n<b>Contacts</b>
+    \nTo contact us please send a message to john.doe@mail.com.
+    \nYou can also contact us by phone, call M. Doe at +123456789</string>
+    <string name="ig_screen_filters_title">Filters</string>
+    <string name="ig_screen_filters_summary">Design filters for specific synchronization</string>
+    <string name="ig_webservice_url_title">Web Services Address</string>
+    <string name="ig_security_parameters">Security parameters</string>
+    <string name="ig_http_authentication_title">HTTP basic authentication</string>
+    <string name="ig_http_authentication_summaryon">Authentication enabled</string>
+    <string name="ig_http_authentication_summaryoff">Authentication disabled</string>
+    <string name="ig_check_parameters">"Update parameters"</string>
+    <string name="ig_check_update_title">"Application updates"</string>
+    <string name="ig_check_update_summary">"Check for application updates"</string>
+    <string name="ig_check_server_title">"Server Update URL"</string>
+    <string name="ig_precache_title">"Cache Settings"</string>
+    <string name="ig_precache_caching_title">"Automatic caching"</string>
+    <string name="ig_precache_caching_summary">"Automatic caching the map areas"</string>
+    <string name="ig_precache_clear_title">"Clear map tile cache"</string>
+    <string name="ig_precache_clear_summary">"Current cache size is %1$s. To clear user data use the system application settings"</string>
+    <string name="ig_precache_area_title">"Precached map areas"</string>
+    <string name="ig_precache_computing_summary">"Computing..."</string>
+
+</resources>

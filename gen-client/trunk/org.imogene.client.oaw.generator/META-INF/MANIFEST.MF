@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene synchronizer client generator
+Bundle-SymbolicName: org.imogene.client.oaw.generator
+Bundle-Version: 1.0.0
+Bundle-Activator: org.imogene.client.oaw.generator.Activator
+Bundle-Vendor: Medes-IMPS
+Require-Bundle: org.eclipse.emf.mwe.core,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.xpand,
+ org.eclipse.xtend,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.imogene.oaw.generator.common,
+ org.imogene.dao.oaw.generator
+Eclipse-RegisterBuddy: org.imogene.oaw.generator.common,
+ org.imogene.dao.oaw.generator
+Export-Package: org.imogene.client.oaw.generator,
+ template.client.config,
+ template.client.handler,
+ workflow
+Bundle-ClassPath: .,
+ src/
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

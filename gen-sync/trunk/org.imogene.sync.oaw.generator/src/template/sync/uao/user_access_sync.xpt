@@ -1,0 +1,163 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/uao/UserAccessControlImpl.java"»
+package org.imogene.«projectName.toLowerCase()».uao;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.user.DefaultUser;
+import org.imogene.lib.sync.handler.DefaultUserHandler;
+import org.imogene.lib.sync.uao.UserAccessControl;
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»Handler;
+«ENDFOREACH-»
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+
+/**
+ * Class to manage the application user access
+ * @author Medes-IMPS
+ */
+public class UserAccessControlImpl implements UserAccessControl{
+	
+	private Logger logger = Logger.getLogger("org.imogene.«projectName.toLowerCase()».uao");
+	
+	@Autowired
+	@Qualifier(value = "defaultUserHandler")
+	private DefaultUserHandler defaultUserHandler;
+	
+	«EXPAND handlerDeclaration FOREACH entities-»
+
+	@Override
+	public ImogActor authenticate(String user, String password){		
+		return validateLogin(user, password);		
+	}
+	
+	/**
+	 * Validate an account (login/password)
+	 * @param login user login
+	 * @param passwd user password
+	 * @return valid user (existing login/password)
+	 */	
+	private ImogActor validateLogin(String login, String passwd) {
+
+		logger.debug("Validating authentification for login : " + login);
+		
+		ImogActor current = null;
+		
+		«EXPAND loginValidation FOREACH entities-»
+
+		/* Default User */
+		current = validateForDefaultUser(login);
+		if (current != null && validatePasswd(current, passwd)) {
+			return current;
+		}
+		
+		return null;
+	}
+
+	«EXPAND validateForUser FOREACH entities-»
+	
+	/**
+	 * 
+	 * @return the default user if it exist, null otherwise
+	 */
+	public DefaultUser validateForDefaultUser(String login) {
+		List<DefaultUser> actors = defaultUserHandler.getUserFromLogin(login);		
+		return (DefaultUser) validateActor(actors, login);
+	}
+	
+	/**
+	 * Checks that that the login entered belongs to one of the actors
+	 * 
+	 * @param actors a list of actors
+	 * @param login the login to be validated
+	 * @return the ImogActor to which the login belongs to, null otherwise
+	 */
+	private <T extends ImogActor> T validateActor(List<T> actors, String login) {
+		if (actors.size() > 1)
+			logger.error("Can't process authentification, several users use the same login !");
+		if (actors.size() == 1) {
+			T actor = actors.get(0);
+			if (actor.getLogin().equals(login))
+				return actor;
+		}
+		return null;
+	}
+	
+	/**
+	 * Checks that the password entered belongs to the actor
+	 * @param actor an actor
+	 * @return true if the password is the one of the actor
+	 */
+	private boolean validatePasswd(ImogActor actor, String passwd) {
+		String dbHash = actor.getPassword();
+		String computedHash = encodePassword(actor.getLogin(), passwd);
+		if(dbHash.equals(computedHash))
+			return true;
+		else
+			return false;
+	}
+	
+	private String encodePassword(String login, String password){		
+		ShaPasswordEncoder encoder = new ShaPasswordEncoder(256);
+		encoder.setEncodeHashAsBase64(true);
+		return encoder.encodePassword(password, login);
+	}
+	
+	@Override
+	public List<String> getSynchronizable(String userId){
+		// TODO implement getSynchronizable method (no need for the moment because user stored in session)
+		return null;
+	}
+
+	@Override
+	public Object getRestriction(String userId, String entity){
+		// TODO implement getRestriction method (no need for the moment because restriction managed in handler)
+		return null;
+	}	
+		
+}
+
+
+«ENDFILE»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+
+
+«REM» handler declaration «ENDREM»
+«DEFINE handlerDeclaration FOR CardEntity-»«ENDDEFINE»
+«DEFINE handlerDeclaration FOR Actor-»
+	@Autowired
+	@Qualifier(value = "«name.toFirstLower()»Handler")
+	private «name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
+«ENDDEFINE»
+
+«REM» login validation «ENDREM»
+«DEFINE loginValidation FOR CardEntity-»«ENDDEFINE»
+«DEFINE loginValidation FOR Actor-»
+		/* «name»User */
+		current = validateFor«name»(login);
+		if (current != null && validatePasswd(current, passwd)) {
+			return current;
+		}
+«ENDDEFINE»
+
+«REM» login validation «ENDREM»
+«DEFINE validateForUser FOR CardEntity-»«ENDDEFINE»
+«DEFINE validateForUser FOR Actor-»
+	/**
+	 * Validate login for «name»User
+	 * @return the «name»User if it exist, null otherwise
+	 */
+	public «name.toFirstUpper()» validateFor«name.toFirstUpper()»(String login) {		
+		List<«name.toFirstUpper()»> actors = «name.toFirstLower()»Handler.getUserFromLogin(login);		
+		return validateActor(actors, login);
+	}
+«ENDDEFINE»

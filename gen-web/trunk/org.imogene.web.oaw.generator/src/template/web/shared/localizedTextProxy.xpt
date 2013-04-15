@@ -1,0 +1,25 @@
+«IMPORT core»
+
+
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+ "/shared/proxy/LocalizedTextProxy.java"»
+package org.imogene.«projectName.toLowerCase()».shared.proxy;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.LocalizedText;
+
+import com.google.web.bindery.requestfactory.shared.ProxyFor;
+import com.google.web.bindery.requestfactory.shared.ValueProxy;
+
+@ProxyFor(value=LocalizedText.class)
+public interface LocalizedTextProxy extends ValueProxy  {
+
+	«FOREACH languages AS l»
+	public String get«l.name.toFirstUpper()»();
+	
+	public void set«l.name.toFirstUpper()»(String «l.name.toFirstLower()»);
+	«ENDFOREACH»
+
+}
+
+«ENDFILE»
+«ENDDEFINE»

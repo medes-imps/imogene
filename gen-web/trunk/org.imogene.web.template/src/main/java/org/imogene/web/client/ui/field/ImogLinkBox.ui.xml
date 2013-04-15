@@ -1,0 +1,29 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+
+	<ui:style>
+		.imogene-FormText {
+			/*border: 1px solid #777777;*/
+			color: #444444;
+			font-size: 12px;
+			padding: 2px;
+			margin: 0px;
+			background-color: #FFFFFF;
+			width: 200px;
+			text-decoration: underline;
+		}
+	</ui:style>
+	
+	
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+		
+		<g:VerticalPanel>			
+			<g:HTML ui:field="idLink" stylePrimaryName="{style.imogene-FormText}" />
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>	
+	
+
+</ui:UiBinder>

@@ -1,0 +1,28 @@
+«IMPORT core»
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "aop-context.xml"-»
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+
+	<!-- notification for the creation or the modification of bean -->
+	<bean id="notifyAfterSave" class="org.imogene.notif.aop.NotificationSaveInterceptor">
+		<property name="notifierUrl" value="${notifier.server}" />
+	</bean>
+
+	«FOREACH entities AS e »
+	<!-- proxy Implementation Class -->
+	<bean id="«e.name.toFirstLower()»Dao" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>org.imogene.«projectName.toLowerCase()».domain.dao.«e.name.toFirstUpper()»Dao</value>
+		</property>
+		<property name="interceptorNames">
+			<list><value>notifyAfterSave</value></list>
+		</property>
+		<property name="target"><ref bean="«e.name.toFirstLower()»DaoBase" /></property>
+	</bean>
+	«ENDFOREACH»
+	
+</beans>
+«ENDFILE»
+«ENDDEFINE»

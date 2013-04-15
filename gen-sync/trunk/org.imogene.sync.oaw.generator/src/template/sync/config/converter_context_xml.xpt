@@ -1,0 +1,206 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "converter-context.xml"-»
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+
+	<!-- Initialize the UTC date converter -->
+	<bean id="utcDateConverter" class="org.imogene.lib.sync.serializer.xml.UTCDateConverter" />
+	
+	<!-- Initialize the Association Converter -->
+	<bean id="associationConverter" class="org.imogene.lib.sync.serializer.xml.AssociationConverter">
+		<property name="dataHandlerManager" ref="dataHandlerManager"/>
+	</bean>
+	
+	<!-- Initialize the Collection Converter -->
+	<bean id="collectionConverter" class="org.imogene.lib.sync.serializer.xml.CollectionConverter">
+		<property name="dataHandlerManager" ref="dataHandlerManager"/>
+	</bean>
+	
+	<!-- Initialize the Password Converter -->
+	<bean  id="passwordConverter" class="org.imogene.lib.sync.serializer.xml.PasswordConverter" >
+		<property name="encryptionManager" ref="encryptionManager"/>
+	</bean>
+	
+	<!-- Initialize the Roles Converter -->
+	<bean id="rolesConverter" class="org.imogene.lib.sync.serializer.xml.RolesConverter" >
+		<property name="roleActorDao" ref="roleActorDao"/>
+	</bean>
+
+	<!-- Initialize the Binary Converter -->
+	<bean id="binaryConverter" class="org.imogene.lib.sync.binary.file.BinaryFileConverter"/> 	
+	
+	<!-- Initialize the password converter for the actors -->
+    <bean id="passwordPropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
+		<property name="propertyName" value="password"/>
+		<property name="converter" ref="passwordConverter"/>
+	</bean>
+	
+	<!-- Initialize the roles converter for the actors -->	
+	<bean id="rolesPropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
+		<property name="propertyName" value="roles"/>
+		<property name="converter" ref="rolesConverter"/>
+	</bean>
+	
+	<!-- Initialize the DynamicFieldtemplate convertor for the DynamicFieldInstance -->
+	<bean id="dynFieldInstanceTemplateConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
+	    <property name="className" value="org.imogene.lib.common.dynamicfields.DynamicFieldInstance"/>
+		<property name="propertyName" value="fieldTemplate"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>
+
+	<!-- Initialize the actor convertor for the DynamicFieldTemplate -->
+	<bean id="dynFieldTemplateActorConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
+	    <property name="className" value="org.imogene.lib.common.dynamicfields.DynamicFieldTemplate"/>
+		<property name="propertyName" value="templateCreator"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>
+	
+	<!-- Initialize the DynamicFieldInstance converter for the entities -->
+	<bean id="dynamicFieldInstancePropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
+	    <property name="className" value="org.imogene.lib.common.entity.ImogEntityImpl"/>
+		<property name="propertyName" value="dynamicFieldValues"/>
+		<property name="converter" ref="collectionConverter"/>
+	</bean>
+	
+	<!-- Initialize the Entity Converters -->
+	«EXPAND getConverter(projectName) FOREACH entities.groups.fields-»
+	
+	<!-- Initialize the omitted fields -->
+	<bean id="omitUploadDate" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogBeanImpl" />
+		<property name="propertyName" value="uploadDate" />
+	</bean>
+	<bean id="omitVersion" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogBeanImpl" />
+		<property name="propertyName" value="version" />
+	</bean>
+	<bean id="omitNotificationLocale" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
+		<property name="propertyName" value="notificationLocale" />
+	</bean>
+	<bean id="omitNotificationMethod" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
+		<property name="propertyName" value="notificationMethod" />
+	</bean>
+	<bean id="omitBeNotified" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
+		<property name="propertyName" value="beNotified" />
+	</bean>
+	<bean id="omitNotificationData" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
+		<property name="propertyName" value="notificationData" />
+	</bean>
+	<bean id="omitLastLoginDate" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
+		<property name="propertyName" value="lastLoginDate" />
+	</bean>
+	<bean id="omitSynchronizables" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
+		<property name="propertyName" value="synchronizables" />
+	</bean>
+	«EXPAND omitFields(projectName) FOREACH entities-»
+	
+	<!-- Initialize the XML serializer -->
+	<bean id="xmlSerializer" class="org.imogene.lib.sync.serializer.xml.ImogXmlSerializer">
+		<property name="dataHandlerManager" ref="dataHandlerManager"/>
+		<property name="propertyConverters">
+			<set>
+				<ref bean="passwordPropertyConverter"/>
+				<ref bean="rolesPropertyConverter"/>
+				<ref bean="dynFieldInstanceTemplateConverter"/>
+				<ref bean="dynFieldTemplateActorConverter"/>
+				<ref bean="dynamicFieldInstancePropertyConverter"/>
+				«EXPAND getConverter FOREACH entities.groups.fields-»
+			</set>
+		</property>
+		<property name="converters">
+			<set>
+				<ref bean="utcDateConverter" />
+				<ref bean="binaryConverter" />	
+			</set>
+		</property>
+		<property name="omittedProperties">
+			<set>
+				<ref bean="omitUploadDate" />
+				<ref bean="omitVersion" />
+				<ref bean="omitNotificationLocale" />
+				<ref bean="omitNotificationMethod" />
+				<ref bean="omitBeNotified" />
+				<ref bean="omitNotificationData" />
+				<ref bean="omitLastLoginDate" />
+				<ref bean="omitSynchronizables" />
+				«EXPAND omitField FOREACH entities-»
+			</set>
+		</property>
+	</bean>
+</beans>
+«ENDFILE»
+«ENDDEFINE»	
+«REM» ------------------------------------------ «ENDREM»
+
+
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE getConverter(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE getConverter(String projectName) FOR BinaryField-»
+	<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«parentGroup.parentCard.name»"/>
+		<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this»"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>
+«ENDDEFINE»
+«DEFINE getConverter(String projectName) FOR RelationFieldEntity»
+	<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«this.parentGroup.parentCard.name»"/>
+		<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this»"/>
+	«IF this.cardinality == 1 -»
+		<property name="converter" ref="associationConverter"/>
+	«ELSE -»
+		<property name="converter" ref="collectionConverter"/>
+	«ENDIF -»
+	</bean>	  
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+«DEFINE omitFields(String projectName) FOR CardEntity-»«ENDDEFINE»
+«DEFINE omitFields(String projectName) FOR Actor-»
+«EXPAND omitFilterField(projectName) FOREACH filters-»
+«ENDDEFINE»
+
+«DEFINE omitFilterField(String projectName) FOR FilterField-»
+<bean id="omit«parentActor.name.toFirstUpper()»«name.toFirstUpper()»" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
+	<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«parentActor.name.toFirstUpper()»" />
+	<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this-»" />
+</bean>
+«ENDDEFINE»
+
+
+
+
+
+
+
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE getConverter FOR FieldEntity-»«ENDDEFINE»
+«DEFINE getConverter FOR BinaryField-»
+<ref bean="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter"/>
+«ENDDEFINE»
+«DEFINE getConverter FOR RelationFieldEntity-»
+<ref bean="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter"/>
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE omitField FOR CardEntity-»«ENDDEFINE»
+«DEFINE omitField FOR Actor-»
+«EXPAND omitFilterField FOREACH filters-»
+«ENDDEFINE»
+
+«DEFINE omitFilterField FOR FilterField»
+<ref bean="omit«parentActor.name.toFirstUpper()»«name.toFirstUpper()-»"/>
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»

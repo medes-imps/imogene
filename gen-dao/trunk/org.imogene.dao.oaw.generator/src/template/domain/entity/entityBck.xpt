@@ -1,0 +1,95 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt»
+«EXTENSION template::domain::DaoUtilExt»
+
+«DEFINE generate(String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase() + "/domain/entity/" + name.toFirstUpper() + "Bck.java"»
+package org.imogene.«projectName.toLowerCase()».domain.entity;
+
+import java.util.Date;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.imogene.lib.common.entity.GeoField;
+import org.imogene.lib.common.entity.ImogBeanImpl;
+import org.imogene.lib.common.entity.IsGeoreferenced;
+
+
+/**
+ * ImogBean implementation for the entity «name.toFirstUpper()» Backup
+ * @author MEDES-IMPS
+ */
+@Entity
+public class «name.toFirstUpper()»Bck extends ImogBeanImpl«IF georeferenced != null» implements IsGeoreferenced«ENDIF» {
+
+	private static final long serialVersionUID = «generateSerialVersionUID()»L;
+
+	
+	«FOREACH groups AS g»
+	/* «g.name.toFirstUpper()» group fields */
+	
+	«FOREACH g.fields AS f -»
+	«EXPAND jpaAnnotation FOR f»
+	private «EXPAND template::domain::DaoFieldUtil::entityFieldTypeBck FOR f» «EXPAND template::CommonFieldUtil::propertyName FOR f»;
+	«ENDFOREACH -»	
+	«ENDFOREACH»	
+		
+	/**
+	 * Constructor
+	 */		
+	public «name.toFirstUpper()»Bck(){	
+	}
+	
+	
+	«FOREACH groups AS g-»
+	/* Getters and Setters for «g.name.toFirstUpper()» group fields */
+	«FOREACH g.fields AS f -»
+	
+	«EXPAND template::domain::DaoFieldUtil::getterDeclarationForFieldBck FOR f»
+	«EXPAND template::domain::DaoFieldUtil::setterDeclarationForFieldBck FOR f»	
+	
+	«ENDFOREACH -»	
+	«ENDFOREACH»
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«REM»----------------------------------------------- «ENDREM»
+«REM»-------------- FIELD DECLARATION -------------- «ENDREM»
+«REM»----------------------------------------------- «ENDREM»
+«DEFINE jpaAnnotation FOR FieldEntity»«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR TextField»
+	«IF translatable-»
+	«LET (Project) parentGroup.parentCard.eContainer AS project-»
+	@Embedded
+	@AttributeOverrides({
+		«FOREACH project.languages AS l SEPARATOR ','-»
+    	@AttributeOverride(name="«l.name.toLowerCase()»", column=@Column(name="«name.toFirstLower()»_«l.isoCode»"))
+		«ENDFOREACH-»
+  	})
+	«ENDLET-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR DatesField»
+	@Temporal(TemporalType.TIMESTAMP)
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR GeoField»
+	@Embedded
+	@AttributeOverrides({
+    	@AttributeOverride(name="latitude", column=@Column(name="«name.toFirstLower()»_Latitude")),
+    	@AttributeOverride(name="longitude", column=@Column(name="«name.toFirstLower()»_Longitude"))
+  	})
+«ENDDEFINE»

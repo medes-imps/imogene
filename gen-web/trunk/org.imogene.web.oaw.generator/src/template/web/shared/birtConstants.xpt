@@ -1,0 +1,21 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+ "/shared/constants/" + projectName.toFirstUpper() + "BirtConstants.java"»
+package org.imogene.«projectName.toLowerCase()».shared.constants;
+
+import org.imogene.web.shared.constants.BirtConstants;
+
+public class «projectName.toFirstUpper()»BirtConstants extends BirtConstants {
+
+
+	«FOREACH entities AS e-»
+		public static final String «e.shortName.toUpperCase()»_CSV_KEY = "«e.name.toFirstLower()».txt";
+	«ENDFOREACH -»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+

@@ -1,0 +1,51 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/uao/security/MedooSecurityDetailService.java"»
+package org.imogene.«projectName.toLowerCase()».uao.security;
+
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.sync.security.MedooUserDetails;
+import org.imogene.«projectName.toLowerCase()».uao.UserAccessControlImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+/**
+ * Class to manage the application user access
+ * @author Medes-IMPS
+ */
+public class MedooSecurityDetailService implements UserDetailsService {
+
+	@Autowired
+	@Qualifier(value = "userAccessControl")
+	private UserAccessControlImpl accessControl;
+
+	@Override
+	public UserDetails loadUserByUsername(String login)
+			throws UsernameNotFoundException, DataAccessException {
+		ImogActor current = null;
+
+		«EXPAND checkActorValidation FOREACH entities-»
+
+		/* Default User */
+		current = accessControl.validateForDefaultUser(login);
+		if(current!=null)
+			return new MedooUserDetails(current);
+		return  null;
+	}
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE checkActorValidation FOR CardEntity -»«ENDDEFINE»
+«DEFINE checkActorValidation FOR Actor -»
+/* «name.toFirstUpper()» validation */
+current = accessControl.validateFor«name.toFirstUpper()-»(login);
+if(current!=null)
+	return new MedooUserDetails(current);	
+«ENDDEFINE»

@@ -1,0 +1,83 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style src="../../css/ImogCss.css">
+		.popupButtonStyle-common {
+			cursor: default;
+			background-color: transparent;
+			-webkit-border-radius: 2px;
+			-moz-border-radius: 2px;
+			border-radius: 2px;
+			text-align: center;
+			height: 27px;
+			line-height: 27px;
+			min-width: 60px;
+			outline: 0;
+			padding: 0 8px;
+		}		
+		.popupButtonStyle {
+			color: #444;
+			background-image: linear-gradient(top, whiteSmoke, #F1F1F1);
+			background-image: -moz-linear-gradient(top, whiteSmoke, #F1F1F1);
+			background-image: -o-linear-gradient(top, whiteSmoke, #F1F1F1);
+			background-image: -webkit-gradient(linear, left top, left bottom, from(whiteSmoke),
+				to(#F1F1F1) );
+			background-image: -webkit-linear-gradient(top, whiteSmoke, #F1F1F1);
+			border: 1px solid rgba(0, 0, 0, 0.1);
+		}		
+		.popupButtonStyle-hover {
+			color: #333;
+			background-image: linear-gradient(top, #F8F8F8, #F1F1F1);
+			background-image: -moz-linear-gradient(top, #F8F8F8, #F1F1F1);
+			background-image: -o-linear-gradient(top, #F8F8F8, #F1F1F1);
+			background-image: -webkit-gradient(linear, left top, left bottom, from(#F8F8F8),
+				to(#F1F1F1) );
+			background-image: -webkit-linear-gradient(top, #F8F8F8, #F1F1F1);
+			border: 1px solid #C6C6C6;
+		}
+		.popupButtonStyle-activated {
+			color: #C43C35;
+		}		
+		
+		.buttonLabel {
+			font-size: 12px;
+			font-weight: bold;
+			text-align: center;
+			white-space: nowrap;
+		}
+		
+		.popupButtonArrow-common {
+			margin-top: -3px;
+			vertical-align: middle;
+			position: relative;
+			display: inline-block;
+			height: 6px;
+			width: 7px;
+			font-size: 0;
+			margin-left: 3px;
+		}		
+		.popupButtonArrow {
+			opacity: .55;
+		}
+		.popupButtonArrow-hover {
+			opacity: 1;
+		}		
+		
+		@external .popupButtonStyle, .popupButtonStyle-hover, .popupButtonArrow, .popupButtonArrow-hover, .popupButtonStyle-activated;
+	</ui:style>
+
+
+	<g:HorizontalPanel ui:field="popupButton"
+		styleName="{style.popupButtonStyle-common} {style.popupButtonStyle}">
+
+		<g:cell verticalAlignment="middle">
+			<g:Label ui:field="buttonLabel" stylePrimaryName="{style.buttonLabel}" />
+		</g:cell>
+		<g:cell verticalAlignment="middle">
+			<g:Image ui:field="buttonArrow" styleName="{style.popupButtonArrow-common} {style.popupButtonArrow}" />
+		</g:cell>
+
+	</g:HorizontalPanel>
+
+</ui:UiBinder> 

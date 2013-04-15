@@ -1,0 +1,271 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType, String syncUrl) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateActivator(syncUrl) FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateActivator(String syncUrl) FOR Project»
+«FILE "org/imogene/sync/client/Activator.java"»
+package org.imogene.sync.client;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.log4j.xml.DOMConfigurator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.imogene.lib.sync.client.SyncListener;
+import org.imogene.lib.sync.client.SynchronizationException;
+import org.imogene.sync.client.ui.SyncPreferencePage;
+import org.imogene.sync.client.utils.LogUtils;
+import org.osgi.framework.BundleContext;
+
+public class Activator extends AbstractUIPlugin implements IPropertyChangeListener {
+
+	public static final String PLUGIN_ID = "org.imogene.sync.client.avion";
+
+	private static final String PLATFORM_TOKEN = "%PLATFORM%";
+
+	private static final String JDBC_URL_PARAM = "jdbc.url";
+
+	private static final String SYNC_DIR_PARAM = "sync.file.directory";
+
+	private static final String BIN_DIR_PARAM = "binary.file.directory";
+
+	public static final String SYNC_DEFAULT_URL = "http://localhost/testsync";
+
+	public static final boolean SYNC_DEFAULT_LOOP = false;
+
+	public static final int SYNC_DEFAULT_PERIOD = 300000; // every 5 minutes
+
+	private static Activator plugin;
+
+	private ClientSynchronizer cli;
+
+	/**
+	 * The constructor
+	 */
+	public Activator() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+	 * )
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+		
+		System.setProperty("sync.home", Platform.getInstanceLocation().getURL().getFile() + "sync");
+		
+		DOMConfigurator.configure(getClass().getResource("/log4j.xml"));
+		
+		cli = newClientSynchronizer();
+		
+		cli.addSyncListener(new SyncAdapter());
+		initSyncPreferences();
+		if (getPreferenceStore().getBoolean(SyncPreferencePage.SYNC_LOOP))
+			cli.synchronize();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+	 * )
+	 */
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
+	}
+
+	/**
+	 * Returns the shared instance
+	 * 
+	 * @return the shared instance
+	 */
+	public static Activator getDefault() {
+		return plugin;
+	}
+
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+
+	/**
+	 * Start a synchronization process
+	 * 
+	 * @param listener
+	 *            notified of the synchronization events
+	 * @return true, if the synchronization process starts, false if a
+	 *         synchronization process is already in progress
+	 */
+	public boolean synchronize() {
+		if (!cli.isRunning()) {
+			cli.synchronize();
+			return true;
+		}
+		return false;
+	}
+
+	public void addSyncListener(SyncListener listener) {
+		cli.addSyncListener(listener);
+	}
+
+	public void removeSyncListener(SyncListener listener) {
+		cli.removeSyncListener(listener);
+	}
+
+	public ClientSynchronizer getClientSynchronizer() {
+		return cli;
+	}
+
+	public SynchroUtils getSynchroUtils(){
+		return cli.getSynchroUtils();
+	}
+
+	/**
+	 * If a synchronization process is in progress, it stops it.
+	 */
+	public void cancelSyncrhonization() {
+		if (cli != null)
+			cli.stopSynchronization();
+	}
+
+	private ClientSynchronizer newClientSynchronizer() {
+		try {
+			return new ClientSynchronizer(getSynchronizerProperties());
+		} catch (IOException e) {
+			LogUtils.logError(PLUGIN_ID, e.getLocalizedMessage(), e);
+		}
+		return null;
+	}
+
+	/**
+	 * Create properties from the eclipse preferences.
+	 * 
+	 * @return The synchronization client parameters
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private Properties getSynchronizerProperties() throws IOException {
+
+		Properties p = new Properties();
+		InputStream is = getClass().getClassLoader().getResourceAsStream(
+				"application.properties");
+		p.load(is);
+		setWorkspaceLocation(p, JDBC_URL_PARAM);
+		setWorkspaceLocation(p, SYNC_DIR_PARAM);
+		setWorkspaceLocation(p, BIN_DIR_PARAM);
+		return p;
+	}
+
+	private void setWorkspaceLocation(Properties p, String key) {
+		String newValue = p.getProperty(key).replace(PLATFORM_TOKEN,
+				Platform.getLocation().toOSString());
+		p.setProperty(key, newValue);
+	}
+
+	private void initSyncPreferences() {
+		/* default value */
+		getPreferenceStore().setDefault(SyncPreferencePage.SYNC_URL,
+				SYNC_DEFAULT_URL);
+		getPreferenceStore().setDefault(SyncPreferencePage.SYNC_PERIOD,
+				SYNC_DEFAULT_PERIOD);
+		getPreferenceStore().setDefault(SyncPreferencePage.SYNC_LOOP,
+				SYNC_DEFAULT_LOOP);
+
+		injectParameters();
+		cli.parametersUpdated();
+		getPreferenceStore().addPropertyChangeListener(this);
+	}
+
+	/**
+	 * Configure the sync client with the parameters set in the preference
+	 * store.
+	 */
+	private void injectParameters() {
+		String syncUrl = getPreferenceStore().getString(
+				SyncPreferencePage.SYNC_URL);
+		int period = getPreferenceStore()
+				.getInt(SyncPreferencePage.SYNC_PERIOD);
+		boolean loop = getPreferenceStore().getBoolean(
+				SyncPreferencePage.SYNC_LOOP);
+		ClientInitializer cliInit = cli.getInitializer();
+		LogUtils.logDebug(Activator.PLUGIN_ID, "Sync parameters: " + syncUrl
+				+ " " + loop + " " + period);
+		cliInit.updateSyncParameters(syncUrl, loop, period);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if (SyncPreferencePage.SYNC_URL.equals(event.getProperty())
+				|| SyncPreferencePage.SYNC_PERIOD.equals(event.getProperty())
+				|| SyncPreferencePage.SYNC_LOOP.equals(event.getProperty())) {
+			injectParameters();
+			cli.parametersUpdated();
+		}
+
+	}
+
+	
+	/** INTERNAL CLASSES **/
+	
+	
+	private class SyncAdapter implements SyncListener {
+
+		@Override
+		public void initSession(String id) {
+		}
+
+		@Override
+		public void syncError(int code, final SynchronizationException ex) {
+			LogUtils.logError(PLUGIN_ID, ex.getLocalizedMessage(), ex);
+			Display.getDefault().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					MessageDialog.openError(Display.getCurrent()
+							.getActiveShell(), "Synchronization error", ex
+							.getLocalizedMessage());
+				}
+			});
+		}
+
+		@Override
+		public void sending(int bytesToSend) {
+		}
+
+		@Override
+		public void resumeSend(int bytesToSend, int allBytes) {
+		}
+
+		@Override
+		public void receiving(int bytesToReceive) {
+		}
+
+		@Override
+		public void resumeReceive(int bytesToReceive, int allBytes) {
+		}
+
+		@Override
+		public void finish() {
+		}
+
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

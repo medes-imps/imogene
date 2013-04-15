@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="maps_offline_area_entries">
+        <item>2 km²</item>
+        <item>4 km²</item>
+        <item>8 km²</item>
+        <item>16 km²</item>
+    </string-array>
+</resources>

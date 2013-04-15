@@ -1,0 +1,632 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/workflow/" + this.name.toFirstUpper() + "EditorWorkflow.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.ui.workflow;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
+import org.imogene.«projectName.toLowerCase()».client.event.list.List«name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.event.view.View«name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.event.save.Save«name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.AccessManager;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»Renderer;
+import org.imogene.«projectName.toLowerCase()».client.ui.editor.«name.toFirstUpper()»Editor;
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
+import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.ui.field.error.ImogConstraintViolation;
+import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
+import org.imogene.web.client.util.ImogKeyGenerator;
+import org.imogene.web.client.ui.panel.RelationPopupPanel;
+import org.imogene.web.shared.proxy.GeoFieldProxy;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
+«IF hasDynamicFields-»
+import org.imogene.web.shared.proxy.DynamicFieldInstanceProxy;
+import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
+import org.imogene.web.shared.request.DynamicFieldTemplateRequest;
+«ENDIF -»
+		
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Label;
+import com.google.web.bindery.requestfactory.gwt.client.RequestFactoryEditorDriver;
+import com.google.web.bindery.requestfactory.shared.BaseProxy;
+import com.google.web.bindery.requestfactory.shared.Receiver;
+import com.google.web.bindery.requestfactory.shared.Request;
+import com.google.web.bindery.requestfactory.shared.ServerFailure;
+
+«EXPAND importForRelation(projectName) FOREACH groups.fields-»
+
+
+
+/**
+ * Worflow that manages the life of a «name.toFirstUpper()»Proxy in the UI
+ * @author MEDES-IMPS
+ */
+public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite {
+
+
+	interface Driver extends RequestFactoryEditorDriver<«name.toFirstUpper()»Proxy, «name.toFirstUpper()»Editor> { }
+	
+	private «projectName.toFirstUpper()»RequestFactory requestFactory;
+	
+	private «name.toFirstUpper()»Request request;
+	public «name.toFirstUpper()»Proxy current;	
+	private Driver editorDriver;
+	private «name.toFirstUpper()»Editor editor;
+	private String initField;	
+
+	/**
+	 * Workflow constructor for the creation of a «name.toFirstUpper()» instance
+	 * @param factory the application request factory
+	 * @param titleContainer the Label that will display the workflow title
+	 */
+	public «name.toFirstUpper()»EditorWorkflow(«projectName.toFirstUpper()»RequestFactory factory, Label titleContainer) {
+		this(factory, titleContainer, null, null);
+	}
+
+	
+	/**
+	 * Workflow constructor for the creation of a «name.toFirstUpper()» instance
+	 * @param factory the application request factory
+	 * @param titleContainer the Label that will display the workflow title
+	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
+	 * @param initField  the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
+	 */
+	public «name.toFirstUpper()»EditorWorkflow(«projectName.toFirstUpper()»RequestFactory factory, Label titleContainer, RelationPopupPanel parent, String initField) {
+
+		super(factory.getEventBus(), titleContainer, parent);
+
+		requestFactory = factory;
+		if (parent != null) {
+			editor = new «name.toFirstUpper()»Editor(factory, true);
+			this.initField = initField;
+		}
+		else
+			editor = new «name.toFirstUpper()»Editor(factory);
+
+		isNew = true;
+		setEditable(true);
+
+		setTitle( NLS.constants().«name.toFirstLower()»_create_title());
+		createDriver();
+		createNew«name.toFirstUpper()»();
+
+		this.setContent(editor);
+	}
+	
+
+	/**
+	 * Workflow constructor for the visualization and edition of an existing «name.toFirstUpper()» instance
+	 * @param factory the application request factory
+	 * @param entityId the id of the «name.toFirstUpper()» instance to be visualized and edited	 
+	 * @param titleContainer the Label that will display the workflow title	 
+	 */
+	public «name.toFirstUpper()»EditorWorkflow(«projectName.toFirstUpper()»RequestFactory factory, String entityId, Label titleContainer) {
+		this(factory, entityId, titleContainer, null, null);
+	}
+
+	/**
+	 * Workflow constructor for the visualization and edition of an existing «name.toFirstUpper()» instance
+	 * @param factory the application request factory
+	 * @param entityId the id of the «name.toFirstUpper()» instance to be visualized and edited	
+	 * @param titleContainer the label	 	 
+	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
+	 * @param initField  the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
+	 */
+	public «name.toFirstUpper()»EditorWorkflow(«projectName.toFirstUpper()»RequestFactory factory, String entityId, Label titleContainer, RelationPopupPanel parent, String initField) {
+
+		super(factory.getEventBus(), titleContainer, parent);
+
+		requestFactory = factory;
+		if (parent != null) {
+			editor = new «name.toFirstUpper()»Editor(factory, true);
+			this.initField = initField;
+		}
+		else
+			editor = new «name.toFirstUpper()»Editor(factory);
+	
+		setModifiable(false);	
+		isNew = false;
+		setEditable(false);
+
+		createDriver();
+		fetch«name.toFirstUpper()»(entityId);
+
+		this.setContent(editor);
+	}
+	
+
+	
+	/**
+	 * Create a new instance of «name.toFirstUpper()»
+	 */
+	private void createNew«name.toFirstUpper()»() {
+		
+		request = requestFactory.«name.toFirstLower()»Request();
+		
+		/* create a new intance of «name.toFirstUpper()» */
+		«name.toFirstUpper()»Proxy new«name.toFirstUpper()» = request.create(«name.toFirstUpper()»Proxy.class);
+		new«name.toFirstUpper()».setId(ImogKeyGenerator.generateKeyId("«shortName»"));
+		«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH groups.fields-»
+		
+		«IF hasDynamicFields-»
+		/* create list of DynamicFieldInstance for ListEditor */
+		List<DynamicFieldInstanceProxy> dynamicFieldValuesList = new ArrayList<DynamicFieldInstanceProxy>();
+		new«name.toFirstUpper()».setDynamicFieldValues(dynamicFieldValuesList);
+		«ENDIF -»
+			
+		/* push the instance to the editor */
+		current = new«name.toFirstUpper()»;
+		editorDriver.edit(current, request);
+		
+		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
+		«IF hasDynamicFields-»
+		/* get the list of Dynamic Field Templates for this type of entity */
+		getDynamicFieldTemplates();
+		«ENDIF -» 
+		«ENDIF -»		
+		/* update field widgets in editor */
+		editor.computeVisibility(null, true);
+		«EXPAND manageHierarchicalLists(true) FOREACH groups.fields-»
+		editor.setEdited(true);
+	}
+		
+	/**
+	 * Get an existing instance of «name.toFirstUpper()»
+	 * @param entityId the id of the «name.toFirstUpper()»Proxy to be fetched
+	 */
+	private void fetch«name.toFirstUpper()»(String entityId) {
+		
+		«name.toFirstUpper()»Request request = requestFactory.«name.toFirstLower()»Request();
+		
+		/* get the «name.toFirstUpper()» instance from database */
+		Request<«name.toFirstUpper()»Proxy> fetchRequest = request.findById(entityId);
+		«EXPAND fetchRelatedEntities FOREACH groups.fields»
+		«IF hasDynamicFields-»
+		fetchRequest.with("dynamicFieldValues.fieldTemplate.templateCreator.roles");
+		«ENDIF -»
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+			fetchRequest.with("roleList");
+			fetchRequest.with("synchronizableList");
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+			«FOREACH ((Actor)this).filters AS fil-»
+			fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR fil»List");			
+			«ENDFOREACH-»
+		«ENDIF-»
+		«ENDIF-»
+		
+		fetchRequest.to(new Receiver<«name.toFirstUpper()»Proxy>() {
+			@Override
+			public void onSuccess(«name.toFirstUpper()»Proxy entity) {
+				view«name.toFirstUpper()»(entity);		
+			}
+		}).fire();
+	}
+	
+	/**
+	 * Display the current instance of «name.toFirstUpper()» in editor
+	 * @param entity the «name.toFirstUpper()»Proxy to be displayed
+	 */
+	private void view«name.toFirstUpper()»(«name.toFirstUpper()»Proxy entity) {
+		
+		/* display instance information */
+		setTitle(NLS.constants().«name.toFirstLower()»_name() + ": " + «projectName.toFirstUpper()»Renderer.get().getDisplayValue(entity));
+		setMetaData((ImogBeanProxy) entity);	
+	
+		/* push the instance to the editor in view mode */
+		request = requestFactory.«name.toFirstLower()»Request();
+		current = request.edit(entity);
+		«EXPAND createInstance FOREACH groups.fields-»
+		
+		editor.setEditedValue(current);
+		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);	 
+		«ENDIF -»			
+		
+		editorDriver.edit(current, request);
+		«IF hasDynamicFields-»
+		/* order Dynamic Fields in editor */
+		editor.orderDynamicFieldValues();	 
+		«ENDIF -»			
+		editor.setEdited(false);
+		
+		/* update field widgets in editor */
+		editor.computeVisibility(null, true);
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		editor.updateIdLink(current.getId());	
+		editor.setCurrentLogin();	
+		«ENDIF -»
+		
+		/* display edit button */
+		if (AccessManager.canEditForm("«name.toLowerCase()»"))
+			setModifiable(true);
+	}
+
+	/**
+	 * Edit the current instance of «name.toFirstUpper()» in editor
+	 */	
+	@Override
+	protected void edit() {
+		
+		«IF hasDynamicFields-»
+		/* get the list of Dynamic Field Templates for this type of entity */
+		getDynamicFieldTemplates();
+		«ENDIF -» 
+	
+		/* set the instance in edit mode in the editor */
+		editor.setEdited(true);
+		
+		/* update field widgets in editor */		
+		«EXPAND manageHierarchicalLists(false) FOREACH groups.fields-»
+	}
+	
+	
+	«IF hasDynamicFields-»
+	/**
+	 * Gets the Dynamic Field Templates for the current Form Type
+	 */
+	private void getDynamicFieldTemplates() {
+		
+		DynamicFieldTemplateRequest dfRequest = requestFactory.dynamicFieldTemplateRequest();
+		
+		Request<List<DynamicFieldTemplateProxy>> listRequest = dfRequest.listDynamicFieldTemplate("«shortName -»");
+		listRequest.with("templateCreator.roles");	
+		listRequest.to(new Receiver<List<DynamicFieldTemplateProxy>>() {
+			@Override
+			public void onSuccess(List<DynamicFieldTemplateProxy> response) {				
+				editor.setFieldTemplates(response);
+			}
+
+			@Override
+			public void onFailure(ServerFailure error) {
+				Window.alert("Error retrieving the Dynamic Field Templates");
+				super.onFailure(error);
+			}
+		});		
+		listRequest.fire();
+	}
+	«ENDIF -» 	
+	
+	
+	/**
+	 * Initialize the editor driver
+	 */
+	private void createDriver() {		
+		if (editorDriver==null) {
+			editorDriver = GWT.create(Driver.class);
+			editorDriver.initialize(requestFactory, editor);
+		}
+	}
+
+	/**
+	 * Persist the current instance of «name.toFirstUpper()»
+	 */
+	@Override
+	protected void save() {		
+	
+		«IF isBinaryFieldPresent(groups.fields) || hasDynamicFields-»
+		if (editor.isUploading()) {			
+			Timer timer = new Timer() {
+				@Override
+				public void run() {
+					save();
+				}
+			};
+			timer.schedule(2000);
+			return;
+		}		
+		«ENDIF-»
+		
+		editor.validateFields();		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		boolean passwordValid = editor.validatePasword();
+		editor.validateLoginWithPassword();
+		«ENDIF-»
+	
+		editorDriver.flush();
+		
+		// Check for errors on the client side
+		if (editorDriver.hasErrors()) {
+			//Window.alert("«name.toFirstUpper()» form not validated locally");
+			return;
+		}
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		Request<Void> saveRequest = null;
+		if(passwordValid && editor.passwordChanged())
+			saveRequest = request.save(current, isNew, true);
+		else
+			saveRequest = request.save(current, isNew, false);
+		«ELSE-»
+		Request<Void> saveRequest = request.save(current, isNew);		
+		«ENDIF-»					
+		saveRequest.to(new Receiver<Void>() {
+			@Override
+			public void onSuccess(Void response) {
+				requestFactory.getEventBus().fireEvent(new Save«name.toFirstUpper()»Event(current, initField));
+				closeForm();
+			}
+			
+			@Override
+			public void onConstraintViolation(Set<ConstraintViolation<?>> errors) {
+				//Window.alert("«name.toFirstUpper()» form not validated on server");
+
+				//TODO manage errors on client side when made available by GWT				
+				if(errors!=null && errors.size()>0) {							
+					// convert ConstraintViolation to get localized messages
+					«projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUpper()»Renderer.get();
+					Set<ConstraintViolation<?>> imogErrors = new HashSet<ConstraintViolation<?>>();
+					for(ConstraintViolation<?> error:errors) {
+						ImogConstraintViolation violation = new ImogConstraintViolation();
+						violation.setLeafBean((BaseProxy)error.getLeafBean());
+						violation.setPropertyPath(error.getPropertyPath());
+						violation.setRootBean((BaseProxy)error.getRootBean());
+						violation.setMessage(renderer.getI18nErrorMessage(error.getMessage()));
+						imogErrors.add(violation);				
+					}					
+					editorDriver.setConstraintViolations(imogErrors);
+				}
+			}
+
+			@Override
+			public void onFailure(ServerFailure error) {
+				Window.alert("Error updating the «name.toFirstUpper()»");
+				super.onFailure(error);
+			}			
+		});
+		
+		request.fire();
+	}	
+
+	@Override
+	protected void cancel() {
+		if(parent!=null)
+			parent.hide();
+		else {
+			if (isNew)
+				requestFactory.getEventBus().fireEvent(closeEvent);
+			else
+				requestFactory.getEventBus().fireEvent(new View«name.toFirstUpper()»Event(current.getId(), closeEvent));
+		}
+
+	}
+
+	@Override
+	protected void returnToList() {
+		requestFactory.getEventBus().fireEvent(new List«name.toFirstUpper()»Event());
+	}
+	
+	«EXPAND setterForRelation FOREACH groups.fields-»	
+
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+
+«REM» Fetch the related entities «ENDREM»
+«DEFINE fetchRelatedEntities FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR TextField-»
+	«IF this.translatable-»
+				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR BinaryField-»
+				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR GeoField-»
+				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDDEFINE»
+«DEFINE fetchRelatedEntities FOR RelationFieldEntity-»
+		fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«IF isSimpleRelationFieldPresent(this.entity.mainFields)-»
+			«FOREACH this.entity.mainFields AS mf-»		
+				«EXPAND fetchRelatedEntitiesWithMainFields(this) FOR mf-»
+			«ENDFOREACH-»	
+		«ENDIF-»
+		«FOREACH entity.mainFields AS nf-»
+			«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
+			fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
+			«ENDIF-»
+		«ENDFOREACH-»				
+		«IF relationHierarchicalFilter!=null && this.relationHierarchicalFilter.size==2 -»
+		«IF this.relationHierarchicalFilter.get(0).cardinality == -1 || this.relationHierarchicalFilter.get(0).cardinality >1 -» 
+			«EXPAND fetchRelatedEntitiesWithHierarchicalFields(this) FOR this.relationHierarchicalFilter.get(1)-»
+		«ENDIF-»
+		«ENDIF-»
+		«IF nestedForm-»
+			«FOREACH this.entity.nestedFields AS nf-»
+				«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
+				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
+				«ENDIF-»
+			«ENDFOREACH-»
+		«ENDIF-»		
+«ENDDEFINE»
+
+«REM» If the related entity has relation fields in its mainfields, fetch the corresponding entity «ENDREM»
+«DEFINE fetchRelatedEntitiesWithMainFields(RelationFieldEntity parent) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntitiesWithMainFields(RelationFieldEntity parent) FOR RelationFieldEntity-»
+«IF this.cardinality==1-»
+fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR parent».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDIF-»
+«ENDDEFINE»
+
+«REM» If the related entity has relation fields in its mainfields, fetch the corresponding entity «ENDREM»
+«DEFINE fetchRelatedEntitiesWithHierarchicalFields(RelationFieldEntity parent) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntitiesWithHierarchicalFields(RelationFieldEntity parent) FOR RelationFieldEntity-»
+// Field «parent.name.toFirstLower()» depends on the value of field «parent.relationHierarchicalFilter.get(0).name.toFirstLower()»
+fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR parent».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDDEFINE»
+
+«REM» imports for relation with cardinality 1 «ENDREM»
+«DEFINE importForRelation(String projectName) FOR FieldEntity -»«ENDDEFINE»
+«DEFINE importForRelation(String projectName) FOR RelationFieldEntity -»
+«IF cardinality == 1 -»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
+«ELSE -»
+	«IF this.nestedForm -»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;	
+	«ENDIF-»
+«ENDIF -»
+«ENDDEFINE»
+
+«REM» setters for relation with cardinality 1 «ENDREM»
+«DEFINE setterForRelation FOR FieldEntity -»«ENDDEFINE»
+«DEFINE setterForRelation FOR RelationFieldEntity -»
+«IF cardinality == 1 && !nestedForm-»
+	/**
+	 * Setter to inject a «entity.name.toFirstUpper()» value
+	 * @param value the value to be injected
+	 * @param isLocked true if relation field shall be locked (non editable)
+	 */
+	public void set«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value, boolean isLocked) {
+		editor.set«name.toFirstUpper()»(value, isLocked);
+	}
+«ENDIF -»
+«ENDDEFINE»
+
+
+«REM» Set the default value «ENDREM»
+«DEFINE defaultValue(String variable) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR IntegerField-»
+	«IF defaultValue!=null && defaultValue.matches("[0-9]+") -»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(«defaultValue»);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR EnumField-»
+	«IF defaultValue!=null»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»("«defaultValue»");
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR TimeField-»
+	«IF defaultValue!=null && defaultValue.matches("now") -»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new Date());
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR DateField-»
+	«IF defaultValue!=null && defaultValue.matches("now") -»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new Date());
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR BooleanField-»
+	«IF defaultValue!=null && (defaultValue.matches("true")||defaultValue.matches("false") ) -»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(«defaultValue»);
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR GeoField-»
+		GeoFieldProxy new«name.toFirstUpper()» = request.create(GeoFieldProxy.class);
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR TextField-»
+	«IF this.translatable-»
+		LocalizedTextProxy new«name.toFirstUpper()» = request.create(LocalizedTextProxy.class);
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR RelationFieldEntity-»
+«IF nestedForm-»
+	«IF cardinality == 1-»
+		//create an instance of «entity.name.toFirstUpper()» in editor 
+		«entity.name.toFirstUpper()»Proxy new«name.toFirstUpper()» = request.create(«entity.name.toFirstUpper()»Proxy.class);
+		new«name.toFirstUpper()».setId(ImogKeyGenerator.generateKeyId("«entity.shortName»"));
+		«IF nestedForm-»
+			«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH entity.nestedFields»
+		«ENDIF-»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+	«ELSE-»
+		//create list of «entity.name.toFirstUpper()» in editor 
+		List<«entity.name.toFirstUpper()»Proxy> «name.toFirstLower()»List = new ArrayList<«entity.name.toFirstUpper()»Proxy>();
+		new«parentGroup.parentCard.name.toFirstUpper()».«EXPAND template::CommonFieldUtil::setterName FOR this»(«name.toFirstLower()»List);	
+	«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE createInstance FOR FieldEntity-»«ENDDEFINE»
+«DEFINE createInstance FOR GeoField-»
+		if(current.«EXPAND template::CommonFieldUtil::getterName FOR this»()==null) {
+			GeoFieldProxy new«name.toFirstUpper()» = request.create(GeoFieldProxy.class);
+			current.«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+		}
+«ENDDEFINE»
+«DEFINE createInstance FOR TextField-»
+	«IF this.translatable-»
+		if(current.«EXPAND template::CommonFieldUtil::getterName FOR this»()==null) {
+			LocalizedTextProxy new«name.toFirstUpper()» = request.create(LocalizedTextProxy.class);
+			current.«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+		}
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createInstance FOR RelationFieldEntity-»
+	«IF nestedForm-»
+		«IF cardinality==1-»
+		«entity.name.toFirstUpper()»Proxy «name.toFirstLower()» = current.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+		if(«name.toFirstLower()»!=null) {
+			«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.nestedFields-»
+		}		
+		«ELSE-»
+		List<«entity.name.toFirstUpper()»Proxy> «name.toFirstLower()» = current.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+		if(«name.toFirstLower()»!=null && «name.toFirstLower()».size()>0) {
+			for(«entity.name.toFirstUpper()»Proxy item:«name.toFirstLower()») {
+				«EXPAND createInstanceForNestedForm("item") FOREACH entity.nestedFields-»
+			}
+		}		
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createInstanceForNestedForm(String variable) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE createInstanceForNestedForm(String variable) FOR GeoField-»
+		if(«variable».«EXPAND template::CommonFieldUtil::getterName FOR this»()==null) {
+			GeoFieldProxy new«name.toFirstUpper()» = request.create(GeoFieldProxy.class);
+			«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+		}
+«ENDDEFINE»
+«DEFINE createInstanceForNestedForm(String variable) FOR TextField-»
+	«IF this.translatable-»
+		if(«variable».«EXPAND template::CommonFieldUtil::getterName FOR this»()==null) {
+			LocalizedTextProxy new«name.toFirstUpper()» = request.create(LocalizedTextProxy.class);
+			«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
+		}
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» setters for relation with cardinality 1 «ENDREM»
+«DEFINE manageHierarchicalLists(boolean isNew) FOR FieldEntity -»«ENDDEFINE»
+«DEFINE manageHierarchicalLists(boolean isNew) FOR RelationFieldEntity -»	
+	«FOREACH getHierarchicalFilterChilds(this, this.parentGroup.parentCard.groups.fields) AS f -»
+	// Field «f.name.toFirstLower()» depends on the value of field «f.relationHierarchicalFilter.get(0).name.toFirstLower()»
+	«IF isNew -»
+	editor.get«f.name.toFirstUpper()»FilteredBy«f.relationHierarchicalFilter.get(0).name.toFirstUpper()»(null);
+	«ELSE -»
+	editor.get«f.name.toFirstUpper()»FilteredBy«f.relationHierarchicalFilter.get(0).name.toFirstUpper()»(current.«EXPAND template::CommonFieldUtil::getterName FOR f.relationHierarchicalFilter.get(0)»());	
+	«ENDIF -»
+	«ENDFOREACH -»
+«ENDDEFINE»
+
+
+
+
+

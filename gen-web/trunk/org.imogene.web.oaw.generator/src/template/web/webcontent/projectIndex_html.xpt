@@ -1,0 +1,49 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«DEFINE generate(String projectName, boolean gmaps) FOR Project»
+«FILE projectName.toFirstUpper() + "Index.jsp"-»
+<!DOCTYPE html>
+
+<html>
+
+  <head> 
+    <meta http-equiv="Cache-Control" content="no-cache"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="-1"/>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    «IF languages.size != 0 -»
+	<meta name="gwt:property" content="locale=«languages.get(0).isoCode»">
+	«ENDIF-»
+	
+	<link rel="icon" href="imog«projectName.toLowerCase()»/images/logo_16x16.png" type="image/png">  
+	<link type="text/css" rel="stylesheet" href="«projectName.toFirstUpper()».css">
+	<link type="text/css" rel="stylesheet" href="imog«projectName.toLowerCase()»/gwt/standard/standard.css">	
+
+    <title>«getDisplayFromDescription(this)»</title>
+    
+    <script type="text/javascript" language="javascript" src="imog«projectName.toLowerCase()»/imog«projectName.toLowerCase()».nocache.js"></script>
+  </head>
+
+  <body>    
+    <iframe src="javascript:''" id="__gwt_historyFrame" style="position:absolute;width:0;height:0;border:0"></iframe>    
+	<center>
+	<div id="login"></div>
+    <table width="100%" height="100%" align="center">
+      <tr>
+      	<td id="topBanner" align="center"></td>
+      </tr>      
+      <tr>      	
+        <td id="contentContainer" height="100%"></td>        
+      </tr>
+      <tr>
+      	<td id="bottomBanner" align="center"></td>
+      </tr>
+    </table>
+    </center>
+  </body>
+  
+</html>
+
+«ENDFILE»
+«ENDDEFINE»

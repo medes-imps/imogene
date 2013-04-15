@@ -1,0 +1,20 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+ "/shared/constants/" + projectName.toFirstUpper() + "RoleConstants.java"»
+package org.imogene.«projectName.toLowerCase()».shared.constants;
+
+import org.imogene.web.shared.constants.ImogRoleConstants;
+
+public class «projectName.toFirstUpper()»RoleConstants extends ImogRoleConstants {
+
+	«FOREACH roles AS r-»
+	public static final String «r.name.toUpperCase()»_ROLE = "«r.name»";
+	«ENDFOREACH -»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+

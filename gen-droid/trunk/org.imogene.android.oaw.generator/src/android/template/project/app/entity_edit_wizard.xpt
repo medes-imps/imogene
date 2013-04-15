@@ -1,0 +1,253 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity»
+«FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "Wizard.java"»
+package org.imogene.android.«projectName.toLowerCase()-».app;
+
+import greendroid.widget.ActionBar;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import org.imogene.android.Constants.Extras;
+import org.imogene.android.app.FieldFlipperActivity;
+import org.imogene.android.util.IamLost;
+import org.imogene.android.util.content.ContentUrisUtils;
+import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.widget.field.FieldFlipper;
+import org.imogene.android.widget.field.FieldManager;
+import org.imogene.android.widget.field.FieldManager.FieldContainer;
+import org.imogene.android.widget.field.edit.BaseFieldEdit;
+import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.edit.BarcodeFieldEdit;
+import org.imogene.android.widget.field.edit.BinaryFieldEdit;
+import org.imogene.android.widget.field.edit.BooleanFieldEdit;
+import org.imogene.android.widget.field.edit.BoundedIntegerFieldEdit;
+import org.imogene.android.widget.field.edit.DateFieldEdit;
+import org.imogene.android.widget.field.edit.DateTimeFieldEdit;
+import org.imogene.android.widget.field.edit.EnumMultipleFieldEdit;
+import org.imogene.android.widget.field.edit.EnumSingleFieldEdit;
+import org.imogene.android.widget.field.edit.FloatFieldEdit;
+import org.imogene.android.widget.field.edit.GeoFieldEdit;
+import org.imogene.android.widget.field.edit.IntegerFieldEdit;
+import org.imogene.android.widget.field.edit.LocalizedTextFieldEdit;
+import org.imogene.android.widget.field.edit.RelationManyFieldEdit;
+import org.imogene.android.widget.field.edit.RelationOneFieldEdit;
+import org.imogene.android.widget.field.edit.TextFieldEdit;
+import org.imogene.android.widget.field.edit.TimeFieldEdit;
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
+«EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
+import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+
+public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implements 
+		OnClickListener, FieldContainer, OnValueChangeListener {
+
+	private static final int DIALOG_UNCOMPLETE_ID = 1;
+	
+	private FieldManager mManager;
+
+	«FOREACH groups.fields AS f-»
+	private «EXPAND android::template::EditorsUtil::nameEditField FOR f» «f.name.toFirstLower()»;
+	«ENDFOREACH»
+	
+	private «name.toFirstUpper()» mEntity;
+	
+	public «name.toFirstUpper()»Wizard() {
+		super(ActionBar.Type.Empty);
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		IamLost.getInstance().add(getTitle().toString());
+		
+		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+
+		Object entity = getLastNonConfigurationInstance();
+		if (entity != null && entity instanceof «name.toFirstUpper()») {
+			mEntity = («name.toFirstUpper()») entity;
+		} else {
+			if (Intent.ACTION_INSERT.equals(getIntent().getAction())) {
+				if (getIntent().hasExtra(Extras.EXTRA_ENTITY)) {
+					mEntity = new «name.toFirstUpper()»(getIntent().getBundleExtra(Extras.EXTRA_ENTITY));
+				} else {
+					mEntity = new «name.toFirstUpper()»();
+				}
+			} else {
+				mEntity = new «name.toFirstUpper()»(getIntent().getData());
+			}
+		}
+		
+		mManager = new FieldManager(this, 100);
+		
+		final FieldFlipper flipper = getFieldFlipper();
+		getLayoutInflater().inflate(R.layout.«name.toLowerCase()»_edit_wizard, flipper, true);
+		
+		«FOREACH groups.fields AS f-»
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::nameEditField FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+		«ENDFOREACH-»
+
+		«FOREACH groups.fields AS f-»
+			«f.name.toFirstLower()».setAutomaticManageVisibility(false);
+			«EXPAND android::template::EditorsUtil::specificInit FOR f-»
+			«EXPAND android::template::EditorsUtil::dependency FOREACH f.fieldDependentVisibility-»
+			«f.name.toFirstLower()».setOnValueChangeListener(this);
+			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
+		«ENDFOREACH»
+		
+		«FOREACH groups.fields AS f-»
+			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
+		«ENDFOREACH-»
+		
+		«FOREACH groups.fields AS field-»
+			«IF field.hidden || field.readOnly-»
+				flipper.removeView(«field.name.toFirstLower()»);
+			«ENDIF-»
+		«ENDFOREACH»
+		
+		«FOREACH groups AS group ITERATOR i-»
+		if (!«name.toFirstUpper()-»Roles.canWrite«group.name.toFirstUpper()-»(this)) {
+			«FOREACH group.fields AS field»
+				flipper.removeView(«field.name.toFirstLower()»);
+			«ENDFOREACH»
+		}
+		«ENDFOREACH»
+	}
+	
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		return mEntity;
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIALOG_UNCOMPLETE_ID:
+			return new AlertDialog.Builder(this)
+			.setTitle(android.R.string.dialog_alert_title)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setMessage(R.string.ig_uncomplete_dialog_msg)
+			.setPositiveButton(android.R.string.yes, this)
+			.setNeutralButton(android.R.string.cancel, null)
+			.setCancelable(false)
+			.create();
+		default:
+			return super.onCreateDialog(id);
+		}
+	}
+	
+	public void onClick(DialogInterface dialog, int which) {
+		if (which == Dialog.BUTTON_POSITIVE) {
+			setResult(RESULT_CANCELED);
+			super.finish();
+		}
+	}
+	
+	@Override
+	public final void startActivity(Intent intent) {
+		try {
+			super.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	public final void startActivityForResult(Intent intent, int requestCode) {
+		try {
+			super.startActivityForResult(intent, requestCode);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, this, intent);
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		mManager.dispatchActivityResult(requestCode, resultCode, data);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		IamLost.getInstance().remove();
+		mManager.dispatchActivityDestroy();
+	}
+	
+	@Override
+	public void onFinishClick() {
+		save(false);
+	}
+	
+	protected final void forceFinish() {
+		super.finish();
+	}
+	
+	@Override
+	public void finish() {
+		showDialog(DIALOG_UNCOMPLETE_ID);
+	}
+	
+	public void onValueChange(BaseFieldEdit<?> field) {
+		switch (field.getId()) {
+		«FOREACH groups.fields AS f-»
+		case R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»:
+			mEntity.set«f.name.toFirstUpper()»(«f.name.toFirstLower()».getValue());
+			break;
+		«ENDFOREACH-»
+		default:
+			break;
+		}
+	}
+	
+	private void save(boolean temporary) {
+		if (temporary) {
+			mEntity.prepareForSave(this);
+			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
+			mEntity.saveOrUpdate(this);
+			return;
+		} else {
+			mEntity.prepareForSave(this);
+			Uri uri = mEntity.saveOrUpdate(this);
+			if (uri != null) {
+				Toast.makeText(this, R.string.«name.toLowerCase()»_des_registered, Toast.LENGTH_SHORT).show();
+				setResult(RESULT_OK, new Intent().setData(uri));
+				forceFinish();
+			} else {
+				setResult(RESULT_CANCELED);
+				forceFinish();
+			}
+		}
+	}
+	
+	public Activity getActivity() {
+		return this;
+	}
+	
+	public String getId() {
+		if (mEntity.getId() == null)
+			save(true);
+		return mEntity.getId();
+	}
+	
+	public Uri getUri() {
+		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getId());
+	}
+	
+	public Uri getContentUri() {
+		return «name.toFirstUpper()».Columns.CONTENT_URI;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

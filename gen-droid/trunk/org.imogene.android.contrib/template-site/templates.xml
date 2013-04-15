@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<templates>
+	<template name="Imogene Android Application Project" version="1.0">
+		<description>Create an Imogene Android plugin</description>
+		<natures>
+			<nature>nothing</nature>
+		</natures>
+		<content>template.zip</content>
+ 		<parseSet>
+              <include filenames="account_setup_basics.xml,Constants.java,MapsConstants.java,PreferenceHelper.java,.project,.classpath"/>
+              <exclude extensions="jar"/>
+        </parseSet>
+	</template>
+</templates>

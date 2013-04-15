@@ -1,0 +1,163 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:style src="../../css/ImogCss.css">
+
+		@if user.agent ie6 ie8 {
+			.mainPanel {
+				float: left;
+				width: 200px; 
+				height: 130px; /* WARNING: the height should match the height of the cell that embedded the longest theme title */
+				margin-right: 15px;
+				margin-left: 15px;
+				margin-top: 15px;
+				margin-bottom: 15px;
+				color: TextColor;
+				background-color: #F4F4F4;
+				opacity: 1;
+				border: 1px solid #DDD;
+				padding: 5px;
+				position: relative;
+				vertical-align: top;
+			}
+		}
+		@else {
+			.mainPanel {
+				float: left;
+				width: 200px;
+				height: 130px; /* WARNING: the height should match the height of the cell that embedded the longest theme title */
+				margin-right: 15px;
+				margin-left: 15px;
+				margin-top: 15px;
+				margin-bottom: 15px;
+				color: TextColor;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-shadow: 0 1px 0 #AAA;
+				-moz-box-shadow: 0 1px 0 #aaa;
+				box-shadow: 0 1px 0 #AAA;
+				background-color: #F4F4F4;
+				background-image: -webkit-linear-gradient(top, white, #F4F4F4);
+				background-image: -moz-linear-gradient(top, white, #F4F4F4);
+				background-image: -ms-linear-gradient(top, white, #F4F4F4);
+				background-image: -o-linear-gradient(top, white, #F4F4F4);
+				background-image: linear-gradient(top, white, #F4F4F4);
+				opacity: 1;
+				border: 1px solid #DDD;
+				padding: 5px;
+				position: relative;
+				vertical-align: top;
+			}
+		}
+		
+		.iconStyle {
+			width: 32px;
+			height: 32px;
+			border: none;
+			-webkit-border-radius: 0;
+			-moz-border-radius: 0;
+			border-radius: 0;
+			float: left;
+			margin-right: 10px;
+		}
+		
+		.titleStyle {
+			font-size: 16px;
+			overflow: hidden;
+			padding: 4px 4px 4px 4px;
+			word-wrap: break-word;
+			text-shadow: 0 1px 0 rgba(150, 150, 150, 0.5);
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+		
+		.menuButton {
+			width: 60px;
+			text-align: center;
+			font-size: 12px;
+			margin-left: 4px;
+			padding: 4px 2px 4px 2px;
+			-moz-opacity: 0.8;
+			opacity: 0.8;
+			/*filter: alpha(opacity = 80);*/
+		}
+		
+		.searchButton {
+			height: 14px;
+			width: 14px;
+			text-align: center;
+			-webkit-border-radius: 7px;
+			-moz-border-radius: 7px;
+			border-radius: 7px;
+			font-size: 12px;
+			padding: 1px 2px 2px 2px;
+			/*padding: 2px;*/
+			margin-left: 2px;
+		}
+		
+		.searchBox {
+			overflow: hidden;
+			border: 1px solid;
+			border-color: #CCC;
+			padding: 1px;
+			margin: 0px;
+			font-size: 12px;
+		}
+		
+		.searchLabel {
+			font-size: 12px;
+		}
+
+		@if user.agent ie6 ie8 {
+			.innerPanel {
+				margin-right: 4px;
+				margin-left: 4px;
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+		}
+		@else {
+			.innerPanel {
+			}
+		}
+	</ui:style>
+
+	<g:VerticalPanel styleName="{style.pageBackground} {style.mainPanel}" horizontalAlignment="left" verticalAlignment="middle">
+
+		<g:HorizontalPanel styleName="{style.innerPanel}">
+
+			<g:cell verticalAlignment="middle" horizontalAlignment="left">
+				<g:Image ui:field="icon" styleName="{style.iconStyle}" />
+			</g:cell>
+
+			<g:cell verticalAlignment="middle" horizontalAlignment="left">
+				<g:VerticalPanel>
+					<g:Label ui:field="title" styleName="{style.titleStyle}" />
+					<g:HorizontalPanel>
+						<g:PushButton ui:field="create"
+							styleName="{style.imogButton} {style.imogButton1} {style.menuButton}" />
+
+						<g:PushButton ui:field="list"
+							styleName="{style.imogButton} {style.menuButton}" />
+					</g:HorizontalPanel>
+				</g:VerticalPanel>
+			</g:cell>
+
+		</g:HorizontalPanel>
+
+		<g:VerticalPanel  ui:field="searchPanel"  styleName="{style.innerPanel}">
+			<g:Label ui:field="searchLabel" styleName="{style.searchLabel}"/>
+			<g:HorizontalPanel verticalAlignment="middle">
+				<g:cell verticalAlignment="middle">
+					<g:TextBox ui:field="searchValue" styleName="{style.searchBox}" />
+				</g:cell>
+				<g:cell verticalAlignment="middle">
+					<g:PushButton ui:field="search" text="ok" styleName="{style.imogButton} {style.searchButton}" />
+				</g:cell>
+			</g:HorizontalPanel>
+		</g:VerticalPanel>
+
+
+	</g:VerticalPanel>
+</ui:UiBinder>

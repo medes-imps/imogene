@@ -1,0 +1,47 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateSyncListenerAdapter FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateSyncListenerAdapter FOR Project-»
+«FILE "org/imogene/sync/client/utils/SyncListenerAdapter.java"-»
+package org.imogene.sync.client.utils;
+
+import org.imogene.lib.sync.client.SyncListener;
+import org.imogene.lib.sync.client.SynchronizationException;
+
+public class SyncListenerAdapter implements SyncListener {
+
+	@Override
+	public void initSession(String id) {
+	}
+
+	@Override
+	public void syncError(int code, SynchronizationException ex) {
+	}
+
+	@Override
+	public void sending(int bytesToSend) {
+	}
+
+	@Override
+	public void resumeSend(int bytesToSend, int allBytes) {
+	}
+
+	@Override
+	public void receiving(int bytesToReceive) {
+	}
+
+	@Override
+	public void resumeReceive(int bytesToReceive, int allBytes) {
+	}
+
+	@Override
+	public void finish() {
+	}	
+}
+«ENDFILE»
+«ENDDEFINE»

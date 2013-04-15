@@ -1,0 +1,36 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String webService) FOR Project »
+«IF hasFilter(this)»
+«FILE 'xml/preferences_screen_filters.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="@string/ig_screen_filters_title" >
+	
+	<org.imogene.android.preference.MyEditTextPreference 
+		android:key="@string/ig_webservice_url_key"
+		android:title="@string/ig_webservice_url_title"
+		android:inputType="textUri"
+		android:defaultValue="«webService»" />
+	«FOREACH entities AS e-»
+	«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+	<PreferenceScreen
+		android:key="«e.name.toLowerCase()»_filters"
+		android:title="@string/«e.name.toLowerCase()»_des_sg">
+		
+		<intent
+            android:targetClass="org.imogene.android.«name.toLowerCase()».app.ExtendedPreferences"
+            android:targetPackage="org.imogene.android.«name.toLowerCase()»" >
+
+            <extra
+                android:name="org.imogene.android.extra.FILENAME"
+                android:value="preferences_screen_«e.name.toLowerCase()»_filters" />
+        </intent>
+	</PreferenceScreen>
+	«ENDIF»
+	«ENDFOREACH»
+</PreferenceScreen>
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

@@ -1,0 +1,73 @@
+import core;
+
+// Ces extensions OAW sont utilisees par CommonFieldUtil
+
+
+  // An extension to get the bean property name according to upper first letters.
+String getFieldPropertyName(String name) :
+  JAVA org.imogene.oaw.generator.common.CommonGenHelper.getBeanPropertyFormat(java.lang.String);
+   
+ // An extension to get the bean getter name.
+String getterName(String name) :
+  JAVA org.imogene.oaw.generator.common.CommonGenHelper.getterName(java.lang.String);
+ 
+ // An extension to get the bean setter name. 
+String setterName(String name) :
+  JAVA org.imogene.oaw.generator.common.CommonGenHelper.setterName(java.lang.String);
+  
+  // An extension to get the bean property name according to upper first letters.
+boolean isPropertyWithLowerUpperCaseFirstTwoChar(String name) :
+  JAVA org.imogene.oaw.generator.common.CommonGenHelper.isPropertyWithLowerUpperCaseFirstTwoChar(java.lang.String);
+   
+ // An extension to get the bean getter name.
+String getterNameForPropertyWithLowerUpperCaseFirstTwoChar(String name) :
+  JAVA org.imogene.oaw.generator.common.CommonGenHelper.getterNameForPropertyWithLowerUpperCaseFirstTwoChar(java.lang.String);
+ 
+ // An extension to get the bean setter name. 
+String setterNameForPropertyWithLowerUpperCaseFirstTwoChar(String name) :
+  JAVA org.imogene.oaw.generator.common.CommonGenHelper.setterNameForPropertyWithLowerUpperCaseFirstTwoChar(java.lang.String);  
+  
+ 
+ // An extension that enables to get the opposite relation cardinality
+ Integer getOppositeCardinality(Object field) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getOppositeCardinality(org.imogene.model.core.RelationFieldEntity);
+ 
+// An extension that enables to get the opposite relation type
+String getOppositeRelationType(Object field) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getOppositeRelationType(org.imogene.model.core.RelationFieldEntity);
+ 
+// i18n
+
+//get display name for Thema
+String getDisplayFromDescription(String isoCode, Thema tema) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(java.lang.String, org.imogene.model.core.Thema);
+ 
+//get display name for FieldEntity
+String getDisplayFromDescription(String isoCode, FieldEntity entity) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(java.lang.String, org.imogene.model.core.FieldEntity);
+  
+//get display name for FieldGroup
+String getDisplayFromDescription(String isoCode, FieldGroup group) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(java.lang.String, org.imogene.model.core.FieldGroup);
+ 
+//get display name for EnumValue
+String getDisplayFromDescription(String isoCode, EnumValue enumValue) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(java.lang.String, org.imogene.model.core.EnumValue);
+ 
+//get display name for CardEntity
+String getDisplayFromDescription(String isoCode, CardEntity card) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(java.lang.String, org.imogene.model.core.CardEntity);
+ 
+//get display name for CardEntity
+String getDisplayFromDescription(String isoCode, ValidationRule rule) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(java.lang.String, org.imogene.model.core.ValidationRule);
+ 
+ //get display name for CardEntity
+String getDisplayFromDescription(Project project) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getDisplayFromDescription(org.imogene.model.core.Project);
+ 
+ 
+//get the ISO code of the specified language
+String getIsoCode(Language lng) :
+ JAVA org.imogene.oaw.generator.common.CommonGenHelper.getIsoCode(org.imogene.model.core.Language);
+  

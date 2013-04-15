@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ig_no">No</string>
+    <string name="ig_camera">"Camera"</string>
+    <string name="ig_camcorder">"Camcorder"</string>
+    <string name="ig_list_availables_entities">"List of available entities"</string>
+    <string name="ig_modified">"Last modification date"</string>
+    <string name="ig_modified_by">"Modified by"</string>
+    <string name="ig_modified_from">"Modified from"</string>
+    <string name="ig_created">"Creation date"</string>
+    <string name="ig_created_by">"Created by"</string>
+    <string name="ig_entity_id">"Entity id"</string>
+    <string name="ig_noEntityHelpText">"You don\'t have any form.\n\n<li>To add a form, press + to create a new form from scratch.</li>"</string>
+    <string name="ig_insert_entity">New entity</string>
+    <string name="ig_menu_save">"Save"</string>
+    <string name="ig_menu_discard">"Discard"</string>
+    <string name="ig_menu_delete">"Delete"</string>
+    <string name="ig_menu_view">"View"</string>
+    <string name="ig_menu_mark_as_read">"Mark as read"</string>
+    <string name="ig_menu_mark_as_unread">"Mark as unread"</string>
+    <string name="ig_menu_resume_sync">"Resume Sync."</string>
+    <string name="ig_menu_actions">"Actions"</string>
+    <string name="ig_menu_sort_by">"Sort by"</string>
+    <string name="ig_menu_sort_by_modified">"Modification date"</string>
+    <string name="ig_menu_mark_all_as_read">"Mark all as read"</string>
+    <string name="ig_menu_iamlost">"I am lost"</string>
+    <string name="ig_menu_change_user">"Change user"</string>
+    <string name="ig_menu_map">"Map"</string>
+    <string name="ig_menu_info">Info.</string>
+    <string name="ig_menu_logo">Imogene Android</string>
+    <string name="ig_menu_home">Home</string>
+    <string name="ig_menu_sync">Sync</string>
+    <string name="ig_menu_add">Sync</string>
+    <string name="ig_menu_edit">Edit</string>
+    <string name="ig_bin_binary">"One binary"</string>
+    <string name="ig_bin_video">"One video"</string>
+    <string name="ig_bin_audio">"one audio"</string>
+    <string name="ig_bin_photo">"One picture"</string>
+    <string name="ig_select">"Select"</string>
+    <string name="ig_select_dialog">Make a choice</string>
+    <string name="ig_anf_title">Activity not found</string>
+    <string name="ig_anf">The activity was not found please report this bug to your IT manager</string>
+    <string name="ig_delete_confirmation_title">"Delete"</string>
+    <string name="ig_delete_confirmation">"This element will be deleted."</string>
+    <string name="ig_relation_unsettable">This side of the relation cannot be set</string>
+    <string name="ig_relation_hierarchical_parent_unset">"You have to fill the field %s"</string>
+    <string name="ig_unsaved_dialog_msg">"The entity has been modified. Save changes ?"</string>
+    <string name="ig_uncomplete_dialog_msg">"You haven't finished to fill the form. Quit without saving ?"</string>
+    <string name="ig_lower_than_decimal">must be lower than %d</string>
+    <string name="ig_greater_than_decimal">must be greater than %d</string>
+    <string name="ig_lower_than_float">must be lower than %.2f</string>
+    <string name="ig_greater_than_float">must be greater than %.2f</string>
+    <string name="ig_required">Required</string>
+    <string name="ig_obtaining_time_offset">Obtaining time offset from NTP server</string>
+    <string name="ig_obtaining_time_offset_failed">Obtaining time offset failed. Do you wish to try again ?</string>
+    <string name="ig_obtaining_roles">Connecting to the distant server...</string>
+    <string name="ig_obtaining_roles_failed">"Identification failed ! Check login, password and server settings. Do you wish to try again ?"</string>
+    <string name="ig_dialog_quit">"Exit Imogene android application ?"</string>
+    <string name="ig_location_format">"Lat %1$.3f ; Lon %2$.3f"</string>
+    <string name="ig_iamlost_title">"I am lost !"</string>
+
+    <!-- Synchronization messages -->
+    <string name="ig_synchronization">"Synchronization"</string>
+    <string name="ig_sync_start">"Synchronization starting"</string>
+    <string name="ig_sync_init">"Initialize session"</string>
+    <string name="ig_sync_init_resume">"Initialize the resumed session"</string>
+    <string name="ig_sync_send">"Sending client modifications"</string>
+    <string name="ig_sync_send_resume">"Sending client modifications on resumed session"</string>
+    <string name="ig_sync_receive">"Receiving server modifications"</string>
+    <string name="ig_sync_receive_resume">"Receiving server modifications on resumed session"</string>
+    <string name="ig_sync_close">"Closing session"</string>
+    <string name="ig_sync_close_resume">"Closing the resumed session"</string>
+    <string name="ig_sync_manually">"Starting synchronization manually"</string>
+    <string name="ig_notification_sent_ticker">"Sending completed"</string>
+    <string name="ig_notification_sent_title">"Data sent"</string>
+    <string name="ig_notification_sent_description">"Your data have been correctly sent"</string>
+    <string name="ig_notification_sent_failed_ticker">"Sending failed"</string>
+    <string name="ig_notification_sent_failed_title">"Data was not sent"</string>
+    <string name="ig_notification_sent_failed_description">"Try to synchronize again or later."</string>
+
+    <!-- Account creation -->
+    <string name="ig_account_welcome">"Account creation"</string>
+    <string name="ig_account_check_password_title">"Check password"</string>
+    <string name="ig_account_introduction">"Welcome to Imogene setup !\n\nUse your Imogene account to use this application."</string>
+    <string name="ig_account_next_action">"Next"</string>
+    <string name="ig_account_setup_basics_login_hint">"Login"</string>
+    <string name="ig_account_setup_basics_password_hint">"Password"</string>
+    <string name="ig_account_setup_basics_server_hint">"Server URL"</string>
+    <string name="ig_account_setup_basics_title">"Set up account"</string>
+    <string name="ig_account_setup_shortpw_instructions">"Set up a short password"</string>
+    <string name="ig_account_setup_shortpw_title">"Set up short password"</string>
+    <string name="ig_account_setup_shortpw_hint">"Short password"</string>
+    <string name="ig_account_setup_shortpw_confirm_hint">"Confirm short password"</string>
+    <string name="ig_account_setup_shortpw_error">"Error typing the short password"</string>
+    <string name="ig_account_welcome_message">"Welcome"</string>
+    <string name="ig_account_start">"Start"</string>
+    <string name="ig_account_change_user">"Change user"</string>
+    <string name="ig_account_creation_introduction_title">"Your account"</string>
+    
+    <!-- Wizard -->
+    <string name="ig_wizard_next">"Next"</string>
+    <string name="ig_wizard_previous">"Previous"</string>
+    <string name="ig_wizard_finish">"Finish"</string>
+    <string name="ig_wizard_acquire">"Click to acquire"</string>
+    <string name="ig_wizard_delete">"Click to delete"</string>
+    <string name="ig_wizard_view">"Click to visualize"</string>
+    
+    <!-- Authentication -->
+    <string name="ig_alert_dialog_username">"Username"</string>
+    <string name="ig_alert_dialog_password">"Password"</string>
+    <string name="ig_alert_dialog_wrong_password">"Wrong password"</string>
+    
+    <!-- Client filters -->
+    <string name="ig_after">After</string>
+    <string name="ig_before">Before</string>
+    <string name="ig_infimum">Infimum</string>
+    <string name="ig_supremum">Supremum</string>
+    <string name="ig_filter_date_equal">Equal %s</string>
+    <string name="ig_filter_date_after">After %s</string>
+    <string name="ig_filter_date_before">Before %s</string>
+    <string name="ig_filter_date_between">Between %1$s and %2$s</string>
+    <string name="ig_filter_number_equal">Equal %s</string>
+    <string name="ig_filter_number_gt">Greater than %s</string>
+    <string name="ig_filter_number_lt">Lower than %s</string>
+    <string name="ig_filter_number_between">Between %1$s and %2$s</string>
+    <string name="ig_filter_string_contains">Contains %s</string>
+    <string name="ig_filter_string_startwith">Start with %s</string>
+    <string name="ig_filter_string_equal">Equal %s</string>
+    <string name="ig_filter_relation_downloading">Downloading</string>
+    <string name="ig_filter_relation_download_error">Download error</string>
+
+    <!-- Check for updates -->
+    <string name="ig_check_available_title">"Application Update"</string>
+    <string name="ig_check_available_message">"New application available. Would you like to install it now ?"</string>
+    <string name="ig_check_unavailable_message">"There is no update available, check later."</string>
+    <string name="ig_update_app_title">"Loading&#8230;"</string>
+    <string name="ig_update_app_message">"Downloading updates"</string>
+    
+    <!-- Dynamic Fields -->
+    <string name="ig_dynamic_field_group">Dynamic fields</string>
+    
+    <!-- Date Time Picker Dialog -->
+    <string name="ig_switchDateTime">"Switch to date/time"</string>
+
+    <!-- Geo Picker Dialog -->
+    <string name="ig_dialog_geopicker_title">"Coordinates"</string>
+    <string name="ig_latitude">"Latitude"</string>
+    <string name="ig_longitude">"Longitude"</string>
+    <string name="ig_geo_format">"Decimal"</string>
+    <string name="ig_east">"East"</string>
+    <string name="ig_west">"West"</string>
+    <string name="ig_north">"North"</string>
+    <string name="ig_south">"South"</string>
+    
+    <!-- Crash report messages -->
+    <string name="ig_crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
+    <string name="ig_crash_dialog_title">CrashTest has crashed</string>
+    <string name="ig_crash_dialog_text">An unexpected error occurred forcing the application to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
+    <string name="ig_crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+    <string name="ig_crash_dialog_ok_toast">Thank you !</string>
+
+    <!-- NOT TRANSLATABLE -->
+    <!-- Geo Picker Dialog -->
+    <string name="ig_degrees_unit" translatable="false">°</string>
+    <string name="ig_minutes_unit" translatable="false">"'"</string>
+    <string name="ig_seconds_unit" translatable="false">"''"</string>
+
+</resources>

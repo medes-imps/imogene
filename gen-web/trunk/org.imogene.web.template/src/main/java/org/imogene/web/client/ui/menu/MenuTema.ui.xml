@@ -1,0 +1,73 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.imogene-MenuTema {
+			width: 100%;
+		}
+		
+		.imogene-MenuTema-open {
+			
+		}
+		
+		.imogene-MenuTema-closed {
+			
+		}
+		
+		.imogene-MenuTema-header {
+			text-decoration: none;
+			color: #108fc3;
+			font-weight: bold;
+			cursor: pointer;
+			cursor: hand;
+			padding-right: 5px;
+		}
+		
+		.imogene-MenuTema a {
+			text-decoration: none;
+		}
+		/*.imogene-MenuTema .header,.imogene-MenuTema .header a,.imogene-MenuTema .header td
+							{
+							text-decoration: none;
+							color: #108fc3;
+							font-weight: bold;
+							cursor: pointer;
+							cursor: hand;
+							padding-right: 5px;
+						}*/
+		/*.imogene-MenuTema .content {
+							width: 100%;
+							vertical-align: top;
+							border-left: 2px solid #9fd2e7;
+							padding: 4px 0px 4px 8px;
+							margin-left: 3px;
+						}*/
+		.imogene-MenuTemaContent {
+			width: 100%;
+			vertical-align: top;
+			border-left: 2px solid #9fd2e7;
+			padding: 4px 0px 4px 8px;
+			margin-left: 3px;
+		}
+		
+		.imogene-MenuTemaContent a {
+			text-decoration: underline;
+		}
+	</ui:style>
+
+	<g:DisclosurePanel ui:field="container"
+		animationEnabled="true" stylePrimaryName="{style.imogene-MenuTema}">
+
+		<g:customHeader>
+			<g:Label ui:field="titleLabel" stylePrimaryName="{style.imogene-MenuTema-header}"></g:Label>
+		</g:customHeader>
+
+
+		<g:VerticalPanel ui:field="layout"
+			stylePrimaryName="{style.imogene-MenuTemaContent}" />
+
+
+	</g:DisclosurePanel>
+
+</ui:UiBinder> 

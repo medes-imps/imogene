@@ -1,0 +1,145 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate FOR Project »
+«FILE "/" + name.toLowerCase() + "/provider/" + name.toFirstUpper() + "Provider.java"-»
+package org.imogene.android.«name.toLowerCase()».provider;
+
+import org.imogene.android.Constants;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
+import org.imogene.android.provider.ImogProvider;
+«FOREACH entities AS entity-»
+import org.imogene.android.«name.toLowerCase()».entities.«entity.name.toFirstUpper()»;
+«ENDFOREACH-»
+import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.net.Uri;
+
+public class «name.toFirstUpper()»Provider extends ImogProvider {
+
+	private static final String VND_ITEM = "vnd.org.imogene.android.«name.toLowerCase()».cursor.item/";
+	private static final String VND_DIR = "vnd.org.imogene.android.«name.toLowerCase()».cursor.dir/";
+	
+	«FOREACH entities AS entity ITERATOR i-»
+	public static final int «entity.name.toUpperCase()» = LAST_INDEX + «2 * i.counter0 + 1»;
+	public static final int «entity.name.toUpperCase()»_ID = LAST_INDEX + «2 * i.counter0 + 2»;
+	«ENDFOREACH-»
+
+	static {
+		«FOREACH entities AS entity-»
+		URI_MATCHER.addURI(Constants.AUTHORITY, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toUpperCase()»);
+		URI_MATCHER.addURI(Constants.AUTHORITY, «entity.name.toFirstUpper()».Columns.TABLE_NAME + "/*", «entity.name.toUpperCase()»_ID);
+		«ENDFOREACH-»
+	}
+	
+	@Override
+	public boolean onCreate() {
+		«name.toFirstUpper()»OpenHelper.init(getContext());
+		return true;
+	}
+	
+	protected final String getVndDir() {
+		return VND_DIR;
+	}
+	
+	protected final String getVndItem() {
+		return VND_ITEM;
+	}
+
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		int result = -1;
+		switch (URI_MATCHER.match(uri)) {
+		«FOREACH entities AS entity-»
+		case «entity.name.toUpperCase()»:
+			result = deleteMulti(«entity.name.toFirstUpper()».Columns.TABLE_NAME, selection, selectionArgs);
+			break;
+		case «entity.name.toUpperCase()»_ID:
+			String «entity.shortName.toLowerCase()»Id = uri.getLastPathSegment();
+			result = deleteSingle(«entity.name.toFirstUpper()».Columns.TABLE_NAME, «entity.shortName.toLowerCase()»Id, selection, selectionArgs);
+			break;
+		«ENDFOREACH-»
+		default:
+			return super.delete(uri, selection, selectionArgs);
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return result;
+	}
+
+
+
+	@Override
+	public String getType(Uri uri) {
+		switch (URI_MATCHER.match(uri)) {
+		«FOREACH entities AS entity-»
+		case «entity.name.toUpperCase()»:
+			return VND_DIR + "«entity.name.toLowerCase()»";
+		case «entity.name.toUpperCase()»_ID:
+			return VND_ITEM + "«entity.name.toLowerCase()»";
+		«ENDFOREACH-»
+		default:
+			return super.getType(uri);
+		}
+	}
+
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		switch (URI_MATCHER.match(uri)) {
+		«FOREACH entities AS entity-»
+		case «entity.name.toUpperCase()»:
+			return insertInTable(«entity.name.toFirstUpper()-».Columns.TABLE_NAME, «entity.name.toFirstUpper()-».Columns.CONTENT_URI, values);
+		«ENDFOREACH»
+		default:
+			return super.insert(uri, values);
+		}
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+		SQLiteDatabase sqlDB = ImogOpenHelper.getHelper().getReadableDatabase();
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+		switch (URI_MATCHER.match(uri)) {
+		«FOREACH entities AS entity»
+		case «entity.name.toUpperCase()»:
+			qb.setTables(«entity.name.toFirstUpper()».Columns.TABLE_NAME);
+			break;
+		case «entity.name.toUpperCase()»_ID:
+			qb.setTables(«entity.name.toFirstUpper()».Columns.TABLE_NAME);
+			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
+			break;
+		«ENDFOREACH»
+		default:
+			return super.query(uri, projection, selection, selectionArgs, sortOrder);
+		}
+		Cursor c = qb.query(sqlDB, projection, selection, selectionArgs, null, null, sortOrder);
+		c.setNotificationUri(getContext().getContentResolver(), uri);
+		return c;
+	}
+
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+		int result = -1;
+		switch (URI_MATCHER.match(uri)) {
+		«FOREACH entities AS entity-»
+		case «entity.name.toUpperCase()»:
+			result = updateMulti(«entity.name.toFirstUpper()».Columns.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case «entity.name.toUpperCase()»_ID:
+			String «entity.shortName.toLowerCase()»Id = uri.getLastPathSegment();
+			result = updateSingle(«entity.name.toFirstUpper()».Columns.TABLE_NAME, «entity.shortName.toLowerCase()»Id, values, selection, selectionArgs);
+			break;
+		«ENDFOREACH-»
+		default:
+			return super.update(uri, values, selection, selectionArgs);
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return result;
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

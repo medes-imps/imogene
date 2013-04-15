@@ -1,0 +1,42 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType, String modelName, String genName) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateDotProject(modelName, genName) FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateDotProject(String modelName, String genName) FOR Project-»
+«FILE ".project"-»
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>«genName»</name>
+	<comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.ManifestBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.SchemaBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.imogene.nature.gen.client</nature>
+		<nature>org.imogene.nature.model.«modelName»</nature>
+		<nature>org.eclipse.pde.PluginNature</nature>
+	</natures>
+</projectDescription>
+«ENDFILE»
+«ENDDEFINE»

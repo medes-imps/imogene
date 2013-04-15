@@ -1,0 +1,45 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/event/create/Create" + this.name.toFirstUpper() + "Event.java"»
+package org.imogene.«projectName.toLowerCase()».client.event.create;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+
+import org.imogene.«projectName.toLowerCase()».client.event.list.List«this.name.toFirstUpper()»Event;
+
+/**
+ * Event that is fired in order to display a «this.name.toFirstUpper()» form in creation mode
+ * @author MEDES-IMPS
+ */
+public class Create«this.name.toFirstUpper()»Event extends GwtEvent<Create«this.name.toFirstUpper()»Event.Handler> {
+
+	public static final Type<Handler> TYPE = new Type<Handler>();	
+
+	private final GwtEvent<?> closeEvent;
+
+	public interface Handler extends EventHandler {
+		void createNew«this.name.toFirstUpper()»(GwtEvent<?> closeEvent);
+	}
+
+	public Create«this.name.toFirstUpper()»Event() {
+		this(new List«this.name.toFirstUpper()»Event());
+	}
+
+	public Create«this.name.toFirstUpper()»Event(GwtEvent<?> closeEvent) {
+		this.closeEvent = closeEvent;
+	}
+
+	@Override
+	protected void dispatch(Handler handler) {
+		handler.createNew«this.name.toFirstUpper()»(closeEvent);
+	}
+
+	@Override
+	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
+		return TYPE;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

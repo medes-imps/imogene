@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<templates>
+	<template name="imogene_notif_template" version="1.0">
+		<description>Create an Imogene Notifier project</description>
+		<natures>
+			<nature>nothing</nature>
+		</natures>
+		<content>template.zip</content>
+ 		<parseSet>
+              <include filenames=".project,.classpath,org.eclipse.wst.common.component,web.xml,log4j.xml"/>
+              <exclude extensions="jar"/>
+        </parseSet>		
+	</template>
+</templates>

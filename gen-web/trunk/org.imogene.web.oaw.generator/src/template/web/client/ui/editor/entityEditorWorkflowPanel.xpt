@@ -1,0 +1,141 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«EXTENSION template::CommonFieldUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/workflow/panel/" + this.name.toFirstUpper() + "FormPanel.java"»
+package org.imogene.«projectName.toLowerCase()».client.ui.workflow.panel;
+
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»IconConstants;
+import org.imogene.«projectName.toLowerCase()».client.event.list.List«name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.ui.workflow.«name.toFirstUpper()»EditorWorkflow;
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+«EXPAND importForRelation(projectName) FOREACH groups.fields-»	
+import org.imogene.web.client.ui.panel.RelationPopupPanel;
+import org.imogene.web.client.ui.panel.WrapperPanel;
+import org.imogene.web.client.event.GoHomeEvent;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+
+
+/**
+ * Panel that contains the «name.toFirstUpper()» Workflow
+ * @author Medes-IMPS
+ */
+public class «name.toFirstUpper()»FormPanel extends Composite {
+
+	private static final Binder uiBinder = GWT.create(Binder.class);
+
+	interface Binder extends UiBinder<Widget, «name.toFirstUpper()»FormPanel> {
+	}
+
+	@UiField(provided=true)
+	WrapperPanel wrapperPanel;
+	@UiField(provided=true)
+	«name.toFirstUpper()»EditorWorkflow editorWorkflow;
+	
+	
+	/**
+	 * Constructor
+	 * @param requestFactory the application requestFactory
+	 * @param entityId the id of the entity to be managed by the workflow. null if an entity is being created
+	 * @param parent parent composite if the panel is contained in a RelationPopupPanel
+	 * @param initField the field that initiated the display in a RelationPopupPanel
+	 * @param returnToList true if after closing the wokflow, the application shall display the list of entities, false otherwise
+	 */
+	public «name.toFirstUpper()»FormPanel(«projectName.toFirstUpper()»RequestFactory requestFactory, String entityId, RelationPopupPanel parent, String initField) {
+		
+		wrapperPanel = new WrapperPanel();
+		wrapperPanel.setWidth("90%");
+		Label titleContainer = wrapperPanel.getTitleLabel();
+
+		if (entityId != null) {		
+			if (parent == null)
+				editorWorkflow = new «name.toFirstUpper()»EditorWorkflow(requestFactory, entityId, titleContainer);
+			else {
+				editorWorkflow = new «name.toFirstUpper()»EditorWorkflow(requestFactory, entityId, titleContainer, parent, initField);
+			}
+		} else {
+			if (parent == null) {
+				editorWorkflow = new «name.toFirstUpper()»EditorWorkflow(requestFactory, titleContainer);				
+			} else {
+				editorWorkflow = new «name.toFirstUpper()»EditorWorkflow(requestFactory, titleContainer, parent, initField);
+			}
+		}
+
+		if(«projectName.toFirstUpper()»IconConstants.«name.toUpperCase()»_ICON!=null)
+			wrapperPanel.setIcon(«projectName.toFirstUpper()»IconConstants.«name.toUpperCase()»_ICON);
+
+		if (editorWorkflow.getEditButton() != null)
+			wrapperPanel.addHeaderWidget(editorWorkflow.getEditButton());
+		if (editorWorkflow.getCloseButton() != null)
+			wrapperPanel.addHeaderWidget(editorWorkflow.getCloseButton());
+		if (editorWorkflow.getSaveButton() != null)
+			wrapperPanel.addHeaderWidget(editorWorkflow.getSaveButton());
+		if (editorWorkflow.getCancelButton() != null)
+			wrapperPanel.addHeaderWidget(editorWorkflow.getCancelButton());
+		
+		initWidget(uiBinder.createAndBindUi(this));
+	}	
+
+	/**
+	 * Constructor
+	 * @param requestFactory the application requestFactory
+	 * @param entityId the id of the entity to be managed by the workflow. null if an entity is being created	 
+	 */	
+	public «name.toFirstUpper()»FormPanel(«projectName.toFirstUpper()»RequestFactory requestFactory, String entityId) {
+		this(requestFactory, entityId, null, null);
+	}
+	
+	public void setCloseEvent(GwtEvent<?> closeEvent){
+		editorWorkflow.setCloseEvent(closeEvent);
+	}
+			
+	
+	«EXPAND setterForRelation FOREACH groups.fields-»	
+
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+«REM» imports for relation with cardinality 1 «ENDREM»
+«DEFINE importForRelation(String projectName) FOR FieldEntity -»«ENDDEFINE»
+«DEFINE importForRelation(String projectName) FOR RelationFieldEntity -»
+«IF cardinality == 1 -»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;	
+«ENDIF -»
+«ENDDEFINE»
+
+«REM» setters for relation with cardinality 1 «ENDREM»
+«DEFINE setterForRelation FOR FieldEntity -»«ENDDEFINE»
+«DEFINE setterForRelation FOR RelationFieldEntity -»
+«IF cardinality == 1 && !nestedForm-»
+	/**
+	 * Setter to inject a «entity.name.toFirstUpper()» value into the workflow and the editor
+	 * @param value the value to be injected
+	 * @param isLocked true if relation field shall be locked (non editable)
+	 */
+	public void set«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value, boolean isLocked) {
+		editorWorkflow.set«name.toFirstUpper()»(value, isLocked);
+	}
+
+	/**
+	 * Setter to inject a «entity.name.toFirstUpper()» value into the workflow and the editor
+	 * @param value the value to be injected
+	 */	
+	public void set«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value) {
+		set«name.toFirstUpper()»(value, false);
+	}	
+«ENDIF -»
+«ENDDEFINE»
+

@@ -1,0 +1,253 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/uao/security/ImogDefaultPolicy.java"»
+package org.imogene.«projectName.toLowerCase()».uao.security;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.common.role.ImogRole;
+import org.imogene.lib.sync.uao.security.ImogSecurityPolicy;
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+/**
+ * Class to filter beans so that only 
+ * allowed bean data is accessible in read/write mode
+ * @author Medes-IMPS
+ */
+public class ImogDefaultPolicy implements ImogSecurityPolicy {
+
+	/* generic DAO access */
+	@Autowired
+	@Qualifier(value = "genericDao")
+	private GenericDao dao;
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ImogBean> T toHibernate(T bean, ImogActor actor) {
+		«FOREACH entities AS e»
+		if (bean instanceof «e.name»)
+			return (T) toUnsecure«e.name»((«e.name») bean, getRoleNames(actor));	
+		«ENDFOREACH»		
+		return bean;
+	}
+
+	@Override
+	public <T extends ImogBean> List<T> toHibernate(List<T> beans, ImogActor actor) {
+		List<T> unsecuredList = new Vector<T>();
+		for (T bean : beans) {
+			T toHibernate = toHibernate(bean, actor);
+			if (toHibernate!=null) {
+				unsecuredList.add(toHibernate);
+			}
+		}
+		return unsecuredList;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends ImogBean> T toSecure(T bean, ImogActor actor) {
+		«FOREACH entities AS e»
+		if (bean instanceof «e.name»)
+			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean, getRoleNames(actor));			
+		«ENDFOREACH»
+		return bean;
+	}
+
+	@Override
+	public <T extends ImogBean> List<T> toSecure(List<T> beans, ImogActor actor) {
+		List<T> securedList = new Vector<T>();
+		for (T bean : beans) {
+			T isSecured = toSecure(bean, actor);
+			if (isSecured != null) {
+				securedList.add(isSecured);
+			}
+		}
+		return securedList;
+	}
+	
+	«FOREACH entities AS e»
+	/**
+	 * Secure a «e.name» bean.
+	 * 
+	 * @param bean The «e.name» bean to secure
+	 * @param roleNames set of role ids for the user 
+	 * @return A secured «e.name» bean
+	 */
+	private «e.name.toFirstUpper()» toSecure«e.name.toFirstUpper()»(«e.name.toFirstUpper()» bean, Set<String> roleNames) {
+		boolean isSecured = false;
+		«e.name» transformedBean = new «e.name»();
+
+		/* unsecured data */
+		transformedBean.setId(bean.getId());
+		transformedBean.setModifiedBy(bean.getModifiedBy());
+		transformedBean.setModifiedFrom(bean.getModifiedFrom());
+		transformedBean.setModified(bean.getModified());
+		transformedBean.setUploadDate(bean.getUploadDate());
+		transformedBean.setCreatedBy(bean.getCreatedBy());
+		transformedBean.setCreated(bean.getCreated());
+		transformedBean.setDynamicFieldValues(bean.getDynamicFieldValues());
+		«IF Actor.isAssignableFrom(e.metaType)-»
+		transformedBean.setLogin(bean.getLogin());
+		transformedBean.setPassword(bean.getPassword());
+		transformedBean.setRoles(bean.getRoles());	
+		«EXPAND filterField FOREACH ((Actor)e).filters-»		
+		«ENDIF-»			
+		
+		«FOREACH e.groups AS g»
+			«IF g.readers.size == 0»
+		if (!isSecured) isSecured = true;
+				«EXPAND setField FOREACH g.fields-»
+			«ELSE»
+				if(«FOREACH g.readers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»«IF g.writers.size>0»||«ENDIF»«FOREACH g.writers AS w ITERATOR i» roleNames.contains("«w.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»){
+					if (!isSecured) isSecured = true;
+					«EXPAND setField FOREACH g.fields-»
+				} else {
+					«EXPAND setEmptyField FOREACH g.fields-»
+				}
+			«ENDIF»
+		«ENDFOREACH»
+		
+		if (isSecured)
+			return transformedBean;
+		else
+			return null;
+	}
+
+	/**
+	 * Unsecure a «e.name» bean.
+	 * @param bean The «e.name» bean to unsecure
+	 * @param roleNames set of role ids for the user
+	 * @return A unsecured «e.name» bean
+	 */
+	private «e.name.toFirstUpper()» toUnsecure«e.name.toFirstUpper()»(«e.name.toFirstUpper()» bean, Set<String> roleNames) {
+		boolean isSecured = false;
+		«e.name» transformedBean = («e.name») dao.load(«e.name».class, bean.getId());
+
+		if (transformedBean == null) {
+			transformedBean = new «e.name»();
+			transformedBean.setId(bean.getId());
+		}
+		transformedBean.setModifiedBy(bean.getModifiedBy());
+		transformedBean.setModifiedFrom(bean.getModifiedFrom());
+		transformedBean.setModified(bean.getModified());
+		transformedBean.setUploadDate(bean.getUploadDate());
+		transformedBean.setCreatedBy(bean.getCreatedBy());
+		transformedBean.setCreated(bean.getCreated());
+		transformedBean.setDynamicFieldValues(bean.getDynamicFieldValues());
+		
+		«FOREACH e.groups AS g»
+			«IF g.writers.size == 0»
+				«IF g.readers.size>0»					
+					if («FOREACH g.readers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH») {		
+						if (!isSecured) isSecured = true;
+						«EXPAND setField FOREACH g.fields-»
+				}
+				«ELSE»
+						if (!isSecured) isSecured = true;
+					«FOREACH g.fields AS f-»
+						«EXPAND setField FOR f -»
+					«ENDFOREACH-»
+				«ENDIF»									
+			«ELSE»
+				if(«FOREACH g.writers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»){
+					if (!isSecured) isSecured = true;
+					«EXPAND setField FOREACH g.fields-»
+				}				
+			«ENDIF»
+		«ENDFOREACH»
+
+		if (isSecured)
+			return transformedBean;
+		else
+			return null;
+	}	
+	«ENDFOREACH»	
+	
+	/**
+	 * 
+	 * @param actor the actor for which roles are looked for
+	 * @return list of role ids
+	 */
+	private Set<String> getRoleNames(ImogActor actor) {
+		Set<String> names = new HashSet<String>();
+		if (actor != null) {
+			for (ImogRole role : actor.getRoles()) {
+				names.add(role.getId());
+			}
+		}
+		return names;
+	}
+	
+}
+
+«ENDFILE»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+
+«REM» Setter to affect the values to the new bean «ENDREM»
+«DEFINE setField FOR FieldEntity-»
+	transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»());
+«ENDDEFINE»
+
+«DEFINE setField FOR TextField-»
+	transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»());
+«ENDDEFINE»
+
+«DEFINE setField FOR GeoField-»
+	transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»());
+«ENDDEFINE»
+
+«DEFINE setField FOR RelationFieldEntity-»
+	«IF cardinality>1 || cardinality==-1 -»
+	transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»());
+	«ELSE»
+	if(transformedBean.«EXPAND template::CommonFieldUtil::getterName FOR this-»()==null ||
+		bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»() == null ||
+		!transformedBean.«EXPAND template::CommonFieldUtil::getterName FOR this-»().getId().equals(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»().getId())){
+		transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»());
+	}
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Set empty field to secure a bean «ENDREM»
+«DEFINE setEmptyField FOR FieldEntity-»
+	transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(null);
+«ENDDEFINE»
+
+«DEFINE setEmptyField FOR RelationFieldEntity-»
+	«IF cardinality>1 || cardinality==-1 -»
+		transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(new Vector<«entity.name»>());
+	«ELSE-»
+		transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(null);
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM»  «ENDREM»
+«DEFINE filterField FOR FilterField-»
+transformedBean.«EXPAND template::CommonFieldUtil::setterName FOR this-»(bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»());
+«ENDDEFINE»
+
+«REM» Add LocalizedTexts to translatable entity «ENDREM»
+«DEFINE addLocalizedTexts FOR FieldEntity-»«ENDDEFINE»
+«DEFINE addLocalizedTexts FOR TextField-»
+	«IF translatable-»
+			entity.getLocalizedFieldMap().addI18nValues(getLocalizedTexts(entity.«EXPAND template::CommonFieldUtil::getterName FOR this-»()));
+	«ENDIF-»
+«ENDDEFINE»
+«REM» ---------------------------------------------------------- «ENDREM»
+
+
+

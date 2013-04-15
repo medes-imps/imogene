@@ -1,0 +1,56 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«IF nestedFields!=null && !nestedFields.isEmpty-»
+«FILE projectName.toLowerCase()+ "/client/ui/editor/nested/" + this.name.toFirstUpper() + "EditorNestedRow.ui.xml"-»
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo1='urn:import:org.imogene.web.client.ui.field.relation.single'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.relation.multi'
+	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group"
+	«IF isTranslatableFieldPresent(nestedFields)-»
+	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary"
+	xmlns:imo5="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.field">
+	«ELSE -»
+	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary">		
+	«ENDIF -»
+
+	<ui:style>
+		.imogene-form {
+			width: 100%;
+			vertical-align: top;
+			border-top: 1px solid #777;
+			padding-top: 2px;
+			margin-bottom: 2px;	
+		}
+		.imog-clearImage {
+			cursor: pointer;
+			cursor: hand;
+			text-align: left;
+			margin-left: 3px;
+		}	
+	</ui:style>
+
+
+	<g:HorizontalPanel stylePrimaryName="{style.imogene-form}" verticalAlignment="middle">
+	
+		«FOREACH nestedFields AS f -»
+		<g:cell verticalAlignment="middle">
+			<«EXPAND template::web::WebFieldUtil::formFieldTypeDecXml FOR f»:«EXPAND template::web::WebFieldUtil::formFieldTypeXml FOR f» ui:field="«f.name.toFirstLower()»" />
+		</g:cell>
+		«ENDFOREACH -»	
+	
+		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">
+			<g:Image ui:field="clearImage" stylePrimaryName="{style.imog-clearImage}" />
+		</g:cell>
+	
+	</g:HorizontalPanel>
+	
+
+</ui:UiBinder>
+«ENDFILE»
+«ENDIF -»
+«ENDDEFINE»

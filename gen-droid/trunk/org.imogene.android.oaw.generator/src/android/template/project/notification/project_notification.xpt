@@ -1,0 +1,61 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate FOR Project»
+«FILE "/" + name.toLowerCase() + "/notification/" + name.toFirstUpper() + "Notification.java"»
+package org.imogene.android.«name.toLowerCase()-».notification;
+
+import java.util.HashSet;
+
+import org.imogene.android.«name.toLowerCase()».R;
+«FOREACH entities AS e-»
+import org.imogene.android.«name.toLowerCase()».entities.«e.name.toFirstUpper()»;
+«ENDFOREACH-»
+import org.imogene.android.notification.MessagingNotification;
+import org.imogene.android.notification.MessagingNotification.NotificationHelper;
+import org.imogene.android.notification.MessagingNotification.NotificationInfo;
+
+import android.content.Context;
+
+public class «name.toFirstUpper()»Notification implements NotificationHelper {
+
+	«FOREACH entities AS e ITERATOR counter-»
+	private static final int NOTIFICATION_«e.name.toUpperCase()»_ID = «getDatabaseVersion() + counter.counter0»;
+	«ENDFOREACH-»
+	
+	public static void init() {
+		MessagingNotification.setNotificationHelper(new «name.toFirstUpper()»Notification());
+	}
+	
+	@Override
+	public void feedAccumulator(Context context, HashSet<NotificationInfo> accumulator) {
+		«FOREACH entities AS e-»
+		«IF e.topLevel-»
+		MessagingNotification.accumulate(
+			accumulator,
+			MessagingNotification.getEntityNotificationInfo(
+				context,
+				«e.name.toFirstUpper()».Columns.CONTENT_URI,
+				NOTIFICATION_«e.name.toUpperCase()»_ID,
+				R.string.«e.name.toLowerCase()»_des_sg,
+				«IF e.icon.length > 0-»R.drawable.«e.icon.split("\\.").get(0).toLowerCase()»«ELSE-»R.drawable.ig_logo_android_s«ENDIF-»
+				));
+		«ENDIF-»
+		«ENDFOREACH-»
+	}
+
+	@Override
+	public void cancelAll(Context context) {
+		«FOREACH entities AS e-»
+		cancel«e.name.toFirstUpper()»Notification(context);
+		«ENDFOREACH-»
+	}
+	
+	«FOREACH entities AS e-»
+	public static void cancel«e.name.toFirstUpper()»Notification(Context context) {
+		MessagingNotification.cancelNotification(context, NOTIFICATION_«e.name.toUpperCase()»_ID);
+	}
+	«ENDFOREACH-»
+
+}
+«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,26 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateHandler FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateHandler FOR Project»
+«FILE "org/imogene/sync/client/SynchronizationHandler.java"»
+package org.imogene.sync.client;
+
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+
+public class SynchronizationHandler extends AbstractHandler {
+	
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		return Activator.getDefault().synchronize();
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

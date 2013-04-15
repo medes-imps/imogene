@@ -1,0 +1,129 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+
+«REM» Field type for entity «ENDREM»
+«DEFINE entityProxyFieldType FOR FieldEntity»String«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR TextField»«IF translatable»LocalizedTextProxy«ELSE»String«ENDIF»«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR GeoField»GeoFieldProxy«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR DateField»Date«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR DateTimeField»Date«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR TimeField»Date«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR BooleanField»Boolean«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR IntegerField»Integer«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR FloatField»Double«ENDDEFINE»	
+«DEFINE entityProxyFieldType FOR RelationFieldEntity -»
+  «IF cardinality == 1 -»
+  «entity.name.toFirstUpper() -»Proxy
+  «ELSE -»
+  List<«entity.name.toFirstUpper()»Proxy>
+  «ENDIF -»
+«ENDDEFINE»
+«DEFINE entityProxyFieldType FOR BinaryField»BinaryProxy«ENDDEFINE»	
+
+
+«DEFINE formFieldTypeDec FOR FieldEntity»@UiField«ENDDEFINE»
+«DEFINE formFieldTypeDec FOR TextField»«IF this.translatable»@UiField(provided=true)«ELSE»@UiField«ENDIF»«ENDDEFINE»
+«DEFINE formFieldTypeDec FOR BinaryField»@UiField(provided=true)«ENDDEFINE»
+«DEFINE formFieldTypeDec FOR RelationFieldEntity -»@UiField(provided=true)«ENDDEFINE»
+
+«DEFINE formFieldTypeDecXml FOR FieldEntity»imo«ENDDEFINE»
+«DEFINE formFieldTypeDecXml FOR TextField»«IF this.translatable»imo5«ELSE»imo«ENDIF»«ENDDEFINE»
+«DEFINE formFieldTypeDecXml FOR BinaryField»imo4«ENDDEFINE»
+«DEFINE formFieldTypeDecXml FOR RelationFieldEntity -»
+«IF nestedForm -»imo6«ELSE -»
+«IF cardinality == 1 -»imo1«ELSE -»imo2«ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+
+«REM» Field widget declarations «ENDREM»
+«DEFINE formFieldType FOR FieldEntity»ImogTextBox«ENDDEFINE»
+«DEFINE formFieldType FOR TextField»«IF this.translatable»ImogLocalizedTextBox«ELSE»ImogTextBox«ENDIF»«ENDDEFINE»
+«DEFINE formFieldType FOR BinaryField»ImogBinaryBox«ENDDEFINE»
+«DEFINE formFieldType FOR EnumField»«IF multipleSelection -»ImogMultiEnumBox«ELSE-»ImogSingleEnumBox«ENDIF-»«ENDDEFINE»
+«DEFINE formFieldType FOR EmailField» ImogEmailBox«ENDDEFINE»
+«DEFINE formFieldType FOR VideoField»ImogVideoBox«ENDDEFINE»
+«DEFINE formFieldType FOR DateField»ImogDateBox«ENDDEFINE»
+«DEFINE formFieldType FOR DateTimeField»ImogDateBox«ENDDEFINE»
+«DEFINE formFieldType FOR TimeField»ImogTimeBox«ENDDEFINE»
+«DEFINE formFieldType FOR PhoneField»ImogTextBox«ENDDEFINE»
+«DEFINE formFieldType FOR PhotoField»ImogPhotoBox«ENDDEFINE»
+«DEFINE formFieldType FOR SoundField»ImogAudioBox«ENDDEFINE»
+«DEFINE formFieldType FOR BooleanField»ImogBooleanBox«ENDDEFINE»
+«DEFINE formFieldType FOR TextAreaField»«IF this.translatable»ImogLocalizedTextBox«ELSE»ImogTextAreaBox«ENDIF»«ENDDEFINE»
+«DEFINE formFieldType FOR AddressField»ImogAddressBox«ENDDEFINE»
+«DEFINE formFieldType FOR IntegerField»ImogIntegerBox«ENDDEFINE»
+«DEFINE formFieldType FOR FloatField»ImogDoubleBox«ENDDEFINE»
+«DEFINE formFieldType FOR GeoField»ImogGeoBox«ENDDEFINE»
+«DEFINE formFieldType FOR RelationFieldEntity -»
+	«IF cardinality == 1 -»
+		«IF nestedForm -»
+		«entity.name.toFirstUpper()»EditorNestedForm
+		«ELSE -»
+		ImogSingleRelationBox<«entity.name.toFirstUpper()-»Proxy>
+		«ENDIF -»
+	«ELSE -»
+		«IF nestedForm -»
+		«parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor
+		«ELSE -»
+		ImogMultiRelationBox<«entity.name.toFirstUpper()-»Proxy>
+		«ENDIF -»
+	«ENDIF -»
+«ENDDEFINE»
+
+«REM» Field widget declarations «ENDREM»
+«DEFINE formFieldTypeXml FOR FieldEntity»ImogTextBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR TextField»«IF this.translatable»ImogLocalizedTextBox«ELSE»ImogTextBox«ENDIF»«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR BinaryField»ImogBinaryBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR EnumField»«IF multipleSelection -»ImogMultiEnumBox«ELSE-»ImogSingleEnumBox«ENDIF-»«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR EmailField»ImogEmailBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR VideoField»ImogVideoBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR DateField»ImogDateBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR DateTimeField»ImogDateBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR TimeField»ImogTimeBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR PhoneField»ImogTextBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR PhotoField»ImogPhotoBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR SoundField»ImogAudioBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR BooleanField»ImogBooleanBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR TextAreaField»«IF this.translatable»ImogLocalizedTextBox«ELSE»ImogTextAreaBox«ENDIF»«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR AddressField»ImogAddressBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR IntegerField»ImogIntegerBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR FloatField»ImogDoubleBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR GeoField»ImogGeoBox«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR RelationFieldEntity -»
+«IF cardinality == 1 -»«IF nestedForm -»«entity.name.toFirstUpper()»EditorNestedForm«ELSE -»ImogSingleRelationBox«ENDIF -»
+«ELSE -»«IF nestedForm -»«parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor«ELSE -»ImogMultiRelationBox«ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+
+
+«REM» Entity field getters and setters declaration «ENDREM»
+«DEFINE getterDeclarationForProxyField FOR FieldEntity-»
+public «EXPAND entityProxyFieldType FOR this» «EXPAND template::CommonFieldUtil::getterName FOR this»();
+«ENDDEFINE»
+«DEFINE getterDeclarationForProxyField FOR GeoField-»
+public «EXPAND entityProxyFieldType FOR this» «EXPAND template::CommonFieldUtil::getterName FOR this»();
+«ENDDEFINE»
+
+«DEFINE setterDeclarationForProxyField FOR FieldEntity-»
+public void «EXPAND template::CommonFieldUtil::setterName FOR this»(«EXPAND entityProxyFieldType FOR this» value);
+«ENDDEFINE»
+«DEFINE setterDeclarationForProxyField FOR GeoField-»
+public void «EXPAND template::CommonFieldUtil::setterName FOR this»(«EXPAND entityProxyFieldType FOR this» value);
+«ENDDEFINE»
+
+«DEFINE getterDeclarationForProxyFieldWithLowerUpperCaseFirstTwoChar FOR FieldEntity-»
+public «EXPAND entityProxyFieldType FOR this» «EXPAND template::CommonFieldUtil::getterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»();
+«ENDDEFINE»
+«DEFINE getterDeclarationForProxyFieldWithLowerUpperCaseFirstTwoChar FOR GeoField-»
+public «EXPAND entityProxyFieldType FOR this» «EXPAND template::CommonFieldUtil::getterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»();
+«ENDDEFINE»
+
+«DEFINE setterDeclarationForProxyFieldWithLowerUpperCaseFirstTwoChar FOR FieldEntity-»
+public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»(«EXPAND entityProxyFieldType FOR this» value);
+«ENDDEFINE»
+«DEFINE setterDeclarationForProxyFieldWithLowerUpperCaseFirstTwoChar FOR GeoField-»
+public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»(«EXPAND entityProxyFieldType FOR this» value);
+«ENDDEFINE»
+
+
+

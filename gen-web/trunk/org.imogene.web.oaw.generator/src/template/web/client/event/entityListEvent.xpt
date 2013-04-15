@@ -1,0 +1,45 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/event/list/List" + this.name.toFirstUpper() + "Event.java"»
+package org.imogene.«projectName.toLowerCase()».client.event.list;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+
+/**
+ * Event that is fired in order to display the list of «this.name.toFirstUpper()» form entries
+ * @author MEDES-IMPS
+ */
+public class List«this.name.toFirstUpper()»Event extends GwtEvent<List«this.name.toFirstUpper()»Event.Handler> {
+
+	public static final Type<Handler> TYPE = new Type<Handler>();
+
+	private String searchText = null;
+	
+	public interface Handler extends EventHandler {
+		void list«this.name.toFirstUpper()»();
+		void list«this.name.toFirstUpper()»(String searchText);
+	}
+
+	public List«this.name.toFirstUpper()»Event() {
+	}
+	
+	public List«this.name.toFirstUpper()»Event(String searchText) {
+		this.searchText = searchText;
+	}
+
+	@Override
+	protected void dispatch(Handler handler) {
+		if(searchText==null)
+			handler.list«this.name.toFirstUpper()»();
+		else
+			handler.list«this.name.toFirstUpper()»(searchText);
+	}
+
+	@Override
+	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
+		return TYPE;
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

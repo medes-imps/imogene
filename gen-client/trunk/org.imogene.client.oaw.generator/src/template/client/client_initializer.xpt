@@ -1,0 +1,35 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "org/imogene/sync/client/ClientInitializerImpl.java"»
+package org.imogene.sync.client;
+
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
+public class ClientInitializerImpl extends AbstractClientInitializer {
+	
+	@Override
+	@Transactional
+	public void initDatase() {
+		addRole("administrator");
+		addRole("delete");
+		addRole("export");
+		«FOREACH roles AS role-»
+		addRole("«role.name»");
+		«ENDFOREACH-»
+		
+		«FOREACH entities AS entity-»
+		addEntity("«entity.shortName»", «entity.name.toFirstUpper()».class);
+		«ENDFOREACH-»
+		addEntity("BIN", BinaryFile.class);
+		addEntity("DFT", DynamicFieldTemplate.class);
+		addEntity("DFI", DynamicFieldInstance.class);
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

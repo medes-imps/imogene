@@ -1,0 +1,116 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase()+"/client/ui/panel/HomePanel.ui.xml"»
+«LET "admin" AS adminType-»
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field.group'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.panel'>
+
+	<ui:style src="../../../../web/client/css/ImogCss.css">
+		.mainPanel {
+			width: 100%;
+			height: 100%;
+		}
+		
+		.title {
+			margin-bottom: 20px;
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		.imogene-scroll {
+			width: 100%;
+			height: 95%;
+		}
+		.contentPanel {
+			width: 90%;
+			height: 100%;
+			margin-bottom: 10%;
+		}
+	</ui:style>
+
+	<g:VerticalPanel styleName="{style.pageBackground} {style.mainPanel}" horizontalAlignment="center" verticalAlignment="top">
+
+		<g:cell height="20px">
+			<g:HTML ui:field="welcomeMessage" styleName="{style.textColor} {style.title}" />
+		</g:cell>
+
+		<g:cell horizontalAlignment="center">
+		    <g:ScrollPanel ui:field="scrollPanel"  styleName="{style.imogene-scroll}">
+		    
+				<g:VerticalPanel styleName="{style.pageBackground} {style.contentPanel}" horizontalAlignment="center" verticalAlignment="top">
+		
+		«IF applicationType.matches(adminType)-»
+					<g:cell horizontalAlignment="center">
+						<imo:FieldGroupPanel ui:field="temaUsers">
+							<g:FlowPanel>
+								«FOREACH entities AS e-»
+								«IF Actor.isAssignableFrom(e.metaType)-»
+								<imo2:EntityPanel ui:field="«e.name.toFirstLower()»" />	
+								«ENDIF-»
+								«ENDFOREACH -»															
+							</g:FlowPanel>			
+						</imo:FieldGroupPanel>	
+					</g:cell>		
+
+					<g:cell horizontalAlignment="center">
+						<imo:FieldGroupPanel ui:field="temaAdministration">
+							<g:FlowPanel>
+								<imo2:EntityPanel ui:field="notification" />
+								<imo2:EntityPanel ui:field="dynamicField_Template" />
+							</g:FlowPanel>			
+						</imo:FieldGroupPanel>	
+					</g:cell>	
+		«ELSE-»				
+				«IF themas!=null && themas.size>0-»				    
+						«FOREACH themas AS t ITERATOR iter»
+					<g:cell horizontalAlignment="center">
+						«IF iter.counter1<=3-»
+						<imo:FieldGroupPanel ui:field="tema«t.name.toFirstUpper()»">
+						«ELSE-»
+						<imo:FieldGroupPanel ui:field="tema«t.name.toFirstUpper()»" open="false">							
+						«ENDIF-»							
+							<g:FlowPanel>
+							«FOREACH t.entities AS e -»
+									«IF e.topLevel || !e.directAccess.isEmpty-»
+								<imo2:EntityPanel ui:field="«e.name.toFirstLower()»" />
+									«ENDIF-»
+								«ENDFOREACH -»	
+							</g:FlowPanel>			
+						</imo:FieldGroupPanel>	
+					</g:cell>					
+						«ENDFOREACH -»
+				«ELSE-»
+					<g:cell horizontalAlignment="center">
+						<imo:FieldGroupPanel ui:field="defaultTema">							
+							<g:HorizontalPanel>
+							«FOREACH entities AS e -»
+									«IF e.topLevel || !e.directAccess.isEmpty-»
+								<imo2:EntityPanel ui:field="«e.name.toFirstLower()»" />
+									«ENDIF-»
+								«ENDFOREACH -»	
+							</g:HorizontalPanel>			
+						</imo:FieldGroupPanel>	
+					</g:cell>								
+				«ENDIF-»				
+		«ENDIF-»					
+				</g:VerticalPanel>
+			
+			</g:ScrollPanel>
+		</g:cell>	
+				
+			«REM»
+			<g:FlowPanel styleName="{style.imogenePanel} {style.contentPanel}">			
+				«FOREACH entities AS e-»
+				<imo:EntityPanel ui:field="«e.name.toFirstLower()»" />
+				«ENDFOREACH -»				
+			</g:FlowPanel>
+			«ENDREM»
+
+	</g:VerticalPanel>
+</ui:UiBinder>
+«ENDLET-»
+«ENDFILE-»
+«ENDDEFINE»

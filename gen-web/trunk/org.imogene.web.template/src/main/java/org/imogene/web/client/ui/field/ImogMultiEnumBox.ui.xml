@@ -1,0 +1,47 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+
+	<ui:style>
+
+		.imogene-FormMultiEnum {
+			margin: 0px;
+			width: 200px;
+			min-height:	20px;
+			vertical-align: middle;
+		}
+		
+		.imogene-MultiEnumChck {
+			vertical-align: middle;
+			margin-right: 10px;
+			display: inline-block;
+		}
+		
+		.imogene-MultiEnumChck input[type="checkbox"]{
+			vertical-align: bottom;
+			margin: 0px 3px 0px 0px;
+		}		
+				
+		@external .imogene-MultiEnumChck;
+	</ui:style>
+
+
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+		
+		<g:VerticalPanel>
+
+			<imo2:ImogErrorLabel ui:field="errorLabel" />
+			
+			<g:FlowPanel ui:field="layout" stylePrimaryName="{style.imogene-FormMultiEnum}"/>			
+
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>
+
+
+
+
+
+
+</ui:UiBinder>

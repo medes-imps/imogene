@@ -1,0 +1,364 @@
+«IMPORT core»
+
+«DEFINE generate(String applicationType) FOR Project-»
+	«LET "sync.plugin" AS pluginType-»
+		«IF applicationType.matches(pluginType)-»«EXPAND generateSyncMonitorPart FOR this-»«ENDIF»
+	«ENDLET»
+«ENDDEFINE»
+
+«DEFINE generateSyncMonitorPart FOR Project-»
+«FILE "org/imogene/sync/client/ui/SyncMonitorPart.java"-»
+package org.imogene.sync.client.ui;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.wizard.ProgressMonitorPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.imogene.lib.sync.client.SyncListener;
+import org.imogene.lib.sync.client.SynchronizationException;
+import org.imogene.sync.client.Activator;
+import org.imogene.sync.client.i18n.CoreMessages;
+
+/**
+ * This composite monitor a SyncJob. It displays a progress bar, an info button
+ * that display details about the running job and a cancel button to cancel the
+ * running job.
+ * 
+ * @author MEDES-IMPS
+ */
+public class SyncMonitorPart extends Composite implements SyncListener, IPropertyChangeListener {
+
+	private static final int STATUS_INIT = 0;
+
+	private static final int STATUS_RESUM_REC = 1;
+
+	private static final int STATUS_RESUM_SEND = 2;
+
+	private static final int STATUS_REC = 3;
+
+	private static final int STATUS_SEND = 4;
+
+	@SuppressWarnings("unused")
+	private static final int STATUS_ERROR = 5;
+
+	@SuppressWarnings("unused")
+	private static final int FINISHED = 6;
+
+	/* embedded <code>ProgressMonitorPart</code> */
+	private ProgressMonitorPart monitorPart;
+
+	private IProgressMonitor statusLineMonitor;
+
+	/* the run button */
+	private Button runButton;
+
+	private SyncView view;
+
+	/* progress messages */
+	private Label message;
+
+	private int status = -1;
+
+	private boolean manual = true;
+	
+	private IPreferenceStore prefsStore;
+
+	public SyncMonitorPart(Composite parent, SyncView pView, boolean pManual) {
+		super(parent, SWT.NONE);
+		manual = pManual;
+		setBackgroundMode(SWT.INHERIT_FORCE);
+		view = pView;
+		setLayout(new GridLayout(2, false));
+		setWidgets();
+		Activator activator = Activator.getDefault();
+		activator.addSyncListener(this);
+		prefsStore = activator.getPreferenceStore();
+		if(prefsStore.getBoolean(SyncPreferencePage.SYNC_LOOP)){
+			runButton.setEnabled(false);
+		}
+		prefsStore.addPropertyChangeListener(this);
+	}
+
+	/**
+	 * Widget that monitor a collect process.
+	 * 
+	 * @param parent
+	 *            the parent composite
+	 */
+	public SyncMonitorPart(Composite parent, SyncView pView) {
+		this(parent, pView, true);
+	}
+
+	/**
+	 * Set widgets embedded in this composite
+	 */
+	private void setWidgets() {
+		/* run button */
+		runButton = new Button(this, SWT.PUSH);
+		/*
+		 * runButton.setImage(Activator
+		 * .getImageDescriptor("icons/run-16x16.png").createImage());
+		 */
+		runButton.setText("Run");
+		runButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
+		runButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				runProcess();
+			}
+
+		});
+		if (!manual)
+			runButton.setVisible(false);
+
+		/* monitor part */
+		monitorPart = new ProgressMonitorPart(this, new GridLayout());
+		GridData mData = new GridData(GridData.FILL_HORIZONTAL);
+		monitorPart.setLayoutData(mData);
+		monitorPart.beginTask(CoreMessages.getString("job_sync_inactiv"), 10);
+
+		/* message part */
+		message = new Label(this, SWT.NONE);
+		GridData messageGd = new GridData(GridData.FILL_HORIZONTAL);
+		messageGd.horizontalSpan = 3;
+		message.setLayoutData(messageGd);
+
+		/* status line progress monitor */
+		IStatusLineManager statusLine = view.getViewSite().getActionBars()
+				.getStatusLineManager();
+		statusLineMonitor = statusLine.getProgressMonitor();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.medes.medoo.sync.client.SyncListener#finish()
+	 */
+	public void finish() {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				monitorWorked(10);
+				monitorDone();
+				monitorPart.beginTask(
+						CoreMessages.getString("job_sync_inactiv"), 10);
+				message.setText("");
+				runButton.setEnabled(!prefsStore.getBoolean(SyncPreferencePage.SYNC_LOOP));
+				if (status == STATUS_REC || status == STATUS_RESUM_REC)
+					view.addMessage(
+							CoreMessages.getString("job_sync_reception"), 1);
+				view.addMessage(CoreMessages.getString("job_sync_end"), 1);
+				view.updateDate();
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.medes.medoo.sync.client.SyncListener#initSession(java.lang.String)
+	 */
+	public void initSession(String id) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				monitorBeginTask(
+						CoreMessages.getString("job_sync_init_session"), 10);
+				runButton.setEnabled(false);
+				status = STATUS_INIT;
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.medes.medoo.sync.client.SyncListener#receiving(int)
+	 */
+	public void receiving(int bytesToReceive) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				monitorMessage(CoreMessages.getString("job_sync_receiving"));
+				monitorWorked(5);
+				status = STATUS_REC;
+				view.addMessage(CoreMessages.getString("job_sync_transmit"), 1);
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.medes.medoo.sync.client.SyncListener#resumeReceive(int, int)
+	 */
+	public void resumeReceive(int bytesToReceive, int allBytes) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				monitorMessage(CoreMessages.getString("job_sync_recep_retry"));
+				monitorWorked(5);
+				status = STATUS_RESUM_REC;
+				view.addMessage(
+						CoreMessages.getString("job_sync_recep_retry_title"), 1);
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.medes.medoo.sync.client.SyncListener#resumeSend(int, int)
+	 */
+	public void resumeSend(int bytesToSend, int allBytes) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				monitorMessage(CoreMessages.getString("job_sync_send_retry"));
+				monitorWorked(2);
+				status = STATUS_RESUM_SEND;
+				view.addMessage(
+						CoreMessages.getString("job_sync_send_retry_title"), 1);
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.medes.medoo.sync.client.SyncListener#sending(int)
+	 */
+	public void sending(int bytesToSend) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				// message.setText(CoreMessages.getString("job_sync_sending"));
+				monitorMessage(CoreMessages.getString("job_sync_sending"));
+				// monitorPart.worked(2);
+				monitorWorked(2);
+				status = STATUS_SEND;
+				view.addMessage(CoreMessages.getString("job_sync_init"), 1);
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.medes.medoo.sync.client.SyncListener#syncError(int)
+	 */
+	public void syncError(int code, SynchronizationException ex) {		
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				message.setText(CoreMessages.getString("job_sync_error"));
+				// monitorPart.done();
+				monitorPart.setTaskName("Inactif");
+				monitorDone();
+				if (status == -1) {
+					view.addMessage(CoreMessages.getString("job_sync_init"), 2);
+					message.setText("Erreur lors de l'initialisation.");
+				}
+				if (status == STATUS_INIT) {
+					view.addMessage(CoreMessages.getString("job_sync_init"), 2);
+					message.setText("Erreur lors de l'initialisation.");
+				}
+				if (status == STATUS_REC) {
+					view.addMessage(
+							CoreMessages.getString("job_sync_reception"), 2);
+					message.setText("Erreur lors de la r\u00E9ception.");
+				}
+				if (status == STATUS_SEND) {
+					view.addMessage(
+							CoreMessages.getString("job_sync_transmit"), 2);
+					message.setText("Erreur lors de l'\u00E9mission.");
+				}
+				if (status == STATUS_RESUM_SEND) {
+					view.addMessage(
+							CoreMessages.getString("job_sync_send_retry_title"),
+							2);
+					message.setText("Erreur lors de la reprise de l'\u00E9mission.");
+				}
+				if (status == STATUS_RESUM_REC) {
+					view.addMessage(CoreMessages
+							.getString("job_sync_recep_retry_title"), 2);
+					message.setText("Erreur lors de la reprise de la r\u00E9ception.");
+				}
+				// notifyListeners(0);
+				runButton.setEnabled(true);
+			}
+		});
+	}
+
+	public void externalRun() {
+		runProcess();
+	}
+
+	private void runProcess() {
+		if (Activator.getDefault().getPreferenceStore().getBoolean("SYNC_LOOP")) {
+			MessageDialog.openInformation(
+					Display.getCurrent().getActiveShell(),
+					CoreMessages.getString("popup_info"),
+					CoreMessages.getString("job_sync_auto"));
+		} else {
+			view.clearMessage();
+			runButton.setEnabled(false);
+			Activator.getDefault().synchronize();			
+			status = -1;
+		}
+	}
+
+	private void monitorWorked(int worked) {
+		monitorPart.worked(worked);
+		statusLineMonitor.worked(worked);
+	}
+
+	private void monitorBeginTask(String name, int totalWork) {
+		monitorPart.beginTask(name, totalWork);
+		// TODO work around to display only on message.
+		statusLineMonitor.beginTask("", totalWork);
+		statusLineMonitor.subTask(name);
+	}
+
+	private void monitorDone() {
+		monitorPart.done();
+		statusLineMonitor.done();
+	}
+
+	@SuppressWarnings("unused")
+	private void monitorTaskName(String taskName) {
+		monitorPart.setTaskName(taskName);
+		statusLineMonitor.setTaskName(taskName);
+	}
+
+	private void monitorMessage(String msg) {
+		message.setText(msg);
+		statusLineMonitor.subTask(msg);
+	}
+
+	@Override
+	public void dispose() {
+		Activator.getDefault().removeSyncListener(this);
+		prefsStore.removePropertyChangeListener(this);
+		super.dispose();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if(SyncPreferencePage.SYNC_LOOP.equals(event.getProperty())){
+			runButton.setEnabled(!(Boolean)event.getNewValue());
+		}		
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

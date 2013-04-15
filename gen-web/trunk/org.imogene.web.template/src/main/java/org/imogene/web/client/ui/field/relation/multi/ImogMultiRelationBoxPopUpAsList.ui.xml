@@ -1,0 +1,173 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field' 
+	xmlns:cv='urn:import:com.google.gwt.user.cellview.client'
+	xmlns:imo-p='urn:import:org.imogene.web.client.ui.table.pager'>
+
+	<ui:style src="../../../../css/ImogCss.css">
+		.imogene-MultiRelationPopupPanel { /*border-right: 0px solid #777777;*/
+			/*border: 0px;*/
+			padding: 0px;
+			background-color: #FFFFFF;
+			width: 217px;
+			/*border: 3px solid #777777;*/
+			-moz-box-shadow: 5px 5px 5px #888;
+			-webkit-box-shadow: 5px 5px 5px #888;
+			box-shadow: 5px 5px 5px #888;
+			border: 4px solid Button22Background;
+		}
+		
+		.imogene-MultiRelationPopupPanel-title {
+			padding-top: 2px;
+			padding-bottom: 5px;
+			padding-left: 3px;
+			/*color: TextColor;*/
+			font-weight: bold;
+			width: 217px;
+			background: Button22Background;
+			/*text-shadow: 0 1px 0 rgba(150, 150, 150, 0.5);*/
+			color: white;
+			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+		}
+		
+		.PopupPanel-content { /*background-color: #fff;*/
+			color: #444444;
+			font-size: 12px;
+			/*background-color: #f2f2f2;*/
+		}
+		
+		.PopupPanel-Listbox {
+			border-bottom: 4px solid #DEDEDE;
+			border-top: 0px;
+			border-right: 0px;
+			border-left: 0px;
+			color: #444444;
+			width: 217px;
+			font-size: 12px;
+			margin: 0px;
+			/*background-color: #dddddd;*/
+			/*background-color: #f2f2f2;*/
+			height: 180px;
+		}
+		
+		.PopupPanel-Pager {
+			display: inline;
+			width: 100%;
+			text-align: left;
+		}
+		
+		.Filter-TextBox {
+			border: 1px solid #777777;
+			color: #444444;
+			padding-left: 2px;
+			font-size: 12px;
+			margin-left: 2px;
+			vertical-align: middle;
+		}
+		
+		/*.PopupPanel-Button-Search {
+			color: #fff;
+			background-color: #777777;
+			padding-left: 4px;
+			padding-right: 4px;
+			padding-top: 1px;
+			padding-bottom: 1px;
+			cursor: pointer;
+			border: 1px solid #777777;
+			vertical-align: middle;
+		}
+		
+		.PopupPanel-Button-Search .html-face {
+			font-size: 12px;
+		}*/
+		
+		.filterButton {
+			height: 14px;
+			width: 45px;
+			text-align: center;
+			-webkit-border-radius: 7px;
+			-moz-border-radius: 7px;
+			border-radius: 7px;
+			font-size: 12px;
+			padding: 1px 2px 2px 2px;
+			/*padding: 2px;*/
+			margin-left: 2px;
+		}
+		
+		/*.PopupPanel-Button {
+			font-size: 12px;
+			color: #444444;
+			text-decoration: none;
+			font-weight: normal;
+			margin-left: 2px;
+			margin-right: 2px;
+			padding-left: 2px;
+			padding-right: 2px;
+			padding-top: 1px;
+			padding-bottom: 1px;
+			cursor: pointer;
+			background: url("images/hborder.png") repeat-x 0px -30px;
+			border: 1px solid #BBB;
+			border-bottom-left-radius: 3px 3px;
+			border-top-left-radius: 3px 3px;
+			border-bottom-right-radius: 3px 3px;
+			border-top-right-radius: 3px 3px;
+		}*/
+		
+		/*.PopupPanel-Button .html-face {
+			font-size: 12px;
+
+		}*/
+		@external .imogene-MultiRelationPopupPanel, .imogene-MultiRelationPopupPanel-title;
+	</ui:style>
+
+	<g:PopupPanel ui:field="popup"
+		stylePrimaryName="{style.imogene-MultiRelationPopupPanel}">
+
+		<g:VerticalPanel stylePrimaryName="{style.PopupPanel-content}"
+			spacing="0">
+
+			<g:cell>
+				<g:Label ui:field="title"
+					styleName="{style.imogene-MultiRelationPopupPanel-title}" />
+			</g:cell>
+
+			<g:cell height="180px">
+				<cv:DataGrid ui:field="table" stylePrimaryName="{style.PopupPanel-Listbox}" />
+			</g:cell>
+
+			<g:cell horizontalAlignment="left">
+				<g:SimplePanel width="100%">
+					<imo-p:ImogSimplePager ui:field="pager"
+						stylePrimaryName="{style.PopupPanel-Pager}" display="{table}" textSize="12px"/>
+				</g:SimplePanel>
+			</g:cell>
+
+			<g:cell horizontalAlignment="left">
+				<g:HorizontalPanel horizontalAlignment="left"
+					verticalAlignment="middle" spacing="2">
+					<g:TextBox ui:field="valueFilter" stylePrimaryName="{style.Filter-TextBox}" />
+					<g:PushButton ui:field="filterButton" styleName="{style.imogButton} {style.filterButton}" />
+				</g:HorizontalPanel>
+			</g:cell>
+
+			<g:cell horizontalAlignment="left">
+				<g:HorizontalPanel horizontalAlignment="left"
+					verticalAlignment="middle" spacing="2">
+					<g:cell horizontalAlignment="left" verticalAlignment="middle">
+						<g:PushButton ui:field="okButton" styleName="{style.imogButton} {style.imogButton2} {style.filterButton}" />
+					</g:cell>
+					<g:cell horizontalAlignment="left" verticalAlignment="middle">
+						<g:PushButton ui:field="cancelButton" styleName="{style.imogButton} {style.filterButton}" />
+					</g:cell>
+
+				</g:HorizontalPanel>
+
+			</g:cell>
+
+		</g:VerticalPanel>
+
+	</g:PopupPanel>
+
+
+</ui:UiBinder>

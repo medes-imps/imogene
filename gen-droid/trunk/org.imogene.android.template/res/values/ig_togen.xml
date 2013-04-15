@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <!-- XML files to generate -->
+    <item name="preferences" type="xml"/>
+    <item name="high_preferences" type="xml"/>
+    
+    <!-- Arrays to generate -->
+    <item name="languages_iso" type="array"/>
+    <item name="languages_display" type="array"/>
+
+</resources>

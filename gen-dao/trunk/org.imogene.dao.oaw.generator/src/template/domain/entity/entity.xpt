@@ -1,0 +1,479 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt»
+«EXTENSION template::domain::DaoUtilExt»
+
+«DEFINE generate(String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase() + "/domain/entity/" + name.toFirstUpper() + ".java"»
+«LET "web" AS webType-»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».domain.entity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.constants.NotificationConstants;
+import org.imogene.lib.common.entity.GeoField;
+import org.imogene.lib.common.entity.ImogActorImpl;
+import org.imogene.lib.common.entity.ImogEntityImpl;
+import org.imogene.lib.common.entity.IsGeoreferenced;
+import org.imogene.lib.common.role.ImogRole;
+import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+«REM»
+«IF applicationType.matches(webType) || applicationType.matches(adminType)-»
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.imogene.web.server.validation.After;
+import org.imogene.web.server.validation.Before;
+import org.imogene.web.server.validation.DoubleMax;
+import org.imogene.web.server.validation.DoubleMin;
+import org.imogene.web.server.validation.FractionLength;
+«ENDIF -»
+«ENDREM»
+
+/**
+ * ImogBean implementation for the entity «name.toFirstUpper()»
+ * @author MEDES-IMPS
+ */
+@Entity
+public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»ImogActorImpl«ELSE»ImogEntityImpl«ENDIF»«IF georeferenced != null» implements IsGeoreferenced«ENDIF» {
+
+	private static final long serialVersionUID = «generateSerialVersionUID()»L;
+
+	«IF Actor.isAssignableFrom(metaType)-»
+	private static final String[] AUTHORIZED_ROLES = new String[] {
+		«IF !((Actor)this).authorizedRoles.isEmpty-»
+			«FOREACH ((Actor) this).authorizedRoles AS role SEPARATOR ','-»"«role.name»"«ENDFOREACH-»   
+		«ELSE-»
+			«IF !((Project) this.eContainer).roles.isEmpty-»
+				«FOREACH ((Project) this.eContainer).roles  AS role SEPARATOR ','-»"«role.name»"«ENDFOREACH-»,
+				"administrator",
+				"delete",
+				"export"
+			«ELSE -»
+				"administrator",
+				"delete",
+				"export"			
+			«ENDIF -»
+		«ENDIF -»  
+	};
+	«ENDIF-»
+	
+	«FOREACH groups AS g»
+	/* «g.name.toFirstUpper()» group fields */
+	
+	«FOREACH g.fields AS f -»
+	«REM»
+	«IF applicationType.matches(webType) || applicationType.matches(adminType)-»
+		«IF f.required-»
+	@NotNull(message="error_required")	
+		«ENDIF-»
+		«EXPAND validationAnnotation FOR f-»
+	«ENDIF-»
+	«ENDREM»
+	«EXPAND jpaAnnotation FOR f»
+	private «EXPAND template::domain::DaoFieldUtil::entityFieldType FOR f» «EXPAND template::CommonFieldUtil::propertyName FOR f»;
+	«ENDFOREACH -»	
+	«ENDFOREACH»	
+		
+	/**
+	 * Constructor
+	 */		
+	public «name.toFirstUpper()»(){
+		«IF Actor.isAssignableFrom(metaType) && ((Actor) this).notificationInfos != null-»
+		«ENDIF-»
+		«EXPAND initializeField FOREACH groups.fields-»
+	}
+	
+	
+	«FOREACH groups AS g-»
+	/* Getters and Setters for «g.name.toFirstUpper()» group fields */
+	«FOREACH g.fields AS f -»
+	
+	«EXPAND template::domain::DaoFieldUtil::getterDeclarationForField FOR f»
+	«EXPAND template::domain::DaoFieldUtil::setterDeclarationForField FOR f»	
+	«REM»
+	When a property has a lowercase first char and an upper case second char,
+	some bean introspectors need getter/setter with type getXxxx
+	and some other need getter/setter with type getxxx
+	«ENDREM»
+	«IF isPropertyWithLowerUpperCaseFirstTwoChar(f.name)-»
+	/* second set of getter/setter because of property has first char with lowercase and second char with uppercase 
+	   and bean introspectors do not use same naming conventions */
+	«EXPAND template::domain::DaoFieldUtil::getterDeclarationForFieldWithLowerUpperCaseFirstTwoChar FOR f»
+	«EXPAND template::domain::DaoFieldUtil::setterDeclarationForFieldWithLowerUpperCaseFirstTwoChar FOR f-»
+	/* ----------------------------------------------------------------------------------------------------------- */
+	«ENDIF-»
+	
+	«EXPAND specificMethodForRelation FOR f-»
+	
+	«ENDFOREACH -»	
+	«ENDFOREACH»
+	
+	«IF georeferenced != null -»
+	@Override
+	public Double getLatitude() {
+		return «EXPAND template::CommonFieldUtil::propertyName FOR georeferenced» != null ? «EXPAND template::CommonFieldUtil::propertyName FOR georeferenced».getLatitude() : null;
+	}
+	
+	@Override
+	public Double getLongitude() {
+		return «EXPAND template::CommonFieldUtil::propertyName FOR georeferenced» != null ? «EXPAND template::CommonFieldUtil::propertyName FOR georeferenced».getLongitude() : null;
+	}
+	«ENDIF»	
+	
+	«IF Actor.isAssignableFrom(this.metaType)-»
+	
+	private boolean isAuthorizedRole(String roleId) {
+		for (String role : AUTHORIZED_ROLES) {
+			if (role.equals(roleId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public void addRole(ImogRole role) {
+
+		if (!isAuthorizedRole(role.getId())) {
+			throw new IllegalArgumentException(
+					"The role "
+							+ role.getName()
+							+ " can not be assigned to this actor (not defined as an authorized role), for actor : «name.toFirstUpper()»");
+		}
+
+		if (!isAssignedRole(role.getId())) {
+			super.addRole(role);
+		}
+	}
+	
+	«EXPAND filterField FOREACH ((Actor) this).filters-»
+	
+	@Override
+    public String getNotificationData(String method){
+    	«FOREACH ((Actor) this).notificationInfos AS ni»
+    	if(NotificationConstants.«ni.method».equals(method)) {
+    		return «EXPAND template::CommonFieldUtil::getterName FOR ni.dataField»();
+    	}
+    	«ENDFOREACH»
+    	return null;
+    }
+	
+	«ENDIF-»
+	
+}
+«ENDLET»
+«ENDLET»
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE initializeField FOR FieldEntity-»«ENDDEFINE»
+«DEFINE initializeField FOR RelationFieldEntity-»
+  «IF !(cardinality == 1) -»
+	«EXPAND template::CommonFieldUtil::propertyName FOR this» = new ArrayList<«entity.name.toFirstUpper()»>();   
+  «ENDIF -»
+«ENDDEFINE»
+
+
+
+«REM»----------------------------------------------- «ENDREM»
+«REM»-------------- FIELD DECLARATION -------------- «ENDREM»
+«REM»----------------------------------------------- «ENDREM»
+«DEFINE jpaAnnotation FOR FieldEntity»«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR TextField»
+	«IF translatable-»
+	«LET (Project) parentGroup.parentCard.eContainer AS project-»
+	@Embedded
+	@AttributeOverrides({
+		«FOREACH project.languages AS l SEPARATOR ','-»
+    	@AttributeOverride(name="«l.name.toLowerCase()»", column=@Column(name="«name.toFirstLower()»_«l.isoCode»"))
+		«ENDFOREACH-»
+  	})
+	«ENDLET-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR TextAreaField»
+	«IF translatable-»
+	«LET (Project) parentGroup.parentCard.eContainer AS project-»
+	@Embedded
+	@AttributeOverrides({
+		«FOREACH project.languages AS l SEPARATOR ','-»
+    	@AttributeOverride(name="«l.name.toLowerCase()»", column=@Column(name="«name.toFirstLower()»_«l.isoCode»", columnDefinition="TEXT"))
+		«ENDFOREACH-»
+  	})
+	«ENDLET-»
+	«ELSE-»
+	@Column(columnDefinition="TEXT")
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR DatesField»
+	@Temporal(TemporalType.TIMESTAMP)
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR GeoField»
+	@Embedded
+	@AttributeOverrides({
+    	@AttributeOverride(name="latitude", column=@Column(name="«name.toFirstLower()»_Latitude")),
+    	@AttributeOverride(name="longitude", column=@Column(name="«name.toFirstLower()»_Longitude"))
+  	})
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR BinaryField»
+	@OneToOne
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR MainRelationFieldEntity»
+«IF cardinality == 1 -»
+	«IF getOppositeCardinality(this) == 1 -»
+	@OneToOne(cascade = CascadeType.MERGE)
+	«ELSE-»
+		«IF nestedForm -»
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})		
+		«ELSE-»
+	@ManyToOne
+		«ENDIF-»
+	«IF oppositeRelationField != null-»
+	@JoinColumn(name = "«EXPAND template::CommonFieldUtil::propertyName FOR oppositeRelationField»«oppositeRelationField.parentGroup.parentCard.name.toFirstUpper()»_id")
+	«ENDIF-»
+	«ENDIF-»
+«ELSE-»
+	«IF getOppositeCardinality(this)  == 1 -»
+		«IF nestedForm -»
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = «IF type == core::RelationType::Composition»true«ELSE»false«ENDIF», cascade = {CascadeType.PERSIST,CascadeType.MERGE})	
+		«ELSE-»
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = «IF type == core::RelationType::Composition»true«ELSE»false«ENDIF»)
+		«ENDIF-»
+	@JoinColumn(name = "«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»_id")
+	«ELSE-»
+		«IF nestedForm -»
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+		«ELSE-»
+	@ManyToMany(fetch = FetchType.LAZY)
+		«ENDIF-»
+	@JoinTable(
+		name = "«name.toFirstUpper()-»«parentGroup.parentCard.name.toFirstUpper()»«entity.name.toFirstUpper()»",
+		joinColumns = @JoinColumn(
+			name = "«parentGroup.parentCard.name.toLowerCase()»_id",
+			referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(
+			name = "«entity.name.toLowerCase()»_id",
+			referencedColumnName = "id"))
+	«ENDIF-»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR ReverseRelationFieldEntity»
+«IF cardinality == 1 -»
+	«IF getOppositeCardinality(this) == 1 -»
+	@OneToOne(mappedBy="«EXPAND template::CommonFieldUtil::propertyName FOR oppositeRelationField»", cascade = CascadeType.MERGE)
+	«ELSE-»
+		«IF nestedForm -»
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+		«ELSE-»
+	@ManyToOne
+		«ENDIF-»
+	@JoinColumn(name = "«EXPAND template::CommonFieldUtil::propertyName FOR oppositeRelationField»«oppositeRelationField.parentGroup.parentCard.name.toFirstUpper()»_id")			
+	«ENDIF-»
+«ELSE-»
+	«IF getOppositeCardinality(this) == 1 -»
+		«IF nestedForm -»
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = «IF type == core::RelationType::Composition»true«ELSE»false«ENDIF», cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+		«ELSE-»
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = «IF type == core::RelationType::Composition»true«ELSE»false«ENDIF»)
+		«ENDIF-»	
+	@JoinColumn(name = "«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»_id")		
+	«ELSE-»
+		«IF nestedForm -»
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+		«ELSE-»
+	@ManyToMany(fetch = FetchType.LAZY)
+		«ENDIF-»	
+	@JoinTable(
+		name = "«oppositeRelationField.name.toFirstUpper()-»«entity.name.toFirstUpper()»«parentGroup.parentCard.name.toFirstUpper()»",
+		joinColumns = @JoinColumn(
+			name = "«parentGroup.parentCard.name.toLowerCase()»_id",
+			referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(
+			name = "«entity.name.toLowerCase()»_id",
+			referencedColumnName = "id"))
+	«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+«REM»----------------------------------------------- «ENDREM»
+«REM»-------------- FIELD VALIDATION --------------- «ENDREM»
+«REM»----------------------------------------------- «ENDREM»
+
+«DEFINE validationAnnotation FOR FieldEntity-»«ENDDEFINE»
+«DEFINE validationAnnotation FOR TextField-»
+	«FOREACH this.validationRules AS r ITERATOR i -»
+	@Pattern(regexp="«r.validationRegularExpression»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0»")
+	«ENDFOREACH-» 
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR IntegerField-»
+	«IF min!=null && min.length>0-»
+	@Min(value=«min-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+	@Max(value=«max-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR FloatField-»
+	«IF min!=null && min.length>0-»
+	@DoubleMin(value=«min-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+	@DoubleMax(value=«max-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
+	«ENDIF-»
+	«IF DecimalNumber!=null && DecimalNumber>-1-»
+	@FractionLength(value=«DecimalNumber-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber")	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR DateField-»
+	«IF min!=null && min.length>0-»
+	@After(value="«min-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+	@Before(value="«max-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR DateTimeField-»
+	«IF min!=null && min.length>0-»
+	@After(value="«min-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+	@Before(value="«max-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Set the actor roles «ENDREM»
+«DEFINE setAuthorizedImogRoles FOR Role-»              
+        authorizedImogRoles.add("«name»");
+«ENDDEFINE»
+
+
+
+«REM» Set the project roles to the actor «ENDREM»
+«DEFINE setProjectImogRoles FOR emf::EObject-»«ENDDEFINE»
+«DEFINE setProjectImogRoles FOR Project-»              
+       	«FOREACH this.roles AS r-»         
+        authorizedImogRoles.add("«r.name»");
+		«ENDFOREACH -»
+		authorizedImogRoles.add("administrator");
+		authorizedImogRoles.add("delete");
+		authorizedImogRoles.add("export");
+«ENDDEFINE»
+
+«REM» Create variable, getter and setter for the filter fields «ENDREM»
+«DEFINE filterField FOR FilterField»
+
+	/** 
+	 * filter fields for the «this.entity.name.toFirstUpper()» entity 	
+	 */
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+		name = "«EXPAND template::CommonFieldUtil::propertyName FOR this-»",
+		joinColumns = @JoinColumn(
+			name = "«parentActor.name.toLowerCase()»_id",
+			referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(
+			name = "«entity.name.toLowerCase()»_filter_id",
+			referencedColumnName = "id"))
+	private Set<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::propertyName FOR this»;
+	
+	/**
+	 * Set the set of allowed «this.entity.name.toFirstUpper()» for card access.	
+	 */
+	public void «EXPAND template::CommonFieldUtil::setterName FOR this»(Set<«entity.name.toFirstUpper()»> filterFields){
+		«EXPAND template::CommonFieldUtil::propertyName FOR this» = filterFields;
+	}
+
+	/**
+	 * Set the list of allowed «this.entity.name.toFirstUpper()» for card access.	
+	 */	
+	public void «EXPAND template::CommonFieldUtil::setterName FOR this»List(List<«entity.name.toFirstUpper()»> filterFields) {
+		if(filterFields!=null)
+			«EXPAND template::CommonFieldUtil::propertyName FOR this» = new HashSet<«entity.name.toFirstUpper()»>(filterFields);
+		else
+			«EXPAND template::CommonFieldUtil::propertyName FOR this» = null;
+	}
+	
+	/**
+	 * Get the set of allowed «this.entity.name.toFirstUpper()» for card access.
+	 * @return a list of «this.entity.name.toFirstUpper()». 	
+	 */
+	public Set<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::getterName FOR this»(){
+		return «EXPAND template::CommonFieldUtil::propertyName FOR this»;
+	} 
+
+	/**
+	 * Get the list of allowed «this.entity.name.toFirstUpper()» for card access.
+	 * @return a list of «this.entity.name.toFirstUpper()». 	
+	 */	
+	public List<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::getterName FOR this»List() {
+		if(«EXPAND template::CommonFieldUtil::propertyName FOR this»!=null)
+			return new ArrayList<«entity.name.toFirstUpper()»>(«EXPAND template::CommonFieldUtil::propertyName FOR this»);
+		else
+			return null;
+	}
+«ENDDEFINE»
+
+«DEFINE specificMethodForRelation FOR FieldEntity-»«ENDDEFINE»
+«DEFINE specificMethodForRelation FOR RelationFieldEntity-»
+«IF cardinality != 1-»
+	/**
+	 * @param param the «entity.name» to add to the «EXPAND template::CommonFieldUtil::propertyName FOR this» collection
+	 */
+	public void addTo«EXPAND template::CommonFieldUtil::propertyName FOR this»(«entity.name.toFirstUpper()-» param)
+	{
+		«IF getOppositeCardinality() == 1 && oppositeRelationField != null-»
+		param.«EXPAND template::CommonFieldUtil::setterName FOR oppositeRelationField»(this);
+		«ENDIF-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».add(param);
+	}	
+	
+	/**
+	 * @param param the «entity.name-» to remove from the «EXPAND template::CommonFieldUtil::propertyName FOR this» collection
+	 */
+	public void removeFrom«EXPAND template::CommonFieldUtil::propertyName FOR this»(«entity.name.toFirstUpper()» param)
+	{
+		«IF getOppositeCardinality() == 1 && oppositeRelationField != null-»
+		param.«EXPAND template::CommonFieldUtil::setterName FOR oppositeRelationField»(null);
+		«ENDIF-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».remove(param);
+	}
+«ENDIF-»
+«ENDDEFINE»

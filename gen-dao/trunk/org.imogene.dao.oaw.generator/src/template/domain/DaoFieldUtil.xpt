@@ -1,0 +1,88 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+
+«REM» Field type for entity «ENDREM»
+«DEFINE entityFieldType FOR FieldEntity»String«ENDDEFINE»
+«DEFINE entityFieldType FOR TextField»«IF translatable»LocalizedText«ELSE»String«ENDIF»«ENDDEFINE»
+«DEFINE entityFieldType FOR GeoField»GeoField«ENDDEFINE»
+«DEFINE entityFieldType FOR DateField»Date«ENDDEFINE»
+«DEFINE entityFieldType FOR DateTimeField»Date«ENDDEFINE»
+«DEFINE entityFieldType FOR TimeField»Date«ENDDEFINE»
+«DEFINE entityFieldType FOR BooleanField»Boolean«ENDDEFINE»
+«DEFINE entityFieldType FOR IntegerField»Integer«ENDDEFINE»
+«DEFINE entityFieldType FOR FloatField»Double«ENDDEFINE»
+«DEFINE entityFieldType FOR BinaryField»BinaryFile«ENDDEFINE»	
+«DEFINE entityFieldType FOR RelationFieldEntity -»
+  «IF cardinality == 1 -»
+  «entity.name.toFirstUpper() -»
+  «ELSE -»
+  List<«entity.name.toFirstUpper()»>
+  «ENDIF -»
+«ENDDEFINE»
+
+«REM» Field type for entity Backup «ENDREM»
+«DEFINE entityFieldTypeBck FOR FieldEntity»«EXPAND entityFieldType FOR this»«ENDDEFINE»
+«DEFINE entityFieldTypeBck FOR BinaryField -»String«ENDDEFINE»
+«DEFINE entityFieldTypeBck FOR RelationFieldEntity -»String«ENDDEFINE»
+
+«REM» Entity field getters and setters declaration «ENDREM»
+«DEFINE getterDeclarationForField FOR FieldEntity-»
+public «EXPAND entityFieldType FOR this» «EXPAND template::CommonFieldUtil::getterName FOR this»(){
+	return «EXPAND template::CommonFieldUtil::propertyName FOR this-»;
+}
+«ENDDEFINE»
+
+«DEFINE setterDeclarationForField FOR FieldEntity-»
+public void «EXPAND template::CommonFieldUtil::setterName FOR this»(«EXPAND entityFieldType FOR this» value){
+	«EXPAND template::CommonFieldUtil::propertyName FOR this -» = value;
+}
+«ENDDEFINE»
+
+«REM» Entity Backup field getters and setters declaration «ENDREM»
+«DEFINE getterDeclarationForFieldBck FOR FieldEntity-»
+public «EXPAND entityFieldTypeBck FOR this» «EXPAND template::CommonFieldUtil::getterName FOR this»(){
+	return «EXPAND template::CommonFieldUtil::propertyName FOR this-»;
+}
+«ENDDEFINE»
+
+«DEFINE setterDeclarationForFieldBck FOR FieldEntity-»
+public void «EXPAND template::CommonFieldUtil::setterName FOR this»(«EXPAND entityFieldTypeBck FOR this» value){
+	«EXPAND template::CommonFieldUtil::propertyName FOR this -» = value;
+}
+«ENDDEFINE»
+
+
+«DEFINE getterDeclarationForFieldWithLowerUpperCaseFirstTwoChar FOR FieldEntity-»
+public «EXPAND entityFieldType FOR this» «EXPAND template::CommonFieldUtil::getterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»(){
+	return «EXPAND template::CommonFieldUtil::propertyName FOR this»;
+}
+«ENDDEFINE»
+
+«DEFINE setterDeclarationForFieldWithLowerUpperCaseFirstTwoChar FOR FieldEntity-»
+public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»(«EXPAND entityFieldType FOR this» value){
+	«EXPAND template::CommonFieldUtil::propertyName FOR this» = value;
+}
+«ENDDEFINE»
+
+
+«DEFINE importEntity(String projectName) FOR emf::EObject-»«ENDDEFINE»
+
+«DEFINE importEntity(String projectName) FOR Project-»
+«EXPAND importEntity(projectName) FOREACH entities-»
+«ENDDEFINE»
+
+«DEFINE importEntity(String projectName) FOR CardEntity-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+«ENDDEFINE»
+
+
+
+«DEFINE importDao(String projectName) FOR emf::EObject»«ENDDEFINE»
+
+«DEFINE importDao(String projectName) FOR Project»
+«EXPAND importDao(projectName) FOREACH entities-»
+«ENDDEFINE»
+
+«DEFINE importDao(String projectName) FOR CardEntity-»
+import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
+«ENDDEFINE»

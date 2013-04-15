@@ -1,0 +1,181 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/client/ui/panel/TopBannerPanel.java"»
+package org.imogene.«projectName.toLowerCase()».client.ui.panel;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.web.client.event.LogoutEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.shared.proxy.ImogActorProxy;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+
+
+
+/**
+ * Application user interface Top Banner Panel
+ * @author MEDES-IMPS
+ */
+public class TopBannerPanel extends Composite  {
+
+	interface Binder extends UiBinder<Widget, TopBannerPanel> { }
+
+	private static final Binder BINDER = GWT.create(Binder.class);
+	
+	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+	private EventBus eventBus;
+
+	@UiField(provided=true)
+	Image appliIcon;
+	@UiField
+	Label appliTitle;
+	@UiField
+	ListBox locBox;
+	@UiField
+	HTML actorInfo;
+	@UiField(provided=true)
+	PushButton logout;
+
+	
+	public TopBannerPanel(EventBus eventBus, ImogActorProxy actor) {
+		
+		this.eventBus = eventBus;
+		appliIcon = new Image(GWT.getModuleBaseURL() + "/images/logo_32x32.png");
+		logout = new PushButton(BaseNLS.constants().disconnect());
+		
+		initWidget(BINDER.createAndBindUi(this));
+		setActor(actor);
+		setLocaleList();
+	}
+	
+	@UiHandler("logout")
+	void onLogout(ClickEvent e) {		
+		eventBus.fireEvent(new LogoutEvent());
+	}
+	
+	public void hideTitle() {
+		appliTitle.setText("");
+	}
+	
+	public void showTitle() {
+		appliTitle.setText(NLS.constants().application_title());
+	}
+	
+	/**
+	 * Set panel information relative to the actor 
+	 * @param actor the current actor
+	 */
+	public void setActor(ImogActorProxy actor) {
+		if(actor!=null) {
+			//Date cDate = actor.getLastLoginDate();
+			//if (cDate == null)
+			//	cDate = new Date();
+			//String lastLoginDate = TextFormatUtil.getDateTime(cDate);
+			String metadata = BaseNLS.messages().form_metadata_current_user(actor.getLogin());
+			actorInfo.setHTML(metadata);
+		}
+	}
+	
+	/**
+	 * Sets the list of available locales for the application
+	 */
+	private void setLocaleList() {
+	
+		«IF languages!=null && languages.size>0-»
+		«FOREACH languages AS l-»
+		locBox.addItem("«l.name.toFirstUpper()»", "«l.isoCode»");
+		«ENDFOREACH-»
+		
+		String locale = NLS.constants().locale();
+		if (locale != null && !locale.equals(""))
+			selectLocale(locale);
+
+		locBox.addChangeHandler(new LocaleHandler());		
+		«ELSE-»
+		locBox.setVisible(false);
+		«ENDIF-»
+	}
+
+	«IF languages!=null && languages.size>0-»
+	/**
+	 * Selects the item matching the selected locale 
+	 * @param loc the selected locale value
+	 */
+	private void selectLocale(String loc) {
+		for (int i = 0; i < locBox.getItemCount(); i++) {
+			String value = locBox.getValue(i);
+			if (value.equals(loc)) {
+				locBox.setSelectedIndex(i);
+				return;
+			}
+		}
+	}
+	«ENDIF-»
+	
+	/**
+	 * Sets the Locale List as visible or invisible
+	 * @param show true to show the Locale List
+	 */
+	public void showLocaleList(boolean show) {
+		locBox.setVisible(show);
+	}
+	
+	@Override
+	protected void onUnload() {
+		for (HandlerRegistration r : registrations)
+			r.removeHandler();
+		registrations.clear();
+		super.onUnload();
+	}
+
+	@Override
+	protected void onLoad() {
+		«IF languages!=null && languages.size>0-»
+		registrations.add(locBox.addChangeHandler(new LocaleHandler()));
+		«ENDIF-»
+		super.onLoad();
+	}	
+
+	«IF languages!=null && languages.size>0-»
+	/**
+	 * Class that manages the locale changes
+	 * @author MEDES-IMPS
+	 */
+	private class LocaleHandler implements ChangeHandler {
+
+		public LocaleHandler() {
+		}
+
+		@Override
+		public void onChange(ChangeEvent arg0) {
+			String locale = locBox.getValue(locBox.getSelectedIndex());
+			String url = GWT.getHostPageBaseURL() + "?locale=" + locale;
+			Window.Location.assign(url);
+		}
+	}
+	«ENDIF-»
+
+}
+«ENDFILE-»
+«ENDDEFINE»

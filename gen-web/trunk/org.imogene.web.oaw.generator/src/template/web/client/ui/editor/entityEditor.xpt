@@ -1,0 +1,1441 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«EXTENSION template::CommonFieldUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/editor/" + this.name.toFirstUpper() + "Editor.java"»
+«LET (Project)this.eContainer AS project -»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.ui.editor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.imogene.«projectName.toLowerCase()».client.AccessManager;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»Renderer;
+import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.«projectName.toLowerCase()».client.ui.field.ImogLocalizedTextBox;
+import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+
+import org.imogene.web.client.event.FieldValueChangeEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.field.*;
+import org.imogene.web.client.ui.field.binary.*;
+import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.client.ui.field.relation.multi.ImogMultiRelationBox;
+import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
+import org.imogene.web.client.ui.panel.RelationPopupPanel;
+import org.imogene.web.client.ui.panel.WrapperPanel;
+import org.imogene.web.client.util.NumericUtil;
+import org.imogene.web.client.util.DateUtil;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor;
+import com.google.gwt.editor.client.EditorDelegate;
+import com.google.gwt.editor.client.EditorError;
+import com.google.gwt.editor.client.HasEditorDelegate;
+import com.google.gwt.editor.client.HasEditorErrors;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+
+«IF hasDynamicFields-»
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»FormTypes;
+import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
+import org.imogene.web.client.dynamicfields.ui.field.DynamicFieldBox;
+import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
+«ENDIF-»
+«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+import org.imogene.admin.client.AdminRenderer;
+import org.imogene.admin.client.dataprovider.ImogRoleDataProvider;
+import org.imogene.admin.client.dataprovider.SynchronizableEntityDataProvider;
+import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.admin.client.ui.filter.SynchronizableEntityFilterPanel;
+import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.shared.proxy.ImogRoleProxy;
+import org.imogene.web.shared.proxy.SynchronizableEntityProxy;
+import org.imogene.web.client.ui.field.ImogPasswordBox;
+	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+		«FOREACH ((Actor)this).filters AS fil-»
+import org.imogene.«projectName.toLowerCase()».client.dataprovider.«fil.entity.name.toFirstUpper()»DataProvider;
+import org.imogene.«projectName.toLowerCase()».client.ui.filter.«fil.entity.name.toFirstUpper()»FilterPanel;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«fil.entity.name.toFirstUpper()»Proxy;	
+		«ENDFOREACH-»
+	«ENDIF-»
+«ENDIF-»
+
+«FOREACH groups.fields AS e -»
+«EXPAND importsForRelation(projectName) FOR e-»
+«ENDFOREACH -»
+
+
+/**
+ * Editor that provides the UI components that allow a «name.toFirstUpper()»Proxy to be viewed and edited
+ * @author MEDES-IMPS
+ */
+public class «name.toFirstUpper()»Editor extends Composite implements Editor<«name.toFirstUpper()»Proxy>, HasEditorDelegate<«name.toFirstUpper()»Proxy>, HasEditorErrors<«name.toFirstUpper()»Proxy> {
+
+	interface Binder extends UiBinder<Widget, «name.toFirstUpper()»Editor> {
+	}
+
+	private static final Binder BINDER = GWT.create(Binder.class);
+
+	protected final «projectName.toFirstUpper()»RequestFactory requestFactory;	
+	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+	private EditorDelegate<«name.toFirstUpper()»Proxy> delegate;
+	
+	private «name.toFirstUpper()»Proxy editedValue; //Not used by the editor
+	private boolean hideButtons = false;
+	«IF isTranslatableFieldPresent(this.groups.fields)-»
+	private List<String> locales = Arrays.asList(«EXPAND getLocales FOR project-»);	
+	«ENDIF -»
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	private String currentLogin = null;
+		«FOREACH groups AS g-»
+	private boolean show«g.name.toFirstUpper()»Section = false;
+		«ENDFOREACH -»
+	«ENDIF-»
+	
+	«FOREACH groups AS g»
+	/* «g.name.toFirstUpper()» section widgets */
+	@UiField @Ignore FieldGroupPanel «g.name.toFirstLower()»Section;	
+		«FOREACH g.fields AS f -»
+		«EXPAND template::web::WebFieldUtil::formFieldTypeDec FOR f» «EXPAND template::web::WebFieldUtil::formFieldType FOR f» «EXPAND template::CommonFieldUtil::propertyName FOR f»;
+		«EXPAND setDataProvider FOR f-»
+		«ENDFOREACH -»	
+	«ENDFOREACH»		
+
+	«IF hasDynamicFields-»
+	/* Dynamic fields section widget */
+	@UiField(provided = true)
+	DynamicFieldBox dynamicFieldValues;
+	«ENDIF-»
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	/* Administration section widgets */
+	@UiField
+	@Ignore
+	FieldGroupPanel administrationSection;
+	@UiField
+	ImogTextBox login;
+	@UiField
+	ImogPasswordBox password;
+	@UiField
+	@Ignore
+	ImogPasswordBox passwordConfirm;
+	@UiField(provided = true)
+	ImogMultiRelationBox<ImogRoleProxy> roleList;
+	@UiField
+	@Ignore
+	ImogLinkBox idLink;
+	
+	/* Synchronization section widgets */
+	@UiField
+	@Ignore
+	FieldGroupPanel synchronizationSection;
+	@UiField(provided = true)
+	ImogMultiRelationBox<SynchronizableEntityProxy> synchronizableList;
+	
+	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+		/* FilterFields section widgets */
+		@UiField
+		@Ignore
+		FieldGroupPanel filterFieldsSection;
+		«FOREACH ((Actor)this).filters AS fil-»
+		@UiField(provided = true)
+		ImogMultiRelationBox<«fil.entity.name.toFirstUpper()»Proxy> «EXPAND template::CommonFieldUtil::propertyName FOR fil»List;	
+		«ENDFOREACH-»
+	«ENDIF-»
+	«ENDIF-»	
+
+	/**
+	 * Constructor
+	 * @param factory the application request factory
+	 * @param hideButtons true if the relation field buttons shall be hidden
+	 */
+	public «name.toFirstUpper()»Editor(«projectName.toFirstUpper()»RequestFactory factory, boolean hideButtons) {
+		
+		this.requestFactory = factory;
+		this.hideButtons = hideButtons;
+		
+		«IF isSimpleRelationFieldPresent(this.groups.fields) || isMultiRelationFieldPresent(this.groups.fields) || (applicationType.matches(adminType) && Actor.isAssignableFrom(metaType))-»
+		setRelationFields();
+		«ENDIF -»
+		
+		«IF hasDynamicFields-»
+		/* dynamic fields */
+		dynamicFieldValues = new DynamicFieldBox(requestFactory, "«shortName»", «projectName.toFirstUpper()»FormTypes.get());
+		«ENDIF-»		
+						
+		«EXPAND instanciateField FOREACH groups.fields -»			
+					
+		initWidget(BINDER.createAndBindUi(this));
+			
+		properties();
+	}
+
+	/**
+	 * Constructor
+	 * @param factory the application request factory
+	 */
+	public «name.toFirstUpper()»Editor(«projectName.toFirstUpper()»RequestFactory factory) {		
+		this(factory, false);
+	}
+	
+	
+	/**
+	 * Sets the properties of the fields
+	 */	
+	private void properties() {
+	
+		«FOREACH groups AS g»
+		/* «g.name.toFirstUpper()» section widgets */
+		«g.name.toFirstLower()»Section.setGroupTitle(NLS.constants().«name.toFirstLower()»_group_«g.name.toFirstLower()»());	
+		«FOREACH g.fields AS f -»
+		«EXPAND setLabel FOR f-»
+		«EXPAND configureFieldOptions(projectName) FOR f-»
+		«IF f.hidden==true-»
+		// hidden field
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».setVisible(false);
+		«ENDIF -»
+		«IF hasChildsWithVisibilityDependent(f, groups.fields)==true-»
+		// the value of «EXPAND template::CommonFieldUtil::propertyName FOR f» affects the visibility of other fields
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».notifyChanges(requestFactory.getEventBus());
+		«ENDIF -»
+		«IF f.fieldDependentVisibility!=null && !f.fieldDependentVisibility.isEmpty && !f.hidden-»		
+		// the visibility of «EXPAND template::CommonFieldUtil::propertyName FOR f» depends on the value of other fields
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».addStyleName("dependentVisibility");
+		«ENDIF -»		
+		«ENDFOREACH -»	
+		«ENDFOREACH»
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		/* Administration section widgets */
+		administrationSection.setGroupTitle(AdminNLS.constants().imogActor_group_administration());
+		login.setLabel(AdminNLS.constants().imogActor_field_login());
+		password.setLabel(AdminNLS.constants().imogActor_field_password());
+		passwordConfirm.setLabel(AdminNLS.constants().imogActor_field_passwordConfirm());
+		roleList.setLabel(AdminNLS.constants().imogActor_field_roleList());
+		roleList.hideButtons(true);
+		idLink.setLabel(AdminNLS.constants().imogActor_field_idFile());
+
+		/* Synchronization section widgets */
+		synchronizationSection.setGroupTitle(AdminNLS.constants().imogActor_group_synchronization());
+		synchronizableList.setLabel(AdminNLS.constants().imogActor_field_synchronizableList());
+		synchronizableList.hideButtons(true);
+		
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+			/* FilterFields section widgets */
+			filterFieldsSection.setGroupTitle(AdminNLS.constants().imogActor_group_filterFields());
+			«FOREACH ((Actor)this).filters AS fil-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setLabel(NLS.constants().«name.toFirstLower()»_field_«EXPAND template::CommonFieldUtil::propertyName FOR fil»());
+			«ENDFOREACH-»
+		«ENDIF-»
+		
+		// hide the fields that are not admin fields and show only the field groups that contain admin fields
+		«FOREACH groups.fields AS f-»
+			«IF ((Actor)this).adminFields.contains(f)-»
+		show«f.parentGroup.name.toFirstUpper()»Section = true;
+			«ELSE-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».setVisible(false);
+			«ENDIF-»
+		«ENDFOREACH -»
+		«IF hasDynamicFields-»
+		dynamicFieldValues.setVisible(false);
+		«ENDIF-»
+		«ENDIF-»	
+	}	
+		
+	
+	«IF isSimpleRelationFieldPresent(this.groups.fields) || isMultiRelationFieldPresent(this.groups.fields) || (applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)) -»
+	/**
+	 * Configures the widgets that manage relation fields
+	 */	
+	private void setRelationFields() {
+	
+		«EXPAND setRelationFields(projectName) FOREACH groups.fields»
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		/* field  roleList */
+		ImogRoleDataProvider roleListDataProvider;
+		roleListDataProvider = new ImogRoleDataProvider(requestFactory);		
+		«IF !((Actor)this).authorizedRoles.isEmpty-»
+		String[] authorizedRoles = new String[]{«FOREACH ((Actor) this).authorizedRoles AS role SEPARATOR ','-»"«role.name»"«ENDFOREACH-»};
+		roleListDataProvider.setAuthorizedRoles(authorizedRoles);		
+		«ENDIF-»	
+		roleList = new ImogMultiRelationBox<ImogRoleProxy>(roleListDataProvider, AdminRenderer.get(), true);
+		roleList.setPopUpTitle(AdminNLS.constants().imogRole_select_title());
+
+		/* field  synchronizableList */
+		SynchronizableEntityDataProvider synchronizableListDataProvider;
+		synchronizableListDataProvider = new SynchronizableEntityDataProvider(requestFactory);	
+		synchronizableList = new ImogMultiRelationBox<SynchronizableEntityProxy>(synchronizableListDataProvider, AdminRenderer.get(), true);
+		synchronizableList.setPopUpTitle(AdminNLS.constants().synchronizableEntity_select_title());
+		synchronizableList.setFilterPanel(new SynchronizableEntityFilterPanel());
+		
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+			«FOREACH ((Actor)this).filters AS fil-»
+			/* field  «EXPAND template::CommonFieldUtil::propertyName FOR fil» */
+			«fil.entity.name.toFirstUpper()»DataProvider «EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider;
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider = new «fil.entity.name.toFirstUpper()»DataProvider(requestFactory);	
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List = new ImogMultiRelationBox<«fil.entity.name.toFirstUpper()»Proxy>(«EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setPopUpTitle(NLS.constants().«fil.entity.name.toFirstLower()»_select_title());
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setFilterPanel(new «fil.entity.name.toFirstUpper()»FilterPanel());		
+			«ENDFOREACH-»
+		«ENDIF-»
+		«ENDIF-»		
+	}
+	«ENDIF -»		
+
+	/**
+	 * Sets the edition mode
+	 * @param isEdited true to enable the edition of the form
+	 */
+	public void setEdited(boolean isEdited) {
+	
+		if(isEdited)
+			setFieldEditAccess();
+		else
+			setFieldReadAccess();	
+	
+		«FOREACH groups AS g»
+		/* «g.name.toFirstUpper()» section widgets */	
+		«EXPAND setEditable FOREACH g.fields -»
+		«ENDFOREACH-»
+		
+		«IF hasDynamicFields && !(applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)) -»
+		/* Dynamic fields section widget */
+		dynamicFieldValues.setEdited(isEdited);
+		«ENDIF-»
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		/* Administration section widgets */
+		login.setEdited(isEdited);
+		password.setEdited(isEdited);
+		passwordConfirm.setEdited(isEdited);
+		roleList.setEdited(isEdited);
+		idLink.setVisible(!isEdited);
+
+		/* Synchronization section widgets */
+		synchronizableList.setEdited(isEdited);
+		
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+			/* FilterFields section widgets */
+			«FOREACH ((Actor)this).filters AS fil-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setEdited(isEdited);
+			«ENDFOREACH-»
+		«ENDIF-»
+		«ENDIF-»	
+	}
+	
+	/**
+	 * Configures the visibility of the fields 
+	 * in view mode depending on the user privileges
+	 */
+	private void setFieldReadAccess() {
+	
+		«FOREACH groups AS g»
+		/* «g.name.toFirstUpper()» section widgets visibility */
+			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		if (!AccessManager.canReadGroup("«name.toLowerCase()».«g.name.toLowerCase()»") || !show«g.name.toFirstUpper()»Section)				
+			«ELSE-»
+		if (!AccessManager.canReadGroup("«name.toLowerCase()».«g.name.toLowerCase()»"))				
+			«ENDIF-»
+			«g.name.toFirstLower()»Section.setVisible(false);
+		«ENDFOREACH»
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		/* Administration && Synchronization && FilterFields sections visibility */
+		if (!ImogRoleUtil.isAdmin()) {
+			administrationSection.setVisible(false);
+			synchronizationSection.setVisible(false);
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+			filterFieldsSection.setVisible(false);
+		«ENDIF-»			
+		}
+		«ENDIF-»		
+	}
+	
+	/**
+	 * Configures the visibility of the fields 
+	 * in edit mode depending on the user privileges
+	 */
+	private void setFieldEditAccess() {
+	
+		«FOREACH groups AS g»
+		/* «g.name.toFirstUpper()» section widgets visibility */
+			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		if (!AccessManager.canEditGroup("«name.toLowerCase()».«g.name.toLowerCase()»") || !show«g.name.toFirstUpper()»Section)				
+			«ELSE-»
+		if (!AccessManager.canEditGroup("«name.toLowerCase()».«g.name.toLowerCase()»"))				
+			«ENDIF-»		
+			«g.name.toFirstLower()»Section.setVisible(false);
+		«ENDFOREACH»
+		
+		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		/* Administration && Synchronization && FilterFields sections visibility */
+		if (!ImogRoleUtil.isAdmin()) {
+			administrationSection.setVisible(false);
+			synchronizationSection.setVisible(false);
+		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
+			filterFieldsSection.setVisible(false);
+		«ENDIF-»			
+		}
+		«ENDIF-»
+	}
+	
+	«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
+	/**
+	 * Sets the Request Context for the List Editors
+	 */	
+	public void setRequestContextForListEditors(«name.toFirstUpper()»Request ctx) {
+		«IF hasNestedFormWithCardN(this.groups.fields)-»
+		«EXPAND setRequestContextForListEditors FOREACH groups.fields-»
+		«ENDIF -»
+		«IF hasDynamicFields-»
+		dynamicFieldValues.setRequestContext(ctx);
+		«ENDIF -»		
+	}		 
+	«ENDIF -»		
+	
+	/**
+	 * Manages editor updates when a field value changes
+	 */
+	private void setFieldValueChangeHandler() {
+		
+		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE,
+				new FieldValueChangeEvent.Handler() {
+					@Override
+					public void onValueChange(ImogField<?> field) {
+						
+						// field dependent visibility management
+						computeVisibility(field, false);
+						
+						«FOREACH groups.fields AS f-»
+							«EXPAND onFieldValueChangeHierarchicalFilterCall FOR f -»
+						«ENDFOREACH-»						
+					}
+				}));
+	}	
+	
+	/**
+	 * Computes the field visibility
+	 */
+	public void computeVisibility(ImogField<?> source, boolean allValidation){
+		«EXPAND computeVisibility FOREACH groups.fields -»
+		«EXPAND fieldDependantVisibility FOREACH groups.fields -»
+	}
+	
+	«FOREACH groups.fields AS f-»
+		«EXPAND setRelationFieldHierarchicalFilterBehavior FOR f -»
+	«ENDFOREACH»
+	
+	«EXPAND setterForRelation FOREACH groups.fields-»		
+	
+	
+	«IF isSimpleRelationFieldPresent(this.groups.fields) || isMultiRelationFieldPresent(this.groups.fields) -»
+	/**
+	 * Configures the handlers of the widgets that manage relation fields
+	 */	
+	private void setRelationHandlers() {
+	
+		«EXPAND setHandlers(projectName) FOREACH groups.fields»
+	}
+	«ENDIF -»
+	
+
+	/**
+	 * Gets the «name.toFirstUpper()»Proxy that is edited in the Workflow
+	 * Not used by the editor
+	 * Temporary storage used to transmit the proxy to related entities
+	 * @return
+	 */	
+	public «name.toFirstUpper()»Proxy getEditedValue() {
+		return editedValue;
+	}
+
+	/**
+	 * Sets the «name.toFirstUpper()»Proxy that is edited in the Workflow
+	 * Not used by the editor
+	 * Temporary storage used to transmit the proxy to related entities	 
+	 * @param editedValue 
+	 */
+	public void setEditedValue(«name.toFirstUpper()»Proxy editedValue) {
+		this.editedValue = editedValue;
+	}
+	
+	«IF isBinaryFieldPresent(groups.fields) || hasDynamicFields-»
+	/**
+	 * Checks if a binary is being uploaded by the editor
+	 * @return true if the editor is uploading a binary
+	 */
+	public boolean isUploading() {
+		boolean result = false;
+		«IF isBinaryFieldPresent(groups.fields)-»
+		«EXPAND uploadingTest FOREACH groups.fields -»
+		«ENDIF-»
+		«IF hasDynamicFields-»
+		if(dynamicFieldValues.isUploading())
+				return true;
+		«ENDIF-»
+		return result;
+	}	
+	«ENDIF-»	
+	
+	«IF hasDynamicFields-»
+	/**
+	 * Orders the Dynamic Field Values depending on the field position
+	 * that has been defined in the Dynamic Field Template
+	 */
+	public void orderDynamicFieldValues() {
+		dynamicFieldValues.orderList();
+	}
+	
+	/**
+	 * Pushes the Dynamic Field Templates to the Dynamic Field widget
+	 * @param list a list of DynamicFieldTemplateProxy
+	 */
+	public void setFieldTemplates(List<DynamicFieldTemplateProxy> list) {
+		dynamicFieldValues.addFieldTemplates(list);
+		
+	}
+	«ENDIF-»
+	
+
+	
+	/**
+	 * Validate fields values
+	 */
+	public void validateFields() {
+	
+		«FOREACH groups.fields AS f-»
+			«EXPAND requiredField FOR f -»
+			«EXPAND validationAnnotation FOR f -»		
+		«ENDFOREACH-»
+	}		
+	
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	/**
+	 * Validates that when the login is changed, the password is changed too
+	 */	
+	public void validateLoginWithPassword() {
+		
+		String newLogin = login.getValue();
+		if(newLogin!=null) {
+			
+			if(currentLogin!=null) {
+				if(!currentLogin.equals(newLogin)) {					
+					if(!passwordChanged())
+						delegate.recordError(AdminNLS.constants().login_without_password_error(), null, "login");
+				}
+			}
+			else {
+				if(!passwordChanged())
+					delegate.recordError(AdminNLS.constants().login_without_password_error(), null, "login");
+			}	
+		}
+	}	
+	
+	/**
+	 * Validates that the password is confirmed by the second entry
+	 */
+	public boolean validatePasword() {
+		boolean isValid = true;
+		
+		String password1 = password.getValue();
+		String password2 = passwordConfirm.getValue();
+
+		if (!(password1 == null && password2 == null)) {
+
+			if ((password1 != null && password2 == null) || (password2 != null && password1 == null)) {
+				delegate.recordError(AdminNLS.constants().password_confirm_error(), null, "password");
+				isValid = false;
+			}
+			if (!password1.equals(password2)) {
+				delegate.recordError(AdminNLS.constants().password_confirm_error(), null, "password");
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
+	
+	/**
+	 * Tells if the password has been changed
+	 */		
+	public boolean passwordChanged() {		
+		return !(password.getValue() == null && passwordConfirm.getValue() == null);
+	}
+	
+	/**
+	 * Stores the login of the actor
+	 */	
+	public void setCurrentLogin() {
+		this.currentLogin = login.getValue(); 
+	}	
+	
+	/**
+	 * Set the link to download 
+	 * the associated identification file
+	 */
+	public void updateIdLink(String entityId) {
+			idLink.setValue("<a href=\"" + GWT.getHostPageBaseURL()
+					+ "encrypt?type=«shortName»&id=" + entityId
+					+ "\">" + AdminNLS.constants().imogActor_field_idFile_text() + "</a>");
+	}
+	«ENDIF-»
+	
+	@Override
+	public void setDelegate(EditorDelegate<«name.toFirstUpper()»Proxy> delegate) {
+		this.delegate = delegate;
+	}
+	
+	@Override
+	public void showErrors(List<EditorError> errors) {
+		if(errors!=null && errors.size()>0) {
+		
+			«EXPAND setErrorList FOREACH groups.fields -»
+			
+			for (EditorError error : errors) {			
+				Object userData = error.getUserData();
+				if(userData!=null && userData instanceof String) {				
+					String field = (String)userData;
+					
+					«EXPAND addError FOREACH groups.fields -»
+					
+					«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»					
+					if(field.equals("password")) {
+						List<EditorError> fieldErrors = new ArrayList<EditorError>();
+						fieldErrors.add(error);
+						passwordConfirm.showErrors(fieldErrors);
+					}
+					
+					if (field.equals("login")) {
+						List<EditorError> fieldErrors = new ArrayList<EditorError>();
+						fieldErrors.add(error);
+						login.showErrors(fieldErrors);
+					}					
+					«ENDIF-»					
+				}
+			}		
+			«EXPAND showErrors FOREACH groups.fields -»
+		}
+	}	
+
+	@Override
+	protected void onUnload() {
+		for(HandlerRegistration r : registrations)
+			r.removeHandler();
+		registrations.clear();
+		super.onUnload();
+	}
+	
+	@Override
+	protected void onLoad() {
+		«IF isSimpleRelationFieldPresent(this.groups.fields) || isMultiRelationFieldPresent(this.groups.fields) -»
+		setRelationHandlers();
+		«ENDIF -»
+		setFieldValueChangeHandler();
+		super.onLoad();
+	}
+}
+«ENDLET-»
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+
+«DEFINE getLocales FOR Project -»«FOREACH this.languages AS lang SEPARATOR ','»"«lang.isoCode.toLowerCase()»"«ENDFOREACH»«ENDDEFINE»
+
+«REM» Set the enable state of a field regarding its type «ENDREM»
+«DEFINE setLabel FOR FieldEntity-»		
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+«ENDDEFINE»
+«DEFINE setLabel FOR RelationFieldEntity-»
+«IF !nestedForm-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Set the enable state of a field regarding its type «ENDREM»
+«DEFINE setEditable FOR FieldEntity-»
+	«IF readOnly || (calculationFunctionName!=null && calculationFunctionName.length>0) -»
+		// readonly field
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(false);
+	«ELSE-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(isEdited);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setEditable FOR ReverseRelationFieldEntity-»
+«IF cardinality==1 && oppositeRelationField.cardinality==1-»
+		// no affection possible from the reverse side of a one-to-one relation
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(false);
+«ELSE-»
+	«IF readOnly-»
+		// readonly field
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(false);
+	«ELSE-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(isEdited);
+	«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Field options configuration «ENDREM»
+«DEFINE configureFieldOptions(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE configureFieldOptions(String projectName) FOR BooleanField-»
+	«IF required || (defaultValue!=null && (defaultValue.matches("true")||defaultValue.matches("false"))) -»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».isStrict(true);	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE configureFieldOptions(String projectName) FOR IntegerField-»
+	«IF unit.length>0 -»
+	«EXPAND template::CommonFieldUtil::propertyName FOR this».setUnit("«unit»");	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE configureFieldOptions(String projectName) FOR FloatField-»
+	«IF unit.length>0 -»
+	«EXPAND template::CommonFieldUtil::propertyName FOR this».setUnit("«unit»");	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE configureFieldOptions(String projectName) FOR EnumField-»
+	«FOREACH enumValues AS ev-»
+		«IF multipleSelection -»
+			CheckBox «name.toFirstLower()»«ev.name.toFirstUpper()» = new CheckBox(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«ev.name.toFirstLower()»_option());
+			«name.toFirstLower()»«ev.name.toFirstUpper()».setFormValue(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«ev.name.toUpperCase()»);
+			«EXPAND template::CommonFieldUtil::propertyName FOR this».addItem(«name.toFirstLower()»«ev.name.toFirstUpper()»);
+		«ELSE-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR this».addItem(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«ev.name.toUpperCase()», NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«ev.name.toFirstLower()»_option());
+		«ENDIF-»	
+	«ENDFOREACH-»
+«ENDDEFINE»
+«DEFINE configureFieldOptions(String projectName) FOR RelationFieldEntity-»
+	«IF !getHierarchicalFilterChilds(this, this.parentGroup.parentCard.groups.fields).isEmpty -»
+		// the value of «EXPAND template::CommonFieldUtil::propertyName FOR this» affects the value of other fields
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».notifyChanges(requestFactory.getEventBus());
+	«ENDIF -»
+«ENDDEFINE»
+
+
+
+«REM» Uploading test for binary field «ENDREM»
+«DEFINE uploadingTest FOR FieldEntity -»«ENDDEFINE»
+«DEFINE uploadingTest FOR BinaryField -»
+	if(«EXPAND template::CommonFieldUtil::propertyName FOR this».isUploading())
+			return true;
+«ENDDEFINE»
+
+
+«REM» instanciate field box when needed «ENDREM»
+«DEFINE instanciateField FOR FieldEntity -»«ENDDEFINE»
+«DEFINE instanciateField FOR TextField-»
+	«IF this.translatable-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(locales, NLS.constants().locale());
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE instanciateField FOR BinaryField -»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(factory);
+«ENDDEFINE»
+
+«REM»---------------------------------------------------- «ENDREM»
+«REM»--------------- FIELDS VALIDATION---- -------------- «ENDREM»
+«REM»---------------------------------------------------- «ENDREM»
+«DEFINE requiredField FOR FieldEntity-»
+	«IF required-»
+	// «name.toFirstLower()» is a required field
+	if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()==null)
+		delegate.recordError(BaseNLS.messages().error_required(), null, "«name.toFirstLower()»");			
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE requiredField FOR NumericField-»
+	«IF required-»
+	// «name.toFirstLower()» is a required field
+	if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()==null && «EXPAND template::CommonFieldUtil::propertyName FOR this».isValid())
+		delegate.recordError(BaseNLS.messages().error_required(), null, "«name.toFirstLower()»");			
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE requiredField FOR DateField-»
+	«IF required-»
+	// «name.toFirstLower()» is a required field
+	if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()==null && «EXPAND template::CommonFieldUtil::propertyName FOR this».isValid())
+		delegate.recordError(BaseNLS.messages().error_required(), null, "«name.toFirstLower()»");			
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE requiredField FOR EmailField-»
+	«IF required-»
+	// «name.toFirstLower()» is a required field
+	if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutError()==null && «EXPAND template::CommonFieldUtil::propertyName FOR this».isValid())
+		delegate.recordError(BaseNLS.messages().error_required(), null, "«name.toFirstLower()»");			
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE validationAnnotation FOR FieldEntity-»«ENDDEFINE»
+«DEFINE validationAnnotation FOR TextField-»
+	«FOREACH this.validationRules AS r ITERATOR i -»
+			// «name.toFirstLower()» shall match '«r.validationRegularExpression»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()!=null && !«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue().matches("«r.validationRegularExpression»"))
+				delegate.recordError(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0»(), null, "«name.toFirstLower()»");			
+	«ENDFOREACH-» 
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR IntegerField-»
+	«IF min!=null && min.length>0-»
+			// «name.toFirstLower()» shall be superior or equal to '«min-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()>=«min-»))
+				delegate.recordError(BaseNLS.messages().error_min_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min()), null, "«name.toFirstLower()»");		
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+			// «name.toFirstLower()» shall be inferior or equal to '«max-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()<=«max-»))
+				delegate.recordError(BaseNLS.messages().error_max_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max()), null, "«name.toFirstLower()»");	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR FloatField-»
+	«IF min!=null && min.length>0-»
+			// «name.toFirstLower()» shall be superior or equal to '«min-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()>=«min-»))
+				delegate.recordError(BaseNLS.messages().error_min_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min()), null, "«name.toFirstLower()»");		
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+			// «name.toFirstLower()» shall be inferior or equal to '«max-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()<=«max-»))
+				delegate.recordError(BaseNLS.messages().error_max_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max()), null, "«name.toFirstLower()»");	
+	«ENDIF-»
+	«IF DecimalNumber!=null && DecimalNumber>-1-»
+			// «name.toFirstLower()» shall have «DecimalNumber-» decimal digits maximum
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !NumericUtil.decimalNumberCheck(«DecimalNumber-», «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+				delegate.recordError(BaseNLS.messages().error_float_dec(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber()), null, "«name.toFirstLower()»");			
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR DateField-»
+	«IF min!=null && min.length>0-»
+			// «name.toFirstLower()» shall be after or equal to '«min-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !DateUtil.matchesDate(">=«min-»", «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+				delegate.recordError(BaseNLS.messages().error_min_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min()), null, "«name.toFirstLower()»");		
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+			// «name.toFirstLower()» shall be before or equal to '«max-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !DateUtil.matchesDate("<=«max-»", «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+				delegate.recordError(BaseNLS.messages().error_max_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max()), null, "«name.toFirstLower()»");	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR DateTimeField-»
+	«IF min!=null && min.length>0-»
+			// «name.toFirstLower()» shall be after or equal to '«min-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !DateUtil.matchesDateTime(">=«min-»", «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+				delegate.recordError(BaseNLS.messages().error_min_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min()), null, "«name.toFirstLower()»");	
+	«ENDIF-»
+	«IF max!=null && max.length>0-»
+			// «name.toFirstLower()» shall be before or equal to '«max-»'
+			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !DateUtil.matchesDateTime("<=«max-»", «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+				delegate.recordError(BaseNLS.messages().error_max_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max()), null, "«name.toFirstLower()»");	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE validationAnnotation FOR RelationFieldEntity-»
+	«IF nestedForm-»
+		// «name.toFirstLower()» nested form shall be validated
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».validateFields();
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE setErrorList FOR FieldEntity-»
+	«IF required-»
+			List<EditorError> «name.toFirstLower()»FieldErrors = new ArrayList<EditorError>();	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setErrorList FOR TextField-»
+	«IF required || (validationRules!=null && this.validationRules.size>0)-»
+			List<EditorError> «name.toFirstLower()»FieldErrors = new ArrayList<EditorError>();	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setErrorList FOR IntegerField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			List<EditorError> «name.toFirstLower()»FieldErrors = new ArrayList<EditorError>();	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setErrorList FOR FloatField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0) || (DecimalNumber!=null && DecimalNumber>-1)-»
+			List<EditorError> «name.toFirstLower()»FieldErrors = new ArrayList<EditorError>();	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setErrorList FOR DateField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			List<EditorError> «name.toFirstLower()»FieldErrors = new ArrayList<EditorError>();	
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setErrorList FOR DateTimeField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			List<EditorError> «name.toFirstLower()»FieldErrors = new ArrayList<EditorError>();	
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE addError FOR FieldEntity-»
+	«IF required-»
+			if (field.equals("«name.toFirstLower()»"))						
+				«name.toFirstLower()»FieldErrors.add(error);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE addError FOR TextField-»
+	«IF required || (validationRules!=null && this.validationRules.size>0)-»
+			if (field.equals("«name.toFirstLower()»"))						
+				«name.toFirstLower()»FieldErrors.add(error);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE addError FOR IntegerField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			if (field.equals("«name.toFirstLower()»"))						
+				«name.toFirstLower()»FieldErrors.add(error);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE addError FOR FloatField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0) || (DecimalNumber!=null && DecimalNumber>-1)-»
+			if (field.equals("«name.toFirstLower()»"))						
+				«name.toFirstLower()»FieldErrors.add(error);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE addError FOR DateField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			if (field.equals("«name.toFirstLower()»"))						
+				«name.toFirstLower()»FieldErrors.add(error);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE addError FOR DateTimeField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			if (field.equals("«name.toFirstLower()»"))						
+				«name.toFirstLower()»FieldErrors.add(error);
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE showErrors FOR FieldEntity-»
+	«IF required-»
+			if(«name.toFirstLower()»FieldErrors.size()>0)
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».showErrors(«name.toFirstLower()»FieldErrors);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE showErrors FOR TextField-»
+	«IF required || (validationRules!=null && this.validationRules.size>0)-»
+			if(«name.toFirstLower()»FieldErrors.size()>0)
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».showErrors(«name.toFirstLower()»FieldErrors);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE showErrors FOR IntegerField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			if(«name.toFirstLower()»FieldErrors.size()>0)
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».showErrors(«name.toFirstLower()»FieldErrors);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE showErrors FOR FloatField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0) || (DecimalNumber!=null && DecimalNumber>-1)-»
+			if(«name.toFirstLower()»FieldErrors.size()>0)
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».showErrors(«name.toFirstLower()»FieldErrors);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE showErrors FOR DateField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			if(«name.toFirstLower()»FieldErrors.size()>0)
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».showErrors(«name.toFirstLower()»FieldErrors);
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE showErrors FOR DateTimeField-»
+	«IF required || (min!=null && min.length>0) || (max!=null && max.length>0)-»
+			if(«name.toFirstLower()»FieldErrors.size()>0)
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».showErrors(«name.toFirstLower()»FieldErrors);
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«REM»---------------------------------------------------- «ENDREM»
+«REM»--------------- RELATION FIELDS MNGMT -------------- «ENDREM»
+«REM»---------------------------------------------------- «ENDREM»
+
+«REM» Imports implied by the relation fields «ENDREM»
+«DEFINE importsForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE importsForRelation(String projectName) FOR RelationFieldEntity-»
+import org.imogene.«projectName.toLowerCase()».client.ui.workflow.panel.«entity.name.toFirstUpper()»FormPanel;
+import org.imogene.«projectName.toLowerCase()».client.event.save.Save«entity.name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.dataprovider.«entity.name.toFirstUpper()»DataProvider;
+import org.imogene.«projectName.toLowerCase()».client.ui.filter.«entity.name.toFirstUpper()»FilterPanel;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
+«IF this.nestedForm -»
+	«IF cardinality == 1 -»
+import org.imogene.«projectName.toLowerCase()».client.ui.editor.nested.«entity.name.toFirstUpper()»EditorNestedForm;
+	«ELSE -»
+import org.imogene.«projectName.toLowerCase()».client.ui.editor.nested.«parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor;
+import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.parentCard.name.toFirstUpper()»Request;
+	«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+«REM» Widget configurations implied by the relation fields «ENDREM»
+«DEFINE setRelationFields(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE setRelationFields(String projectName) FOR RelationFieldEntity»
+	/* field  «EXPAND template::CommonFieldUtil::propertyName FOR this» */
+«IF this.nestedForm -»
+	«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(requestFactory);		
+«ELSE -»
+	«IF relationHierarchicalFilter==null || this.relationHierarchicalFilter.size!=2 -»
+	«entity.name.toFirstUpper()»DataProvider «name.toFirstLower()»DataProvider;
+	«ENDIF-»
+	«IF cardinality == 1 -»
+		«IF getOppositeCardinality(this)==1 -»			
+			«IF oppositeRelationField==null -»
+			«name.toFirstLower()»DataProvider = null;	
+			«ELSE -»
+				«IF MainRelationFieldEntity.isAssignableFrom(this.metaType)-»
+			«name.toFirstLower()»DataProvider = new «entity.name.toFirstUpper()»DataProvider(requestFactory, "«EXPAND template::CommonFieldUtil::propertyName FOR this.oppositeRelationField»", true);		
+				«ELSE -»
+			«name.toFirstLower()»DataProvider = new «entity.name.toFirstUpper()»DataProvider(requestFactory, "«EXPAND template::CommonFieldUtil::propertyName FOR this.oppositeRelationField»");		
+				«ENDIF -»				
+			«ENDIF -»
+		«ELSE -»
+			«name.toFirstLower()»DataProvider = new «entity.name.toFirstUpper()»DataProvider(requestFactory);
+		«ENDIF -»		
+		if(hideButtons)	// in popup, relation buttons hidden
+			«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);		
+		else {// in wrapper panel, relation buttons enabled												
+			if (AccessManager.canCreateForm("«entity.name.toLowerCase()»") && AccessManager.canEditForm("«entity.name.toLowerCase()»"))		
+				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get());
+			else
+				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(false, «name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get());					
+		}
+	«ELSE -»
+		  «IF getOppositeCardinality(this)==1 && oppositeRelationField!=null-»
+		«name.toFirstLower()»DataProvider = new «entity.name.toFirstUpper()»DataProvider(requestFactory, "«EXPAND template::CommonFieldUtil::propertyName FOR this.oppositeRelationField»");	
+		  «ELSE-»
+		«name.toFirstLower()»DataProvider = new «entity.name.toFirstUpper()»DataProvider(requestFactory);
+		  «ENDIF-»	  	
+		if(hideButtons) // in popup, relation buttons hidden		
+			«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);
+		else {// in wrapper panel, relation buttons enabled
+			if (AccessManager.canCreateForm("«entity.name.toLowerCase()»") && AccessManager.canEditForm("«entity.name.toLowerCase()»"))				
+				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), null);
+			else
+				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(false, «name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), null);					
+		}
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setPopUpTitle(NLS.constants().«entity.name.toFirstLower()»_select_title());
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setFilterPanel(new «entity.name.toFirstUpper()»FilterPanel());
+	«ENDIF -»
+
+			
+«ENDIF -»
+«ENDDEFINE»
+
+«REM» Handler configurations implied by the relation fields «ENDREM»
+«DEFINE setHandlers(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE setHandlers(String projectName) FOR RelationFieldEntity»
+«IF !nestedForm -»
+	«IF cardinality == 1 -»
+		/* 'Information' button for field «name» */
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setViewClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if («EXPAND template::CommonFieldUtil::propertyName FOR this».getValue() != null) {		
+					RelationPopupPanel relationPopup = new RelationPopupPanel();
+					«entity.name.toFirstUpper()»FormPanel form = new «entity.name.toFirstUpper()»FormPanel(requestFactory, «EXPAND template::CommonFieldUtil::propertyName FOR this».getValue().getId(), relationPopup, "«EXPAND template::CommonFieldUtil::propertyName FOR this»");					
+					relationPopup.addWidget(form);				
+					relationPopup.show();
+				}
+			}
+		});
+		
+		/* 'Add' button for field «name» */
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setAddClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				RelationPopupPanel relationPopup = new RelationPopupPanel();
+				«entity.name.toFirstUpper()»FormPanel form = new «entity.name.toFirstUpper()»FormPanel(requestFactory, null, relationPopup, "«EXPAND template::CommonFieldUtil::propertyName FOR this»");	
+				«IF getOppositeCardinality(this)==1 && oppositeRelationField!=null && !oppositeRelationField.nestedForm-»
+				form.set«oppositeRelationField.name.toFirstUpper()»(editedValue, true);				
+				«ENDIF-»
+				/* common fields */
+				«FOREACH commonFields AS c ITERATOR iter-»		
+					«IF (modulo(iter.counter0+2,2)==0) && iter.counter0<=(commonFields.size-2)-»
+				if(«EXPAND template::CommonFieldUtil::propertyName FOR commonFields.get(iter.counter0)».getValue() != null)
+					form.set«commonFields.get(iter.counter0+1).name.toFirstUpper()»(«EXPAND template::CommonFieldUtil::propertyName FOR commonFields.get(iter.counter0)».getValue(), true);																				
+					«ENDIF-»
+				«ENDFOREACH-»									
+						
+				relationPopup.addWidget(form);
+				relationPopup.show();
+			}
+		});
+		
+		/* SaveEvent handler when a «entity.name.toFirstUpper()» is created or updated from the relation field «name» */
+		registrations.add(requestFactory.getEventBus().addHandler(Save«entity.name.toFirstUpper()»Event.TYPE, new Save«entity.name.toFirstUpper()»Event.Handler() {
+			@Override
+			public void save«entity.name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value) {
+				«EXPAND template::CommonFieldUtil::propertyName FOR this».setValue(value);
+			}
+			@Override
+			public void save«entity.name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value, String initField) {
+				if(initField.equals("«EXPAND template::CommonFieldUtil::propertyName FOR this»"))
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».setValue(value, true);
+			}
+		}));
+	«ELSE -»
+		/* 'Information' button for field «name» */
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setViewClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				if (!«EXPAND template::CommonFieldUtil::propertyName FOR this».isEmpty() && «EXPAND template::CommonFieldUtil::propertyName FOR this».getSelectedEntities().size()>0) {
+					
+					«entity.name.toFirstUpper()»Proxy value = «EXPAND template::CommonFieldUtil::propertyName FOR this».getSelectedEntities().get(0);					
+					RelationPopupPanel relationPopup = new RelationPopupPanel();
+					«entity.name.toFirstUpper()»FormPanel form = new «entity.name.toFirstUpper()»FormPanel(requestFactory, value.getId(), relationPopup, "«EXPAND template::CommonFieldUtil::propertyName FOR this»");					
+					relationPopup.addWidget(form);
+					relationPopup.show();
+				}
+			}
+		});
+		
+		/* 'Add' button for field «name» */
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setAddClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+						
+				RelationPopupPanel relationPopup = new RelationPopupPanel();
+				«entity.name.toFirstUpper()»FormPanel form = new «entity.name.toFirstUpper()»FormPanel(requestFactory, null, relationPopup, "«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+				«IF getOppositeCardinality(this)==1 && oppositeRelationField!=null  && !oppositeRelationField.nestedForm-»
+				form.set«oppositeRelationField.name.toFirstUpper()»(editedValue, true);						
+				«ENDIF-»
+				/* common fields */
+				«FOREACH commonFields AS c ITERATOR iter-»		
+					«IF (modulo(iter.counter0+2,2)==0) && iter.counter0<=(commonFields.size-2)-»
+				if(«EXPAND template::CommonFieldUtil::propertyName FOR commonFields.get(iter.counter0)».getValue() != null)
+					form.set«commonFields.get(iter.counter0+1).name.toFirstUpper()»(«EXPAND template::CommonFieldUtil::propertyName FOR commonFields.get(iter.counter0)».getValue(), true);																				
+					«ENDIF-»
+				«ENDFOREACH-»					
+										
+				relationPopup.addWidget(form);
+				relationPopup.show();
+			}
+		});	
+		
+		/* SaveEvent handler when a «entity.name.toFirstUpper()» is created or updated from the relation field «name» */
+		registrations.add(requestFactory.getEventBus().addHandler(Save«entity.name.toFirstUpper()»Event.TYPE, new Save«entity.name.toFirstUpper()»Event.Handler() {
+			@Override
+			public void save«entity.name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value) {
+				if (!«EXPAND template::CommonFieldUtil::propertyName FOR this».isPresent(value))
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».addValue(value);			
+			}
+			public void save«entity.name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value, String initField) {
+				if (initField.equals("«EXPAND template::CommonFieldUtil::propertyName FOR this»")) {
+					if («EXPAND template::CommonFieldUtil::propertyName FOR this».isPresent(value))
+						«EXPAND template::CommonFieldUtil::propertyName FOR this».replaceValue(value);
+					else
+						«EXPAND template::CommonFieldUtil::propertyName FOR this».addValue(value, true);					
+				}		
+			}
+		}));
+	«ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+
+
+«REM» setters for relation with cardinality 1 «ENDREM»
+«DEFINE setterForRelation FOR FieldEntity -»«ENDDEFINE»
+«DEFINE setterForRelation FOR RelationFieldEntity »
+«IF !nestedForm-»
+«IF cardinality == 1 -»
+	/**
+	 * Setter to inject a «entity.name.toFirstUpper()» value
+	 * @param value the value to be injected into the editor
+	 * @param isLocked true if relation field shall be locked (non editable)
+	 */
+	public void set«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value, boolean isLocked) {
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setLocked(isLocked);	
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setValue(value);
+		
+		«FOREACH getHierarchicalFilterChilds(this, this.parentGroup.parentCard.groups.fields) AS f -»
+		// Field «f.name.toFirstUpper()» depends on the value of field «f.relationHierarchicalFilter.get(0).name.toFirstLower()»
+		get«f.name.toFirstUpper()»FilteredBy«f.relationHierarchicalFilter.get(0).name.toFirstUpper()»(value);
+		«ENDFOREACH -»
+	}
+	
+	«IF relationHierarchicalFilter!=null && relationHierarchicalFilter.size>0-»
+	/** Widget update for field «EXPAND template::CommonFieldUtil::propertyName FOR this» */
+	private void clear«name.toFirstUpper()»Widget() {
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».clear();
+		«FOREACH getHierarchicalFilterChilds(this, this.parentGroup.parentCard.groups.fields) AS f -»
+		clear«f.name.toFirstUpper()»Widget();
+		«ENDFOREACH -»	
+	}
+	«ENDIF -»
+«ELSE -»
+	«IF relationHierarchicalFilter!=null && relationHierarchicalFilter.size>0-»
+	/** Widget update for field «EXPAND template::CommonFieldUtil::propertyName FOR this» */
+	private void clear«name.toFirstUpper()»Widget() {
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».emptyList();
+	}
+	«ENDIF -»
+«ENDIF -»
+«ENDIF -»
+«ENDDEFINE»
+
+«REM»  «ENDREM»
+«DEFINE setRequestContextForListEditors FOR FieldEntity -»«ENDDEFINE»
+«DEFINE setRequestContextForListEditors FOR RelationFieldEntity -»
+«IF (cardinality ==-1 || cardinality>1) && nestedForm-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».setRequestContext(ctx);	
+«ENDIF -»
+«ENDDEFINE»
+
+
+«REM»---------------------------------------------------- «ENDREM»
+«REM»------------- FIELD DEPENDENT VISIBILITY ----------- «ENDREM»
+«REM»---------------------------------------------------- «ENDREM»
+
+«REM» Test value for field denpendent visibility «ENDREM»
+«DEFINE computeVisibility FOR FieldEntity-»«ENDDEFINE»
+«DEFINE computeVisibility FOR RelationFieldEntity-»
+«IF nestedForm-»
+		«EXPAND template::CommonFieldUtil::propertyName FOR this».computeVisibility(source, allValidation);
+«ENDIF-»
+«ENDDEFINE»
+
+«REM» Behavior for fields dependent visibility «ENDREM»
+«DEFINE fieldDependantVisibility FOR FieldEntity -»
+	«IF fieldDependentVisibility!=null && !fieldDependentVisibility.isEmpty && !hidden-»
+	// the visibility of field «EXPAND template::CommonFieldUtil::propertyName FOR this» depends on the value of other fields
+	if(allValidation ||
+	«FOREACH fieldDependentVisibility AS fdv ITERATOR iter -»
+	source.equals(«EXPAND template::CommonFieldUtil::propertyName FOR fdv.dependencyField»)
+	«IF iter.counter0 < fieldDependentVisibility.size-1 -»||«ENDIF -»
+	«ENDFOREACH -»
+	){
+		if(
+		«FOREACH fieldDependentVisibility AS fdv2 ITERATOR iter2 -»
+			«EXPAND expandTestForVisibility(fdv2.dependencyFieldValue) FOR fdv2.dependencyField-»
+			«IF iter2.counter0 < fieldDependentVisibility.size-1 -»&&«ENDIF -»
+		«ENDFOREACH -»
+		){
+			«EXPAND template::CommonFieldUtil::propertyName FOR this».setVisible(true);
+		}else{
+			«EXPAND template::CommonFieldUtil::propertyName FOR this».setVisible(false);
+		}
+	}
+	«ENDIF»
+«ENDDEFINE»
+
+«REM» Test value for field denpendent visibility «ENDREM»
+«DEFINE expandTestForVisibility(String value) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR TextField-»
+	«REM»«IF this.translatable -»
+	(«name.toFirstLower()».getValue()!=null && «name.toFirstLower()».matches("«value»"))
+	«ELSE -»«ENDREM»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()!=null && «EXPAND template::CommonFieldUtil::propertyName FOR this».getValue().matches("«value»"))
+	«REM»«ENDIF -»«ENDREM»
+«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR IntegerField-»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && NumericUtil.numberMatches("«value»",«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException().intValue()))	
+«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR FloatField-»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!= null && NumericUtil.numberMatches("«value»",«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException().floatValue()))
+«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR DateField-»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!= null && DateUtil.matchesDate("«value»",«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR DateTimeField-»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!= null && DateUtil.matchesDateTime("«value»",«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
+«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR TimeField-»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()!= null && DateUtil.matchesTime("«value»",«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()))
+«ENDDEFINE»
+
+«DEFINE expandTestForVisibility(String value) FOR BooleanField-»
+	«IF value.matches("true") -»
+		(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()!=null && «EXPAND template::CommonFieldUtil::propertyName FOR this».getValue())
+	«ELSE -»
+		(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()!=null && !«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue())
+	«ENDIF -»	
+«ENDDEFINE»
+«DEFINE expandTestForVisibility(String value) FOR EnumField -»
+	(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()!=null && «EXPAND template::CommonFieldUtil::propertyName FOR this».getValue().matches("«value»"))
+«ENDDEFINE»
+
+
+«REM»---------------------------------------------------- «ENDREM»
+«REM»----------------- HIERARCHICAL LISTS --------------- «ENDREM»
+«REM»---------------------------------------------------- «ENDREM»
+
+«REM» Widget configurations implied by the relation fields with hierarchical fields«ENDREM»
+«DEFINE setDataProvider FOR FieldEntity-»«ENDDEFINE»
+«DEFINE setDataProvider FOR RelationFieldEntity-»
+		«IF relationHierarchicalFilter!=null && this.relationHierarchicalFilter.size==2 -»
+	private «entity.name.toFirstUpper()»DataProvider «name.toFirstLower()»DataProvider;
+		«ENDIF-»
+«ENDDEFINE»
+
+
+«REM»«ENDREM»
+«DEFINE onFieldValueChangeHierarchicalFilterCall FOR FieldEntity-»«ENDDEFINE» 
+«DEFINE onFieldValueChangeHierarchicalFilterCall FOR RelationFieldEntity-»
+	«IF this.relationHierarchicalFilter!=null && this.relationHierarchicalFilter.size==2 -»
+	«IF !(cardinality == 1 && getOppositeCardinality(this)==1) && !(cardinality != 1 && getOppositeCardinality(this)==1 && oppositeRelationField!=null) -»
+		/* «name» list content depends on the value of field «this.relationHierarchicalFilter.get(0).name» */
+		if (field.equals(«EXPAND template::CommonFieldUtil::propertyName FOR this.relationHierarchicalFilter.get(0)»)) {
+			«IF !((cardinality==-1 || cardinality>1) && (this.relationHierarchicalFilter.get(0).cardinality==-1 || this.relationHierarchicalFilter.get(0).cardinality>1))-»
+			clear«name.toFirstUpper()»Widget();
+			«ENDIF -»
+			get«name.toFirstUpper()»FilteredBy«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»(«EXPAND template::CommonFieldUtil::propertyName FOR this.relationHierarchicalFilter.get(0)».getValue());		
+		}		
+	«ENDIF -»
+	«ENDIF -»
+«ENDDEFINE»
+
+
+«REM»«ENDREM»
+«DEFINE setRelationFieldHierarchicalFilterBehavior FOR FieldEntity»«ENDDEFINE» 
+«DEFINE setRelationFieldHierarchicalFilterBehavior FOR RelationFieldEntity»
+	«IF this.relationHierarchicalFilter!=null && this.relationHierarchicalFilter.size==2 -»
+		«IF this.relationHierarchicalFilter.get(0).cardinality == 1 -» «REM» filtered by field with card = 1 «ENDREM»
+			«IF cardinality == 1-» «REM» filtered field has card = 1 «ENDREM»
+				«IF getOppositeCardinality(this)!=1 -»
+			/**
+			 * Filters the content of the RelationField «name» by the value of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name»
+			 * @param «this.relationHierarchicalFilter.get(0).name.toFirstLower()» the value of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name» 
+			 */
+			public void get«name.toFirstUpper()»FilteredBy«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»(«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()») {
+					
+				if (p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»!=null) {
+					if(!hideButtons)					
+						«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(false);
+					«name.toFirstLower()»DataProvider.setFilterCriteria(p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()».getId(), "«EXPAND template::CommonFieldUtil::propertyName FOR this.relationHierarchicalFilter.get(1)».id");				
+				} else {
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(true);
+					«name.toFirstLower()»DataProvider.setFilterCriteria(null);
+				}				
+			}			
+				«ENDIF-»
+			«ELSE-» «REM» filtered field has card = n «ENDREM»
+				«REM»«IF !(getOppositeCardinality(this)==1 && oppositeRelationField!=null) -»«ENDREM»
+			/**
+			 * Filters the content of the RelationField «name» by the value of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name»
+			 * @param «this.relationHierarchicalFilter.get(0).name.toFirstLower()» the value of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name» 
+			 */
+			public void get«name.toFirstUpper()»FilteredBy«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»(«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()») {
+				
+				if (p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»!=null) {
+					if(!hideButtons)	
+						«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(false);
+					«name.toFirstLower()»DataProvider.setFilterCriteria(p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()».getId(), "«EXPAND template::CommonFieldUtil::propertyName FOR this.relationHierarchicalFilter.get(1)».id");				
+				} else {
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(true);
+					«name.toFirstLower()»DataProvider.setFilterCriteria(null);
+				}
+			}		
+				«REM» «ENDIF-»«ENDREM»
+			«ENDIF-»		
+		
+		«ELSE -» «REM» filtered by field with card = n «ENDREM»
+		
+			«IF cardinality == 1-» «REM» filtered field has card = 1 «ENDREM»
+				«IF getOppositeCardinality(this)!=1 -»				
+			/**
+			 * Filters the content of the RelationField «name» by the values of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name»
+			 * @param «this.relationHierarchicalFilter.get(0).name.toFirstLower()» the values of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name» 
+			 */
+			public void get«name.toFirstUpper()»FilteredBy«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»(List<«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy> p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()») {
+							
+				// check existing values in field according to criterias
+				«this.entity.name.toFirstUpper()»Proxy existing = «EXPAND template::CommonFieldUtil::propertyName FOR this».getValue();	
+
+				boolean isPartOf= false;
+				if(existing!=null && existing.«EXPAND template::CommonFieldUtil::getterName FOR this.relationHierarchicalFilter.get(1)»()!=null && p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()» != null) {
+					for(«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy filter:p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()») {
+						if (existing.«EXPAND template::CommonFieldUtil::getterName FOR this.relationHierarchicalFilter.get(1)»().getId().equals(filter.getId())) {
+							isPartOf = true;
+							break;
+						}
+					}
+				}
+				if(!isPartOf)
+					clear«name.toFirstUpper()»Widget();
+			
+				// filter values in selection box
+				if (p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()» != null && p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()».size()>0) {
+					
+					Map<String, String> criteriaList = new HashMap<String, String>();					
+					for(«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy filter:p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»)
+						criteriaList.put(filter.getId(), "«EXPAND template::CommonFieldUtil::propertyName FOR this.relationHierarchicalFilter.get(1)».id");
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(false);	
+					«name.toFirstLower()»DataProvider.addFilterCriteria(criteriaList);
+				}
+				else {
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(true);
+					«name.toFirstLower()»DataProvider.setFilterCriteria(null);				
+				}		
+			}							
+				«ENDIF-»
+			«ELSE-» «REM» filtered field has card = n «ENDREM»
+				«IF !(getOppositeCardinality(this)==1 && oppositeRelationField!=null) -»
+			/**
+			 * Filters the content of the RelationField «name» by the values of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name»
+			 * @param «this.relationHierarchicalFilter.get(0).name.toFirstLower()» the values of 
+			 * the RelationField «this.relationHierarchicalFilter.get(0).name» 
+			 */
+			public void get«name.toFirstUpper()»FilteredBy«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»(List<«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy> p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()») {
+							
+				// check existing values in field according to criterias
+				List<«this.entity.name.toFirstUpper()»Proxy> existings = «EXPAND template::CommonFieldUtil::propertyName FOR this».getValue();
+				if(existings!=null) {
+					for («this.entity.name.toFirstUpper()»Proxy existing:existings) {
+						boolean isPartOf= false;
+						if(existing.«EXPAND template::CommonFieldUtil::getterName FOR this.relationHierarchicalFilter.get(1)»()!=null && p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()» != null) {
+							for(«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy filter:p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()») {
+								if (existing.«EXPAND template::CommonFieldUtil::getterName FOR this.relationHierarchicalFilter.get(1)»().getId().equals(filter.getId())) {
+									isPartOf = true;
+									break;
+								}
+							}
+						}
+						if(!isPartOf)
+							«EXPAND template::CommonFieldUtil::propertyName FOR this».removeValue(existing);
+					}
+				}
+				
+				// filter values in selection box
+				if (p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()» != null && p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()».size()>0) {
+					
+					Map<String, String> criteriaList = new HashMap<String, String>();					
+					for(«this.relationHierarchicalFilter.get(0).entity.name.toFirstUpper()»Proxy filter:p«this.relationHierarchicalFilter.get(0).name.toFirstUpper()»)
+						criteriaList.put(filter.getId(), "«EXPAND template::CommonFieldUtil::propertyName FOR this.relationHierarchicalFilter.get(1)».id");
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(false);	
+					«name.toFirstLower()»DataProvider.addFilterCriteria(criteriaList);
+				}
+				else {
+					«EXPAND template::CommonFieldUtil::propertyName FOR this».hideButtons(true);
+					«name.toFirstLower()»DataProvider.setFilterCriteria(null);				
+				}				
+			}		
+				«ENDIF-»
+			«ENDIF-»						
+		«ENDIF -»
+	«ENDIF-»
+«ENDDEFINE»
+«REM» --------------------------------------------------------------------------- «ENDREM»

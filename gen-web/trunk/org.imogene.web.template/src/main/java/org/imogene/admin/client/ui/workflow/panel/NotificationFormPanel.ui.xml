@@ -1,0 +1,14 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:imo1="urn:import:org.imogene.web.client.ui.panel"
+	xmlns:imo2="urn:import:org.imogene.admin.client.ui.workflow">
+
+	<ui:style>
+	</ui:style>
+	
+	<imo1:WrapperPanel ui:field="wrapperPanel">
+		<imo2:NotificationEditorWorkflow ui:field="editorWorkflow"/>
+	</imo1:WrapperPanel>
+
+</ui:UiBinder> 

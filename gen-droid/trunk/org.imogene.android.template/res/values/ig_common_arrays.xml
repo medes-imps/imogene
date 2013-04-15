@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="ig_select_yes_no">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+    <string-array name="ig_entries_period_preference">
+        <item>15 seconds</item>
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+    </string-array>
+    <string-array name="ig_entryvalues_period_preference">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>300</item>
+        <item>900</item>
+    </string-array>
+    <string-array name="ig_period_filter_values">
+        <item>Not Set</item>
+        <item>Period</item>
+        <!-- <item>Equals</item> -->
+    </string-array>
+    <string-array name="ig_numeric_filter_values">
+        <item>Not Set</item>
+        <item>Equals</item>
+        <item>Interval</item>
+    </string-array>
+    <string-array name="ig_string_filter_values">
+        <item>Not Set</item>
+        <item>Contains</item>
+        <item>Equals</item>
+        <item>Start With</item>
+    </string-array>
+
+</resources>

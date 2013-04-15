@@ -1,0 +1,56 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:cv='urn:import:com.google.gwt.user.cellview.client'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.table.pager'>
+
+	<ui:with field='imogResources' type='org.imogene.web.client.css.ImogResources' />
+
+	<ui:style>
+		.dynatable-panel {
+			padding-top: 10px;
+			width: 100%;
+		}
+		
+		.dynatable {
+			width: 100%;
+			min-width: 500px;
+			height: 100%;
+			min-height: 540px;
+			/*table-layout: fixed;*/
+		}
+		
+		.dynatable-select-checkbox {
+			width: 22px;
+		}
+		
+		.with-checkboxes th:first-child {
+			width: 22px;
+			background-color: #FFFFFF;
+		}
+		
+		.rightAlign {
+			text-align: right;
+		}
+		
+		.displayInline {
+			display: inline;
+		}
+		
+		.Dynatable-Button {
+			margin-left: 3px;
+		}
+		
+		@external .dynatable-panel, .dynatable, .dynatable-select-checkbox, .with-checkboxes, .Dynatable-Button;
+	</ui:style>
+
+
+
+
+	<g:VerticalPanel styleName="{style.dynatable-panel} {imogResources.imogStyle.imogenePanel}">
+
+		<cv:DataGrid ui:field="table" stylePrimaryName="{style.dynatable}" />
+
+	</g:VerticalPanel>
+
+
+
+</ui:UiBinder>
