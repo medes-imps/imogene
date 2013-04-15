@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<templates>
+	<template name="Imogene model project" version="1.0">
+		<description>Imogene model project</description>
+		<content>template.zip</content>
+	</template>
+	<parseSet>
+		<exclude extensions="png,gif" />
+	</parseSet>
+</templates>

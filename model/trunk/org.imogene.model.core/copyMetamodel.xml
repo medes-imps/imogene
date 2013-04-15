@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     14/06/2006                                                  
+
+     Medany  copy metamodel into oaw.generator. 
+                                                                      
+     ====================================================================== -->
+<project name="org.imogene.model.core" default="all">
+	
+	<property name="modelName" value="model/ImogeneModel.ecore"/>
+	
+	<!-- ================================= 
+          target: deploy              
+         ================================= -->
+	<target name="all">
+		<!-- Recopie le jar commun medany automatiquement dans la partie server common -->
+		<eclipse.convertPath resourcePath="org.imogene.oaw.generator.common/src/metamodel" property="metamodelPath"/>
+		<mkdir dir="${metamodelPath}"/>
+		<echo message="serverCommonPath is ${serverCommonPath}"/>
+		<copy file="${modelName}" todir="${metamodelPath}"/>
+		<eclipse.refreshLocal resource="org.imogene.oaw.generator.common/src/" depth="infinite"/>
+	</target>
+	
+</project>
