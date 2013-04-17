@@ -80,8 +80,7 @@
 			android:name="org.imogene.android.app.ImageCapture"
 			android:label="@string/ig_camera"
 			android:icon="@drawable/ig_ic_launcher_camera" 
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:configChanges="orientation" >
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.GET_CONTENT"/>
 				<data android:mimeType="image/*"/>
@@ -94,8 +93,7 @@
 			android:name="org.imogene.android.app.VideoCapture"
 			android:label="@string/ig_camcorder"
 			android:icon="@drawable/ig_ic_launcher_video_camera" 
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:configChanges="orientation" >
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.GET_CONTENT"/>
 				<data android:mimeType="video/*"/>

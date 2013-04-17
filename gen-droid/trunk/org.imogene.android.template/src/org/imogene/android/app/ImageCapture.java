@@ -16,34 +16,38 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 public class ImageCapture extends Activity implements SingleMediaListener {
-	
-	public static final String EXTRA_PATH = "ImageCapture_path";
-	
+
 	private static final int ACTIVITY_IMAGE_CAPTURE = 1;
-	
+
 	private File mPath;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ig_media_content);
-		
-		if (savedInstanceState != null)
+
+		if (savedInstanceState != null) {
 			return;
-		
-		File path = null;
-		if (getIntent().hasExtra(EXTRA_PATH)) {
-			path = new File(getIntent().getStringExtra(EXTRA_PATH));
-		} else {
-			path = Paths.PATH_MEDIA;
 		}
-		path.mkdirs();
-		
-		mPath = new File(path, UUID.randomUUID().toString() + ".jpeg");
-		
+
+		Paths.PATH_MEDIA.mkdirs();
+		mPath = new File(Paths.PATH_MEDIA, UUID.randomUUID().toString() + ".jpeg");
+
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPath));
 		startActivityForResult(intent, ACTIVITY_IMAGE_CAPTURE);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString("ImageCapture_path", mPath.getAbsolutePath());
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mPath = new File(savedInstanceState.getString("ImageCapture_path"));
 	}
 	
 	@Override
@@ -59,7 +63,7 @@ public class ImageCapture extends Activity implements SingleMediaListener {
 			finish();
 		}
 	}
-	
+
 	@Override
 	public void onScanComplete(Uri uri) {
 		if (uri != null) {

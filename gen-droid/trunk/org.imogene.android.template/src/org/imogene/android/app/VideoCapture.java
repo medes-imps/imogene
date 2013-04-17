@@ -22,38 +22,27 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 public class VideoCapture extends Activity implements SingleMediaListener {
-	
-	public static final String EXTRA_PATH = "VideoCapture_path";
-	
+
 	private static final int ACTIVITY_VIDEO_CAPTURE = 1;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ig_media_content);
-		
+
 		if (savedInstanceState != null)
 			return;
-		
+
 		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		startActivityForResult(intent, ACTIVITY_VIDEO_CAPTURE);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ACTIVITY_VIDEO_CAPTURE && resultCode == RESULT_OK) {
-			File path = null;
-			if (getIntent().hasExtra(EXTRA_PATH)) {
-				path = new File(getIntent().getStringExtra(EXTRA_PATH));
-			} else {
-				path = Paths.PATH_MEDIA;
-			}
-			path.mkdirs();
-			
-			String fileName = UUID.randomUUID().toString() + ".3gp";
-			
-			File video = new File(path, fileName);
-			
+			Paths.PATH_MEDIA.mkdirs();
+			File video = new File(Paths.PATH_MEDIA, UUID.randomUUID().toString() + ".3gp");
+
 			Uri uri = data.getData();
 			try {
 				InputStream is = getContentResolver().openInputStream(uri);
@@ -66,7 +55,7 @@ public class VideoCapture extends Activity implements SingleMediaListener {
 			}
 
 			getContentResolver().delete(uri, null, null);
-			
+
 			Intent intent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
 			intent.setData(Uri.fromFile(Environment.getExternalStorageDirectory()));
 			sendBroadcast(intent);
@@ -76,7 +65,7 @@ public class VideoCapture extends Activity implements SingleMediaListener {
 			finish();
 		}
 	}
-	
+
 	@Override
 	public void onScanComplete(Uri uri) {
 		if (uri != null) {
