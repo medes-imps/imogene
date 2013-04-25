@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Imogene synchronizer client generator
 Bundle-SymbolicName: org.imogene.client.oaw.generator
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.imogene.client.oaw.generator.Activator
 Bundle-Vendor: Medes-IMPS
 Require-Bundle: org.eclipse.emf.mwe.core,

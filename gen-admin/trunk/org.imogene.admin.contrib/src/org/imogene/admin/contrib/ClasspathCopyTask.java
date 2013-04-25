@@ -22,8 +22,7 @@ public class ClasspathCopyTask implements PostGenerationTask {
 		"gwt-voices",
 		"gwt-servlet",
 		"gwt-user",
-		"gwt-dev",
-		"validation-api"
+		"gwt-dev"
 	};
 
 	@Override

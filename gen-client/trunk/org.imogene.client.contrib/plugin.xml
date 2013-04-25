@@ -5,7 +5,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
-            id="org.imogene.synchro.contrib.objectContribution2"
+            id="org.imogene.client.contrib.generationContribution"
             objectClass="org.eclipse.core.resources.IProject">
          <action
                class="org.imogene.client.contrib.ClientGenerationAction"
