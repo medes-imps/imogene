@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.imogene.studio.contrib.ImogeneStudioPlugin
 Bundle-Vendor: Medes-IMPS
 Require-Bundle: org.imogene.model.core,
- org.imogene.oaw.generator.common;bundle-version="1.0.0",
+ org.imogene.oaw.generator.common,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.ide,

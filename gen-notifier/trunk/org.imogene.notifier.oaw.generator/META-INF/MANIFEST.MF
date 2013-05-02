@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.xpand,
  org.eclipse.emf.mwe.utils,
  org.eclipse.ui,
  org.eclipse.core.runtime,
- org.imogene.oaw.generator.common;bundle-version="1.0.0"
+ org.imogene.oaw.generator.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.emf.mwe.core,
  org.eclipse.xtend,
  org.eclipse.ui,
  org.eclipse.core.runtime,
- org.imogene.oaw.generator.common;bundle-version="1.0.0"
+ org.imogene.oaw.generator.common
 Bundle-ActivationPolicy: lazy
 Export-Package: android.template,
  android.workflow,

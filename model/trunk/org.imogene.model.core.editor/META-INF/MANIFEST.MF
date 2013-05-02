@@ -18,5 +18,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.emf.edit.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
- org.eclipse.ui.forms;bundle-version="3.5.2"
+ org.eclipse.ui.forms
 Bundle-ActivationPolicy: lazy
