@@ -17,24 +17,4 @@
          </action>
       </objectContribution>
    </extension>
-   <extension
-         id="org.imogene.admin.contrib.builder.GWTJarBuilder"
-         name="GWT jar import"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.imogene.admin.contrib.builder.GWTJarBuilder">
-         </run>
-      </builder>
-   </extension>
-	<extension
-         id="org.imogene.admin.contrib.builder.CompatibilityBuilder"
-         name="Compatibility"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.imogene.admin.contrib.builder.CompatibilityBuilder">
-         </run>
-      </builder>
-   </extension>
 </plugin>

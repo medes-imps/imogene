@@ -18,7 +18,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.imogene.studio.contrib.ui.generation.GenerationWizard;
-
+import org.imogene.web.contrib.ClasspathCopyTask;
+import org.imogene.web.contrib.SpecificWizardPage;
+import org.imogene.web.contrib.WebIconCopyTask;
 
 public class WebGenerationAction implements IObjectActionDelegate {
 
@@ -37,22 +39,23 @@ public class WebGenerationAction implements IObjectActionDelegate {
 	@Override
 	public void run(IAction action) {
 		try {
+			SpecificWizardPage specificWizardPage = new SpecificWizardPage();
+			specificWizardPage.setTitle("Admin application properties");
+			specificWizardPage.setDescription("Specific properties for the admin generation process.");
+
 			GenerationWizard wizard = new GenerationWizard();
-			wizard.addPropertiesPage(new SpecificWizardPage());
+			wizard.addPropertiesPage(specificWizardPage);
 			wizard.setWindowTitle("Generation of an Admin project");
 			wizard.setSelectedProject(mSelectedProject);
-			wizard.setArchive(FileLocator
-					.openStream(Activator.getDefault().getBundle(), new Path(
-							"template-site/template.zip"), false));
-			wizard.setDefinition(FileLocator.openStream(Activator.getDefault()
-					.getBundle(), new Path("template-site/templates.xml"),
+			wizard.setArchive(FileLocator.openStream(Activator.getDefault().getBundle(), new Path("template-site/template.zip"),
 					false));
+			wizard.setDefinition(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
+					"template-site/templates.xml"), false));
 			wizard.setWorkflow("workflow/generatorAdmin.mwe");
-			wizard.setIconCopyTask(new WebIconCopyTask());
-			wizard.setPostGenerationTask(new ClasspathCopyTask());
+			wizard.addPostGenerationTask(new WebIconCopyTask());
+			wizard.addPostGenerationTask(new ClasspathCopyTask());
 			fillTheList(wizard);
-			WizardDialog dialog = new WizardDialog(Display.getCurrent()
-					.getActiveShell(), wizard);
+			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 			dialog.open();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -65,17 +68,17 @@ public class WebGenerationAction implements IObjectActionDelegate {
 		mSelection = (IStructuredSelection) selection;
 		mSelectedProject = (IProject) (mSelection).getFirstElement();
 	}
-	
+
 	/**
 	 * Fill the workflow list by reading the dedicated extension point.
 	 */
-	private void fillTheList(GenerationWizard wizard){
+	private void fillTheList(GenerationWizard wizard) {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint extensionPoint = registry.getExtensionPoint("org.imogene.admin.contrib.specificworkflow");
+		IExtensionPoint extensionPoint = registry.getExtensionPoint("org.imogene.admin.contrib.specificworkflow");
 		if (extensionPoint != null) {
-			IExtension[] extensions = extensionPoint.getExtensions();		
+			IExtension[] extensions = extensionPoint.getExtensions();
 			for (IExtension extension : extensions) {
-				for(IConfigurationElement element : extension.getConfigurationElements()){
+				for (IConfigurationElement element : extension.getConfigurationElements()) {
 					wizard.addSpecificWorkflow(element.getAttribute("name"), element.getAttribute("path"));
 				}
 			}

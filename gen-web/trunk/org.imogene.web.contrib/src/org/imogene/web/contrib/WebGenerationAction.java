@@ -48,8 +48,8 @@ public class WebGenerationAction implements IObjectActionDelegate {
 					.getBundle(), new Path("template-site/templates.xml"),
 					false));
 			wizard.setWorkflow("workflow/generatorWeb.mwe");
-			wizard.setIconCopyTask(new WebIconCopyTask());
-			wizard.setPostGenerationTask(new ClasspathCopyTask());
+			wizard.addPostGenerationTask(new WebIconCopyTask());
+			wizard.addPostGenerationTask(new ClasspathCopyTask());
 			fillTheList(wizard);
 			WizardDialog dialog = new WizardDialog(Display.getCurrent()
 					.getActiveShell(), wizard);

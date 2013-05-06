@@ -42,7 +42,7 @@ public class ClientGenerationAction implements IObjectActionDelegate {
 					.getBundle(), new Path("template-site/templates.xml"),
 					false));
 			wizard.setWorkflow("workflow/generatorClient.mwe");
-			wizard.setPostGenerationTask(new ClasspathCopyTask());
+			wizard.addPostGenerationTask(new ClasspathCopyTask());
 			WizardDialog dialog = new WizardDialog(Display.getCurrent()
 					.getActiveShell(), wizard);
 			dialog.open();

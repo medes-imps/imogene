@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -41,13 +43,11 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.imogene.oaw.generator.common.OawGeneratorMedooCommon;
 import org.imogene.studio.contrib.interfaces.GenerationManager;
-import org.imogene.studio.contrib.interfaces.IconCopyTask;
 import org.imogene.studio.contrib.interfaces.PostGenerationTask;
 import org.imogene.studio.contrib.internal.FilePatternSet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 
 @SuppressWarnings("restriction")
 public class GenerateJob extends WorkspaceJob implements GenerationManager {
@@ -65,17 +65,14 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 	private final HashMap<String, String> mProperties;
 
 	private final String mWorkflowPath;
-	
+
 	private final boolean mUnCompressArchive;
 
-	private IconCopyTask mIconCopyTask = null;
-
-	private PostGenerationTask mPostGenerationTask = null;
+	private List<PostGenerationTask> mPostGenerationTasks = null;
 
 	private FilePatternSet patternSet;
 
-	public GenerateJob(IProject selectedProject, String projectName,
-			InputStream archive, InputStream definition,
+	public GenerateJob(IProject selectedProject, String projectName, InputStream archive, InputStream definition,
 			HashMap<String, String> properties, String workflow, boolean uncompress) {
 		super(projectName);
 		mSelectedProject = selectedProject;
@@ -93,7 +90,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 
 		if (!createProject(mProjectName))
 			return Status.CANCEL_STATUS;
-		
+
 		if (mUnCompressArchive) {
 			/* unzip the template and parse the properties */
 			unCompressArchive(project.getLocation().toOSString(), mArchive);
@@ -102,7 +99,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 		}
 
 		/* generation process */
-		if (mWorkflowPath != null) {			
+		if (mWorkflowPath != null) {
 			injectClassLoader();
 			createConsole();
 			HashMap<String, String> slotContents = new HashMap<String, String>();
@@ -111,63 +108,62 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 		}
 
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		
-		/* copy icon */
-		if (mIconCopyTask != null)
-			mIconCopyTask.copyIcons(this);
 
 		/* post generation tasks */
-		if (mPostGenerationTask != null) {
-			mPostGenerationTask.onPostGeneration(this);
+		if (mPostGenerationTasks != null) {
+			for (PostGenerationTask task : mPostGenerationTasks) {
+				task.onPostGeneration(this);
+			}
 		}
-		
+
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		
-		
+
 		project.close(monitor);
 		project.open(monitor);
 
-		//organizeImport(project, monitor);
+		// organizeImport(project, monitor);
 
 		return Status.OK_STATUS;
 	}
 
-	public void setIconCopyTask(IconCopyTask iconCopyTask) {
-		mIconCopyTask = iconCopyTask;
+	public void addPostGenerationTask(PostGenerationTask task) {
+		if (mPostGenerationTasks == null) {
+			mPostGenerationTasks = new Vector<PostGenerationTask>();
+		}
+		mPostGenerationTasks.add(task);
 	}
 
-	public void setPostGenerationTask(PostGenerationTask postGenerationTask) {
-		mPostGenerationTask = postGenerationTask;
+	public void setPostGenerationTasks(List<PostGenerationTask> tasks) {
+		mPostGenerationTasks = tasks;
 	}
 
 	public IProject getGeneratedProject() {
-		return ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(mProjectName);
+		return ResourcesPlugin.getWorkspace().getRoot().getProject(mProjectName);
 	}
 
 	public IProject getSelectedProject() {
 		return mSelectedProject;
 	}
 
-//	OLD VERSION THAT DIDN'T KEEP THE PROJECT
-//	/** create the new project into the workspace */
-//	private boolean createProject(final String projectName) {
-//		try {
-//			/* create the new project */
-//			IProject project = ResourcesPlugin.getWorkspace().getRoot()
-//					.getProject(projectName);
-//			if (project.exists())
-//				project.delete(true, true, null);
-//			IProjectDescription desc = project.getWorkspace()
-//					.newProjectDescription(projectName);
-//			project.create(desc, null);
-//			project.open(null);
-//			return true;
-//		} catch (CoreException ce) {
-//			ce.printStackTrace();
-//			return false;
-//		}
-//	}
+	// OLD VERSION THAT DIDN'T KEEP THE PROJECT
+	// /** create the new project into the workspace */
+	// private boolean createProject(final String projectName) {
+	// try {
+	// /* create the new project */
+	// IProject project = ResourcesPlugin.getWorkspace().getRoot()
+	// .getProject(projectName);
+	// if (project.exists())
+	// project.delete(true, true, null);
+	// IProjectDescription desc = project.getWorkspace()
+	// .newProjectDescription(projectName);
+	// project.create(desc, null);
+	// project.open(null);
+	// return true;
+	// } catch (CoreException ce) {
+	// ce.printStackTrace();
+	// return false;
+	// }
+	// }
 
 	/** create the new project into the workspace if it doesn't exist */
 	private boolean createProject(final String projectName) {
@@ -183,11 +179,10 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
-	
-	private boolean unCompressArchive(String projectLocation,
-			InputStream archive) {
+
+	private boolean unCompressArchive(String projectLocation, InputStream archive) {
 		try {
 			ZipInputStream zis = new ZipInputStream(archive);
 			ZipEntry ze = zis.getNextEntry();
@@ -237,12 +232,10 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 		String value = mProperties.get(param);
 
 		if (value != null)
-			return name.substring(0, end + 1).replace(
-					DELIMITER + param + DELIMITER, value)
+			return name.substring(0, end + 1).replace(DELIMITER + param + DELIMITER, value)
 					+ getParsedString(name.substring(end + 1));
 		else
-			return name.substring(0, end + 1)
-					+ getParsedString(name.substring(end + 1));
+			return name.substring(0, end + 1) + getParsedString(name.substring(end + 1));
 	}
 
 	private void parseTemplate() {
@@ -269,8 +262,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 				return;
 			}
 
-			if (patternSet != null
-					&& !patternSet.mustParse(file.getAbsolutePath()))
+			if (patternSet != null && !patternSet.mustParse(file.getAbsolutePath()))
 				return;
 
 			FileInputStream fis = new FileInputStream(file);
@@ -331,23 +323,18 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 
 	// inject the classloader associated with the current class
 	private void injectClassLoader() {
-		ResourceLoaderFactory
-				.setCurrentThreadResourceLoader(new ResourceLoaderImpl(
-						OawGeneratorMedooCommon.getDefault().getClass()
-								.getClassLoader()));
-		Thread.currentThread().setContextClassLoader(
-				GenerateJob.class.getClassLoader());
+		ResourceLoaderFactory.setCurrentThreadResourceLoader(new ResourceLoaderImpl(OawGeneratorMedooCommon.getDefault()
+				.getClass().getClassLoader()));
+		Thread.currentThread().setContextClassLoader(GenerateJob.class.getClassLoader());
 	}
 
 	// Setup a console for the log output.
 	private void createConsole() {
 		MessageConsole console = null;
-		IConsole[] consoles = ConsolePlugin.getDefault().getConsoleManager()
-				.getConsoles();
+		IConsole[] consoles = ConsolePlugin.getDefault().getConsoleManager().getConsoles();
 		for (IConsole c : consoles) {
 			if (c.getName().equals(Messages.GenerateJob_1)) {
-				ConsolePlugin.getDefault().getConsoleManager().showConsoleView(
-						c);
+				ConsolePlugin.getDefault().getConsoleManager().showConsoleView(c);
 				console = (MessageConsole) c;
 				console.clearConsole();
 				break;
@@ -356,10 +343,8 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 
 		if (console == null) {
 			console = new MessageConsole(Messages.GenerateJob_2, null);
-			ConsolePlugin.getDefault().getConsoleManager().addConsoles(
-					new IConsole[] { console });
-			ConsolePlugin.getDefault().getConsoleManager().showConsoleView(
-					console);
+			ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { console });
+			ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
 
 			final MessageConsoleStream stream = console.newMessageStream();
 
@@ -375,7 +360,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 			});
 		}
 	}
-	
+
 	private void organizeImport(final IProject project, final IProgressMonitor monitor) throws JavaModelException {
 		IJavaProject jProject = JavaCore.create(project);
 		for (IPackageFragment fragment : jProject.getPackageFragments()) {

@@ -13,7 +13,7 @@
 	<jar file="jaxb-impl.jar"/>
 	
 	<!-- database JDBC -->
-	<jar file="postgresql-9.0-801.jdbc3.jar"/>
+	<jar file="postgresql-9.1-901.jdbc4.jar"/>
 	<jar file="c3p0-0.9.1.2.jar"/>	
 	<jar file="hibernate3.jar"/>
 	
