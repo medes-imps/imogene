@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.imogene.lib</groupId>
 	<artifactId>sync-client</artifactId>
-	<version>1.2.8</version>
+	<version>1.3.0</version>
 	<name>org.imogene.lib.sync.client</name>
 	<packaging>jar</packaging>
 	<properties>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.imogene.lib</groupId>
 			<artifactId>sync-common</artifactId>
-			<version>1.1.12</version>
+			<version>1.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>

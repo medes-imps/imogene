@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.imogene.lib</groupId>
 	<artifactId>sync-server</artifactId>
-	<version>1.1.19</version>
+	<version>1.3.0</version>
 	<name>org.imogene.lib.sync.server</name>
 	<packaging>jar</packaging>
 	<properties>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.imogene.lib</groupId>
 			<artifactId>sync-common</artifactId>
-			<version>1.1.12</version>
+			<version>1.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>

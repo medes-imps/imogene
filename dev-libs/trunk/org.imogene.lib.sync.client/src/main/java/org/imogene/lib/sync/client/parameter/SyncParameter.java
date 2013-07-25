@@ -14,6 +14,7 @@ import org.imogene.lib.common.sync.entity.SynchronizableEntity;
 
 /**
  * This interface describe the synchronization parameter object.
+ * 
  * @author MEDES-IMPS
  */
 @Entity
@@ -49,12 +50,15 @@ public class SyncParameter implements Serializable {
 
 	private String type;
 
+	private long offset;
+
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "syncparameter_synchronizables", joinColumns = @JoinColumn(name = "syncparameter_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "synchronizableentity_id", referencedColumnName = "id"))
 	private Set<SynchronizableEntity> synchronizables;
 
 	/**
 	 * Id of the parameters snapshot.
+	 * 
 	 * @return the snapshot id
 	 */
 	public String getId() {
@@ -63,6 +67,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the id of the parameters (does nothing actually)
+	 * 
 	 * @param id identifier
 	 */
 	public void setId(String id) {
@@ -70,6 +75,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the user login
+	 * 
 	 * @return user login
 	 */
 	public String getLogin() {
@@ -78,6 +84,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the user login
+	 * 
 	 * @param login the user login
 	 */
 	public void setLogin(String login) {
@@ -86,6 +93,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the user password
+	 * 
 	 * @return user password
 	 */
 	public String getPassword() {
@@ -94,6 +102,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the user password
+	 * 
 	 * @param password user password
 	 */
 	public void setPassword(String password) {
@@ -102,6 +111,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the terminal id
+	 * 
 	 * @return the terminal id
 	 */
 	public String getTerminalId() {
@@ -110,6 +120,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the terminal id
+	 * 
 	 * @param terminalId the terminal id
 	 */
 	public void setTerminalId(String terminalId) {
@@ -118,6 +129,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the class name of the entities that could be synchronized
+	 * 
 	 * @return Array of class names
 	 */
 	public Set<SynchronizableEntity> getSynchronizables() {
@@ -126,6 +138,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the class names of entities that could be synchronized
+	 * 
 	 * @param synchronizables array of synchronizables entities.
 	 */
 	public void setSynchronizables(Set<SynchronizableEntity> synchronizables) {
@@ -134,6 +147,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the synchronization type
+	 * 
 	 * @return the synchronization type
 	 */
 	public String getType() {
@@ -142,6 +156,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the synchronization type
+	 * 
 	 * @param type the synchronization type
 	 */
 	public void setType(String type) {
@@ -150,6 +165,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the synchronization server URL
+	 * 
 	 * @return the synchronization server URL
 	 */
 	public String getUrl() {
@@ -158,6 +174,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the synchronization server URL
+	 * 
 	 * @param the synchronization server URL
 	 */
 	public void setUrl(String url) {
@@ -165,7 +182,8 @@ public class SyncParameter implements Serializable {
 	}
 
 	/**
-	 * Indicates whether the synchronization process should be repeated or not 
+	 * Indicates whether the synchronization process should be repeated or not
+	 * 
 	 * @return if the synchronization is looped
 	 */
 	public boolean isLoop() {
@@ -174,6 +192,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the synchronization process repeatable
+	 * 
 	 * @param loop if the process is repeatable
 	 */
 	public void setLoop(boolean loop) {
@@ -182,6 +201,7 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Get the period between two synchronizations
+	 * 
 	 * @return the period in ms
 	 */
 	public int getPeriod() {
@@ -190,9 +210,28 @@ public class SyncParameter implements Serializable {
 
 	/**
 	 * Set the synchronization period
+	 * 
 	 * @param period the period in ms
 	 */
 	public void setPeriod(int period) {
 		this.period = period;
+	}
+
+	/**
+	 * Get the time offset between the device and the NTP server
+	 * 
+	 * @return the time offset in ms
+	 */
+	public long getOffset() {
+		return offset;
+	}
+
+	/**
+	 * Set the time offset between the device and an NTP server
+	 * 
+	 * @param offset the time offset in ms
+	 */
+	public void setOffset(long offset) {
+		this.offset = offset;
 	}
 }
