@@ -203,7 +203,7 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE declareFilter(String prefix) FOR RelationFieldEntity-»
 	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
 	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND declareFilter(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_") FOR f-»		
+	 	«EXPAND declareFilter(prefix + name.toLowerCase() + "_") FOR f-»		
 	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -233,7 +233,7 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE resetWidget(String prefix) FOR RelationFieldEntity-»
 	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
 	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND resetWidget(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_") FOR f-»		
+	 	«EXPAND resetWidget(prefix + name.toLowerCase() + "_") FOR f-»
 	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -290,7 +290,7 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE createWidget(String prefix, String projectName) FOR RelationFieldEntity-»
 	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
 	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND createWidget(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_", projectName) FOR f-»		
+	 	«EXPAND createWidget(prefix + name.toLowerCase() + "_", projectName) FOR f-»		
 	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -388,7 +388,7 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR RelationFieldEntity-»
 	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
 	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND configureCriteria(projectName, p, parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_", property + name.toFirstLower() + ".") FOR f-»		
+	 	«EXPAND configureCriteria(projectName, p, prefix + name.toLowerCase() + "_", property + name.toFirstLower() + ".") FOR f-»		
 	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -424,7 +424,7 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE setAccess(String prefix) FOR RelationFieldEntity-»
 	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
 	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND setAccess(parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_") FOR f-»		
+	 	«EXPAND setAccess(prefix + name.toLowerCase() + "_") FOR f-»		
 	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»

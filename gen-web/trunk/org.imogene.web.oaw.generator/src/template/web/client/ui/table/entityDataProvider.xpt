@@ -411,7 +411,7 @@ result.with("«EXPAND template::CommonFieldUtil::propertyName FOR parent».«EXPAND
 «DEFINE createListCriteria(Project p, String prefix, String property, String projectName) FOR RelationFieldEntity-»
 	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
 	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND createListCriteria(p, parentGroup.parentCard.name.toLowerCase() + "_" + entity.name.toLowerCase() + "_", property + name.toFirstLower() + ".", projectName) FOR f-»		
+	 	«EXPAND createListCriteria(p, prefix + name.toFirstLower() + "_", property + name.toFirstLower() + ".", projectName) FOR f-»		
 	«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
