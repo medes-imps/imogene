@@ -311,6 +311,7 @@ public class OptimizedSynchronizerImpl implements OptimizedSynchronizer {
 					FileInputStream fis = new FileInputStream(outFile);
 					long skipped = fis.skip(bytesReceived);
 					if (skipped != bytesReceived) {
+						fis.close();
 						throw new SynchronizationException("Error resuming the session: " + bytesReceived
 								+ " bytes already received, " + skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
 					}

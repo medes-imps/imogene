@@ -37,7 +37,7 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 		String flvId = req.getParameter("flvId");
 		String mp3Id = req.getParameter("mp3Id");
 		String thumbId = req.getParameter("thumbId");
-		String barcodeId = req.getParameter("barcodeId");
+		// String barcodeId = req.getParameter("barcodeId");
 
 		if (paramId != null) {
 			Binary binary = binaryHandler.getBinary(paramId);

@@ -4,7 +4,6 @@ import javax.servlet.http.HttpSession;
 
 import org.imogene.lib.common.entity.ImogActorImpl;
 import org.imogene.lib.common.entity.SessionInfo;
-import org.imogene.web.server.security.ImogSecurityPolicy;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.ServerConstants;
 

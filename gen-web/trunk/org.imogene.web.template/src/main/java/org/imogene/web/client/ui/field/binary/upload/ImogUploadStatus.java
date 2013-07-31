@@ -49,7 +49,7 @@ public class ImogUploadStatus implements IUploadStatus {
 		 * 
 		 * @see gwtupload.client.HasProgress#setProgress(int, int)
 		 */
-		public void setProgress(int done, int total) {
+		public void setProgress(long done, long total) {
 			if (statusBar == null)
 				return;
 			int percent = IUploader.Utils.getPercent(done, total);
@@ -66,15 +66,15 @@ public class ImogUploadStatus implements IUploadStatus {
 	private UploadStatusConstants i18nStrs = GWT.create(UploadStatusConstants.class);
 
 	private Set<CancelBehavior> cancelCfg = DEFAULT_CANCEL_CFG;
-	
+
 	protected Panel panel = new VerticalPanel();
-	
+
 	protected Panel topPanel = new HorizontalPanel();
-	
+
 	protected Label fileNameLabel = new Label();
-	
+
 	protected Label statusLabel = new Label();
-	
+
 	protected Label cancelLabel = new Label(" ");
 
 	/**
@@ -119,8 +119,8 @@ public class ImogUploadStatus implements IUploadStatus {
 	 * 
 	 * @see gwtupload.client.IUploadStatus#setProgress(int, int)
 	 */
-	public void setProgress(int done, int total) {
-		int percent = total > 0 ? done * 100 / total : 0;
+	public void setProgress(long done, long total) {
+		long percent = total > 0 ? done * 100 / total : 0;
 		setPercent(percent);
 		if (prg != null) {
 			if (prg instanceof HasProgress)
@@ -152,7 +152,7 @@ public class ImogUploadStatus implements IUploadStatus {
 	 * 
 	 * @param percent
 	 */
-	public void setPercent(int percent) {
+	public void setPercent(long percent) {
 		setStatus(status);
 	}
 
@@ -213,6 +213,8 @@ public class ImogUploadStatus implements IUploadStatus {
 			break;
 		case ERROR:
 			updateStatusPanel(false, i18nStrs.uploadStatusError());
+			break;
+		default:
 			break;
 		}
 	}
@@ -281,9 +283,7 @@ public class ImogUploadStatus implements IUploadStatus {
 	@Override
 	public void setStatusChangedHandler(UploadStatusChangedHandler handler) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
 
 }

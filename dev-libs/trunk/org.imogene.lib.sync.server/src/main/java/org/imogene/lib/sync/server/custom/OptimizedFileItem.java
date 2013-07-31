@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.io.IOUtils;
 
@@ -227,6 +228,18 @@ public class OptimizedFileItem implements FileItem {
 	@Override
 	public String getString() {
 		return new String(get());
+	}
+
+	@Override
+	public FileItemHeaders getHeaders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setHeaders(FileItemHeaders headers) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

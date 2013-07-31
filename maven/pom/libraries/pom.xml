@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.imogene</groupId>
+		<artifactId>imogene-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+	<groupId>org.imogene.lib</groupId>
+	<artifactId>imogene-libs-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Imogene Libraries Parent Module</name>
+
+	<modules>
+		<module>../../org.imogene.lib.common</module>
+		<module>../../org.imogene.lib.encryption</module>
+		<module>../../org.imogene.lib.sync.common</module>
+		<module>../../org.imogene.lib.sync.client</module>
+		<module>../../org.imogene.lib.sync.server</module>
+	</modules>
+
+	<distributionManagement>
+		<repository>
+			<id>nexus</id>
+			<url>http://kamkam.medes.fr:9081/nexus/content/repositories/imogene-snapshots/</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

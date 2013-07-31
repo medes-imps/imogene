@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.role.ImogRole;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -24,7 +24,7 @@ public class ImogUserDetails implements UserDetails {
 	public Collection<GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> ga = new ArrayList<GrantedAuthority>();
 		for(ImogRole role : actor.getRoles()){
-			ga.add(new GrantedAuthorityImpl(role.getId()));
+			ga.add(new SimpleGrantedAuthority(role.getId()));
 		}
 		return ga;
 	}

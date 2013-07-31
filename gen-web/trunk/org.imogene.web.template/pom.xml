@@ -1,109 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<!-- POM file generated with GWT webAppCreator -->
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.imogene</groupId>
-	<artifactId>org.imogene.web.template</artifactId>
+	<parent>
+		<groupId>org.imogene</groupId>
+		<artifactId>imogene-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../pom</relativePath>
+	</parent>
+	<artifactId>web-template</artifactId>
+	<name>org.imogene.web.template</name>
 	<packaging>war</packaging>
-	<version>0.0.1</version>
-
+	
 	<properties>
-		<gwtVersion>2.4.0</gwtVersion>
-		<springVersion>3.0.5.RELEASE</springVersion>
-		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 	</properties>
 
 	<dependencies>
-
 		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<version>${gwtVersion}</version>
+			<version>${gwt.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.web.bindery</groupId>
+			<artifactId>requestfactory-apt</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.web.bindery</groupId>
 			<artifactId>requestfactory-server</artifactId>
-			<version>${gwtVersion}</version>
+			<version>${gwt.version}</version>
 		</dependency>
 
 		<!-- GWT voice -->
 		<dependency>
 			<groupId>com.allen-sauer.gwt.voices</groupId>
 			<artifactId>gwt-voices</artifactId>
-			<version>2.1.8</version>
+			<version>${gwt.voices.version}</version>
 		</dependency>
 
 		<!-- GWT upload -->
 		<dependency>
 			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
-			<version>0.6.4</version>
-		</dependency>
-
-		<!-- Validation -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>4.3.0.Final</version>
+			<version>${gwt.upload.version}</version>
 		</dependency>
 
 		<!-- Imogene -->
 		<dependency>
 			<groupId>org.imogene.lib</groupId>
-			<artifactId>common-library</artifactId>
-			<version>1.1.5</version>
+			<artifactId>encryption</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.imogene.lib</groupId>
-			<artifactId>encryption</artifactId>
-			<version>1.0.1</version>
+			<artifactId>common-library</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Spring framework -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.version}</version>
 		</dependency>
 
 
@@ -111,59 +109,58 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-acl</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
-			<version>${springVersion}</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.6.10.Final</version>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<!--JDBC -->
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
+			<version>${c3p0.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
 
 		<!-- logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
+			<version>${slf4j.log4j12.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.allen-sauer.gwt.dnd</groupId>
 			<artifactId>gwt-dnd</artifactId>
-			<version>3.1.2-fix</version>
-		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.1-901.jdbc4</version>
+			<version>${gwt.dnd.version}</version>
 		</dependency>
 
 
@@ -171,7 +168,7 @@
 		<dependency>
 			<groupId>org.eclipse.birt.runtime</groupId>
 			<artifactId>org.eclipse.birt.runtime</artifactId>
-			<version>4.2.0</version>
+			<version>${eclipse.birt.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.eclipse.birt.runtime.3_7_1</groupId>
@@ -187,34 +184,34 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<!-- dependencies provided directly by apache -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${commons.httpclient.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.0.4</version>
+			<version>${commons.logging.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
+			<version>${commons.codec.version}</version>
 		</dependency>
+
 		<!-- modified batik.pdf dependency provided by medes -->
 		<dependency>
 			<groupId>fr.medes</groupId>
 			<artifactId>org.apache.batik.pdf</artifactId>
-			<version>1.6.0</version>
+			<version>${medes.batik.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.medes</groupId>
 			<artifactId>org.eclipse.birt.report.engine.emitter.csv</artifactId>
-			<version>1.0.0.201110121016</version>
-		</dependency>
-
-		<!-- MISC -->
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<version>${medes.birt.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -246,7 +243,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwtVersion}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -258,9 +254,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<extraJvmArgs>-Dimogene.identity.path=/tmp/imogene/identity
-						-Dimogene.binary.path=/tmp/imogene/binary -Xmx1024m
-						-XX:MaxPermSize=512m</extraJvmArgs>
+					<extraJvmArgs>-Dimogene.identity.path=/tmp/imogene/identity -Dimogene.binary.path=/tmp/imogene/binary -Xmx2048m -XX:MaxPermSize=512m</extraJvmArgs>
 					<runTarget>TBLabWebIndex.jsp</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 					<port>8889</port>
@@ -270,9 +264,7 @@
 
 			<!-- WAR plugin -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -297,9 +289,7 @@
 
 			<!-- java compiler -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -308,7 +298,7 @@
 					<dependency>
 						<groupId>com.google.web.bindery</groupId>
 						<artifactId>requestfactory-apt</artifactId>
-						<version>${gwtVersion}</version>
+						<version>${gwt.version}</version>
 					</dependency>
 				</dependencies>
 
@@ -318,7 +308,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
 				<executions>
 					<execution>
 						<id>add-source</id>
@@ -351,11 +340,10 @@
 
 			<!-- Maven eclipse -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
 				<configuration>
-
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
 					<additionalBuildcommands>
 						<buildcommand>com.google.gdt.eclipse.core.webAppProjectValidator</buildcommand>
 						<buildcommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildcommand>
@@ -371,7 +359,7 @@
 							<content>
 								<![CDATA[<factorypath>
 <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
-<factorypathentry kind="WKSPJAR" id="/${project.artifactId}/gwt-deps/requestfactory-apt.jar" enabled="true" runInBatchMode="false"/>
+<factorypathentry kind="WKSPJAR" id="/${project.name}/gwt-deps/requestfactory-apt.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>]]>
 							</content>
 						</file>
@@ -387,8 +375,7 @@ org.eclipse.jdt.apt.reconcileEnabled=true]]>
 						</file>
 						<file>
 							<name>.settings/org.eclipse.jdt.core.prefs</name>
-							<!-- instead of doing this add org.eclipse.jdt.core.compiler.processAnnotations=enabled 
-								to the file directly -->
+							<!-- instead of doing this add org.eclipse.jdt.core.compiler.processAnnotations=enabled to the file directly -->
 							<content>
 								<![CDATA[org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
 eclipse.preferences.version=1
@@ -452,12 +439,10 @@ warSrcDirIsOutput=false]]>
 
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
