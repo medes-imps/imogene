@@ -12,7 +12,7 @@ public class Constants {
 	
 	public static final String WS_SOAP_DESC_PATH="libs/webservices_soap.xml";
 	
-	public static final String SYNC_DESC_PATH="libs/synchro.xml";
+	public static final String SYNC_DESC_PATH="libs/sync-server.xml";
 	
 	public static final String SYNC_CLIENT_DESC_PATH="libs/sync-client.xml";
 	

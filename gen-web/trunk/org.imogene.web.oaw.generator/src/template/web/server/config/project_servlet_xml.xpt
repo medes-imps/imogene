@@ -2,13 +2,15 @@
 «DEFINE generate(String projectName) FOR Project-»
 «FILE projectName.toFirstUpper() + "-servlet.xml"-»
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
-
 <!--
   - DispatcherServlet application context for the Spring web MVC
   - implementation of «projectName.toFirstUpper()» web tier.
   --> 
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
 	<!-- url handler for Spring 'classic' controller -->
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

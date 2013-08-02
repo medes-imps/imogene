@@ -33,10 +33,10 @@ public class ClassContainerInitializer extends
 			con = new NotifierClasspathContainer();
 		}
 		else if(p.hasNature(SynchroShadow.NATURE)){
-			con = new SynchroClasspathContainer();
+			con = new SyncServerClasspathContainer();
 		}
 		else if(p.hasNature(SynchroClientShadow.NATURE)){
-			con = new SynchroClientClasspathContainer(project);
+			con = new SyncClientClasspathContainer(project);
 		}
 		else if(p.hasNature(WebShadow.NATURE)){
 			con = new WebAdminClasspathContainer();
