@@ -60,7 +60,7 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		url = "http://localhost:port/TBLabWeb".replace("port", System.getProperty("jetty.port"));
+		url = "http://localhost:port/extbcam".replace("port", System.getProperty("jetty.port"));
 
 		ScrolledForm form = toolkit.createScrolledForm(parent);
 		form.setText(Messages.dashboard_form_title);
