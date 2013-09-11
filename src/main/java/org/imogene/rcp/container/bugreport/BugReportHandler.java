@@ -25,8 +25,7 @@ public class BugReportHandler extends AbstractHandler {
 				Messages.bugreport_send_dialog_message, Messages.bugreport_send_dialog_message_hint, null) {
 
 			/**
-			 * Override this method to make the text field multilined and give
-			 * it a scroll bar. But...
+			 * Override this method to make the text field multilined and give it a scroll bar. But...
 			 */
 			@Override
 			protected int getInputTextStyle() {
@@ -34,8 +33,7 @@ public class BugReportHandler extends AbstractHandler {
 			}
 
 			/**
-			 * ...it still is just one line high. This hack is not very nice,
-			 * but at least it gets the job done... ;o)
+			 * ...it still is just one line high. This hack is not very nice, but at least it gets the job done... ;o)
 			 */
 			@Override
 			protected Control createDialogArea(Composite parent) {
@@ -58,7 +56,8 @@ public class BugReportHandler extends AbstractHandler {
 					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 						@Override
 						public void run() {
-							MessageDialog.openInformation(getShell(), Messages.bugreport_send_dialog_title, Messages.bugreport_send_dialog_success);
+							MessageDialog.openInformation(getShell(), Messages.bugreport_send_dialog_title,
+									Messages.bugreport_send_dialog_success);
 						}
 					});
 				}

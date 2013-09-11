@@ -11,7 +11,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-	
+
 	private static final Logger logger = Logger.getLogger(Activator.class.getName());
 
 	// The plug-in ID
@@ -22,7 +22,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// XXX Shared instance of bundle context
 	public static BundleContext bundleContext;
-	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -48,8 +48,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path
+	 * Returns an image descriptor for the image file at the given plug-in relative path
 	 * 
 	 * @param path the path
 	 * @return the image descriptor
@@ -57,5 +56,5 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-	
+
 }

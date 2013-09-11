@@ -1,7 +1,7 @@
 package org.imogene.rcp.container.bugreport;
 
 public interface IBugReportConstants {
-	
+
 	public static final String LOG_SERVER = "log.server"; //$NON-NLS-1$
 	public static final String LOG_DATABASE = "log.database"; //$NON-NLS-1$
 	public static final String LOG_WEBAPP = "log.webapp"; //$NON-NLS-1$
@@ -16,5 +16,5 @@ public interface IBugReportConstants {
 	public static final String SMTP_USER = "smtp.user"; //$NON-NLS-1$
 	public static final String SMTP_PASSWORD = "smtp.password"; //$NON-NLS-1$
 	public static final String SMTP_DESTINATION = "smtp.destination"; //$NON-NLS-1$
-	
+
 }

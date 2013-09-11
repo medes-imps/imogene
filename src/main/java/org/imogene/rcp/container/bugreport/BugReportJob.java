@@ -30,10 +30,10 @@ import org.imogene.rcp.container.Activator;
 import org.imogene.rcp.container.i18n.Messages;
 
 public class BugReportJob extends Job {
-	
+
 	private IPreferenceStore mPreferences;
 	private String mMessageBody;
-	
+
 	public BugReportJob(String body) {
 		super(Messages.bugreport_send_dialog_title);
 		mMessageBody = body;
@@ -45,11 +45,12 @@ public class BugReportJob extends Job {
 		mPreferences = Activator.getDefault().getPreferenceStore();
 
 		File logs = null;
-		
+
 		try {
 			MimeMessage message = new MimeMessage(getSession());
 			message.setFrom();
-			message.addRecipient(RecipientType.TO, new InternetAddress(mPreferences.getString(IBugReportConstants.SMTP_DESTINATION)));
+			message.addRecipient(RecipientType.TO,
+					new InternetAddress(mPreferences.getString(IBugReportConstants.SMTP_DESTINATION)));
 			message.setSubject(Messages.bugreport_send_dialog_title);
 
 			Multipart multipart = new MimeMultipart();

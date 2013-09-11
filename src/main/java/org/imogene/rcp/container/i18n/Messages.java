@@ -48,7 +48,7 @@ public class Messages extends NLS {
 
 	private Messages() {
 	}
-	
+
 	/**
 	 * Bind the given message's substitution locations with the given string values.
 	 * 
