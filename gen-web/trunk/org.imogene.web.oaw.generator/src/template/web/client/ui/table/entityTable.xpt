@@ -359,6 +359,12 @@ private «projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUppe
 
 
 «REM» Get value for column «ENDREM»
+«DEFINE getColumnValue FOR GeoField-»
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
+			value = "";
+		else
+			value = object.«EXPAND template::CommonFieldUtil::getterName FOR this»().getLatitude() + "," + object.«EXPAND template::CommonFieldUtil::getterName FOR this»().getLongitude();
+«ENDDEFINE»
 «DEFINE getColumnValue FOR FieldEntity-»
 		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
 			value = "";
