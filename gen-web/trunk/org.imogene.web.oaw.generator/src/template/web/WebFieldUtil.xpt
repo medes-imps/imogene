@@ -49,7 +49,7 @@
 «DEFINE formFieldType FOR PhotoField»ImogPhotoBox«ENDDEFINE»
 «DEFINE formFieldType FOR SoundField»ImogAudioBox«ENDDEFINE»
 «DEFINE formFieldType FOR BooleanField»ImogBooleanBox«ENDDEFINE»
-«DEFINE formFieldType FOR TextAreaField»«IF this.translatable»ImogLocalizedTextBox«ELSE»ImogTextAreaBox«ENDIF»«ENDDEFINE»
+«DEFINE formFieldType FOR TextAreaField»«IF this.translatable»ImogLocalizedTextAreaBox«ELSE»ImogTextAreaBox«ENDIF»«ENDDEFINE»
 «DEFINE formFieldType FOR AddressField»ImogAddressBox«ENDDEFINE»
 «DEFINE formFieldType FOR IntegerField»ImogIntegerBox«ENDDEFINE»
 «DEFINE formFieldType FOR FloatField»ImogDoubleBox«ENDDEFINE»
@@ -84,7 +84,7 @@
 «DEFINE formFieldTypeXml FOR PhotoField»ImogPhotoBox«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR SoundField»ImogAudioBox«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR BooleanField»ImogBooleanBox«ENDDEFINE»
-«DEFINE formFieldTypeXml FOR TextAreaField»«IF this.translatable»ImogLocalizedTextBox«ELSE»ImogTextAreaBox«ENDIF»«ENDDEFINE»
+«DEFINE formFieldTypeXml FOR TextAreaField»«IF this.translatable»ImogLocalizedTextAreaBox«ELSE»ImogTextAreaBox«ENDIF»«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR AddressField»ImogAddressBox«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR IntegerField»ImogIntegerBox«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR FloatField»ImogDoubleBox«ENDDEFINE»
@@ -124,6 +124,3 @@ public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpp
 «DEFINE setterDeclarationForProxyFieldWithLowerUpperCaseFirstTwoChar FOR GeoField-»
 public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»(«EXPAND entityProxyFieldType FOR this» value);
 «ENDDEFINE»
-
-
-

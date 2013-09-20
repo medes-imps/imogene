@@ -21,6 +21,7 @@ import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper(
 import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.«projectName.toLowerCase()».client.ui.field.ImogLocalizedTextBox;
+import org.imogene.«projectName.toLowerCase()».client.ui.field.ImogLocalizedTextAreaBox;
 import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
 import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
 
