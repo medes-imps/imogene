@@ -275,6 +275,23 @@
 		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
 	</component>
 	
+	<!-- GWT LocalizedTextArea field -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::client::ui::field::localizedTextAreaBox::generate("${packageName}","${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
+	
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::client::ui::field::localizedTextAreaBox_xml::generate("${packageName}","${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+	</component>
+	
 	<!-- Form Types -->
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
