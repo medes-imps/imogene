@@ -6,7 +6,7 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="
      http://www.springframework.org/schema/beans 
-     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- notification for the creation or the modification of bean -->
 	<bean id="notifyAfterSave" class="org.imogene.notif.aop.NotificationSaveInterceptor">
