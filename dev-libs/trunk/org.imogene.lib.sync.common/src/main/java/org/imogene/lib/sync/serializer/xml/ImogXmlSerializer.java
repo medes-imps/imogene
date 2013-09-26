@@ -50,6 +50,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 		xstream = new XStream(new DomDriver("UTF-8"));
 		xstream.setMode(XStream.NO_REFERENCES);
 		xstream.autodetectAnnotations(true);
+		xstream.aliasSystemAttribute(null, "class");
 	}
 
 	public ImogXmlSerializer(ClassLoader loader) {

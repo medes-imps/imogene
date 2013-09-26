@@ -28,7 +28,6 @@ public class CollectionConverter implements Converter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-
 		writer.startNode(COLLECTION_NODE);
 		for (ImogBean rep : (Collection<ImogBean>) value) {
 			String className = rep.getClass().getName();
