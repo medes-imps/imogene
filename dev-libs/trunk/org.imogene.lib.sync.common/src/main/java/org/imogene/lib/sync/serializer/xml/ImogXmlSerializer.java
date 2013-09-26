@@ -193,7 +193,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 		// exist.getModified().before(entity.getModified())
 		if (exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom())
 				|| exist.getModified().before(entity.getModified())) {
-			handler.saveOrUpdate(entity, user, exist == null);
+			handler.saveOrUpdate(entity, user, exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom()));
 			return true;
 		}
 		return false;
