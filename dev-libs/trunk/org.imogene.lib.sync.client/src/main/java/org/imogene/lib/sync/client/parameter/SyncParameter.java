@@ -50,7 +50,7 @@ public class SyncParameter implements Serializable {
 
 	private String type;
 
-	private long offset;
+	private Long offset;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "syncparameter_synchronizables", joinColumns = @JoinColumn(name = "syncparameter_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "synchronizableentity_id", referencedColumnName = "id"))
@@ -222,7 +222,7 @@ public class SyncParameter implements Serializable {
 	 * 
 	 * @return the time offset in ms
 	 */
-	public long getOffset() {
+	public Long getOffset() {
 		return offset;
 	}
 
@@ -231,7 +231,7 @@ public class SyncParameter implements Serializable {
 	 * 
 	 * @param offset the time offset in ms
 	 */
-	public void setOffset(long offset) {
+	public void setOffset(Long offset) {
 		this.offset = offset;
 	}
 }
