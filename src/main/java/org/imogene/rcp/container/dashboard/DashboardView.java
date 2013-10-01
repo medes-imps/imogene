@@ -142,7 +142,7 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 		if (LAUNCH_BROWSER.equals(href)) {
 			openUrl(url);
 		} else if (LAUNCH_SYNCHRONIZE.equals(href)) {
-			SyncActivator.getDefault().getSyncJob().synchronize();
+			SyncActivator.getDefault().synchronize();
 		} else if (LAUNCH_START.equals(href)) {
 			SyncActivator.getDefault().start();
 		} else if (LAUNCH_STOP.equals(href)) {

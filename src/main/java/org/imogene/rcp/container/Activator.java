@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.imogene.rcp.container.bugreport.BugReportPreferencePage;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -29,7 +28,6 @@ public class Activator extends AbstractUIPlugin {
 		logger.info("Starting container"); //$NON-NLS-1$
 		plugin = this;
 		bundleContext = context;
-		BugReportPreferencePage.initPreferences();
 	}
 
 	@Override

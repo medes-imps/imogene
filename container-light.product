@@ -147,21 +147,17 @@
    </plugins>
 
    <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="false" startLevel="3" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.imogene.rcp.derby" autoStart="true" startLevel="4" />
-      <plugin id="org.imogene.rcp.initializer" autoStart="true" startLevel="3" />
-      <plugin id="org.imogene.rcp.jetty" autoStart="true" startLevel="5" />
-      <plugin id="org.imogene.sync.client.extbcam" autoStart="true" startLevel="5" />
       <property name="derby.drda.host" value="127.0.0.1" />
       <property name="derby.drda.logConnections" value="true" />
       <property name="derby.drda.portNumber" value="1493" />
       <property name="derby.stream.error.logSeverityLevel" value="0" />
       <property name="jetty.port" value="8888" />
       <property name="org.apache.jasper.compiler.disablejsr199" value="true" />
-      <property name="osgi.instance.area" value="@user.home/.imogene" />
+      <property name="osgi.instance.area.default" value="@user.home/.imogene" />
       <property name="sun.net.client.defaultConnectTimeout" value="60000" />
       <property name="sun.net.client.defaultReadTimeout" value="60000" />
    </configurations>

@@ -3,7 +3,6 @@ package org.imogene.rcp.container.bugreport;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -17,25 +16,6 @@ import org.imogene.rcp.container.Activator;
 import org.imogene.rcp.container.i18n.Messages;
 
 public class BugReportPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-
-	public static void initPreferences() {
-		IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
-
-		preferences.setDefault(IBugReportConstants.LOG_DATABASE, true);
-		preferences.setDefault(IBugReportConstants.LOG_RUNTIME, true);
-		preferences.setDefault(IBugReportConstants.LOG_SERVER, true);
-		preferences.setDefault(IBugReportConstants.LOG_SYNC, true);
-		preferences.setDefault(IBugReportConstants.LOG_WEBAPP, true);
-		preferences.setDefault(IBugReportConstants.LOG_MAX_FILES, 1);
-
-		preferences.setDefault(IBugReportConstants.SMTP_DESTINATION, "support@i-mogene.org"); //$NON-NLS-1$
-		preferences.setDefault(IBugReportConstants.SMTP_AUTH, true);
-		preferences.setDefault(IBugReportConstants.SMTP_HOST, "smtp.gmail.com"); //$NON-NLS-1$
-		preferences.setDefault(IBugReportConstants.SMTP_PORT, 587);
-		preferences.setDefault(IBugReportConstants.SMTP_TLS, true);
-		preferences.setDefault(IBugReportConstants.SMTP_USER, "imogene.medes@gmail.com"); //$NON-NLS-1$
-		preferences.setDefault(IBugReportConstants.SMTP_PASSWORD, "epidefender"); //$NON-NLS-1$
-	}
 
 	private Group mSmtpGroup;
 	private StringFieldEditor mUserEditor;

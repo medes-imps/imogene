@@ -1,10 +1,13 @@
 package org.imogene.rcp.container;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.imogene.rcp.container.i18n.Messages;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -27,6 +30,22 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowStatusLine(true);
 		configurer.setShowProgressIndicator(true);
 		configurer.setTitle(Messages.application_title);
+
+		startBundle("org.imogene.rcp.initializer");
+		startBundle("org.imogene.rcp.derby");
+		startBundle("org.imogene.rcp.jetty");
+		startBundle("org.imogene.sync.client.extbcam");
+	}
+
+	private void startBundle(String name) {
+		final Bundle bundle = Platform.getBundle(name);
+		if (bundle != null && (bundle.getState() & Bundle.ACTIVE) == 0) {
+			try {
+				bundle.start(Bundle.START_TRANSIENT);
+			} catch (BundleException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
