@@ -157,7 +157,7 @@
       <property name="derby.stream.error.logSeverityLevel" value="0" />
       <property name="jetty.port" value="8888" />
       <property name="org.apache.jasper.compiler.disablejsr199" value="true" />
-      <property name="osgi.instance.area.default" value="@user.home/.imogene" />
+      <property name="osgi.instance.area.default" value="@user.home/.extbcam" />
       <property name="sun.net.client.defaultConnectTimeout" value="60000" />
       <property name="sun.net.client.defaultReadTimeout" value="60000" />
    </configurations>

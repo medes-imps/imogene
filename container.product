@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="%product_name" id="org.imogene.rcp.container.product" application="org.imogene.rcp.container.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Expand TB" uid="org.imogene.rcp.container.product" id="org.imogene.rcp.container.product" application="org.imogene.rcp.container.application" version="2.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.imogene.rcp.container/icons/about_image.png"/>
       <text>
-         Application developped by MEDES-IMPS
+         %productAbout
       </text>
    </aboutInfo>
 
@@ -18,7 +18,6 @@
 -XX:MaxPermSize=256m
 -Xms512m
 -Xmx768m</vmArgs>
-      <vmArgsLin>-Dosgi.instance.area=/opt/extbcam.d/data</vmArgsLin>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -45,6 +44,7 @@
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.activation"/>
       <plugin id="javax.mail"/>
+      <plugin id="javax.servlet"/>
       <plugin id="javax.transaction" fragment="true"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.commands.nl_ar" fragment="true"/>
@@ -1592,6 +1592,15 @@
       <plugin id="org.eclipse.help.nl_uk" fragment="true"/>
       <plugin id="org.eclipse.help.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.help.nl_zh_TW" fragment="true"/>
+      <plugin id="org.eclipse.jetty.http"/>
+      <plugin id="org.eclipse.jetty.io"/>
+      <plugin id="org.eclipse.jetty.osgi.npn.fragment" fragment="true"/>
+      <plugin id="org.eclipse.jetty.security"/>
+      <plugin id="org.eclipse.jetty.server"/>
+      <plugin id="org.eclipse.jetty.servlet"/>
+      <plugin id="org.eclipse.jetty.util"/>
+      <plugin id="org.eclipse.jetty.webapp"/>
+      <plugin id="org.eclipse.jetty.xml"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.databinding.nl_ar" fragment="true"/>
@@ -2420,6 +2429,44 @@
       <plugin id="org.eclipse.ui.cocoa.nl_uk" fragment="true"/>
       <plugin id="org.eclipse.ui.cocoa.nl_zh" fragment="true"/>
       <plugin id="org.eclipse.ui.cocoa.nl_zh_TW" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.forms.nl_ar" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_bg" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_cs" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_da" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_de" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_el" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_en_AA" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_en_AU" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_en_CA" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_es" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_et" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_fa" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_fi" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_fr" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_hi" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_hu" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_id" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_it" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_iw" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_ja" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_ko" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_ku" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_mn" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_nl" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_no" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_pl" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_pt" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_pt_BR" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_ro" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_ru" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_sl" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_sr" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_sv" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_tr" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_uk" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_zh" fragment="true"/>
+      <plugin id="org.eclipse.ui.forms.nl_zh_TW" fragment="true"/>
       <plugin id="org.eclipse.ui.nl_ar" fragment="true"/>
       <plugin id="org.eclipse.ui.nl_bg" fragment="true"/>
       <plugin id="org.eclipse.ui.nl_cs" fragment="true"/>
@@ -2537,27 +2584,25 @@
       <plugin id="org.imogene.rcp.initializer"/>
       <plugin id="org.imogene.rcp.jetty"/>
       <plugin id="org.imogene.rcp.lib.derby"/>
-      <plugin id="org.imogene.rcp.lib.jetty"/>
       <plugin id="org.imogene.rcp.webapps"/>
       <plugin id="org.imogene.sync.client.extbcam"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
+      <plugin id="org.slf4j.log4j"/>
    </plugins>
 
    <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="false" startLevel="3" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-      <plugin id="org.imogene.rcp.derby" autoStart="true" startLevel="4" />
-      <plugin id="org.imogene.rcp.initializer" autoStart="true" startLevel="3" />
-      <plugin id="org.imogene.rcp.jetty" autoStart="true" startLevel="5" />
-      <plugin id="org.imogene.sync.client.extbcam" autoStart="true" startLevel="5" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <property name="derby.drda.host" value="127.0.0.1" />
       <property name="derby.drda.logConnections" value="true" />
       <property name="derby.drda.portNumber" value="1493" />
       <property name="derby.stream.error.logSeverityLevel" value="0" />
-      <property name="imogene.debug" value="false" />
       <property name="jetty.port" value="8888" />
       <property name="org.apache.jasper.compiler.disablejsr199" value="true" />
+      <property name="osgi.instance.area.default" value="@user.home/.extbcam" />
       <property name="sun.net.client.defaultConnectTimeout" value="60000" />
       <property name="sun.net.client.defaultReadTimeout" value="60000" />
    </configurations>
