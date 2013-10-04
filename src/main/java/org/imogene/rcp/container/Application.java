@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
@@ -18,7 +19,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Application implements IApplication {
 
-	private static final String DEFAULT_PATH = "/var/extbcam.d"; //$NON-NLS-1$
+	private static final Logger logger = Logger.getLogger(Application.class.getName());
+
+	private static final String INSTANCE_PATH = "/opt/extbcam.d/data"; //$NON-NLS-1$
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
@@ -28,7 +31,6 @@ public class Application implements IApplication {
 			if (instanceLocationCheck != null) {
 				return instanceLocationCheck;
 			}
-
 			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IApplication.EXIT_RESTART;
@@ -36,19 +38,33 @@ public class Application implements IApplication {
 				return IApplication.EXIT_OK;
 			}
 		} finally {
-			display.dispose();
+			if (display != null) {
+				display.dispose();
+			}
+			Location instanceLoc = Platform.getInstanceLocation();
+			if (instanceLoc != null) {
+				instanceLoc.release();
+			}
 		}
 	}
 
 	private Object checkInstanceLocation() {
-		File file = new File(DEFAULT_PATH);
-		if (file.exists()) {
-			Location loc = Platform.getInstanceLocation();
-			if (loc != null && !loc.isSet()) {
-				String path = file.getAbsolutePath().replace(File.separatorChar, '/');
+		File workspace = new File(INSTANCE_PATH);
+		if (!workspace.canRead() || !workspace.canWrite()) {
+			logger.info("No pre-installed workspace"); //$NON-NLS-1$
+			return null;
+		}
+		if (workspace != null && workspace.exists()) {
+			Location instanceLoc = Platform.getInstanceLocation();
+			if (!instanceLoc.isSet()) {
 				try {
+					// Don't use File.toURL() since it adds a leading slash that Platform does not
+					// handle properly. See bug 54081 for more details.
+					String path = workspace.getAbsolutePath().replace(File.separatorChar, '/');
 					URL url = new URL("file", null, path); //$NON-NLS-1$
-					loc.set(url, true);
+					instanceLoc.set(url, true);
+					logger.info("Resuing pre-installed workspace"); //$NON-NLS-1$
+					return null;
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IllegalStateException e) {
@@ -58,6 +74,7 @@ public class Application implements IApplication {
 				}
 			}
 		}
+		logger.info("Unable to reuse pre-installed workspace"); //$NON-NLS-1$
 		return null;
 	}
 
