@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.sql.Date;
 import java.text.DateFormat;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -170,6 +171,19 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 					ex.printStackTrace();
 				} catch (URISyntaxException ex) {
 					ex.printStackTrace();
+				}
+			}
+		} else {
+			String windowingSystem = System.getProperty("osgi.ws"); //$NON-NLS-1$
+			if ("gtk".equals(windowingSystem)) { //$NON-NLS-1$
+				boolean install = MessageDialog.openQuestion(getSite().getShell(), Messages.dashboard_library_title,
+						Messages.dashboard_library_message);
+				if (install) {
+					try {
+						Runtime.getRuntime().exec("software-center libgnome2-0"); //$NON-NLS-1$
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

@@ -41,6 +41,8 @@ public class Messages extends NLS {
 	public static String dashboard_sync_description;
 	public static String dashboard_sync_automatic;
 	public static String dashboard_sync_manual;
+	public static String dashboard_library_title;
+	public static String dashboard_library_message;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
