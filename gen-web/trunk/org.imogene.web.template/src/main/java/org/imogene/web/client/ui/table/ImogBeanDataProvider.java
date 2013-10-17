@@ -60,6 +60,10 @@ public abstract class ImogBeanDataProvider<T extends ImogBeanProxy> {
 		filterCriteria = criteria;
 	}
 	
+	public void setIsFiltered(boolean isFiltered) {
+		this.isFiltered = isFiltered;
+	}
+	
 
 	/**
 	 * Adds a Filter Criteria

@@ -5,6 +5,7 @@
 
 package org.imogene.«projectName.toLowerCase()».server;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -167,6 +168,23 @@ public class «projectName.toFirstUpper()»ServerRenderer {
 		else	
 			return "";
 	}
+	
+	public static String getDateDisplayValue(Date date) {
+		if (date != null)
+			return DateUtil.getFormatedDate(date);
+		else
+			return "";
+	}
+	
+	public String getEntityTypeDisplayValue(ImogBean bean){
+			
+		«FOREACH entities AS e -»
+		if(bean instanceof «e.name.toFirstUpper()»){
+			return rb.getString("«e.name.toFirstLower()»_name");
+		}
+		«ENDFOREACH -»		
+		return "";
+	}	
 
 
 }

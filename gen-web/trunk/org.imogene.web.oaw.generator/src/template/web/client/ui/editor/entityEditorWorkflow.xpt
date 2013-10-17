@@ -26,6 +26,7 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()
 import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
 import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»EntryPoint;
 import org.imogene.web.client.event.GoHomeEvent;
 import org.imogene.web.client.ui.field.error.ImogConstraintViolation;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
@@ -71,6 +72,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 	private Driver editorDriver;
 	private «name.toFirstUpper()»Editor editor;
 	private String initField;	
+	private boolean showGlassPanel = false;
 
 	/**
 	 * Workflow constructor for the creation of a «name.toFirstUpper()» instance
@@ -150,9 +152,16 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		fetch«name.toFirstUpper()»(entityId);
 
 		this.setContent(editor);
+		showGlassPanel=true;
 	}
 	
-
+	@Override
+	protected void onAttach(){
+		super.onAttach();
+		if(showGlassPanel){
+			«projectName.toFirstUpper()»EntryPoint.GP.showAndAdapt(this);
+		}
+	}
 	
 	/**
 	 * Create a new instance of «name.toFirstUpper()»
@@ -260,6 +269,9 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		/* display edit button */
 		if (AccessManager.canEditForm("«name.toLowerCase()»"))
 			setModifiable(true);
+			
+		showGlassPanel=false;
+		«projectName.toFirstUpper()»EntryPoint.GP.hide();
 	}
 
 	/**

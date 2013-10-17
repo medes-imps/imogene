@@ -61,6 +61,12 @@
 				margin-left: 10px;
 			}
 		}
+		
+		.versionNumber {
+			margin-left: 10px;
+			margin-bottom: 5px;
+			color: #efefef;
+		}	
 	</ui:style>
 
 
@@ -69,6 +75,9 @@
 		<g:cell horizontalAlignment="left" verticalAlignment="middle" width="32px" styleName="{style.icon}">
 			<g:Image ui:field="appliIcon" width="32px" styleName="{style.icon}"/>
 		</g:cell>
+		<g:cell horizontalAlignment="left" verticalAlignment="bottom">		
+			<g:Label ui:field="versionNumber" text="version:0.0.0" styleName="{style.versionNumber}"/>
+		</g:cell>		
 		<g:cell horizontalAlignment="center" verticalAlignment="middle">
 			<g:Label ui:field="appliTitle" styleName="{style.title}"/>
 		</g:cell>

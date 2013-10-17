@@ -14,7 +14,7 @@ import org.imogene.web.server.util.ServerConstants;
 public class SessionHandler {
 	
 	
-
+	
 	/**
 	 * Gets the current user information from session
 	 */
@@ -25,7 +25,7 @@ public class SessionHandler {
 		if(user!=null && user.getLogin()!=null && !user.getLogin().isEmpty()) {			
 			SessionInfo sessionInfo = new SessionInfo();
 			sessionInfo.setSessionId(session.getId());
-			sessionInfo.setActor(user);			
+			sessionInfo.setActor(user);
 			return sessionInfo;
 		}
 		else
@@ -54,6 +54,5 @@ public class SessionHandler {
 			return new Boolean(false);
 		}
 	}
-
 
 }

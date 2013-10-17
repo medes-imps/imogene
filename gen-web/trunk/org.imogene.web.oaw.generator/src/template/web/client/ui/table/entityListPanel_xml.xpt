@@ -14,9 +14,9 @@
 	<ui:style>
 	</ui:style>
 	
-	<imo1:WrapperPanel ui:field="wrapperPanel">
+	<imo1:WrapperPanelForTable ui:field="wrapperPanel">
 		<imo2:«name.toFirstUpper()»DynaTable ui:field="listComposite"/>
-	</imo1:WrapperPanel>
+	</imo1:WrapperPanelForTable>
 
 </ui:UiBinder> 
 «ENDFILE»

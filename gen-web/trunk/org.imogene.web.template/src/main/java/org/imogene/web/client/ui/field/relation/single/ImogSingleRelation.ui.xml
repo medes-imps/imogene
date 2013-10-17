@@ -46,10 +46,10 @@
 
 
 
-	<g:HorizontalPanel verticalAlignment="middle" width="285px">
+	<g:HorizontalPanel ui:field="contentPanel" verticalAlignment="middle" width="285px">
 
-		<g:cell width="199px">
-			<g:HorizontalPanel stylePrimaryName="{style.imogListBox}"
+		<g:cell width="201px">
+			<g:HorizontalPanel ui:field="listBoxPanel" stylePrimaryName="{style.imogListBox}"
 				verticalAlignment="middle">
 
 				<g:cell horizontalAlignment="left" verticalAlignment="middle">
@@ -65,8 +65,7 @@
 			</g:HorizontalPanel>
 		</g:cell>
 
-		<g:HorizontalPanel verticalAlignment="middle"
-			horizontalAlignment="left">
+		<g:HorizontalPanel verticalAlignment="middle" horizontalAlignment="left" ui:field="buttonPanel">
 
 			<g:cell horizontalAlignment="left" verticalAlignment="middle">
 				<g:Image ui:field="viewImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />

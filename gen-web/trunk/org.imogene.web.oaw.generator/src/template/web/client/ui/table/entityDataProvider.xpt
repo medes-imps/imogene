@@ -160,10 +160,27 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 
 		«name.toFirstUpper()»Request request = («name.toFirstUpper()»Request) getContext();
 		Request<List<«name.toFirstUpper()»Proxy>> result = null;
-		if (getSearchCriterions() == null)
-			result = request.list«name.toFirstUpper()»(start, numRows, property, asc);
-		else
-			result = request.list«name.toFirstUpper()»(start, numRows, property, asc,	getSearchCriterions());
+		
+		if (isFiltered) {
+			/* permanently filtered - hierarchical lists */
+			if (filterCriteria != null) {
+			
+				if (searchCriterions != null)
+					/* permanent filter added to search criterion */
+					result = request.list«name.toFirstUpper()»(start, numRows, property, asc, searchCriterions);
+				else
+					/* permanent filter only */
+					result = request.list«name.toFirstUpper()»(start, numRows, property, asc, filterCriteria);								
+
+			} else
+				result = request.get«name.toFirstUpper()»EmptyList();	
+		} else {
+			if (searchCriterions != null)
+				result = request.list«name.toFirstUpper()»(start, numRows, property, asc, searchCriterions);
+			else
+				result = request.list«name.toFirstUpper()»(start, numRows, property, asc);
+		}			
+		
 		«EXPAND fetchRelatedEntities FOREACH columnFields.union(mainFields)»
 		return result;
 	}

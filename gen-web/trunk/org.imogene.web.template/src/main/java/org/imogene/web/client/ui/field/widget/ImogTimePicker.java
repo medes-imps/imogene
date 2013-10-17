@@ -43,7 +43,7 @@ public class ImogTimePicker extends ImogWidget<Date> {
 	}
 
 	private void populateWithMinutes() {
-		minutes.addItem("", "");
+//		minutes.addItem("", "");
 		for (int i = 0; i < 60; i = i + minuteStep) {
 			minutes.addItem(formatMinutes(i), String.valueOf(i));
 		}
@@ -56,11 +56,9 @@ public class ImogTimePicker extends ImogWidget<Date> {
 		this.value = value;
 		if (value != null) {
 			int valueHours = value.getHours();
-			hours.setSelectedIndex(getIndexForValue(hours,
-					String.valueOf(valueHours)));
+			hours.setSelectedIndex(getIndexForValue(hours,	String.valueOf(valueHours)));
 			int valueMinutes = value.getMinutes();
-			minutes.setSelectedIndex(getIndexForValue(minutes,
-					String.valueOf(valueMinutes)));
+			minutes.setSelectedIndex(getIndexForValue(minutes, String.valueOf(valueMinutes)));
 		} else {
 			hours.setSelectedIndex(0);
 			minutes.setSelectedIndex(0);
@@ -70,16 +68,14 @@ public class ImogTimePicker extends ImogWidget<Date> {
 	@SuppressWarnings("deprecation")
 	public Date getValue() {
 		
-		if(hours.getSelectedIndex() > 0 && minutes.getSelectedIndex() > 0) {
+		if(hours.getSelectedIndex() > 0) {
 			Date result = null;
 			if(value!=null)
 				result = new Date(value.getTime());
 			else
 				result = new Date();
-			result.setHours(Integer.parseInt(hours.getValue(hours
-					.getSelectedIndex())));
-			result.setMinutes(Integer.parseInt(minutes.getValue(minutes
-					.getSelectedIndex())));
+			result.setHours(Integer.parseInt(hours.getValue(hours.getSelectedIndex())));
+			result.setMinutes(Integer.parseInt(minutes.getValue(minutes.getSelectedIndex())));
 			return result;		
 		}
 		else

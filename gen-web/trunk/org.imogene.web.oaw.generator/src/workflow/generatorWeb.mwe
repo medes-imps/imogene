@@ -623,6 +623,14 @@
 		<genPath value="${home-gen}/src/main/webapp/jsp" />		
 	</component>
 	
+	<!-- JSP change password file -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::webcontent::change_password_jsp::generate("${projectName}") FOR project' />
+		<genPath value="${home-gen}/src/main/webapp/jsp" />		
+	</component>
+	
 	<!-- JSP login file for RCP application -->
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>

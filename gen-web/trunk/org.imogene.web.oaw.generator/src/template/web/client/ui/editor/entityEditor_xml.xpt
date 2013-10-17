@@ -39,10 +39,18 @@
 			margin-left: 10px;
 		}
 		
-		.dependentVisibility {
-			padding-left: 20px;
-			background: url(images/arrow-18.png) no-repeat;
-			background-position: 0% 50%;	
+		@if user.agent ie6 ie8 {
+			.dependentVisibility {
+				margin-left: 20px;
+				font-style: italic;
+			}
+		}
+		@else {
+			.dependentVisibility {
+				padding-left: 20px;
+				background: url(images/arrow-18.png) no-repeat;
+				background-position: 0% 50%;	
+			}
 		}
 
 		@external .dependentVisibility;

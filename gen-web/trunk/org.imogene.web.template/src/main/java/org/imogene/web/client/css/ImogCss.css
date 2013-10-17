@@ -97,6 +97,12 @@
 	text-decoration: none;
 }
 
+.imogButtonDown {
+	background-position: 0 -10px;
+	color: #333;
+	text-decoration: none;
+}
+
 .imogButton1 {
 	color: white;
 	background-color: Button11Background;
@@ -115,6 +121,10 @@
 }
 
 .imogButton1:hover {
+	color: white;
+}
+
+.imogButton1Down {
 	color: white;
 }
 

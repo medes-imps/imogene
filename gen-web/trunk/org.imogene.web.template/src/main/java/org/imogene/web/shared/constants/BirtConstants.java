@@ -20,6 +20,7 @@ public class BirtConstants {
 	public static final String PDF = "pdf";
 	public static final String HTML = "html";
 	public static final String CSV = "csv";
+	public static final String XLS = "xls";
 	
 	
 	/* parameter for printing a form */

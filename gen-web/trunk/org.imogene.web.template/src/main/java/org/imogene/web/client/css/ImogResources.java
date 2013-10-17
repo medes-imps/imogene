@@ -59,12 +59,16 @@ public interface ImogResources extends ClientBundle {
 		 * @return
 		 */
 		String imogButton();
+		
+		String imogButtonDown();
 
 		/**
 		 * Applied to buttons of type 1 (default=blue)
 		 * @return
 		 */
 		String imogButton1();
+		
+		String imogButton1Down();
 
 		/**
 		 * Applied to buttons of type 1 (default=red)

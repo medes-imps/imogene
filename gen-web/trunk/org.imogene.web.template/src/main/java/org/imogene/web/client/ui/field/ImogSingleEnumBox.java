@@ -17,6 +17,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
@@ -24,8 +25,7 @@ import com.google.web.bindery.event.shared.EventBus;
  * Field Editor for Enumeration fields with single selection
  * @author MEDES-IMPS
  */
-public class ImogSingleEnumBox extends Composite implements ImogField<String>,
-		LeafValueEditor<String>, HasEditorErrors<String> {
+public class ImogSingleEnumBox extends Composite implements ImogField<String>, LeafValueEditor<String>, HasEditorErrors<String> {
 
 	private static final Binder uiBinder = GWT.create(Binder.class);
 
@@ -38,26 +38,32 @@ public class ImogSingleEnumBox extends Composite implements ImogField<String>,
 	/* widgets */
 	@UiField
 	ImogErrorLabel errorLabel;
+
 	@UiField
 	@Ignore
 	ImogFieldAbstract fieldBox;
+
 	@UiField
 	@Ignore
 	ListBox listBox;
+
+	@UiField
+	@Ignore
+	TextBox textBox;
 
 	public ImogSingleEnumBox() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		listBox.addItem("", BaseNLS.constants().enumeration_unknown());
 		listBox.setSelectedIndex(0);
+		textBox.setVisible(false);
 	}
-
 
 	@Override
 	public void setLabel(String label) {
 		fieldBox.setLabel(label);
 	}
-	
+
 	public void setLabel(String label, HorizontalAlignmentConstant alignment) {
 		fieldBox.setLabel(label, alignment);
 	}
@@ -87,11 +93,23 @@ public class ImogSingleEnumBox extends Composite implements ImogField<String>,
 
 	public void setEdited(boolean enabled) {
 		listBox.setEnabled(enabled);
-		if(!enabled){
+		// if(!enabled){
+		// listBox.addStyleDependentName("disabled");
+		// }else{
+		// listBox.removeStyleDependentName("disabled");
+		// }
+		if (!enabled) {
 			listBox.addStyleDependentName("disabled");
-		}else{
+			String itemText = listBox.getItemText(listBox.getSelectedIndex());
+			listBox.setVisible(false);
+			textBox.setText(itemText);
+			textBox.setVisible(true);
+		} else {
 			listBox.removeStyleDependentName("disabled");
+			textBox.setVisible(false);
+			listBox.setVisible(true);
 		}
+
 		edited = enabled;
 
 	}
@@ -111,26 +129,28 @@ public class ImogSingleEnumBox extends Composite implements ImogField<String>,
 	public void addItem(String value, String label) {
 		listBox.addItem(label, value);
 	}
-	
+
 	/**
 	 * Sets the widget's width
 	 */
 	public void setBoxWidth(String width) {
 		listBox.getElement().getStyle().setProperty("width", width);
+		textBox.getElement().getStyle().setProperty("width", width);
 	}
-	
+
 	/**
 	 * Defines that the field shall notify value changes
-	 * @param eventBus the event bus that will be used to fire the value change events
+	 * @param eventBusthe event bus that will be used to fire the value change events
 	 */
 	public void notifyChanges(final EventBus eventBus) {
-		if(eventBus!=null) {
+		if (eventBus != null) {
 			listBox.addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					eventBus.fireEvent(new FieldValueChangeEvent(ImogSingleEnumBox.this));					
-				}			
-			});		
+					eventBus.fireEvent(new FieldValueChangeEvent(
+							ImogSingleEnumBox.this));
+				}
+			});
 		}
 	}
 
@@ -138,11 +158,11 @@ public class ImogSingleEnumBox extends Composite implements ImogField<String>,
 	public void showErrors(List<EditorError> errors) {
 		errorLabel.showErrors(errors);
 	}
-	
+
 	public void hideErrors() {
 		errorLabel.hideErrors();
 	}
-	
+
 	public void setLabelWidth(String width) {
 		fieldBox.setLabelWidth(width);
 	}

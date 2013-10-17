@@ -16,16 +16,32 @@
 			outline: 0;
 			padding: 0 8px;
 		}		
-		.popupButtonStyle {
-			color: #444;
-			background-image: linear-gradient(top, whiteSmoke, #F1F1F1);
-			background-image: -moz-linear-gradient(top, whiteSmoke, #F1F1F1);
-			background-image: -o-linear-gradient(top, whiteSmoke, #F1F1F1);
-			background-image: -webkit-gradient(linear, left top, left bottom, from(whiteSmoke),
-				to(#F1F1F1) );
-			background-image: -webkit-linear-gradient(top, whiteSmoke, #F1F1F1);
-			border: 1px solid rgba(0, 0, 0, 0.1);
+		
+		@if user.agent ie6 ie8 {
+			.popupButtonStyle {
+				color: #444;
+				background-image: linear-gradient(top, whiteSmoke, #F1F1F1);
+				background-image: -moz-linear-gradient(top, whiteSmoke, #F1F1F1);
+				background-image: -o-linear-gradient(top, whiteSmoke, #F1F1F1);
+				background-image: -webkit-gradient(linear, left top, left bottom, from(whiteSmoke),
+					to(#F1F1F1) );
+				background-image: -webkit-linear-gradient(top, whiteSmoke, #F1F1F1);
+				border: 1px solid #dfdfdf;
+			}		
+		}
+		@else {
+			.popupButtonStyle {
+				color: #444;
+				background-image: linear-gradient(top, whiteSmoke, #F1F1F1);
+				background-image: -moz-linear-gradient(top, whiteSmoke, #F1F1F1);
+				background-image: -o-linear-gradient(top, whiteSmoke, #F1F1F1);
+				background-image: -webkit-gradient(linear, left top, left bottom, from(whiteSmoke),
+					to(#F1F1F1) );
+				background-image: -webkit-linear-gradient(top, whiteSmoke, #F1F1F1);
+				border: 1px solid rgba(0, 0, 0, 0.1);
+			}	
 		}		
+
 		.popupButtonStyle-hover {
 			color: #333;
 			background-image: linear-gradient(top, #F8F8F8, #F1F1F1);

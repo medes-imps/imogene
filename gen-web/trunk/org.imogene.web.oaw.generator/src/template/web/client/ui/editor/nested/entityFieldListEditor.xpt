@@ -48,11 +48,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * Editor that provides the UI components to manage the list of «entity.name.toFirstUpper()»EditorNestedForm
+ * Editor that provides the UI components to manage the list of «entity.name.toFirstUpper()»EditorNestedRow
  * in the «parentGroup.parentCard.name.toFirstUpper()» editor
  * @author MEDES-IMPS
  */
-public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor extends Composite implements IsEditor<ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm>> {
+public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor extends Composite implements IsEditor<ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedRow>> {
 
 	private static EditorUiBinder uiBinder = GWT.create(EditorUiBinder.class);
 
@@ -60,8 +60,8 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 
 	protected final «projectName.toFirstUpper()»RequestFactory requestFactory;	
 	private «entity.name.toFirstUpper()»ListEditorSource editorSource;
-	//private ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedRow> editor;
-	private ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm> editor;
+	private ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedRow> editor;
+	//private ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm> editor;
 	private «parentGroup.parentCard.name.toFirstUpper()»Request request;
 
 
@@ -74,12 +74,12 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	@com.google.gwt.editor.client.Editor.Ignore
 	Image addItem;
 
-	«REM»/* header row (field names) */
+	/* header row (field names) */
 	«FOREACH entity.nestedFields AS f -»
 	@UiField
 	@Ignore
 	Label «EXPAND template::CommonFieldUtil::propertyName FOR f»Label;	
-	«ENDFOREACH -»«ENDREM»	
+	«ENDFOREACH -»	
 
 	public «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor(«projectName.toFirstUpper()»RequestFactory factory) {
 
@@ -97,10 +97,13 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 		listSection.addStyleName("fieldGroup-ListEditor");
 
 		initWidget(uiBinder.createAndBindUi(this));
-	«REM»	
+		
 	«FOREACH entity.nestedFields AS f -»
 		«EXPAND template::CommonFieldUtil::propertyName FOR f»Label.setText(NLS.constants().«entity.name.toFirstLower()»_field_«f.name.toFirstLower()»());
-	«ENDFOREACH -»«ENDREM»	
+		«IF DateField.isAssignableFrom(f.metaType)-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR f»Label.setWidth("153px");	
+		«ENDIF-»
+	«ENDFOREACH -»
 	}
 
 	/**
@@ -120,7 +123,7 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	}
 
 	@Override
-	public ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedForm> asEditor() {
+	public ListEditor<«entity.name.toFirstUpper()»Proxy, «entity.name.toFirstUpper()»EditorNestedRow> asEditor() {
 		return editor;
 	}
 
@@ -154,8 +157,8 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 			updateIndex();
 			
 			// update subeditor
-			List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
-			«entity.name.toFirstUpper()»EditorNestedForm subEditor = editors.get(editors.size() - 1);
+			List<«entity.name.toFirstUpper()»EditorNestedRow> editors = editor.getEditors();
+			«entity.name.toFirstUpper()»EditorNestedRow subEditor = editors.get(editors.size() - 1);
 			subEditor.setNewProxy(isNew);
 			subEditor.computeVisibility(null, true);
 			subEditor.setEdited(true);					
@@ -163,7 +166,7 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	}	
 
 
-	public void up(«entity.name.toFirstUpper()»EditorNestedForm editor) {
+	public void up(«entity.name.toFirstUpper()»EditorNestedRow editor) {
 		int currentIndex = listContainer.getWidgetIndex(editor);
 		if (currentIndex > 0) {
 			listContainer.insert(editor, currentIndex - 1);
@@ -171,7 +174,7 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 		}
 	}
 
-	public void down(«entity.name.toFirstUpper()»EditorNestedForm editor) {
+	public void down(«entity.name.toFirstUpper()»EditorNestedRow editor) {
 		int currentIndex = listContainer.getWidgetIndex(editor);
 		if (currentIndex < listContainer.getWidgetCount() + 1) {
 			listContainer.insert(editor, currentIndex + 2);
@@ -182,7 +185,7 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	private void updateIndex() {
 		int count = listContainer.getWidgetCount();
 		for (int i = 0; i < count; i++) {
-			«entity.name.toFirstUpper()»EditorNestedForm subEditor = («entity.name.toFirstUpper()»EditorNestedForm) listContainer.getWidget(i);
+			«entity.name.toFirstUpper()»EditorNestedRow subEditor = («entity.name.toFirstUpper()»EditorNestedRow) listContainer.getWidget(i);
 			subEditor.setIndex(i);
 		}
 	}
@@ -195,9 +198,9 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 
 	public void setEdited(boolean isEdited) {
 
-		List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+		List<«entity.name.toFirstUpper()»EditorNestedRow> editors = editor.getEditors();
 		if (editors != null && editors.size() > 0) {
-			for («entity.name.toFirstUpper()»EditorNestedForm subEditor : editors)
+			for («entity.name.toFirstUpper()»EditorNestedRow subEditor : editors)
 				subEditor.setEdited(isEdited);
 		}
 		addItem.setVisible(isEdited);
@@ -205,9 +208,9 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	
 	public void computeVisibility(ImogField<?> source, boolean allValidation) {
 
-		List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+		List<«entity.name.toFirstUpper()»EditorNestedRow> editors = editor.getEditors();
 		if (editors != null && editors.size() > 0) {
-			for («entity.name.toFirstUpper()»EditorNestedForm subEditor : editors)
+			for («entity.name.toFirstUpper()»EditorNestedRow subEditor : editors)
 				subEditor.computeVisibility(source, allValidation);
 		}
 	}
@@ -217,9 +220,9 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	 */
 	public void validateFields() {
 		
-		List<«entity.name.toFirstUpper()»EditorNestedForm> editors = editor.getEditors();
+		List<«entity.name.toFirstUpper()»EditorNestedRow> editors = editor.getEditors();
 		if (editors != null && editors.size() > 0) {
-			for («entity.name.toFirstUpper()»EditorNestedForm subEditor : editors)
+			for («entity.name.toFirstUpper()»EditorNestedRow subEditor : editors)
 				subEditor.validateFields();
 		}	
 	}
@@ -228,12 +231,12 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 	/**
 	 * Internal class
 	 */
-	private class «entity.name.toFirstUpper()»ListEditorSource extends EditorSource<«entity.name.toFirstUpper()»EditorNestedForm> {
+	private class «entity.name.toFirstUpper()»ListEditorSource extends EditorSource<«entity.name.toFirstUpper()»EditorNestedRow> {
 
 		@Override
-		public «entity.name.toFirstUpper()»EditorNestedForm create(int index) {
+		public «entity.name.toFirstUpper()»EditorNestedRow create(int index) {
 			
-			final «entity.name.toFirstUpper()»EditorNestedForm subEditor = new «entity.name.toFirstUpper()»EditorNestedForm(requestFactory);
+			final «entity.name.toFirstUpper()»EditorNestedRow subEditor = new «entity.name.toFirstUpper()»EditorNestedRow(requestFactory);
 			subEditor.setIndex(index);
 			listContainer.insert(subEditor, index);
 
@@ -253,12 +256,12 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 		}
 
 		@Override
-		public void dispose(«entity.name.toFirstUpper()»EditorNestedForm subEditor) {
+		public void dispose(«entity.name.toFirstUpper()»EditorNestedRow subEditor) {
 			subEditor.removeFromParent();
 		}
 
 		@Override
-		public void setIndex(«entity.name.toFirstUpper()»EditorNestedForm subEditor, int index) {
+		public void setIndex(«entity.name.toFirstUpper()»EditorNestedRow subEditor, int index) {
 			listContainer.insert(subEditor, index);
 		}
 	}

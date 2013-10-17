@@ -598,6 +598,32 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	}
 	«ENDIF-»
 	
+	/**
+	 */	
+	private void setAllLabelWith(String width) {	
+		«FOREACH groups AS g»
+		/* «g.name.toFirstUpper()» field group */	
+			«FOREACH g.fields AS f -»
+			«IF ! (RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).nestedForm)-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR f».setLabelWidth(width);
+			«ENDIF-»
+			«ENDFOREACH -»	
+		«ENDFOREACH»		
+	}
+	
+	/**
+	 */	
+	private void setAllBoxWith(String width) {	
+		«FOREACH groups AS g»
+		/* «g.name.toFirstUpper()» field group */	
+			«FOREACH g.fields AS f -»
+			«IF ! (RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).nestedForm) && !DatesField.isAssignableFrom(f.metaType)  && !BooleanField.isAssignableFrom(f.metaType)  && !IntegerField.isAssignableFrom(f.metaType)  && !FloatField.isAssignableFrom(f.metaType)-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR f».setBoxWidth(width);
+			«ENDIF-»
+			«ENDFOREACH -»	
+		«ENDFOREACH»		
+	}	
+	
 	@Override
 	public void setDelegate(EditorDelegate<«name.toFirstUpper()»Proxy> delegate) {
 		this.delegate = delegate;
@@ -679,6 +705,14 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	«ELSE-»
 		«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(isEdited);
 	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setEditable FOR BooleanField-»
+		«IF readOnly || (calculationFunctionName!=null && calculationFunctionName.length>0) -»
+			// readonly field
+			«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(false);
+		«ELSE-»
+			«EXPAND template::CommonFieldUtil::propertyName FOR this».setEdited(isEdited);
+		«ENDIF-»	
 «ENDDEFINE»
 «DEFINE setEditable FOR ReverseRelationFieldEntity-»
 «IF cardinality==1 && oppositeRelationField.cardinality==1-»
@@ -793,6 +827,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	«ENDFOREACH-» 
 «ENDDEFINE»
 «DEFINE validationAnnotation FOR IntegerField-»
+«IF calculationFunctionName==null || calculationFunctionName.length==0 -»
 	«IF min!=null && min.length>0-»
 			// «name.toFirstLower()» shall be superior or equal to '«min-»'
 			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()>=«min-»))
@@ -803,8 +838,10 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()<=«max-»))
 				delegate.recordError(BaseNLS.messages().error_max_num(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max()), null, "«name.toFirstLower()»");	
 	«ENDIF-»
+«ENDIF»
 «ENDDEFINE»
 «DEFINE validationAnnotation FOR FloatField-»
+«IF calculationFunctionName==null || calculationFunctionName.length==0 -»
 	«IF min!=null && min.length>0-»
 			// «name.toFirstLower()» shall be superior or equal to '«min-»'
 			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()>=«min-»))
@@ -820,8 +857,10 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !NumericUtil.decimalNumberCheck(«DecimalNumber-», «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
 				delegate.recordError(BaseNLS.messages().error_float_dec(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber()), null, "«name.toFirstLower()»");			
 	«ENDIF-»
+		«ENDIF-»
 «ENDDEFINE»
 «DEFINE validationAnnotation FOR DateField-»
+	«IF calculationFunctionName==null || calculationFunctionName.length==0 -»
 	«IF min!=null && min.length>0-»
 			// «name.toFirstLower()» shall be after or equal to '«min-»'
 			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !DateUtil.matchesDate(">=«min-»", «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
@@ -832,6 +871,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 			if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()!=null && !DateUtil.matchesDate("<=«max-»", «EXPAND template::CommonFieldUtil::propertyName FOR this».getValueWithoutParseException()))
 				delegate.recordError(BaseNLS.messages().error_max_date(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max()), null, "«name.toFirstLower()»");	
 	«ENDIF-»
+		«ENDIF-»	
 «ENDDEFINE»
 «DEFINE validationAnnotation FOR DateTimeField-»
 	«IF min!=null && min.length>0-»

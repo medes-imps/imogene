@@ -124,3 +124,19 @@ public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpp
 «DEFINE setterDeclarationForProxyFieldWithLowerUpperCaseFirstTwoChar FOR GeoField-»
 public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR this»(«EXPAND entityProxyFieldType FOR this» value);
 «ENDDEFINE»
+
+
+«REM» Retourne le sort order du premier sort field «ENDREM»
+«DEFINE getFirstSortFieldOrderDirection FOR CardEntity-»
+«IF this.sortFields!=null && this.sortFields.size > 0 && this.sortFields.get(0)!=null-»
+«EXPAND getSortBoolean FOR this.sortFields.get(0)-»
+«ELSE-»
+false
+«ENDIF-»
+«ENDDEFINE»
+
+«REM» Retourne le sort order (boolean) d'un field «ENDREM»
+«DEFINE getSortBoolean FOR FieldEntity-»true«ENDDEFINE»
+«DEFINE getSortBoolean FOR DatesField-»false«ENDDEFINE»
+
+

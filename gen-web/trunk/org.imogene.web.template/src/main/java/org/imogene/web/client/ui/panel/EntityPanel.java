@@ -13,6 +13,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
@@ -36,6 +37,8 @@ public class EntityPanel extends Composite {
 		
 	@UiField(provided = true)
 	Image icon;	
+	@UiField
+	VerticalPanel centerPanel;
 	@UiField(provided = true)
 	Label title;
 	@UiField(provided=true)
@@ -45,6 +48,9 @@ public class EntityPanel extends Composite {
 	@UiField
 	@Ignore 
 	VerticalPanel searchPanel;
+	@UiField
+	@Ignore
+	HorizontalPanel searchBoxes;
 	@UiField(provided = true)
 	@Ignore 
 	Label searchLabel;
@@ -108,7 +114,9 @@ public class EntityPanel extends Composite {
 		if(handler!=null)		
 			registrations.add(search.addClickHandler(handler));
 		else {
-			searchPanel.setVisible(false);
+			// searchPanel.setVisible(false);
+			searchBoxes.setVisible(false);
+			searchLabel.setVisible(false);
 		}
 	}
 	
@@ -122,5 +130,16 @@ public class EntityPanel extends Composite {
 			r.removeHandler();
 		registrations.clear();
 		super.onUnload();
+	}
+
+	public void setCreateButtonText(String text, String width) {
+		if (create != null) {
+			create.setText(text);
+			create.getElement().getStyle().setProperty("width", width);
+		}
+	}
+
+	public void addItem(Widget widget) {
+		centerPanel.add(widget);
 	}
 }

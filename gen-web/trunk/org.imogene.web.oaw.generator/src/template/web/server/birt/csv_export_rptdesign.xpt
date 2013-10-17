@@ -379,7 +379,7 @@
         </scalar-parameter>
 «ENDDEFINE»
 «DEFINE declareSearchParameter(Project p, String property) FOR RelationFieldEntity-»
-	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
 	«FOREACH entity.mainFields AS f-»
 	 	«EXPAND declareSearchParameter(p, property + name.toFirstLower() + "_") FOR f-»		
 	«ENDFOREACH-»
@@ -444,7 +444,7 @@
 		, params["«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After"]
 «ENDDEFINE»
 «DEFINE setHandlerMethodCriteria(Project p, String property) FOR RelationFieldEntity-»
-	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
 	«FOREACH entity.mainFields AS f-»
 	 	«EXPAND setHandlerMethodCriteria(p, property + name.toFirstLower() + "_") FOR f-»		
 	«ENDFOREACH-»
@@ -479,8 +479,13 @@
 						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
 					    	row["«name.toFirstUpper()»"] = beanRenderer.getDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 	«ELSE -»
-						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
-					    	row["«name.toFirstUpper()»"] = bean.«EXPAND template::CommonFieldUtil::getterName FOR this»().size();	
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	{
+							var info = "";
+							for (var i=0; i<bean.«EXPAND template::CommonFieldUtil::getterName FOR this»().size(); i++) { 
+								info = info + beanRenderer.getDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»().get(i)) + " & ";
+							}						
+					    	row["«name.toFirstUpper()»"] = info;							
+						}
 	«ENDIF -»
 «ENDDEFINE»
 «DEFINE setRowValue FOR BinaryField-»

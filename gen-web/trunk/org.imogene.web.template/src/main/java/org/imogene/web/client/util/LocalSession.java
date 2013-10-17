@@ -16,6 +16,7 @@ public class LocalSession {
 	private Set<Integer> edited = new HashSet<Integer>();	
 	private ImogJunctionProxy searchCriterions = null;
 	private String filteringMessage = null;
+	private String versionNumber;
 	
 	
 	public static LocalSession get(){
@@ -60,6 +61,13 @@ public class LocalSession {
 		return filteringMessage;
 	}
 	
-	
+	public String getVersionNumber() {
+		return versionNumber;
+	}
+
+
+	public void setVersionNumber(String versionNumber) {
+		this.versionNumber = versionNumber;
+	}
 	
 }

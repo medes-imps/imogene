@@ -43,9 +43,17 @@
 			font-size: 11px;
 		}
 		
-		.imogene-Form-button {
-			/*width: 45px;*/
-		}	
+		@if user.agent ie6 ie8 {
+			.imogene-Form-button {
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+		}
+		@else {
+			.imogene-Form-button {
+				/*width: 45px;*/
+			}	
+		}		
 		
 		@external .imogene-Form-button;
 	</ui:style>

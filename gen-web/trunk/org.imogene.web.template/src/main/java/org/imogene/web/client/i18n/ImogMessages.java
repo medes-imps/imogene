@@ -24,7 +24,8 @@ public interface ImogMessages extends Messages{
 	String error_float_dec(String decNb);
 	String error_format_bool();
 	String error_format_bool_field(String field);
-	
+	String error_not_unique();
+
 	String banner_user_label(String currentUser);
 	String banner_lastlogindate_label(String lastLoginDate);
 	

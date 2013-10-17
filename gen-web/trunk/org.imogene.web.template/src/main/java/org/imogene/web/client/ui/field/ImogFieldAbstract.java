@@ -60,6 +60,10 @@ public class ImogFieldAbstract extends Composite implements HasWidgets {
 		return fieldLabel.getText();
 	}
 	
+	public Label getLabelBox() {
+		return fieldLabel;
+	}
+	
 	/**
 	 * Defines the width of cell that contains the label
 	 * @param width width of cell that contains the label

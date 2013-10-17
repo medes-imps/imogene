@@ -18,11 +18,13 @@
 		<class>org.imogene.lib.common.role.ImogRole</class>
 		<class>org.imogene.lib.common.sync.entity.SynchronizableEntity</class>
 		<class>org.imogene.lib.common.user.DefaultUser</class>
+		<class>org.imogene.lib.common.useraction.UserAction</class>
 		«IF applicationType.matches(adminType)-»
 		<class>org.imogene.lib.common.notification.Notification</class>
 		«ENDIF-»
 		«FOREACH entities AS e-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»</class>
+		<class>org.imogene.«projectName.toLowerCase()».domain.entity.backup.«e.name.toFirstUpper()»Bck</class>
 		«ENDFOREACH-»
 	</persistence-unit>
 </persistence>

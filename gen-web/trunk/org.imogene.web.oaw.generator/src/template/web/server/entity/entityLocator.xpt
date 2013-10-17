@@ -42,7 +42,7 @@ public class «name.toFirstUpper()»Locator extends Locator<«name.toFirstUpper()»,
 	public «name.toFirstUpper()» find(Class<? extends «name.toFirstUpper()»> clazz, String id) {	
 		if (handler == null)
             initHandler();
-		return handler.findById(id);
+		return handler.getById(id);
 	}
 
 	@Override

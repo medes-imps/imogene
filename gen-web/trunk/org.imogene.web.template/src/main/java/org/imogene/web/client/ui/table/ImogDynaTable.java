@@ -19,11 +19,14 @@ import org.imogene.web.shared.proxy.criteria.ImogCriterionProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,9 +35,11 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.AsyncHandler;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.CellPreviewEvent;
@@ -74,7 +79,7 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	private ImogSimplePager pager;
 
 	@UiField(provided = true)
-	protected DataGrid<T> table;
+	protected ImogDataGrid<T> table;
 	private Timer refreshTimer = null;
 
 	private int lastFetch;
@@ -83,20 +88,19 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	private boolean newSort = true;
 	private boolean ascSort = true;
 	boolean checkBoxesVisible = false; 
+	private int lastScrollPos = 0;
 
 	protected final ImogRequestFactory requestFactory;
 	protected ImogBeanDataProvider<T> beanDataProvider;
 	protected MultiSelectionModel<T> selectionModel;
 
-	public ImogDynaTable(final ImogRequestFactory requestFactory,
-			ImogBeanDataProvider<T> provider, boolean checkBoxesVisible) {
+	public ImogDynaTable(final ImogRequestFactory requestFactory, ImogBeanDataProvider<T> provider, boolean checkBoxesVisible) {
 
 		this.requestFactory = requestFactory;
 		this.beanDataProvider = provider;
 		this.checkBoxesVisible = checkBoxesVisible;
 
-		table = new DataGrid<T>(itemByPage,
-				GWT.<TableResources> create(TableResources.class));
+		table = new ImogDataGrid<T>(itemByPage, GWT.<TableResources> create(TableResources.class));
 
 		initWidget(imogDynaTableUiBinder.createAndBindUi(this));
 
@@ -104,18 +108,27 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 
 		pager = new ImogSimplePager();
 		pager.setDisplay(table);
-		pager.setRangeLimited(false);
-		addMouseWheelHandler();
+		pager.setRangeLimited(true);
+//		addMouseWheelHandler();
 
 		if (checkBoxesVisible) {
 
 			Column<T, Boolean> checkColumn = new CheckColumn();
-			table.addColumn(checkColumn);
+			CheckHeader checkHeader = new CheckHeader();
+			checkHeader.setUpdater(new ValueUpdater<Boolean>() {
+		        @Override
+		        public void update(Boolean value) {
+		          for (T item : table.getVisibleItems())
+		        	  selectionModel.setSelected(item, value);
+		        }
+		      });
+			
+			table.addColumn(checkColumn, checkHeader);
 			table.addStyleName("with-checkboxes");
 
 			selectionModel = new MultiSelectionModel<T>();
 			table.setSelectionModel(selectionModel,
-					DefaultSelectionEventManager.<T> createCheckboxManager());
+					DefaultSelectionEventManager.<T> createCheckboxManager(0));
 
 			selectionModel
 					.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -137,7 +150,8 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		if (value == null) {
 			return;
 		}
-		requestFactory.getEventBus().fireEvent(getViewEvent(value));
+		if(getViewEvent(value)!=null)
+			requestFactory.getEventBus().fireEvent(getViewEvent(value));
 	}
 
 	public int getItemByPage() {
@@ -268,8 +282,40 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 				}));
 		
 		// mouse wheel handler
-		registrations.add(table.addDomHandler(addMouseWheelHandler(), MouseWheelEvent.getType()));
+//		registrations.add(table.addDomHandler(addMouseWheelHandler(), MouseWheelEvent.getType()));
 		
+		final ScrollPanel scrollable = table.getScrollPanel();
+		registrations.add(scrollable.addScrollHandler(new ScrollHandler() {
+			@Override
+			public void onScroll(ScrollEvent event) {
+
+				int oldScrollPos = lastScrollPos;
+				lastScrollPos = scrollable.getVerticalScrollPosition();
+				int newScroll = lastScrollPos;
+
+				if (oldScrollPos >= lastScrollPos) {
+					// Scrolling up
+					if (lastScrollPos > 0 && lastScrollPos <= 10) {
+						// We are near the start, so previous page.
+						if (pager.hasPreviousPage())
+							pager.previousPage();
+					}
+				} else {
+					// Scrolling down
+					int maxScrollBottom = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
+					if (lastScrollPos >= maxScrollBottom) {
+						// We are near the end, so next page.
+						if (pager.hasNextPage())
+							pager.nextPage();
+					}
+				}
+			}
+		}));
+		
+	}
+	
+	public void setTableWidth(String width) {
+		table.getElement().getStyle().setProperty("minWidth", width);
 	}
 	
 	/**
@@ -340,6 +386,28 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	protected abstract boolean getDefaultSortPropertyOrder();
 
 
+	/**
+	 * @author MEDES-IMPS
+	 */
+	public class CheckHeader extends Header<Boolean> {
+		
+		public CheckHeader() {
+			super(new CheckboxCell(true, false));
+			this.setHeaderStyleNames("dynatable-select-checkbox");
+		}
+
+		@Override
+		public Boolean getValue() {
+			  for (T item : table.getVisibleItems()) {
+		            if (!selectionModel.isSelected(item))
+		              return false;
+		          }
+		          return table.getVisibleItems().size() > 0;
+		}
+		
+	}
+	
+	
 
 	/**
 	 * @author MEDES-IMPS

@@ -76,6 +76,9 @@
 	<!-- Generic dao -->
 	<bean id="genericDao" class="org.imogene.lib.common.dao.GenericDaoImpl" />
 	
+	<!-- actor dao -->
+	<bean id="actorDao" class="org.imogene.lib.common.dao.ImogActorImplDaoImpl" />
+	
 	<!-- Dynamic fields dao -->
 	<bean id="dynamicFieldTemplateDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDaoImpl"/>
 	<bean id="dynamicFieldInstanceDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldInstanceDaoImpl"/>

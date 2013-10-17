@@ -37,6 +37,13 @@ public class PopupButtonPopup {
 		mainPanel.add(w);
 	}
 	
+	public boolean isEmpty() {		
+		if(mainPanel.getWidgetCount()>0)
+			return false;
+		else
+			return true;	
+	}
+	
 	public int getAbsoluteLeft() {
 		return mainPanel.getAbsoluteLeft();
 	}

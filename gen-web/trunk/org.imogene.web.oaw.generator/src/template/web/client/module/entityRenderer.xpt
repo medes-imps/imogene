@@ -155,6 +155,26 @@ public class «projectName.toFirstUpper()»Renderer extends ImogBeanRenderer {
 		else
 			return key;
 	}
+	
+	public String getEntityName(ImogBeanProxy proxy){
+		«FOREACH entities AS e -»
+		if(«e.name.toFirstUpper()»Proxy.class.equals(proxy.getClass())){
+			return NLS.constants().«e.name.toFirstLower()»_name_plur();
+		}		
+		«ENDFOREACH-»
+		return "";
+	}
+	
+	public String getEntityTypeDisplayValue(String name) {
+			
+			«FOREACH entities AS e»
+			if (name.equals(«e.name.toFirstUpper()»Proxy.class.getName())) {
+				return NLS.constants().«e.name.toFirstLower()»_name();
+			}						
+			«ENDFOREACH»
+			
+			return "";			
+		}	
 
 
 }

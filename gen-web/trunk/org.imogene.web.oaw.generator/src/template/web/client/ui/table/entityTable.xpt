@@ -284,7 +284,9 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 		@Override
 		public String getValue(«name.toFirstUpper()»Proxy object) {
 			String value = null;
-			«EXPAND getColumnValue FOR c»
+			if(object!=null) {
+				«EXPAND getColumnValue FOR c-»
+			}
 			return value;
 		}
 

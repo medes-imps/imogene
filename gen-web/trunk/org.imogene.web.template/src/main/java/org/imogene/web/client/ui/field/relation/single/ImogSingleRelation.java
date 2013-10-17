@@ -18,6 +18,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,6 +39,8 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 	private boolean isLocked = false;
 	private boolean hideButtons = false;
 	private boolean hideOpenButton = false;
+	private boolean hideClearButton = false;
+	private boolean hideViewButton = false;
 	private boolean withoutProvider = false;
 	
 	/* listbox selected value */
@@ -47,7 +50,13 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 
 	/* widgets */
 	@UiField
+	HorizontalPanel contentPanel;
+	@UiField
+	HorizontalPanel listBoxPanel;
+	@UiField
 	TextBox textBox;
+	@UiField
+	HorizontalPanel buttonPanel;
 	@UiField
 	Image openIcon;
 	@UiField
@@ -203,10 +212,10 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 				else
 					addImage.setVisible(true);
 				
-				if(value!=null)
-					clearImage.setVisible(true);
-				else
+				if(value==null || hideClearButton)
 					clearImage.setVisible(false);
+				else
+					clearImage.setVisible(true);
 			}
 			else {
 				openIcon.setVisible(false);
@@ -244,6 +253,9 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 	 */
 	public void setBoxWidth(String width) {
 		textBox.getElement().getStyle().setProperty("width", width);
+		listBoxPanel.getElement().getStyle().setProperty("width", width);
+		contentPanel.getElement().getStyle().setProperty("width", width);
+		
 	}
 
 	/**
@@ -253,6 +265,19 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 	 */
 	public void setHideOpenButton(boolean hideOpenButton) {
 		this.hideOpenButton = hideOpenButton;
+	}
+	
+	public void setHideClearButton(boolean hideClearButton) {
+		this.hideClearButton = hideClearButton;
+	}
+	
+	public void setHideCreateButton(boolean hideCreateButton) {
+		this.canCreateEntity = !hideCreateButton;
+	}
+
+	public void hideButtonPanel(boolean hide) {
+		buttonPanel.setVisible(!hide);
+		contentPanel.getElement().getStyle().setProperty("width", "201px" );
 	}
 
 	@Override

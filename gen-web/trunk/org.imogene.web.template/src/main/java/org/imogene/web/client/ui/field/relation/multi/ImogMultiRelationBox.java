@@ -428,6 +428,9 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 		fieldBox.setLabelWidth(width);
 	}
 	
+	public void setBoxWidth(String width) {
+	}
+	
 	@Override
 	protected void onUnload() {
 		for(HandlerRegistration r : registrations)

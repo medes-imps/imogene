@@ -6,6 +6,7 @@
 		.imogene-fieldGroup-disclosurePanel { 
 			width: 100%;
 			margin-bottom: 15px;
+			float: left;
 		}
 		
 		.imogene-fieldGroup-disclosurePanel a {

@@ -28,6 +28,7 @@ import org.imogene.web.client.event.GoHomeEvent;
 import org.imogene.web.client.event.LogoutEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.dynamicfields.ui.renderer.DynFieldsRenderer;
+import org.imogene.web.client.ui.panel.GlassPanel;
 import org.imogene.web.client.ui.panel.MainContentPanel;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.client.util.TokenHelper;
@@ -93,6 +94,12 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 	
 	private static List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 	
+	private static String APPLICATION_VERSION = "0.0.1";
+	
+	private static final int LOGOUT_TIMEOUT = 333;
+	
+	public static GlassPanel GP = new GlassPanel();
+	
 	/* session cookie with a validation period of 2 days */
 	첟F applicationType.matches(adminType)-�
 	private static String COOKIE_NAME = "imogene-쳎rojectName.toLowerCase()�-admin";
@@ -144,6 +151,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 				if (sessionInfo!=null && sessionInfo.getActor() != null) {
 					ImogActorProxy actor = sessionInfo.getActor();
 					LocalSession.get().setCurrentUser(actor);
+					LocalSession.get().setVersionNumber(APPLICATION_VERSION);
 					displayApplication(actor);
 					initializeCookie(sessionInfo.getSessionId());
 				}
@@ -172,7 +180,9 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		
 		registrations.add(History.addValueChangeHandler(this));
 		//History.fireCurrentHistoryState();
-				
+		
+		RootPanel.get("loadingWrapper").setVisible(false);
+			
 		// construct layout
 		topPanel = new TopBannerPanel(eventBus, actor);
 		RootLayoutPanel.get().add(GWT.<Binder> create(Binder.class).createAndBindUi(this));
@@ -218,6 +228,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		/* stop timer */
 		if (sessionTimer != null) {
 			sessionTimer.cancel();
+			sessionTimer=null;
 		}
 
 		Cookies.removeCookie(COOKIE_NAME);
@@ -225,21 +236,27 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		/* clean local data */
 		LocalSession.get().setCurrentUser(null);
 
-		/* disconnect from the server */
-		SessionRequest request = requestFactory.sessionInfoRequest();
-		Request<Void> disconnectRequest = request.disconnect();	
-		disconnectRequest.to(new Receiver<Void>() {
+		// WARNING -> Workaround to the re-connection problem
+		Timer logoutTimer = new Timer() {
+			public void run() {
+				/* disconnect from the server */
+				SessionRequest request = requestFactory.sessionInfoRequest();
+				Request<Void> disconnectRequest = request.disconnect();	
+				disconnectRequest.to(new Receiver<Void>() {
 				
-			@Override
-			public void onFailure(ServerFailure error) {
-				clearModule();
-			}
+					@Override
+					public void onFailure(ServerFailure error) {
+						clearModule();
+					}
 
-			@Override
-			public void onSuccess(Void result) {
-				clearModule();
+					@Override
+					public void onSuccess(Void result) {
+						clearModule();
+					}
+				}).fire();
 			}
-		}).fire();
+		};
+		logoutTimer.schedule(LOGOUT_TIMEOUT);
 	}
 	
 	/**

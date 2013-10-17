@@ -23,7 +23,7 @@ import org.imogene.web.client.event.GoHomeEvent;
 import org.imogene.web.client.event.IsTableFilteredEvent;
 import org.imogene.web.client.event.SelectMenuItemEvent;
 import org.imogene.web.client.i18n.BaseNLS;
-import org.imogene.web.client.ui.panel.WrapperPanel;
+import org.imogene.web.client.ui.panel.WrapperPanelForTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
@@ -66,7 +66,7 @@ public class 南ame.toFirstUpper()腿istPanel extends Composite {
 	ImogResources imogResources;	
 
 	@UiField(provided=true)
-	WrapperPanel wrapperPanel;
+	WrapperPanelForTable wrapperPanel;
 	@UiField(provided=true)
 	南ame.toFirstUpper()聞ynaTable listComposite;
 	
@@ -83,7 +83,7 @@ public class 南ame.toFirstUpper()腿istPanel extends Composite {
 		imogResources.imogStyle().ensureInjected();		
 
 		/* wrapper panel */		
-		wrapperPanel = new WrapperPanel();
+		wrapperPanel = new WrapperPanelForTable();
 		wrapperPanel.setTitle(NLS.constants().南ame.toFirstLower()蓓table_text());
 		if(厚rojectName.toFirstUpper()膏conConstants.南ame.toUpperCase()蓓ICON!=null)
 			wrapperPanel.setIcon(厚rojectName.toFirstUpper()膏conConstants.南ame.toUpperCase()蓓ICON);

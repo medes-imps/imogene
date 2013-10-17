@@ -14,8 +14,10 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper(
 import org.imogene.«projectName.toLowerCase()».server.locator.«name.toFirstUpper()»Locator;
 import org.imogene.web.shared.proxy.BinaryProxy;
 «IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-import org.imogene.web.shared.proxy.ImogActorProxy;
 import org.imogene.admin.client.i18n.AdminNLS;
+«ENDIF-»
+«IF Actor.isAssignableFrom(metaType)-»
+import org.imogene.web.shared.proxy.ImogActorProxy;
 «ELSE-»
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 «ENDIF-»
@@ -33,7 +35,7 @@ import com.google.web.bindery.requestfactory.shared.ProxyFor;
  * @author Medes-IMPS
  */
 @ProxyFor(value=«name.toFirstUpper()».class, locator=«name.toFirstUpper()»Locator.class)
-public interface «name.toFirstUpper()»Proxy extends «IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»ImogActorProxy«ELSE-»ImogBeanProxy«ENDIF-» {
+public interface «name.toFirstUpper()»Proxy extends «IF Actor.isAssignableFrom(metaType)-»ImogActorProxy«ELSE-»ImogBeanProxy«ENDIF-» {
 	
 	«FOREACH groups AS g»
 	/* «g.name.toFirstUpper()» section fields */	

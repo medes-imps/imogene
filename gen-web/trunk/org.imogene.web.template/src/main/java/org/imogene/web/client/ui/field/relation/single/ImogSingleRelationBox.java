@@ -20,6 +20,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -142,6 +143,18 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 		singleRelationBox.setHideOpenButton(hideOpenButton);
 	}
 	
+	public void setHideClearButton(boolean hideClearButton) {
+		singleRelationBox.setHideClearButton(hideClearButton);
+	}
+	
+	public void setHideCreateButton(boolean hideCreateButton) {
+		singleRelationBox.setHideCreateButton(hideCreateButton);
+	}
+	
+	public void hideButtonPanel(boolean hide) {
+		singleRelationBox.hideButtonPanel(hide);
+	}
+	
 	/**
 	 * Defines that the field shall notify value changes
 	 * @param eventBus the event bus that will be used to fire the value change events
@@ -168,6 +181,10 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 	
 	public void setLabelWidth(String width) {
 		fieldBox.setLabelWidth(width);
+	}
+	
+	public Label getLabelBox() {
+		return fieldBox.getLabelBox();
 	}
 	
 	/**

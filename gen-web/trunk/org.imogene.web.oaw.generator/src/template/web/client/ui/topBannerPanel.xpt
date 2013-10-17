@@ -11,6 +11,7 @@ import java.util.List;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.web.client.event.LogoutEvent;
 import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.shared.proxy.ImogActorProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -56,6 +57,8 @@ public class TopBannerPanel extends Composite  {
 	HTML actorInfo;
 	@UiField(provided=true)
 	PushButton logout;
+	@UiField
+	Label versionNumber;
 
 	
 	public TopBannerPanel(EventBus eventBus, ImogActorProxy actor) {
@@ -67,6 +70,7 @@ public class TopBannerPanel extends Composite  {
 		initWidget(BINDER.createAndBindUi(this));
 		setActor(actor);
 		setLocaleList();
+		versionNumber.setText("version:"+LocalSession.get().getVersionNumber());
 	}
 	
 	@UiHandler("logout")

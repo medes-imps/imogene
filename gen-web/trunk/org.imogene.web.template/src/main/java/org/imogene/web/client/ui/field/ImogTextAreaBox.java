@@ -117,6 +117,13 @@ public class ImogTextAreaBox extends Composite implements ImogField<String>,
 		textBox.getElement().getStyle().setProperty("width", width);
 	}
 	
+	/**
+	 * Sets the widget's height
+	 */
+	public void setBoxHeight(String height) {
+		textBox.getElement().getStyle().setProperty("height", height);
+	}
+	
 
 	@Override
 	public void showErrors(List<EditorError> errors) {

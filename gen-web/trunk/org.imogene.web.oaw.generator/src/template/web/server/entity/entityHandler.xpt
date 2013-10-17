@@ -71,9 +71,19 @@ public class «name.toFirstUpper()»Handler {
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
-	@Transactional(readOnly=true)
+	@Transactional
 	public «name.toFirstUpper()» findById(String entityId) {
 		return dao.load(entityId);
+	}
+	
+	/**
+	 * Loads the entity with the specified id
+	 * @param entityId the entity id
+	 * @return the entity or null
+	 */
+	@Transactional(readOnly=true)
+	public «name.toFirstUpper()» getById(String entityId) {
+		return dao.getById(entityId);
 	}
 
 	/**
@@ -611,7 +621,7 @@ private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
 
 «REM» no affection possible from the reverse side of a one-to-one relation«ENDREM»
 «DEFINE removeFromParent FOR FieldEntity-»«ENDDEFINE»
-«DEFINE removeFromParent FOR ReverseRelationFieldEntity»
+«DEFINE removeFromParent FOR ReverseRelationFieldEntity-»
 «IF cardinality==1 && oppositeRelationField.cardinality==1-»
 		// no affection possible from the reverse side of a one-to-one relation
 		entity.«EXPAND template::CommonFieldUtil::setterName FOR this»(null);
@@ -620,7 +630,7 @@ private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
 
 «REM» «ENDREM»
 «DEFINE updateChilds FOR FieldEntity-»«ENDDEFINE»
-«DEFINE updateChilds FOR RelationFieldEntity»
+«DEFINE updateChilds FOR RelationFieldEntity-»
 «IF nestedForm-»
 			// manage related «name.toFirstLower()»
 «IF cardinality==1-»
@@ -874,7 +884,7 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 		, String «property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After
 «ENDDEFINE»
 «DEFINE declareSearchParameter(Project p, String property) FOR RelationFieldEntity-»
-	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
 	«FOREACH entity.mainFields AS f-»
 	 	«EXPAND declareSearchParameter(p, property + name.toFirstLower() + "_") FOR f-»		
 	«ENDFOREACH-»
@@ -958,7 +968,7 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 		}
 «ENDDEFINE»
 «DEFINE createSearchCriteria(Project p, String property) FOR RelationFieldEntity-»
-	«IF cardinality == 1 && getOppositeCardinality(this)!=1 -»
+	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
 	«FOREACH entity.mainFields AS f-»
 	 	«EXPAND createSearchCriteria(p, property + name.toFirstLower() + "_") FOR f-»		
 	«ENDFOREACH-»

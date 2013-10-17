@@ -115,10 +115,12 @@
 				margin-left: 4px;
 				margin-top: 2px;
 				margin-bottom: 2px;
+				height: 10px;
 			}
 		}
 		@else {
 			.innerPanel {
+				height: 10px;
 			}
 		}
 	</ui:style>
@@ -132,7 +134,7 @@
 			</g:cell>
 
 			<g:cell verticalAlignment="middle" horizontalAlignment="left">
-				<g:VerticalPanel>
+				<g:VerticalPanel ui:field="centerPanel">
 					<g:Label ui:field="title" styleName="{style.titleStyle}" />
 					<g:HorizontalPanel>
 						<g:PushButton ui:field="create"
@@ -148,7 +150,7 @@
 
 		<g:VerticalPanel  ui:field="searchPanel"  styleName="{style.innerPanel}">
 			<g:Label ui:field="searchLabel" styleName="{style.searchLabel}"/>
-			<g:HorizontalPanel verticalAlignment="middle">
+			<g:HorizontalPanel verticalAlignment="middle" ui:field="searchBoxes">
 				<g:cell verticalAlignment="middle">
 					<g:TextBox ui:field="searchValue" styleName="{style.searchBox}" />
 				</g:cell>

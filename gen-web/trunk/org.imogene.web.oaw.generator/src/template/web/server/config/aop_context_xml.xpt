@@ -11,7 +11,11 @@
 	<!-- notification for the creation or the modification of bean -->
 	<bean id="notifyAfterSave" class="org.imogene.notif.aop.NotificationSaveInterceptor">
 		<property name="notifierUrl" value="${notifier.server}" />
+		<property name="dao" ref="genericDao" />
+		<property name="cloneFactory" ref="cloneFactory" />
 	</bean>
+	
+  	<bean id="cloneFactory" class="org.imogene.tesis_diabeto.domain.entity.backup.CloneFactoryImpl" factory-method="getInstance"/>
 
 	«FOREACH entities AS e »
 	<!-- proxy Implementation Class -->

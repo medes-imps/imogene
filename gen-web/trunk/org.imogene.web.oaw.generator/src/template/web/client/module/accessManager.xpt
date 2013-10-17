@@ -254,6 +254,19 @@ public class AccessManager {
 	public static boolean canExport() {
 		return ImogRoleUtil.canExport();
 	}	
+	
+	/**
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public static boolean hasRole(String param) {
+		for (ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()) {
+			if (role.getId().equals(param))
+				return true;
+		}
+		return false;
+	}	
 		
 }
 «ENDFILE»

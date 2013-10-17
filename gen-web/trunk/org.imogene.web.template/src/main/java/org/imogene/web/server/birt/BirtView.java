@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.birt.report.engine.api.EXCELRenderOption;
 import org.eclipse.birt.report.engine.api.EngineConstants;
 import org.eclipse.birt.report.engine.api.HTMLRenderOption;
 import org.eclipse.birt.report.engine.api.HTMLServerImageHandler;
@@ -93,7 +94,13 @@ public class BirtView extends AbstractView {
 			csvOptions.setOutputStream(response.getOutputStream());
 			runAndRenderTask.setRenderOption(csvOptions);
 		} 
-
+		else if (format.equalsIgnoreCase(BirtConstants.XLS)) {
+			EXCELRenderOption  xlsOptions = new EXCELRenderOption(options);
+			xlsOptions.setOutputFormat("xls");
+			xlsOptions.setOutputStream(response.getOutputStream());
+			runAndRenderTask.setRenderOption(xlsOptions);
+		}		
+		
 		runAndRenderTask.getAppContext().put(EngineConstants.APPCONTEXT_BIRT_VIEWER_HTTPSERVET_REQUEST, request);
 		runAndRenderTask.run();
 		runAndRenderTask.close();

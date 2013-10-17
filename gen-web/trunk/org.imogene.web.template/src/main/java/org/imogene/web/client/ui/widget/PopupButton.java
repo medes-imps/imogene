@@ -95,6 +95,10 @@ public class PopupButton extends Composite {
 		popupPanel.addWidget(w);
 	}
 	
+	public boolean isEmpty() {
+		return popupPanel.isEmpty();
+	}
+	
 	public void setButtonActivatedStyle() {
 		buttonLabel.addStyleName("popupButtonStyle-activated");
 	}
