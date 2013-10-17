@@ -4,8 +4,8 @@
 «EXTENSION template::domain::DaoUtilExt»
 
 «DEFINE generate(String projectName, String applicationType) FOR CardEntity»
-«FILE projectName.toLowerCase() + "/domain/entity/" + name.toFirstUpper() + "Bck.java"»
-package org.imogene.«projectName.toLowerCase()».domain.entity;
+«FILE projectName.toLowerCase() + "/domain/entity/backup/" + name.toFirstUpper() + "Bck.java"»
+package org.imogene.«projectName.toLowerCase()».domain.entity.backup;
 
 import java.util.Date;
 
@@ -20,6 +20,7 @@ import javax.persistence.TemporalType;
 import org.imogene.lib.common.entity.GeoField;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.entity.IsGeoreferenced;
+import org.imogene.lib.common.entity.ImogBeanBck;
 
 
 /**
@@ -27,7 +28,7 @@ import org.imogene.lib.common.entity.IsGeoreferenced;
  * @author MEDES-IMPS
  */
 @Entity
-public class «name.toFirstUpper()»Bck extends ImogBeanImpl«IF georeferenced != null» implements IsGeoreferenced«ENDIF» {
+public class «name.toFirstUpper()»Bck extends ImogBeanBck«IF georeferenced != null» implements IsGeoreferenced«ENDIF» {
 
 	private static final long serialVersionUID = «generateSerialVersionUID()»L;
 
@@ -79,6 +80,21 @@ public class «name.toFirstUpper()»Bck extends ImogBeanImpl«IF georeferenced != n
 		«ENDFOREACH-»
   	})
 	«ENDLET-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR TextAreaField»
+	«IF translatable-»
+	«LET (Project) parentGroup.parentCard.eContainer AS project-»
+	@Embedded
+	@AttributeOverrides({
+		«FOREACH project.languages AS l SEPARATOR ','-»
+    	@AttributeOverride(name="«l.name.toLowerCase()»", column=@Column(name="«name.toFirstLower()»_«l.isoCode»"))
+		«ENDFOREACH-»
+  	})
+	«ENDLET-»
+	«ELSE -»
+	@Column(columnDefinition="TEXT")
 	«ENDIF-»
 «ENDDEFINE»
 

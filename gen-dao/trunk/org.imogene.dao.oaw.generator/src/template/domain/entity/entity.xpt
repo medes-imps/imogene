@@ -100,7 +100,7 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 	«ENDIF-»
 	«ENDREM»
 	«EXPAND jpaAnnotation FOR f»
-	private «EXPAND template::domain::DaoFieldUtil::entityFieldType FOR f» «EXPAND template::CommonFieldUtil::propertyName FOR f»;
+	private «EXPAND template::domain::DaoFieldUtil::entityFieldType FOR f» «EXPAND template::CommonFieldUtil::propertyName FOR f»«EXPAND defaultValue FOR f»;
 	«ENDFOREACH -»	
 	«ENDFOREACH»	
 		
@@ -332,52 +332,6 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 «ENDIF-»
 «ENDDEFINE»
 
-«REM»----------------------------------------------- «ENDREM»
-«REM»-------------- FIELD VALIDATION --------------- «ENDREM»
-«REM»----------------------------------------------- «ENDREM»
-
-«DEFINE validationAnnotation FOR FieldEntity-»«ENDDEFINE»
-«DEFINE validationAnnotation FOR TextField-»
-	«FOREACH this.validationRules AS r ITERATOR i -»
-	@Pattern(regexp="«r.validationRegularExpression»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0»")
-	«ENDFOREACH-» 
-«ENDDEFINE»
-«DEFINE validationAnnotation FOR IntegerField-»
-	«IF min!=null && min.length>0-»
-	@Min(value=«min-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
-	«ENDIF-»
-	«IF max!=null && max.length>0-»
-	@Max(value=«max-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
-	«ENDIF-»
-«ENDDEFINE»
-«DEFINE validationAnnotation FOR FloatField-»
-	«IF min!=null && min.length>0-»
-	@DoubleMin(value=«min-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
-	«ENDIF-»
-	«IF max!=null && max.length>0-»
-	@DoubleMax(value=«max-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
-	«ENDIF-»
-	«IF DecimalNumber!=null && DecimalNumber>-1-»
-	@FractionLength(value=«DecimalNumber-», message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber")	
-	«ENDIF-»
-«ENDDEFINE»
-«DEFINE validationAnnotation FOR DateField-»
-	«IF min!=null && min.length>0-»
-	@After(value="«min-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
-	«ENDIF-»
-	«IF max!=null && max.length>0-»
-	@Before(value="«max-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
-	«ENDIF-»
-«ENDDEFINE»
-«DEFINE validationAnnotation FOR DateTimeField-»
-	«IF min!=null && min.length>0-»
-	@After(value="«min-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min")	
-	«ENDIF-»
-	«IF max!=null && max.length>0-»
-	@Before(value="«max-»", message="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max")	
-	«ENDIF-»
-«ENDDEFINE»
-
 
 «REM» Set the actor roles «ENDREM»
 «DEFINE setAuthorizedImogRoles FOR Role-»              
@@ -476,4 +430,27 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 		«EXPAND template::CommonFieldUtil::propertyName FOR this».remove(param);
 	}
 «ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE defaultValue FOR FieldEntity-»«ENDDEFINE»
+«DEFINE defaultValue FOR BooleanField-»
+	«IF defaultValue!=null && (defaultValue.matches("true")||defaultValue.matches("false") ) -»
+		=«defaultValue»
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE defaultValue FOR EnumField-»
+	«IF defaultValue!=null -»
+		="«defaultValue»"
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE defaultValue FOR IntegerField-»
+	«IF defaultValue!=null -»
+		= new Integer(«defaultValue»)
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE defaultValue FOR FloatField-»
+	«IF defaultValue!=null -»
+		= new Double(«defaultValue»)
+	«ENDIF -»
 «ENDDEFINE»

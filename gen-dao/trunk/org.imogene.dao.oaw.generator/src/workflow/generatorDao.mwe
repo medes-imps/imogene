@@ -29,14 +29,32 @@
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
 	
-	<!-- JPA entities Bck 
+	<!-- JPA entities Bck -->
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::entity::entityBck::generate("${modelName}","${applicationType}") FOREACH project.entities' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component> -->
+	</component>
+	
+	<!-- SPECIFIC - entity cloner  -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::entity::entityCloner::generate("${modelName}","${applicationType}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
+	
+	<!-- SPECIFIC - Clone factory -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::domain::entity::cloneFactory::generate("${modelName}","${applicationType}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
 	
 	<!-- DAO interfaces -->
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
