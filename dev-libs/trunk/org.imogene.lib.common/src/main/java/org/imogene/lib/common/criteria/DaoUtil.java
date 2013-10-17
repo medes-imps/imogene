@@ -12,10 +12,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.imogene.lib.common.constants.CriteriaConstants;
+import org.imogene.lib.common.criteria.DaoUtil;
 
 /**
- * This class enables to convert the Imogene criterions to the JPA criterions
- * and the inverse.
+ * This class enables to convert the Imogene criterions to the JPA criterions and the inverse.
+ * 
  * @author Medes-IMPS
  */
 public class DaoUtil {
@@ -88,9 +89,16 @@ public class DaoUtil {
 		String operator = criteria.getOperation();
 		String value = criteria.getValue();
 		if (operator.equals(CriteriaConstants.STRING_OPERATOR_CONTAINS)) {
-			return builder.like(builder.lower(DaoUtil.<String> getCascadeRoot(root, property)), "%" + value.toLowerCase() + "%");
+			return builder.like(builder.lower(DaoUtil.<String> getCascadeRoot(root, property)),
+					"%" + value.toLowerCase() + "%");
 		} else if (operator.equals(CriteriaConstants.STRING_OPERATOR_EQUAL)) {
 			return builder.equal(DaoUtil.<String> getCascadeRoot(root, property), value);
+		} else if (operator.equals(CriteriaConstants.STRING_OPERATOR_DIFF)) {
+			return builder.notLike(DaoUtil.<String> getCascadeRoot(root, property), value);
+		} else if (operator.equals(CriteriaConstants.STRING_OPERATOR_INF)) {
+			return builder.lessThanOrEqualTo(DaoUtil.<String> getCascadeRoot(root, property), value);
+		} else if (operator.equals(CriteriaConstants.STRING_OPERATOR_SUP)) {
+			return builder.greaterThanOrEqualTo(DaoUtil.<String> getCascadeRoot(root, property), value);
 		} else if (operator.equals(CriteriaConstants.STRING_OPERATOR_STARTWITH)) {
 			return builder.like(DaoUtil.<String> getCascadeRoot(root, property), value + "%");
 		} else if (operator.equals(CriteriaConstants.DATE_OPERATOR_BEFORE)) {
