@@ -15,7 +15,7 @@
 		<property name="cloneFactory" ref="cloneFactory" />
 	</bean>
 	
-  	<bean id="cloneFactory" class="org.imogene.tesis_diabeto.domain.entity.backup.CloneFactoryImpl" factory-method="getInstance"/>
+  	<bean id="cloneFactory" class="org.imogene.«projectName.toLowerCase()».domain.entity.backup.CloneFactoryImpl" factory-method="getInstance"/>
 
 	«FOREACH entities AS e »
 	<!-- proxy Implementation Class -->
