@@ -24,6 +24,13 @@ public interface ImogBeanDao<T extends ImogBean> {
 	 * @return the entity or null
 	 */
 	public T load(String id);
+	
+	/**
+	 * Load the entity with the specified id
+	 * @param id the entity id
+	 * @return the entity or null
+	 */
+	public T getById(String id);
 
 	/**
 	 * Load the entities with the specified ids

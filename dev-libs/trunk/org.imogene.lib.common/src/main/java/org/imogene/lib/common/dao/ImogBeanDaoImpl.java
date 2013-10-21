@@ -35,6 +35,11 @@ public abstract class ImogBeanDaoImpl<T extends ImogBean> implements ImogBeanDao
 	public T load(String id) {
 		return em.find(clazz, id);
 	}
+	
+	@Override
+	public T getById(String id) {
+		return em.find(clazz, id);
+	}
 
 	@Override
 	public List<T> load(List<String> ids) {

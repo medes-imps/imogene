@@ -28,6 +28,7 @@ import org.imogene.lib.common.entity.ImogBeanBck;
  * @author MEDES-IMPS
  */
 @Entity
+@Table(name = "«name.toFirstUpper()»_Bck")
 public class «name.toFirstUpper()»Bck extends ImogBeanBck«IF georeferenced != null» implements IsGeoreferenced«ENDIF» {
 
 	private static final long serialVersionUID = «generateSerialVersionUID()»L;

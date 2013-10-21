@@ -20,7 +20,7 @@ public abstract class ImogBeanBck implements ImogBean {
 
 	private static final long serialVersionUID = 5514344671394728780L;
 
-	 @Id
+	@Id
 	private String traceId;
 	
 	private String id;
