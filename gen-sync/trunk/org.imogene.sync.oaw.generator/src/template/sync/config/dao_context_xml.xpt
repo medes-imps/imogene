@@ -97,6 +97,9 @@
 	
 	<!-- DynamicField_Template DAO -->
 	<bean id="dynamicFieldTemplateDao" class="org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDaoImpl" />
+	
+	<!-- GenericImogActor dao -->
+	<bean id="genericImogActorDao" class="org.imogene.lib.common.dao.GenericImogActorDaoImpl" />
 
 	<!-- Entities DAO -->
 	«FOREACH entities AS e»

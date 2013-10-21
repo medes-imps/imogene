@@ -1,4 +1,4 @@
-package org.imogene.web.shared.constants;
+package org.imogene.lib.common.constants;
 
 public class UserActionConstants {
 	

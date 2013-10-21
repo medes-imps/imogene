@@ -2,19 +2,19 @@ package org.imogene.notif.aop;
 
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
+import org.imogene.lib.common.constants.UserActionConstants;
 import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.entity.CloneFactory;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.useraction.UserAction;
-import org.imogene.web.client.util.ImogKeyGenerator;
-import org.imogene.lib.common.entity.CloneFactory;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.ServerConstants;
-import org.imogene.web.shared.constants.UserActionConstants;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -166,7 +166,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	private void saveAction(String actionType, String form, String formId) {
 		
 		UserAction action = new UserAction();
-		action.setId(ImogKeyGenerator.generateKeyId("USRA"));
+		action.setId(UUID.randomUUID().toString());
 		action.setActionDate(new Date(System.currentTimeMillis()));
 		ImogActor actor = (ImogActor)HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
 		action.setUserId(actor.getId());

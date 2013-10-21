@@ -540,6 +540,11 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirst
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new Date());
 	«ENDIF -»
 «ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR DateTimeField-»
+	«IF defaultValue!=null && defaultValue.matches("now") -»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new Date());
+	«ENDIF -»
+«ENDDEFINE»
 «DEFINE defaultValue(String variable) FOR BooleanField-»
 	«IF defaultValue!=null && (defaultValue.matches("true")||defaultValue.matches("false") ) -»
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(«defaultValue»);
