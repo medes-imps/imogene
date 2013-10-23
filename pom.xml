@@ -59,11 +59,11 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>../org.imogene.lib.common</module>
-				<module>../org.imogene.lib.encryption</module>
-				<module>../org.imogene.lib.sync.common</module>
-				<module>../org.imogene.lib.sync.client</module>
-				<module>../org.imogene.lib.sync.server</module>
+				<module>dev-libs/org.imogene.lib.common</module>
+				<module>dev-libs/org.imogene.lib.encryption</module>
+				<module>dev-libs/org.imogene.lib.sync.common</module>
+				<module>dev-libs/org.imogene.lib.sync.client</module>
+				<module>dev-libs/org.imogene.lib.sync.server</module>
 			</modules>
 			<build>
 				<resources>
@@ -105,11 +105,11 @@
 		<profile>
 			<id>templates</id>
 			<modules>
-				<module>../org.imogene.initializer.template</module>
-				<module>../org.imogene.sync.template</module>
-				<module>../org.imogene.notifier.template</module>
-				<module>../org.imogene.client.template</module>
-				<module>../org.imogene.web.template</module>
+				<module>gen-init/org.imogene.initializer.template</module>
+				<module>gen-sync/org.imogene.sync.template</module>
+				<module>gen-notifier/org.imogene.notifier.template</module>
+				<module>gen-client/org.imogene.client.template</module>
+				<module>gen-web/org.imogene.web.template</module>
 			</modules>
 		</profile>
 	</profiles>

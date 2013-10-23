@@ -5,7 +5,7 @@
 		<groupId>org.imogene.lib</groupId>
 		<artifactId>imogene-parent</artifactId>
 		<version>2.0.1-SNAPSHOT</version>
-		<relativePath>../pom</relativePath>
+		<relativePath>../..</relativePath>
 	</parent>
 	<artifactId>client-template</artifactId>
 	<name>org.imogene.client.template</name>
