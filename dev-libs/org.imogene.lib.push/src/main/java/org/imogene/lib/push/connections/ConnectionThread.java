@@ -135,15 +135,29 @@ public class ConnectionThread extends Thread {
 		schedulePushTimeout(id, message);
 	}
 
-	private synchronized void abort() throws IOException {
+	public synchronized void abort() {
 		mAuthenticated = false;
-		mSocket.shutdownInput();
-		mSocket.shutdownOutput();
-		mSocket.close();
+
+		try {
+			mSocket.shutdownInput();
+		} catch (IOException e) {
+		}
+
+		try {
+			mSocket.shutdownOutput();
+		} catch (IOException e) {
+		}
+
+		try {
+			mSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		logger.debug("Abort - Socket closed");
 	}
 
-	private void authenticate(String message) throws IOException {
+	private void authenticate(String message) {
 		if (message.startsWith(MSG_AUTH)) {
 			logger.debug("Authentication...");
 			String[] parts = message.split(";");
@@ -228,11 +242,7 @@ public class ConnectionThread extends Thread {
 	private class TimeoutTask extends TimerTask {
 		@Override
 		public void run() {
-			try {
-				abort();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			abort();
 		}
 	}
 
@@ -252,7 +262,6 @@ public class ConnectionThread extends Thread {
 			try {
 				push(mId, mMessage);
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 	}

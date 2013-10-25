@@ -58,10 +58,10 @@ public class PushServer extends Thread implements InitializingBean, DisposableBe
 
 	public void abort() {
 		mAbort = true;
+		connectionController.close();
 		try {
 			mServer.close();
 		} catch (IOException e) {
-
 		}
 	}
 

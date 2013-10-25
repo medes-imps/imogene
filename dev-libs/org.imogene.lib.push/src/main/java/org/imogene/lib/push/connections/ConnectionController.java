@@ -39,6 +39,12 @@ public class ConnectionController {
 	public ConnectionThread getConnection(String connectionId) {
 		return connections.get(connectionId);
 	}
+	
+	public void close() {
+		for (ConnectionThread conn : connections.values()) {
+			conn.abort();
+		}
+	}
 
 	protected boolean validate(String login, String password) {
 		ImogActor actor = userAccessControl.authenticate(login, password);

@@ -19,4 +19,10 @@
 		<property name="userAccessControl" ref="userAccessControl" />
 	</bean>
 
+	<bean id="pushMessageHelper" class="org.imogene.lib.push.messages.MessageHelper">
+		<property name="connectionDao" ref="pushConnectionDao" />
+		<property name="messageDao" ref="pushMessageDao" />
+		<property name="connectionController" ref="pushConnectionController" />
+	</bean>
+
 </beans>

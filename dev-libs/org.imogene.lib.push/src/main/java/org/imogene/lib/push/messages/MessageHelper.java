@@ -13,7 +13,7 @@ import org.imogene.lib.push.domain.Connection;
 import org.imogene.lib.push.domain.Message;
 import org.imogene.lib.push.status.MessageStatus;
 
-public class MessageFactory {
+public class MessageHelper {
 
 	private ConnectionController connectionController;
 	private ConnectionDao connectionDao;
@@ -29,6 +29,14 @@ public class MessageFactory {
 
 	public void setMessageDao(MessageDao messageDao) {
 		this.messageDao = messageDao;
+	}
+
+	public void pushMessage(String login, String message) {
+		pushMessage(login, null, message);
+	}
+
+	public void broadcastMessage(String message) {
+		pushMessage(null, null, message);
 	}
 
 	public void pushMessage(String login, String terminal, String message) {
