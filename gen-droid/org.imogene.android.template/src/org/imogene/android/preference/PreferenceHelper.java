@@ -168,4 +168,9 @@ public class PreferenceHelper {
 				context.getString(R.string.ig_push_enabled_key), false);
 	}
 
+	public static boolean isPushSsl(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
+				context.getString(R.string.ig_push_ssl_key), false);
+	}
+
 }

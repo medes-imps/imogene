@@ -80,6 +80,12 @@
 			android:key="@string/ig_push_port_key"
 			android:title="@string/ig_push_port_title"
 			android:inputType="number" />
+		<CheckBoxPreference
+			android:key="@string/ig_push_ssl_key"
+			android:title="@string/ig_push_ssl_title"
+			android:summaryOn="@string/ig_push_ssl_summaryon"
+			android:summaryOff="@string/ig_push_ssl_summaryoff"
+			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory 
 		android:title="@string/ig_check_parameters">

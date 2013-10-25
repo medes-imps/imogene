@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.util.http.ssl.TrustAllSSLSocketFactory;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -40,6 +41,7 @@ public class PushService extends Service {
 	private static final String MSG_PONG = "PONG";
 	private static final String MSG_ACK = "ACK";
 	private static final String MSG_PUSH = "PUSH";
+	private static final String MSG_QUIT = "QUIT";
 
 	private static final String PREF_STARTED = "PUSH.started";
 	private static final String PREF_RETRY_INTERVAL = "PUSH.retryInterval";
@@ -50,18 +52,16 @@ public class PushService extends Service {
 	private static final long PING_INTERVAL = 5 * 60 * 1000;
 	private static final long PING_TIMEOUT = 1 * 60 * 1000;
 
-	// private static final int NOTIF_CONNECTED = 0;
-
 	private SharedPreferences mPreferences;
 
 	private boolean mStarted;
 	private ConnectionThread mConnection;
 
 	private ConnectivityManager mConnMan;
-	// private NotificationManager mNotifMan;
 
 	private String mHost;
 	private int mPort;
+	private boolean mSsl;
 	private String mTerminal;
 	private String mLogin;
 	private String mPassword;
@@ -110,11 +110,11 @@ public class PushService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		mPreferences = getSharedPreferences(PushService.class.getName(), Context.MODE_PRIVATE);
-		// mNotifMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mConnMan = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
 		mHost = PreferenceHelper.getPushHost(this);
 		mPort = PreferenceHelper.getPushPort(this);
+		mSsl = PreferenceHelper.isPushSsl(this);
 		mTerminal = PreferenceHelper.getHardwareId(this);
 		mLogin = PreferenceHelper.getSyncLogin(this);
 		mPassword = PreferenceHelper.getSyncPassword(this);
@@ -140,7 +140,6 @@ public class PushService extends Service {
 			/*
 			 * We probably didn't get a chance to clean up gracefully, so do it now.
 			 */
-			// hideNotification();
 			stopPinging();
 
 			/* Formally start and attempt connection. */
@@ -270,7 +269,7 @@ public class PushService extends Service {
 
 		Log.i(TAG, "Connecting...");
 
-		mConnection = new ConnectionThread(mHost, mPort);
+		mConnection = new ConnectionThread();
 		mConnection.start();
 	}
 
@@ -286,6 +285,11 @@ public class PushService extends Service {
 		unscheduleReconnect();
 
 		if (mConnection != null) {
+			try {
+				mConnection.quit();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			mConnection.abort();
 			mConnection = null;
 		}
@@ -306,7 +310,7 @@ public class PushService extends Service {
 		if (mStarted == true && mConnection == null) {
 			Log.i(TAG, "Reconnecting...");
 
-			mConnection = new ConnectionThread(mHost, mPort);
+			mConnection = new ConnectionThread();
 			mConnection.start();
 		}
 	}
@@ -319,37 +323,23 @@ public class PushService extends Service {
 		reconnectIfNecessary();
 	}
 
-	// private void showNotification() {
-	// Notification n = new Notification();
-	//
-	// n.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-	//
-	// n.icon = R.drawable.connected_notify;
-	// n.when = System.currentTimeMillis();
-	//
-	// PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, PushActivity.class), 0);
-	//
-	// n.setLatestEventInfo(this, "KeepAlive connected", "Connected to " + mHost + ":" + mPort, pi);
-	//
-	// mNotifMan.notify(NOTIF_CONNECTED, n);
-	// }
-	//
-	// private void hideNotification() {
-	// mNotifMan.cancel(NOTIF_CONNECTED);
-	// }
-
 	private class ConnectionThread extends Thread {
 
-		private final Socket mSocket;
-		private final String mHost;
-		private final int mPort;
+		private Socket mSocket;
 
 		private volatile boolean mAbort = false;
 
-		public ConnectionThread(String host, int port) {
-			mHost = host;
-			mPort = port;
-			mSocket = new Socket();
+		public ConnectionThread() {
+			if (mSsl) {
+				try {
+					TrustAllSSLSocketFactory factory = new TrustAllSSLSocketFactory();
+					mSocket = factory.createSocket();
+				} catch (Exception e) {
+					Log.e(TAG, "Problem constructiong SSLSocket", e);
+				}
+			} else {
+				mSocket = new Socket();
+			}
 		}
 
 		private boolean isNetworkAvailable() {
@@ -382,7 +372,6 @@ public class PushService extends Service {
 				Log.i(TAG, "Connection established to " + s.getInetAddress() + ":" + mPort);
 
 				startPinging();
-				// showNotification();
 
 				InputStream in = s.getInputStream();
 
@@ -410,7 +399,6 @@ public class PushService extends Service {
 			} finally {
 				stopPinging();
 				unschedulePingTimeout();
-				// hideNotification();
 
 				if (mAbort == true) {
 					Log.i(TAG, "Connection aborted, shutting down.");
@@ -486,6 +474,12 @@ public class PushService extends Service {
 			Log.i(TAG, "PING sent.");
 		}
 
+		public synchronized void quit() throws IOException {
+			write(MSG_QUIT);
+
+			Log.i(TAG, "QUIT sent.");
+		}
+
 		public synchronized void abort() {
 			Log.i(TAG, "Connection aborting.");
 
@@ -493,17 +487,17 @@ public class PushService extends Service {
 
 			try {
 				mSocket.shutdownOutput();
-			} catch (IOException e) {
+			} catch (Exception e) {
 			}
 
 			try {
 				mSocket.shutdownInput();
-			} catch (IOException e) {
+			} catch (Exception e) {
 			}
 
 			try {
 				mSocket.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 			}
 
 			while (true) {

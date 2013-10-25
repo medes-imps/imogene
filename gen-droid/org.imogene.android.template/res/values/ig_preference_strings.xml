@@ -85,5 +85,8 @@
     <string name="ig_push_enabled_title">Push</string>
     <string name="ig_push_enabled_summaryon">Disable push</string>
     <string name="ig_push_enabled_summaryoff">Enable push</string>
+    <string name="ig_push_ssl_title">Push over SSL</string>
+    <string name="ig_push_ssl_summaryon">Disable push over SSL</string>
+    <string name="ig_push_ssl_summaryoff">Enable push over SSL</string>
 
 </resources>

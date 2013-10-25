@@ -29,5 +29,6 @@
     <string name="ig_push_host_key">PUSH_HOST</string>
     <string name="ig_push_port_key">PUSH_PORT</string>
     <string name="ig_push_enabled_key">PUSH_ENABLED</string>
+    <string name="ig_push_ssl_key">PUSH_SSL</string>
 
 </resources>
