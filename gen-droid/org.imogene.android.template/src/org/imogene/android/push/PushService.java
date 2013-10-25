@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.http.ssl.TrustAllSSLSocketFactory;
 
 import android.app.AlarmManager;
@@ -18,7 +19,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 
 /**
@@ -43,8 +46,10 @@ public class PushService extends Service {
 	private static final String MSG_PUSH = "PUSH";
 	private static final String MSG_QUIT = "QUIT";
 
-	private static final String PREF_STARTED = "PUSH.started";
-	private static final String PREF_RETRY_INTERVAL = "PUSH.retryInterval";
+	private static final String CMD_SYNC = "SYNC";
+
+	private static final String PREF_STARTED = "started";
+	private static final String PREF_RETRY_INTERVAL = "retryInterval";
 
 	private static final long INITIAL_RETRY_INTERVAL = 10 * 1000;
 	private static final long MAXIMUM_RETRY_INTERVAL = 30 * 60 * 1000;
@@ -224,6 +229,10 @@ public class PushService extends Service {
 		alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + interval, pi);
 	}
 
+	private void resetReconnectInterval() {
+		mPreferences.edit().putLong(PREF_RETRY_INTERVAL, INITIAL_RETRY_INTERVAL).commit();
+	}
+
 	private void unscheduleReconnect() {
 		Log.i(TAG, "Stop trying to reconnect");
 
@@ -371,16 +380,20 @@ public class PushService extends Service {
 
 				Log.i(TAG, "Connection established to " + s.getInetAddress() + ":" + mPort);
 
-				startPinging();
-
-				InputStream in = s.getInputStream();
-
 				/*
 				 * Note that T-Mobile appears to implement an opportunistic connect algorithm where the connect call may
 				 * succeed even when the remote peer would reject the connection. Shortly after an attempt to send data
 				 * an exception will occur indicating the connection was reset.
 				 */
+				//out.write("Hello, world.\n".getBytes());
+
 				authenticate();
+
+				resetReconnectInterval();
+				
+				startPinging();
+
+				InputStream in = s.getInputStream();
 
 				byte[] b = new byte[1024];
 				int length = 0;
@@ -434,9 +447,12 @@ public class PushService extends Service {
 				String[] parts = message.split(";");
 				if (parts.length == 3) {
 					String id = parts[1];
-					String msg = parts[2];
-					Log.i(TAG, "Push message received: " + msg);
+					String cmd = parts[2];
+					Log.i(TAG, "Command received: " + cmd);
 					acknowledge(id);
+					if (cmd.equals(CMD_SYNC)) {
+						mHandler.sendEmptyMessage(MESSAGE_SYNC);
+					}
 				} else {
 					Log.i(TAG, "Push message malformed");
 				}
@@ -509,5 +525,18 @@ public class PushService extends Service {
 			}
 		}
 	}
+
+	private static final int MESSAGE_SYNC = 1;
+
+	private final Handler mHandler = new Handler(new Handler.Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			if (msg.what == 1) {
+				SynchronizationService.startServiceManually(PushService.this);
+			}
+			return false;
+		}
+	});
 
 }
