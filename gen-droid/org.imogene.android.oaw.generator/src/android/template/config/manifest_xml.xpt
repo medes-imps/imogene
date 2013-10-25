@@ -4,7 +4,9 @@
 «FILE 'AndroidManifest.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.imogene.android.«name.toLowerCase()»" android:versionCode="«versionCode-»">
+	package="org.imogene.android.«name.toLowerCase()»"
+	android:versionCode="«versionCode»"
+    android:versionName="«versionCode».0">
 	
     <supports-screens
         android:anyDensity="true"
@@ -18,7 +20,6 @@
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CALL_PHONE" />
-	<uses-permission android:name="android.permission.CALL_PRIVILEGED" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.RECEIVE_SMS" />
 	<uses-permission android:name="android.permission.SEND_SMS" />
@@ -298,8 +299,9 @@
         	android:excludeFromRecents="true"
         	android:finishOnTaskLaunch="true" />
 		
-		<receiver
-			android:name="org.imogene.android.notification.MessagingNotification$OnDeletedReceiver">
+        <receiver
+            android:name="org.imogene.android.notification.MessagingNotification$OnDeletedReceiver"
+            android:exported="false" >
 			<intent-filter>
 				<action android:name="org.imogene.android.«name.toLowerCase()».receiver.NOTIFICATION_DELETED" />
 			</intent-filter>
@@ -319,8 +321,9 @@
  			</intent-filter>
  		</receiver>
 		
-		<receiver
-			android:name="org.imogene.android.receiver.SynchronizationReceiver">
+        <receiver
+            android:name="org.imogene.android.receiver.SynchronizationReceiver"
+            android:exported="false" >
 			<intent-filter>
 				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
 				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
@@ -328,14 +331,19 @@
 			</intent-filter>
 		</receiver>
 		
-		<service
-			android:name="org.imogene.android.sync.SynchronizationService" >
+        <service
+            android:name="org.imogene.android.sync.SynchronizationService"
+            android:exported="false" >
 			<intent-filter>
 				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
 				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
 				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
 			</intent-filter>
 		</service>
+		
+		<service
+            android:name="org.imogene.android.push.PushService"
+            android:exported="false" />
 		
 		<activity
             android:name="org.imogene.android.maps.app.PreCacheMap"
@@ -367,7 +375,8 @@
 		
 		<provider 
 			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
-			android:name=".provider.«name.toFirstUpper()-»Provider" />
+			android:name=".provider.«name.toFirstUpper()-»Provider"
+			android:exported="false" />
 	</application>
 	
 </manifest>

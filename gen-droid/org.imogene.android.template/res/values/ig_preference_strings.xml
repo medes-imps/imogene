@@ -6,6 +6,7 @@
     <string name="ig_high_preferences">"Advanced Preferences"</string>
     <string name="ig_synchro_parameters">"Connection parameters"</string>
     <string name="ig_application_parameters">"Application parameters"</string>
+    <string name="ig_push_parameters">Push parameters</string>
     <string name="ig_sync_user_title">"Synchronization user"</string>
     <string name="ig_sync_roles_title">"Synchronization roles"</string>
     <string name="ig_sync_server_title">"Synchronization URL"</string>
@@ -79,5 +80,10 @@
     <string name="ig_precache_clear_summary">"Current cache size is %1$s. To clear user data use the system application settings"</string>
     <string name="ig_precache_area_title">"Precached map areas"</string>
     <string name="ig_precache_computing_summary">"Computing..."</string>
+    <string name="ig_push_host_title">Host address</string>
+    <string name="ig_push_port_title">Port number</string>
+    <string name="ig_push_enabled_title">Push</string>
+    <string name="ig_push_enabled_summaryon">Disable push</string>
+    <string name="ig_push_enabled_summaryoff">Enable push</string>
 
 </resources>

@@ -7,6 +7,7 @@ import org.imogene.android.app.UnSyncDialog;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.domain.SyncHistory;
 import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.push.PushService;
 import org.imogene.android.util.FormatHelper;
 import org.imogene.android.util.database.DatabaseUtils;
 
@@ -23,6 +24,10 @@ public class ServicingReceiver extends BroadcastReceiver {
 			boolean sync = PreferenceHelper.getSynchronizationStatus(context);
 			if (sync) {
 				context.sendBroadcast(new Intent(Intents.ACTION_RESCHEDULE));
+			}
+			boolean push = PreferenceHelper.isPushEnabled(context);
+			if (push) {
+				PushService.actionReconnect(context);
 			}
 		} else if (Intent.ACTION_CONFIGURATION_CHANGED.equals(action)) {
 			FormatHelper.updateFormats();

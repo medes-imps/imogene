@@ -26,5 +26,8 @@
     <string name="ig_http_authentication_key">HTTP_AUTHENTICATION</string>
     <string name="ig_check_update_key">CHECK_UPDATE</string>
     <string name="ig_check_server_key">CHECK_SERVER</string>
+    <string name="ig_push_host_key">PUSH_HOST</string>
+    <string name="ig_push_port_key">PUSH_PORT</string>
+    <string name="ig_push_enabled_key">PUSH_ENABLED</string>
 
 </resources>
