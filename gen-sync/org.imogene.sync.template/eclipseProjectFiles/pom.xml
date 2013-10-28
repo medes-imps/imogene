@@ -53,7 +53,7 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
+	    <dependency>
 			<groupId>org.imogene.lib</groupId>
 			<artifactId>sync-server</artifactId>
 			<version>${imogene.version}</version>
