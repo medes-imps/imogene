@@ -4,32 +4,43 @@
 «FILE 'web.xml'-»
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-	  
-	  <display-name>«projectName»</display-name>
-	  
-	  <description>«projectName» : Imog synchronization application</description>
-	  
-	  <!--  spring application context parameter -->
-	  <context-param>
-	  	<param-name>contextConfigLocation</param-name>
-	  	<param-value>/WEB-INF/*-context.xml</param-value>
-	  </context-param>
-	  
-	  <listener>
-	  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	  </listener>
-	  
-	  <!-- Servlet declaration -->
-	  <servlet>
-	  	<servlet-name>«projectName»</servlet-name>
-	  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-	  	<load-on-startup>1</load-on-startup>
-	  </servlet>
-	  
-	  <servlet-mapping>
-	  	<servlet-name>«projectName»</servlet-name>
-	  	<url-pattern>/sync.html</url-pattern>
-	  </servlet-mapping>
+	
+	<display-name>«projectName»</display-name>
+	
+	<description>«projectName» : Imog synchronization application</description>
+	
+	<!--  spring application context parameter -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/*-context.xml</param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<!-- Servlet declaration -->
+	<servlet>
+		<servlet-name>«projectName»</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>«projectName»</servlet-name>
+		<url-pattern>/sync.html</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Push servlet -->
+	<servlet>
+		<servlet-name>pushServlet</servlet-name>
+		<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>pushServlet</servlet-name>
+		<url-pattern>/push</url-pattern>
+	</servlet-mapping>
 	
 	<!-- HTTP session invalidator -->
 	<filter>

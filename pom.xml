@@ -29,13 +29,13 @@
 		<commons.codec.version>1.8</commons.codec.version>
 		<medes.batik.version>1.6.0</medes.batik.version>
 		<medes.birt.version>1.0.0.201110121016</medes.birt.version>
-		<apache.servlet.api.version>6.0.37</apache.servlet.api.version>
 		<!-- Version limited by spring-security -->
 		<spring.version>3.0.7.RELEASE</spring.version>
 		<spring.security.version>3.1.4.RELEASE</spring.security.version>
 		<postgresql.version>9.1-901.jdbc4</postgresql.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<javax.mail.version>1.4.7</javax.mail.version>
+		<javax.servlet.version>2.5</javax.servlet.version>
 		<javax.validation.version>1.0.0.GA</javax.validation.version>
 		<derbyclient.version>10.10.1.1</derbyclient.version>
 		<slf4j.log4j12.version>1.7.5</slf4j.log4j12.version>
@@ -61,7 +61,7 @@
 			<modules>
 				<module>dev-libs/org.imogene.lib.common</module>
 				<module>dev-libs/org.imogene.lib.encryption</module>
-                                <module>dev-libs/org.imogene.lib.push</module>
+                <module>dev-libs/org.imogene.lib.push</module>
 				<module>dev-libs/org.imogene.lib.sync.common</module>
 				<module>dev-libs/org.imogene.lib.sync.client</module>
 				<module>dev-libs/org.imogene.lib.sync.server</module>

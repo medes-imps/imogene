@@ -70,6 +70,14 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>${commons.httpclient.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

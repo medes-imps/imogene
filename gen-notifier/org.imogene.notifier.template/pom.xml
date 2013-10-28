@@ -33,9 +33,9 @@
 			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tomcat</groupId>
+			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>${apache.servlet.api.version}</version>
+			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

@@ -7,7 +7,6 @@
 	<version>0.0.1</version>
 	<description></description>
 	<properties>
-		<apache.servlet.api.version>6.0.37</apache.servlet.api.version>
 		<axis.version>1.4</axis.version>
 		<axis.jaxrpc.version>1.4</axis.jaxrpc.version>
 		<axis.wsdl4j.version>1.5.1</axis.wsdl4j.version>
@@ -34,6 +33,7 @@
 		<hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
 		<imogene.version>2.0.1-SNAPSHOT</imogene.version>
 		<javax.mail.version>1.4.7</javax.mail.version>
+		<javax.servlet.version>2.5</javax.servlet.version>
 		<javax.validation.version>1.0.0.GA</javax.validation.version>
 		<log4j.version>1.2.17</log4j.version>
 		<medes.batik.version>1.6.0</medes.batik.version>
@@ -53,7 +53,7 @@
 	</properties>
 
 	<dependencies>
-	    <dependency>
+		<dependency>
 			<groupId>org.imogene.lib</groupId>
 			<artifactId>sync-server</artifactId>
 			<version>${imogene.version}</version>
@@ -137,6 +137,12 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>${commons.collections.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>

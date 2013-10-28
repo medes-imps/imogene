@@ -25,4 +25,8 @@
 		<property name="connectionController" ref="pushConnectionController" />
 	</bean>
 
+	<bean id="pushServlet" class="org.imogene.push.PushServlet">
+		<property name="messageHelper" ref="pushMessageHelper" />
+	</bean>
+
 </beans>
