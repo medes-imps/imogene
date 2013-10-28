@@ -23,6 +23,9 @@
     <string name="ig_sync_bidirectional_title">"Bidirectional"</string>
     <string name="ig_sync_bidirectional_summaryon">"Disable bidirectional synchronization"</string>
     <string name="ig_sync_bidirectional_summaryoff">"Eanble bidirectional synchronization"</string>
+    <string name="ig_sync_onsave_title">Synchronize on save</string>
+    <string name="ig_sync_onsave_summaryon">Disable synchronization on save</string>
+    <string name="ig_sync_onsave_summaryoff">Enable synchronization on save</string>
     <string name="ig_app_user_title">"Application user"</string>
     <string name="ig_app_roles_title">"Application user's roles"</string>
     <string name="ig_app_wizard_title">"Wizard"</string>

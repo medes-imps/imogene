@@ -18,6 +18,7 @@
     <string name="ig_sync_one_shot_key">SYNC_ONE_SHOT</string>
     <string name="ig_sync_bidirectional_key">SYNC_BIDIRECTIONAL</string>
     <string name="ig_sync_shortpw_key">SHORT_PASSWORD</string>
+    <string name="ig_sync_onsave_key">SYNC_ONSAVE</string>
     <string name="ig_app_wizard_key">WIZARD_ON_OFF</string>
     <string name="ig_debug_save_key">DEBUG_SAVE</string>
     <string name="ig_ntp_server_key">NTP_SERVER</string>

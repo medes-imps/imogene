@@ -5,6 +5,7 @@ import java.util.Date;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.xml.annotation.XmlAlias;
@@ -171,7 +172,12 @@ public abstract class ImogBeanImpl implements ImogBean {
 	
 	protected void preCommit(Context context) {/* nothing to do */}
 	
-	protected void postCommit(Context context) { /* nothing to do */ }
+	protected void postCommit(Context context) {
+		boolean sync = PreferenceHelper.isSynchronizeOnSaveEnabled(context);
+		if (sync) {
+			SynchronizationService.actionCheck(context);
+		}
+	}
 	
 	protected abstract void addValues(Context context, ContentValues values);
 	

@@ -64,6 +64,12 @@
 			android:summaryOn="@string/ig_sync_bidirectional_summaryon"
 			android:summaryOff="@string/ig_sync_bidirectional_summaryoff"
 			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="@string/ig_sync_onsave_key"
+			android:title="@string/ig_sync_onsave_title"
+			android:summaryOn="@string/ig_sync_onsave_summaryon"
+			android:summaryOff="@string/ig_sync_onsave_summaryoff"
+			android:defaultValue="true" />
 	</PreferenceCategory>
 	<PreferenceCategory 
 		android:title="@string/ig_push_parameters">

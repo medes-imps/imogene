@@ -68,6 +68,11 @@ public class PreferenceHelper {
 				context.getString(R.string.ig_sync_bidirectional_key), true);
 	}
 
+	public static boolean isSynchronizeOnSaveEnabled(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
+				context.getString(R.string.ig_sync_onsave_key), true);
+	}
+
 	public static boolean isDebugActive(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
 				context.getString(R.string.ig_debug_save_key), false);

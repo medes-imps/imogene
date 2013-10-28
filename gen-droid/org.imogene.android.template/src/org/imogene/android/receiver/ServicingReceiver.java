@@ -1,15 +1,11 @@
 package org.imogene.android.receiver;
 
-import org.imogene.android.Constants.Extras;
 import org.imogene.android.Constants.Intents;
 import org.imogene.android.app.HighPreferences;
-import org.imogene.android.app.UnSyncDialog;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.domain.SyncHistory;
 import org.imogene.android.preference.PreferenceHelper;
 import org.imogene.android.push.PushService;
+import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.database.DatabaseUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,7 +19,7 @@ public class ServicingReceiver extends BroadcastReceiver {
 		if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
 			boolean sync = PreferenceHelper.getSynchronizationStatus(context);
 			if (sync) {
-				context.sendBroadcast(new Intent(Intents.ACTION_RESCHEDULE));
+				SynchronizationService.actionReschedule(context);
 			}
 			boolean push = PreferenceHelper.isPushEnabled(context);
 			if (push) {
@@ -36,23 +32,7 @@ public class ServicingReceiver extends BroadcastReceiver {
 			i.setClass(context, HighPreferences.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);
-		} else if (Intents.ACTION_RM_SYNC_HISTORY.equals(intent.getAction())) {
-			ImogOpenHelper.getHelper().delete(SyncHistory.Columns.TABLE_NAME, null, null);
-		} else if (Intents.ACTION_RM_DATABASE.equals(intent.getAction())) {
-			if (intent.hasExtra(Extras.EXTRA_FORCE)) {
-				DatabaseUtils.deleteAll(context);
-			} else {
-				if (DatabaseUtils.hasUnSync()) {
-					context.startActivity(new Intent(context,
-							UnSyncDialog.class)
-							.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-				} else {
-					DatabaseUtils.deleteAll(context);
-				}
-			}
 		}
 	}
-	
-
 
 }

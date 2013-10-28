@@ -11,14 +11,15 @@ public class SyncOnOffPreference extends CheckBoxPreference {
 	public SyncOnOffPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public void setChecked(boolean checked) {
 		if (checked != isChecked()) {
-			if (checked)
+			if (checked) {
 				SynchronizationService.actionReschedule(getContext());
-			else
+			} else {
 				SynchronizationService.actionCancel(getContext());
+			}
 		}
 		super.setChecked(checked);
 	}

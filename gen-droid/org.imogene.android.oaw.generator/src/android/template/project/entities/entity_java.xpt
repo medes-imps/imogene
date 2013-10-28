@@ -114,8 +114,8 @@ public class «name.toFirstUpper()» extends
 	
 	@Override
 	protected final void postCommit(Context context) {
-		super.postCommit(context);
 		«EXPAND postCommit FOREACH groups.fields-»
+		super.postCommit(context);
 	}
 	
 	public final void reset() {

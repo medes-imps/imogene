@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.Constants.Intents;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
@@ -30,20 +29,19 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 
 public class MessagingNotification {
-	
-	private static final Intent sNotificationOnDeleteIntent = new Intent(Intents.ACTION_NOTIFICATION_DELETED);
-	
+
 	private static NotificationHelper sNotificationHelper;
-	
+
 	public static void setNotificationHelper(NotificationHelper helper) {
 		sNotificationHelper = helper;
 	}
-	
+
 	/**
-	 * Checks to see if there are any "unseen" entities. Shows the most recent
-	 * notification if there is one. Does its work and query in a worker thread.
+	 * Checks to see if there are any "unseen" entities. Shows the most recent notification if there is one. Does its
+	 * work and query in a worker thread.
 	 * 
-	 * @param context the context to use
+	 * @param context
+	 *        the context to use
 	 */
 	public static void nonBlockingUpdateNewEntityIndicator(final Context context) {
 		new Thread(new Runnable() {
@@ -65,7 +63,7 @@ public class MessagingNotification {
 			info.deliver(context);
 		}
 	}
-	
+
 	public static void accumulate(HashSet<NotificationInfo> accumulator, NotificationInfo info) {
 		if (info != null) {
 			accumulator.add(info);
@@ -76,12 +74,8 @@ public class MessagingNotification {
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(notificationId);
 	}
-	
-	public static NotificationInfo getEntityNotificationInfo(
-			Context context, 
-			Uri uri,
-			int notificationId,
-			int titleId,
+
+	public static NotificationInfo getEntityNotificationInfo(Context context, Uri uri, int notificationId, int titleId,
 			int drawable) {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(uri);
 		builder.where().eq(ImogBean.Columns.UNREAD, 1);
@@ -112,35 +106,22 @@ public class MessagingNotification {
 			CharSequence ticker = buildTickerMessage(title, description);
 			Date modified = c.getModified();
 
-			NotificationInfo info = new NotificationInfo(
-					notificationId,
-					clickIntent,
-					description,
-					drawable,
-					ticker,
-					modified != null ? modified.getTime() : System.currentTimeMillis(),
-					title);
+			NotificationInfo info = new NotificationInfo(notificationId, clickIntent, description, drawable, ticker,
+					modified != null ? modified.getTime() : System.currentTimeMillis(), title);
 			return info;
 		} finally {
 			c.close();
 		}
 
 	}
-	
-	private static void updateNotification(
-			Context context,
-			int notificationId,
-			Intent clickIntent,
-			String description,
-			int iconRes,
-			CharSequence ticker,
-			long timeMillis,
-			String title) {
+
+	private static void updateNotification(Context context, int notificationId, Intent clickIntent, String description,
+			int iconRes, CharSequence ticker, long timeMillis, String title) {
 		Notification notification = new Notification(iconRes, ticker, timeMillis);
 
 		// Make a startActivity() PendingIntent for the notification.
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-				clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, clickIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Update the notification.
 		notification.setLatestEventInfo(context, title, description, pendingIntent);
@@ -159,37 +140,36 @@ public class MessagingNotification {
 		notification.defaults |= Notification.DEFAULT_LIGHTS;
 
 		// set up delete intent
-		notification.deleteIntent = PendingIntent.getBroadcast(context, 0, sNotificationOnDeleteIntent, 0);
+		Intent intent = new Intent(context, OnDeletedReceiver.class);
+		notification.deleteIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-		NotificationManager nm = (NotificationManager) context
-				.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		nm.notify(notificationId, notification);
 	}
-	
-    private static CharSequence buildTickerMessage(String header, String body) {
-        StringBuilder buf = new StringBuilder(header.replace('\n', ' ').replace('\r', ' '));
-        buf.append(':').append(' ');
 
-        int offset = buf.length();
-        if (!TextUtils.isEmpty(body)) {
-            body = body.replace('\n', ' ').replace('\r', ' ');
-            buf.append(body);
-        }
+	private static CharSequence buildTickerMessage(String header, String body) {
+		StringBuilder buf = new StringBuilder(header.replace('\n', ' ').replace('\r', ' '));
+		buf.append(':').append(' ');
 
-        SpannableString spanText = new SpannableString(buf.toString());
-        spanText.setSpan(new StyleSpan(Typeface.BOLD), 0, offset,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		int offset = buf.length();
+		if (!TextUtils.isEmpty(body)) {
+			body = body.replace('\n', ' ').replace('\r', ' ');
+			buf.append(body);
+		}
 
-        return spanText;
-    }
-    
-    public static interface NotificationHelper {
-    	
-    	public void feedAccumulator(Context context, HashSet<NotificationInfo> accumulator);
-    	
-    	public void cancelAll(Context context);
-    }
+		SpannableString spanText = new SpannableString(buf.toString());
+		spanText.setSpan(new StyleSpan(Typeface.BOLD), 0, offset, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+		return spanText;
+	}
+
+	public static interface NotificationHelper {
+
+		public void feedAccumulator(Context context, HashSet<NotificationInfo> accumulator);
+
+		public void cancelAll(Context context);
+	}
 
 	public static class NotificationInfo {
 		public int mNotificationId;
@@ -200,9 +180,8 @@ public class MessagingNotification {
 		public long mTimeMillis;
 		public String mTitle;
 
-		public NotificationInfo(int notificationId, Intent clickIntent,
-				String description, int iconResourceId, CharSequence ticker,
-				long timeMillis, String title) {
+		public NotificationInfo(int notificationId, Intent clickIntent, String description, int iconResourceId,
+				CharSequence ticker, long timeMillis, String title) {
 			mNotificationId = notificationId;
 			mClickIntent = clickIntent;
 			mDescription = description;
@@ -213,18 +192,18 @@ public class MessagingNotification {
 		}
 
 		public void deliver(Context context) {
-			updateNotification(context, mNotificationId, mClickIntent,
-					mDescription, mIconResourceId, mTicker, mTimeMillis, mTitle);
+			updateNotification(context, mNotificationId, mClickIntent, mDescription, mIconResourceId, mTicker,
+					mTimeMillis, mTitle);
 		}
 
 	}
-	
+
 	public static class OnDeletedReceiver extends BroadcastReceiver {
-		
+
 		@Override
 		public void onReceive(final Context context, Intent intent) {
 			new Thread(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					ContentResolver res = context.getContentResolver();

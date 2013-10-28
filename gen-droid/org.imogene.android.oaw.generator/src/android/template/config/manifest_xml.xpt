@@ -301,11 +301,7 @@
 		
         <receiver
             android:name="org.imogene.android.notification.MessagingNotification$OnDeletedReceiver"
-            android:exported="false" >
-			<intent-filter>
-				<action android:name="org.imogene.android.«name.toLowerCase()».receiver.NOTIFICATION_DELETED" />
-			</intent-filter>
-		</receiver>
+            android:exported="false" />
 		
 		<receiver
 			android:name="org.imogene.android.receiver.ServicingReceiver">
@@ -320,26 +316,16 @@
  				<action android:name="org.imogene.android.«name.toLowerCase()».action.RM_DATABASE" />
  			</intent-filter>
  		</receiver>
+ 		
+ 		<receiver
+			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentReceiver" />
 		
-        <receiver
-            android:name="org.imogene.android.receiver.SynchronizationReceiver"
-            android:exported="false" >
-			<intent-filter>
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
-			</intent-filter>
-		</receiver>
+		<receiver
+			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentFailedReceiver" />
 		
         <service
             android:name="org.imogene.android.sync.SynchronizationService"
-            android:exported="false" >
-			<intent-filter>
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
-			</intent-filter>
-		</service>
+            android:exported="false" />
 		
 		<service
             android:name="org.imogene.android.push.PushService"
@@ -366,12 +352,6 @@
             android:theme="@android:style/Theme.Dialog" />
 
         <service android:name="org.imogene.android.maps.offline.TileLoaderService" />
-		
-		<receiver
-			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentReceiver" />
-		
-		<receiver
-			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentFailedReceiver" />
 		
 		<provider 
 			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
