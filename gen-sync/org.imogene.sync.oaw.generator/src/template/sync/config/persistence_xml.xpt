@@ -21,6 +21,7 @@
 		<class>org.imogene.lib.common.role.ImogRole</class>
 		<class>org.imogene.lib.common.sync.entity.SynchronizableEntity</class>
 		<class>org.imogene.lib.common.user.DefaultUser</class>
+		<class>org.imogene.lib.common.useraction.UserAction</class>
 		<class>org.imogene.lib.sync.history.SyncHistory</class>
 		<class>org.imogene.lib.sync.session.SyncSession</class>
 		«FOREACH entities AS e-»
