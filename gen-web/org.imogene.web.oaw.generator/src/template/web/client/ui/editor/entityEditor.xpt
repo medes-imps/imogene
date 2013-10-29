@@ -617,7 +617,11 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«FOREACH groups AS g»
 		/* «g.name.toFirstUpper()» field group */	
 			«FOREACH g.fields AS f -»
-			«IF ! (RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).nestedForm) && !DatesField.isAssignableFrom(f.metaType)  && !BooleanField.isAssignableFrom(f.metaType)  && !IntegerField.isAssignableFrom(f.metaType)  && !FloatField.isAssignableFrom(f.metaType)-»
+			«IF ! (RelationFieldEntity.isAssignableFrom(f.metaType) && 
+				 ((RelationFieldEntity)f).nestedForm) && !DatesField.isAssignableFrom(f.metaType)  && 
+				 !BooleanField.isAssignableFrom(f.metaType)  && !IntegerField.isAssignableFrom(f.metaType)  && 
+				 !FloatField.isAssignableFrom(f.metaType) &&
+				 !BinaryField.isAssignableFrom(f.metaType) -»
 			«EXPAND template::CommonFieldUtil::propertyName FOR f».setBoxWidth(width);
 			«ENDIF-»
 			«ENDFOREACH -»	
