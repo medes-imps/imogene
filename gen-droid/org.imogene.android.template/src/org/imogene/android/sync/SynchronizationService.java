@@ -24,19 +24,19 @@ public class SynchronizationService extends Service {
 	/** Time between watchdog checks; in milliseconds */
 	private static final long WATCHDOG_DELAY = 10 * 60 * 1000; // 10 minutes
 
-	public static final void actionReschedule(Context context) {
+	public static void actionReschedule(Context context) {
 		Intent i = new Intent(context, SynchronizationService.class);
 		i.setAction(ACTION_RESCHEDULE);
 		context.startService(i);
 	}
 
-	public static final void actionCancel(Context context) {
+	public static void actionCancel(Context context) {
 		Intent i = new Intent(context, SynchronizationService.class);
 		i.setAction(ACTION_CANCEL);
 		context.startService(i);
 	}
 
-	public static final void actionCheck(Context context) {
+	public static void actionCheck(Context context) {
 		Intent i = new Intent(context, SynchronizationService.class);
 		i.setAction(ACTION_CHECK);
 		context.startService(i);
@@ -54,7 +54,7 @@ public class SynchronizationService extends Service {
 		mController.addResultCallback(mControllerCallback);
 		mNotifier = SynchronizationNotification.getInstance(this);
 		mContext = this;
-		
+
 		String action = intent.getAction();
 
 		final AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -69,6 +69,9 @@ public class SynchronizationService extends Service {
 
 					if (PreferenceHelper.getSynchronizationStatus(mContext)) {
 						reschedule(alarmManager);
+					} else {
+						// Cancel watchdog
+						cancel(alarmManager);
 					}
 
 					stopSelf(startId);
@@ -109,14 +112,10 @@ public class SynchronizationService extends Service {
 	private void reschedule(AlarmManager alarmMgr) {
 		Log.i(TAG, "*** SynchronizationService: reschedule");
 		PendingIntent pi = createAlarmIntent();
-
 		long period = PreferenceHelper.getSynchronizationPeriod(this);
-
-		if (period < 15) {
-			period = 15;
-		}
-
-		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + period * 1000, pi);
+		long timeNow = SystemClock.elapsedRealtime();
+		long nextCheckTime = timeNow + period * 1000;
+		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);
 	}
 
 	/**
@@ -124,10 +123,8 @@ public class SynchronizationService extends Service {
 	 * to memory pressure.) Normally, a mail check will complete and the watchdog will be replaced by the call to
 	 * reschedule().
 	 * 
-	 * @param accountId
-	 *        the account we were trying to check
-	 * @param alarmMgr
-	 *        system alarm manager
+	 * @param accountId the account we were trying to check
+	 * @param alarmMgr system alarm manager
 	 */
 	private void setWatchdog(AlarmManager alarmMgr) {
 		PendingIntent pi = createAlarmIntent();
@@ -141,7 +138,7 @@ public class SynchronizationService extends Service {
 		intent.setAction(ACTION_CHECK);
 		return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
-	
+
 	class ControllerCallback extends SynchronizationController.Callback {
 		@Override
 		public void onStart() {
