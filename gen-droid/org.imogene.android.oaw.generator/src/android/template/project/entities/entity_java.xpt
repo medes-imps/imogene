@@ -59,6 +59,10 @@ public class «name.toFirstUpper()» extends
 		public static final String TABLE_NAME = "«name.toLowerCase()»";
 		public static final String BEAN_TYPE = "«shortName»";
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final int DESC_SINGULAR = R.string.«name.toLowerCase()»_des_sg;
+		public static final int DESC_PLURAL = R.string.«name.toLowerCase()»_des_pl;
+		public static final int DRAWABLE = «IF icon.length > 0»R.drawable.«icon.split("\\.").get(0).toLowerCase()»«ELSE»R.drawable.ig_logo_android_s«ENDIF»;
+		public static final int NOTIFICATION_ID = «next()»;
 		
 		«EXPAND column FOREACH groups.fields-»
 		

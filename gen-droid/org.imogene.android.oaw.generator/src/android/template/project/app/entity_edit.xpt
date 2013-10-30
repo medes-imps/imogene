@@ -29,9 +29,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.app.ViewPagerIndicatorActivity;
 import org.imogene.android.domain.DynamicFieldInstance;
 import org.imogene.android.domain.DynamicFieldManager;
-import org.imogene.android.app.ViewPagerIndicatorActivity;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.util.content.IntentUtils;
@@ -62,7 +63,6 @@ import org.imogene.android.widget.field.edit.TextFieldEdit;
 import org.imogene.android.widget.field.edit.TimeFieldEdit;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
-import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
 «EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
 import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
 
@@ -103,7 +103,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 			DatabaseUtils.markAs(getContentResolver(), getIntent().getData(), false);
 		IamLost.getInstance().add(getTitle().toString());
 		
-		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
 		
 		«IF hasDynamicFields-»
 		SavedState state = (SavedState) getLastNonConfigurationInstance();

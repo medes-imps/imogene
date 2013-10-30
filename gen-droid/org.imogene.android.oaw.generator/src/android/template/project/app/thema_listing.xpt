@@ -11,10 +11,11 @@ import greendroid.widget.NormalActionBarItem;
 
 import java.util.ArrayList;
 
+import org.imogene.android.domain.ImogHelper;
+import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.content.IntentUtils;
 import org.imogene.android.widget.ThemaExpandableListAdapter;
-import org.imogene.android.widget.ThemaExpandableListAdapter.EntityChild;
 «FOREACH entities AS entity-»
 «IF entity.topLevel || entity.directAccess.size > 0-»
 import org.imogene.android.«name.toLowerCase()».entities.«entity.name.toFirstUpper()»;
@@ -132,7 +133,7 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity imple
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (item.getItemId()) {
 		case ACTIONBAR_SYNC_ID:
-			SynchronizationService.startServiceManually(this);
+			SynchronizationService.actionCheck(this);
 			return true;
 		default:
 			return super.onHandleActionBarItemClick(item, position);
@@ -141,8 +142,8 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity imple
 	
 	@Override
 	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-		EntityChild entity = (EntityChild) getExpandableListAdapter().getChild(groupPosition, childPosition);
-		startActivity(new Intent(Intent.ACTION_VIEW, entity.getContentUri()));
+		EntityInfo entity = (EntityInfo) getExpandableListAdapter().getChild(groupPosition, childPosition);
+		startActivity(new Intent(Intent.ACTION_VIEW, entity.contentUri));
 		return true;
 	}
 	
@@ -181,13 +182,13 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity imple
 	
 	protected final void fillData() {
 		ArrayList<Integer> groupData = new ArrayList<Integer>();
-		ArrayList<ArrayList<EntityChild>> childData = new ArrayList<ArrayList<EntityChild>>();
+		ArrayList<ArrayList<EntityInfo>> childData = new ArrayList<ArrayList<EntityInfo>>();
 		
 		«IF hasMiscellaneousThema(entities, themas)-»
-		ArrayList<EntityChild> themaMiscellaneous = new ArrayList<EntityChild>();
+		ArrayList<EntityInfo> themaMiscellaneous = new ArrayList<EntityInfo>();
 		«ENDIF-»
 		«FOREACH themas AS thema-»
-		ArrayList<EntityChild> thema«thema.name.toFirstUpper()-» = new ArrayList<EntityChild>();
+		ArrayList<EntityInfo> thema«thema.name.toFirstUpper()-» = new ArrayList<EntityInfo>();
 		«ENDFOREACH-»
 
 		«FOREACH entities AS entity-»
@@ -195,23 +196,13 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity imple
 			«IF entity.directAccess.size > 0-»
 			if («entity.name.toFirstUpper()»Roles.directAccess(this)) {
 			«ENDIF-»
-			getContentResolver().registerContentObserver(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, true, mObserver);
+			getContentResolver().registerContentObserver(«entity.name.toFirstUpper()».Columns.CONTENT_URI, true, mObserver);
 			«IF isInMiscellaneousThema(themas, entity)-»
-			themaMiscellaneous.add(new EntityChild(
-				«entity.name.toFirstUpper()-».Columns.CONTENT_URI,
-				«entity.name.toFirstUpper()-».Columns.TABLE_NAME,
-				R.string.«entity.name.toLowerCase()-»_des_pl,
-				«IF entity.icon.length > 0-»R.drawable.«entity.icon.split("\\.").get(0).toLowerCase()»«ELSE-»0«ENDIF-»,
-				«entity.name.toFirstUpper()-».Columns.COLOR));
+			themaMiscellaneous.add(ImogHelper.getEntityInfo(«entity.name.toFirstUpper()».class));
 			«ELSE-»
 			«FOREACH themas AS thema-»
 				«IF thema.entities.contains(entity)-»
-				thema«thema.name.toFirstUpper()-».add(new EntityChild(
-					«entity.name.toFirstUpper()-».Columns.CONTENT_URI,
-					«entity.name.toFirstUpper()-».Columns.TABLE_NAME,
-					R.string.«entity.name.toLowerCase()-»_des_pl,
-					«IF entity.icon.length > 0-»R.drawable.«entity.icon.split("\\.").get(0).toLowerCase()»«ELSE-»0«ENDIF-»,
-					«entity.name.toFirstUpper()-».Columns.COLOR));
+				thema«thema.name.toFirstUpper()».add(ImogHelper.getEntityInfo(«entity.name.toFirstUpper()».class));
 				«ENDIF-»
 			«ENDFOREACH-»
 			«ENDIF-»

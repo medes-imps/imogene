@@ -299,10 +299,6 @@
         	android:excludeFromRecents="true"
         	android:finishOnTaskLaunch="true" />
 		
-        <receiver
-            android:name="org.imogene.android.notification.MessagingNotification$OnDeletedReceiver"
-            android:exported="false" />
-		
 		<receiver
 			android:name="org.imogene.android.receiver.ServicingReceiver">
  			<intent-filter>
@@ -356,7 +352,7 @@
 		<provider 
 			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
 			android:name=".provider.«name.toFirstUpper()-»Provider"
-			android:exported="false" />
+			android:exported="true" />
 	</application>
 	
 </manifest>

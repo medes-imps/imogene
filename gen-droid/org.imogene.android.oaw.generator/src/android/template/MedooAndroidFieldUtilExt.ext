@@ -52,3 +52,6 @@ Integer getGeoType(GeoField field) :
   
 boolean hasConstraint(FieldEntity field) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasConstraint(org.imogene.model.core.FieldEntity);
+
+int next() :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.next();

@@ -9,11 +9,11 @@ import greendroid.widget.ActionBarItem;
 import greendroid.widget.NormalActionBarItem;
 
 import org.imogene.android.maps.app.MapActivityWithoutActionBar;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.PreferenceHelper;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
-import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
 import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
 
 import android.content.Intent;
@@ -37,7 +37,7 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 		mCanCreate = «name.toFirstUpper()-»Roles.canWrite(this);
 		«ENDIF-»
 		
-		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
 
 		Intent list = new Intent(this, «name.toFirstUpper()»List.class);
 		list.putExtras(getIntent());
@@ -73,7 +73,7 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 			startSearch(null, false, null, false);
 			return true;
 		case ACTIONBAR_SYNC_ID:
-			SynchronizationService.startServiceManually(this);
+			SynchronizationService.actionCheck(this);
 			return true;
 		default:
 			return super.onHandleActionBarItemClick(item, position);

@@ -24,15 +24,17 @@ import org.imogene.model.core.ValidationRule;
  */
 public class MedooAndroidGenHelper {
 	
-	public static final void log(Object o) {
+	public static int increment = 0;
+	
+	public static void log(Object o) {
 		System.out.println(o);
 	}
 
-	public static final int getDatabaseVersion() {
+	public static int getDatabaseVersion() {
 		return (int) (System.currentTimeMillis() / 1000);
 	}
 	
-	public static final boolean hasLocalizedField(CardEntity entity) {
+	public static boolean hasLocalizedField(CardEntity entity) {
 		for (FieldGroup group : entity.getGroups()) {
 			for (FieldEntity field : group.getFields()) {
 				if (field instanceof TextField) {
@@ -198,6 +200,13 @@ public class MedooAndroidGenHelper {
 			}
 		}
 		return false;
+	}
+	
+	public static int next() {
+		if (increment == 0) {
+			increment = (int) System.currentTimeMillis() / 1000;
+		}
+		return increment++;
 	}
 
 }

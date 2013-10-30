@@ -12,7 +12,7 @@ import org.acra.annotation.ReportsCrashes;
 import greendroid.app.GDApplication;
 import android.content.Intent;
 import android.net.Uri;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.PreferenceHelper;
 import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.encryption.EncryptionManager;
@@ -20,7 +20,6 @@ import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
 import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»Helper;
 import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»LocalizedText;
-import org.imogene.android.«name.toLowerCase()».notification.«name.toFirstUpper()»Notification;
 
 @ReportsCrashes(
 		formKey = "dHczWFFCT2ZaTks1MWZoMXJZc0gxWHc6MQ", // google form on medes imps account
@@ -42,7 +41,6 @@ public class «name.toFirstUpper()»App extends GDApplication {
 		
 		«name.toFirstUpper()»OpenHelper.init(this);
 		«name.toFirstUpper()»Helper.init();
-		«name.toFirstUpper()»Notification.init();
 		«name.toFirstUpper()»LocalizedText.init();
 
 		if (PreferenceHelper.getHardwareId(this) == null)
@@ -77,6 +75,7 @@ public class «name.toFirstUpper()»App extends GDApplication {
 			.putString(getString(R.string.ig_admin_roles_key), roles)
 			.commit();
         }
+        NotificationController.getInstance(this).watchForMessages(true);
 	}
 	
 	@Override

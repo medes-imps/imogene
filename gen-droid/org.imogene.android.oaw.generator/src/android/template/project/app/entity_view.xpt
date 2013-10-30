@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.ViewPagerIndicatorActivity;
 import org.imogene.android.domain.DynamicFieldManager;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.PreferenceHelper;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.IamLost;
@@ -59,7 +60,6 @@ import org.imogene.android.widget.field.view.TextFieldView;
 import org.imogene.android.widget.field.view.TimeFieldView;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
-import org.imogene.android.«projectName.toLowerCase()».notification.«projectName.toFirstUpper()»Notification;
 «EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
 import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
 «IF getMoreFields(groups.fields).size > 0 -»
@@ -118,7 +118,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 
 		IamLost.getInstance().add(getTitle().toString());
 		
-		«projectName.toFirstUpper()»Notification.cancel«name.toFirstUpper()»Notification(this);
+		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean canDelete = prefs.getBoolean(getString(R.string.«name.toLowerCase()-»_delete), «canDelete»);
@@ -254,7 +254,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 			startActivity(new Intent(Intent.ACTION_EDIT, getIntent().getData()));
 			return true;
 		case ACTIONBAR_SYNC_ID:
-			SynchronizationService.startServiceManually(this);
+			SynchronizationService.actionCheck(this);
 			return true;
 		default:
 			return super.onHandleActionBarItemClick(item, position);

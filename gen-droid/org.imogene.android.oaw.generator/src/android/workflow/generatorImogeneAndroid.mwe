@@ -355,17 +355,4 @@
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
 	
-	<!-- ===== Notification ===== -->
-	
-	<!-- Notification helper -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
-			<metaModelFile value="${imogeneMetaModel}" />
-		</metaModel>
-		<expand value='android::template::project::notification::project_notification::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>
-	
 </workflow>

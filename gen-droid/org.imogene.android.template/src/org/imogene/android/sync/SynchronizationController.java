@@ -17,7 +17,6 @@ import org.imogene.android.domain.ClientFilter;
 import org.imogene.android.domain.ImogBean;
 import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.SyncHistory;
-import org.imogene.android.notification.MessagingNotification;
 import org.imogene.android.preference.PreferenceHelper;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.util.database.DatabaseUtils;
@@ -195,9 +194,6 @@ public class SynchronizationController {
 			Log.e(TAG, "error during synchronization", e);
 		} finally {
 			markHiddenAsRead();
-			if (received > 0) {
-				MessagingNotification.blockingUpdateNewMessageIndicator(mContext);
-			}
 			notifyFinish();
 		}
 	}
