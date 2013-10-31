@@ -94,7 +94,7 @@ public class SynchronizationController {
 		}
 	}
 
-	public void synchronize() {
+	public synchronized void synchronize() {
 		mTerminal = Preferences.getSyncTerminal(mContext);
 		mLogin = Preferences.getSyncLogin(mContext);
 		mPassword = Preferences.getSyncPassword(mContext);
