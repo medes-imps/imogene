@@ -11,8 +11,7 @@ import org.imogene.android.Constants.Paths;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.domain.ImogBean;
-import org.imogene.android.preference.PreferenceHelper;
-import org.imogene.android.template.R;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.util.content.ContentUrisUtils;
 
 import android.content.ContentResolver;
@@ -31,8 +30,8 @@ public class DatabaseUtils {
 	private static final String ANDROID_METADATA = "android_metadata";
 
 	/**
-	 * Update the column {@link ImogBean.Columns#UNREAD} of the entity
-	 * represented by the {@link Uri} with the given value.
+	 * Update the column {@link ImogBean.Columns#UNREAD} of the entity represented by the {@link Uri} with the given
+	 * value.
 	 * 
 	 * @param res The current {@link ContentResolver}.
 	 * @param uri The {@link Uri} of the element to update.
@@ -45,8 +44,7 @@ public class DatabaseUtils {
 	}
 
 	/**
-	 * Should save the database of the application to the folder given by
-	 * {@link Paths#PATH_BACKUP}.
+	 * Should save the database of the application to the folder given by {@link Paths#PATH_BACKUP}.
 	 * 
 	 * @param context The current context.
 	 */
@@ -94,16 +92,14 @@ public class DatabaseUtils {
 		c.close();
 
 		context.getContentResolver().notifyChange(ContentUrisUtils.buildUriForFragment(null), null);
-		PreferenceHelper.getSharedPreferences(context).edit()
-				.putString(context.getString(R.string.ig_sync_hardware_key), UUID.randomUUID().toString()).commit();
+		Preferences.setSyncTerminal(context, UUID.randomUUID().toString());
 	}
 
 	/**
 	 * Check is there is still any unsynchronized entity in the database.
 	 * 
 	 * @param context
-	 * @return true if there is at least one unsynchronized entity, false
-	 *         otherwise.
+	 * @return true if there is at least one unsynchronized entity, false otherwise.
 	 */
 	public static boolean hasUnSync() {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(SQLITE_MASTER);

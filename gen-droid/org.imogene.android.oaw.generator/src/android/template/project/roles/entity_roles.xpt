@@ -4,7 +4,7 @@
 package org.imogene.android.«projectName.toLowerCase()-».roles;
 
 import android.content.Context;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 
 public class «name.toFirstUpper()-»Roles {
 
@@ -32,7 +32,7 @@ public class «name.toFirstUpper()-»Roles {
 	
 	«IF creators.size > 0-»
 	public static final boolean canCreate(Context context) {
-		String roles = PreferenceHelper.getCurrentRoles(context);
+		String roles = Preferences.getCurrentRoles(context);
 		if (
 			«FOREACH creators AS creator SEPARATOR  "||"-»
 			roles.contains(«projectName.toFirstUpper()-»Roles.«creator.name.toUpperCase()-»)
@@ -46,7 +46,7 @@ public class «name.toFirstUpper()-»Roles {
 	
 	«IF directAccess.size > 0-»
 	public static final boolean directAccess(Context context) {
-		String roles = PreferenceHelper.getCurrentRoles(context);
+		String roles = Preferences.getCurrentRoles(context);
 		if (
 			«FOREACH directAccess AS da SEPARATOR  "||"-»
 			roles.contains(«projectName.toFirstUpper()-»Roles.«da.name.toUpperCase()-»)
@@ -72,7 +72,7 @@ public static final boolean canRead«name.toFirstUpper()-»(Context context) {
 	«IF readers.size == 0-»
 	return true;
 	«ELSE-»
-	String roles = PreferenceHelper.getCurrentRoles(context);
+	String roles = Preferences.getCurrentRoles(context);
 	if (
 		«FOREACH readers AS reader SEPARATOR  "||"-»
 		roles.contains(«project.toFirstUpper()-»Roles.«reader.name.toUpperCase()-»)
@@ -90,7 +90,7 @@ public static final boolean canWrite«name.toFirstUpper()-»(Context context) {
 	«IF writers.size == 0-»
 	return true;
 	«ELSE-»
-	String roles = PreferenceHelper.getCurrentRoles(context);
+	String roles = Preferences.getCurrentRoles(context);
 	if (
 		«FOREACH writers AS writer SEPARATOR  "||"-»
 		roles.contains(«project.toFirstUpper()-»Roles.«writer.name.toUpperCase()-»)

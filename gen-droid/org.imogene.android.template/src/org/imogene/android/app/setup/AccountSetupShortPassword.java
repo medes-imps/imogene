@@ -3,7 +3,7 @@ package org.imogene.android.app.setup;
 import greendroid.app.GDActivity;
 import greendroid.widget.ActionBar;
 
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.encryption.EncryptionManager;
@@ -115,10 +115,7 @@ public class AccountSetupShortPassword extends GDActivity implements
 		String shortpw = mShortpwView.getText().toString();
 		String shortpwConfirm = mShortpwConfirmView.getText().toString();
 		if (shortpw != null && shortpw.equals(shortpwConfirm)) {
-			String encsp = new String(Base64.encodeBase64(EncryptionManager.getInstance(this).encrypt(shortpw.getBytes())));
-			PreferenceHelper.getSharedPreferences(this).edit().putString(
-					getString(R.string.ig_sync_shortpw_key), encsp).commit();
-
+			Preferences.setShortPassword(this, shortpw);
 			Intent intent = new Intent(this, getGDApplication().getHomeActivityClass());
 			startActivity(intent);
 			finish();

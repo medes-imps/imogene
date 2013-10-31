@@ -17,7 +17,7 @@ import org.imogene.android.domain.ClientFilter;
 import org.imogene.android.domain.ImogBean;
 import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.SyncHistory;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.util.database.DatabaseUtils;
 import org.imogene.android.util.ntp.SntpException;
@@ -95,15 +95,15 @@ public class SynchronizationController {
 	}
 
 	public void synchronize() {
-		mTerminal = PreferenceHelper.getHardwareId(mContext);
-		mLogin = PreferenceHelper.getSyncLogin(mContext);
-		mPassword = PreferenceHelper.getSyncPassword(mContext);
-		mDebug = PreferenceHelper.isDebugActive(mContext);
+		mTerminal = Preferences.getSyncTerminal(mContext);
+		mLogin = Preferences.getSyncLogin(mContext);
+		mPassword = Preferences.getSyncPassword(mContext);
+		mDebug = Preferences.isDebugEnabled(mContext);
 
-		mServer = PreferenceHelper.getServerUrl(mContext);
-		mBidirectional = PreferenceHelper.getSynchronizationBidirectional(mContext);
+		mServer = Preferences.getSyncServer(mContext);
+		mBidirectional = Preferences.isSyncBirdirectionnalEnabled(mContext);
 
-		if (PreferenceHelper.isHttpAuthenticated(mContext)) {
+		if (Preferences.isHttpAuthenticationEnabled(mContext)) {
 			mSyncClient = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
 		} else {
 			mSyncClient = new OptimizedSyncClientHttp(mServer);
@@ -135,7 +135,7 @@ public class SynchronizationController {
 			// 2 - send client modification
 			notifySend();
 
-			long syncTime = PreferenceHelper.getRealTime(mContext).getTime();
+			long syncTime = Preferences.getRealTime(mContext).getTime();
 
 			File outFile = new File(Paths.PATH_SYNCHRO, sessionId + ".lmodif");
 			FileOutputStream fos = new FileOutputStream(outFile);
@@ -200,9 +200,9 @@ public class SynchronizationController {
 
 	private void updateTimeOffset() {
 		try {
-			String url = PreferenceHelper.getNtpServerUrl(mContext);
+			String url = Preferences.getNtpHost(mContext);
 			long offset = SntpProvider.getTimeOffsetFromNtp(url);
-			onUpdateOffset(offset);
+			Preferences.setNtpOffset(mContext, offset);
 		} catch (SntpException e) {
 			Log.e(TAG, "update offset from ntp ->", e);
 		}
@@ -417,14 +417,6 @@ public class SynchronizationController {
 		for (Uri uri : ImogHelper.getInstance().getHiddenUris(mContext)) {
 			DatabaseUtils.markAs(mContext.getContentResolver(), uri, false);
 		}
-	}
-
-	private void onUpdateOffset(long offset) {
-		SntpProvider.updateTimeOffset(mContext, offset);
-	}
-
-	public void sendPending() {
-
 	}
 
 	private void notifyStart() {

@@ -12,7 +12,7 @@ import org.imogene.android.database.sqlite.DynamicFieldTemplateCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.util.Arrays;
 import org.imogene.android.util.FormatHelper;
@@ -70,7 +70,7 @@ public class DynamicFieldManager implements OnValueChangeListener {
 				where.eq(DynamicFieldTemplate.Columns.FORMTYPE, formType),
 				where.eq(DynamicFieldTemplate.Columns.ISACTIVATED, "true"),
 				where.or(where.eq(DynamicFieldTemplate.Columns.ALLUSERS, "true"),
-						where.eq(DynamicFieldTemplate.Columns.TEMPLATECREATOR, PreferenceHelper.getCurrentLogin(context)).and()
+						where.eq(DynamicFieldTemplate.Columns.TEMPLATECREATOR, Preferences.getCurrentLogin(context)).and()
 								.eq(DynamicFieldTemplate.Columns.ISDEFAULT, "true")));
 		DynamicFieldTemplateCursor cursor = (DynamicFieldTemplateCursor) builder.query();
 		for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {

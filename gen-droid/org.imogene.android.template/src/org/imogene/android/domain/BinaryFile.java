@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.imogene.android.Constants;
 import org.imogene.android.database.BinaryCursor;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.file.FileUtils;
 import org.imogene.android.util.file.MimeType;
@@ -121,7 +121,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 			return data;
 		}
 		
-		String login = PreferenceHelper.getCurrentLogin(context);
+		String login = Preferences.getCurrentLogin(context);
 		
 		String id = BeanKeyGenerator.getNewId(Binary.Columns.TYPE);
 		
@@ -138,11 +138,11 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 
 		BinaryFile binary = new BinaryFile();
 		binary.setId(id);
-		binary.setCreated(PreferenceHelper.getRealTime(context));
+		binary.setCreated(Preferences.getRealTime(context));
 		binary.setCreatedBy(login);
 		binary.setModified(new Date(0));
 		binary.setModifiedBy(login);
-		binary.setModifiedFrom(PreferenceHelper.getHardwareId(context));
+		binary.setModifiedFrom(Preferences.getSyncTerminal(context));
 		binary.setSynchronized(false);
 
 		binary.setContentType(contentType);

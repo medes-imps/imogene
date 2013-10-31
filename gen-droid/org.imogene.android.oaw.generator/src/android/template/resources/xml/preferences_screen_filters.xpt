@@ -9,8 +9,8 @@
 	android:title="@string/ig_screen_filters_title" >
 	
 	<org.imogene.android.preference.MyEditTextPreference 
-		android:key="@string/ig_webservice_url_key"
-		android:title="@string/ig_webservice_url_title"
+		android:key="@string/ig_webservice_server_title"
+		android:title="@string/ig_webservice_server_title"
 		android:inputType="textUri"
 		android:defaultValue="«webService»" />
 	«FOREACH entities AS e-»

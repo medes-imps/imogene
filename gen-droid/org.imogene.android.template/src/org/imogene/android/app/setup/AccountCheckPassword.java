@@ -3,7 +3,7 @@ package org.imogene.android.app.setup;
 import greendroid.app.GDActivity;
 import greendroid.widget.ActionBar;
 
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
 import android.app.Activity;
@@ -101,7 +101,7 @@ public class AccountCheckPassword extends GDActivity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.ig_start:
-			final String shortpw = PreferenceHelper.getShortPassword(this);
+			final String shortpw = Preferences.getShortPassword(this);
 			if (shortpw != null && shortpw.equals(mShortpwView.getText().toString())) {
 				Intent intent = new Intent(this, getGDApplication().getHomeActivityClass());
 				startActivity(intent);

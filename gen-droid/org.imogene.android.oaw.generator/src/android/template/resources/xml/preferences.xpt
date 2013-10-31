@@ -10,20 +10,20 @@
 		«IF multilogin»
 		<org.imogene.android.preference.EncryptedPreference
 			android:key="@string/ig_sync_login_key"
-			android:title="@string/ig_sync_user_title" />
+			android:title="@string/ig_sync_login_title" />
 		<org.imogene.android.preference.MyEditTextPreference 
 			android:key="@string/ig_sync_roles_key"
 			android:title="@string/ig_sync_roles_title"
 			android:shouldDisableView="false"
 			android:enabled="false" />
 		«ENDIF»
-		<org.imogene.android.preference.ServerUrlPreference
-			android:key="@string/ig_sync_server_url_key"
+		<org.imogene.android.preference.MyEditTextPreference
+			android:key="@string/ig_sync_server_key"
 			android:title="@string/ig_sync_server_title"
 			android:inputType="textUri" />
 		<org.imogene.android.preference.MyEditTextPreference 
-			android:key="@string/ig_sync_hardware_key"
-			android:title="@string/ig_sync_hardware_title"
+			android:key="@string/ig_sync_terminal_key"
+			android:title="@string/ig_sync_terminal_title"
 			android:shouldDisableView="false"
 			android:enabled="false" />
 		«IF hasFilter(this)-»
@@ -42,42 +42,83 @@
             </intent>
         </PreferenceScreen>
 		«ENDIF-»
-		<org.imogene.android.preference.SyncOneShotPreference
-			android:key="@string/ig_sync_one_shot_key"
-			android:title="@string/ig_sync_one_shot_title"
-			android:summary="@string/ig_sync_one_shot_summary" />
-		<org.imogene.android.preference.SyncOnOffPreference 
-			android:key="@string/ig_sync_on_off_key"
-			android:title="@string/ig_sync_on_off_title"
-			android:summaryOn="@string/ig_sync_on_off_summaryon"
-			android:summaryOff="@string/ig_sync_on_off_summaryoff" />
+		<Preference
+			android:title="@string/ig_sync_oneshot_title"
+			android:summary="@string/ig_sync_oneshot_summary" >
+			
+			<intent
+                android:action="org.imogene.android.action.RESCHEDULE"
+                android:targetPackage="org.imogene.android.«name.toLowerCase()»"
+                android:targetClass="org.imogene.android.app.ProxyServiceActivity" >
+                
+                <extra
+                	android:name="action"
+                	android:value="org.imogene.android.action.CHECK" />
+                <extra
+                	android:name="targetClass"
+                	android:value="org.imogene.android.sync.SynchronizationService" />
+			</intent>
+        </Preference>
+		<CheckBoxPreference 
+			android:key="@string/ig_sync_enabled_key"
+			android:title="@string/ig_sync_enabled_title"
+			android:summaryOn="@string/ig_sync_enabled_summaryon"
+			android:summaryOff="@string/ig_sync_enabled_summaryoff" >
+			
+			<intent
+                android:action="org.imogene.android.action.RESCHEDULE"
+                android:targetPackage="org.imogene.android.«name.toLowerCase()»"
+                android:targetClass="org.imogene.android.app.ProxyServiceActivity" >
+                
+                <extra
+                	android:name="action"
+                	android:value="org.imogene.android.action.RESCHEDULE" />
+                <extra
+                	android:name="targetClass"
+                	android:value="org.imogene.android.sync.SynchronizationService" />
+			</intent>
+        </CheckBoxPreference>
 		<ListPreference
-			android:key="@string/ig_sync_time_key"
-			android:title="@string/ig_sync_time_title"
-			android:summary="@string/ig_sync_time_summary"
+			android:key="@string/ig_sync_period_key"
+			android:title="@string/ig_sync_period_title"
+			android:summary="@string/ig_sync_period_summary"
 			android:defaultValue="15" 
 			android:entries="@array/ig_entries_period_preference"
 			android:entryValues="@array/ig_entryvalues_period_preference" />
 		<CheckBoxPreference
-			android:key="@string/ig_sync_bidirectional_key"
-			android:title="@string/ig_sync_bidirectional_title"
-			android:summaryOn="@string/ig_sync_bidirectional_summaryon"
-			android:summaryOff="@string/ig_sync_bidirectional_summaryoff"
+			android:key="@string/ig_sync_bidirectional_enabled_key"
+			android:title="@string/ig_sync_bidirectional_enabled_title"
+			android:summaryOn="@string/ig_sync_bidirectional_enabled_summaryon"
+			android:summaryOff="@string/ig_sync_bidirectional_enabled_summaryoff"
 			android:defaultValue="true" />
 		<CheckBoxPreference
-			android:key="@string/ig_sync_onsave_key"
-			android:title="@string/ig_sync_onsave_title"
-			android:summaryOn="@string/ig_sync_onsave_summaryon"
-			android:summaryOff="@string/ig_sync_onsave_summaryoff"
+			android:key="@string/ig_sync_onsave_enabled_key"
+			android:title="@string/ig_sync_onsave_enabled_title"
+			android:summaryOn="@string/ig_sync_onsave_enabled_summaryon"
+			android:summaryOff="@string/ig_sync_onsave_enabled_summaryoff"
 			android:defaultValue="true" />
 	</PreferenceCategory>
 	<PreferenceCategory 
 		android:title="@string/ig_push_parameters">
-		<org.imogene.android.preference.PushEnablePreference 
+		<CheckBoxPreference 
 			android:key="@string/ig_push_enabled_key"
 			android:title="@string/ig_push_enabled_title"
 			android:summaryOn="@string/ig_push_enabled_summaryon"
-			android:summaryOff="@string/ig_push_enabled_summaryoff" />
+			android:summaryOff="@string/ig_push_enabled_summaryoff" >
+			
+			<intent
+                android:action="org.imogene.android.action.RESCHEDULE"
+                android:targetPackage="org.imogene.android.«name.toLowerCase()»"
+                android:targetClass="org.imogene.android.app.ProxyServiceActivity" >
+                
+                <extra
+                	android:name="action"
+                	android:value="org.imogene.android.action.RESCHEDULE" />
+                <extra
+                	android:name="targetClass"
+                	android:value="org.imogene.android.push.PushService" />
+			</intent>
+        </CheckBoxPreference>
 		<org.imogene.android.preference.MyEditTextPreference 
 			android:key="@string/ig_push_host_key"
 			android:title="@string/ig_push_host_title"
@@ -87,38 +128,42 @@
 			android:title="@string/ig_push_port_title"
 			android:inputType="number" />
 		<CheckBoxPreference
-			android:key="@string/ig_push_ssl_key"
-			android:title="@string/ig_push_ssl_title"
-			android:summaryOn="@string/ig_push_ssl_summaryon"
-			android:summaryOff="@string/ig_push_ssl_summaryoff"
+			android:key="@string/ig_push_ssl_enabled_key"
+			android:title="@string/ig_push_ssl_enabled_title"
+			android:summaryOn="@string/ig_push_ssl_enabled_summaryon"
+			android:summaryOff="@string/ig_push_ssl_enabled_summaryoff"
 			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory 
-		android:title="@string/ig_check_parameters">
-		<org.imogene.android.preference.CheckUpdatePreference
-			android:key="@string/ig_check_update_key"
-			android:title="@string/ig_check_update_title"
-			android:summary="@string/ig_check_update_summary" />
+		android:title="@string/ig_update_parameters">
+		<Preference
+			android:key="@string/ig_update_check_key"
+			android:title="@string/ig_update_check_title"
+			android:summary="@string/ig_update_check_summary" >
+			<intent
+                android:targetClass="org.imogene.android.update.UpdateActivity"
+                android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
+        </Preference>
 		<org.imogene.android.preference.MyEditTextPreference
-			android:key="@string/ig_check_server_key"
-			android:title="@string/ig_check_server_title"
+			android:key="@string/ig_update_server_key"
+			android:title="@string/ig_update_server_title"
 			android:inputType="textUri" />
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/ig_application_parameters">
 		<org.imogene.android.preference.EncryptedPreference
 			android:key="@string/ig_«IF multilogin»current_login_key«ELSE»sync_login_key«ENDIF»"
-			android:title="@string/ig_app_user_title" />
+			android:title="@string/ig_current_login_title" />
 		<org.imogene.android.preference.MyEditTextPreference 
 			android:key="@string/ig_«IF multilogin»current_roles_key«ELSE»sync_roles_key«ENDIF»"
-			android:title="@string/ig_app_roles_title"
+			android:title="@string/ig_current_roles_title"
 			android:shouldDisableView="false"
 			android:enabled="false" />
 		<CheckBoxPreference
-			android:key="@string/ig_app_wizard_key"
-			android:title="@string/ig_app_wizard_title"
-			android:summaryOn="@string/ig_app_wizard_summaryon"
-			android:summaryOff="@string/ig_app_wizard_summaryoff" />
+			android:key="@string/ig_wizard_enabled_key"
+			android:title="@string/ig_wizard_enabled_title"
+			android:summaryOn="@string/ig_wizard_enabled_summaryon"
+			android:summaryOff="@string/ig_wizard_enabled_summaryoff" />
 		«IF canDeleteDatabase-»
 		<org.imogene.android.preference.DeleteDatabasePreference
 			android:title="@string/ig_renew_database_title"
@@ -139,6 +184,7 @@
     	<org.imogene.android.maps.preference.PrecachedMapAreasPreference
         	android:title="@string/ig_precache_area_title"
         	android:summary="@string/ig_precache_computing_summary" >
+        	
         	<intent
             	android:targetClass="org.imogene.android.maps.app.PreCacheList"
             	android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
@@ -146,7 +192,7 @@
     </PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/ig_about">
-		<org.imogene.android.preference.AboutPreference
+		<org.imogene.android.preference.BaseDialogPreference
 			android:title="@string/ig_about_title"
 			android:summary="@string/ig_about_summary"
 			android:dialogIcon="@android:drawable/ic_dialog_info"

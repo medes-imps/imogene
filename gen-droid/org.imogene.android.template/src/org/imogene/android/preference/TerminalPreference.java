@@ -6,13 +6,13 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-public class RenewHardwareId extends DialogPreference {
+public class TerminalPreference extends DialogPreference {
 	
-	public RenewHardwareId(Context context, AttributeSet attrs) {
+	public TerminalPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public RenewHardwareId(Context context, AttributeSet attrs, int defStyle) {
+	public TerminalPreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 	

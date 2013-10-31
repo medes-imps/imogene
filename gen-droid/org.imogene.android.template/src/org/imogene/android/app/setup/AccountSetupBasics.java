@@ -5,7 +5,7 @@ import greendroid.widget.ActionBar;
 
 import org.imogene.android.app.AuthenticationHttpActivity;
 import org.imogene.android.app.OffsetActivity;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
 import android.app.Activity;
@@ -64,10 +64,10 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 		mPasswordView.addTextChangedListener(this);
 		mServerView.addTextChangedListener(this);
 		
-		mHardwareId = PreferenceHelper.getHardwareId(this);
+		mHardwareId = Preferences.getSyncTerminal(this);
 		
 		if (getIntent().getBooleanExtra(EXTRA_CHANGE_ACCOUNT, false)) {
-			mServerView.setText(PreferenceHelper.getServerUrl(this));
+			mServerView.setText(Preferences.getSyncServer(this));
 			
 			validateFields();
 
@@ -119,12 +119,9 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 	private void onNext() {
 		String login = mLoginView.getText().toString();
 		String password = mPasswordView.getText().toString();
-		if (!mServerView.getText().toString().endsWith("/")) {
-			mServerView.getText().append('/');
-		}
 		String serverUrl = mServerView.getText().toString();
-		
-		startActivityForResult(AuthenticationHttpActivity.getAuthenticationIntent(this, serverUrl, login, password, mHardwareId), ACTIVITY_AUTHENTICATION_ID);
+		Intent intent = AuthenticationHttpActivity.getAuthenticationIntent(this, serverUrl, login, password, mHardwareId);
+		startActivityForResult(intent, ACTIVITY_AUTHENTICATION_ID);
 	}
 
 	@Override

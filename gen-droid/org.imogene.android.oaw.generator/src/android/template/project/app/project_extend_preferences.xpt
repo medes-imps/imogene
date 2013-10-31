@@ -7,7 +7,7 @@ package org.imogene.android.«name.toLowerCase()-».app;
 
 import android.os.Bundle;
 
-import org.imogene.android.app.Preferences;
+import org.imogene.android.app.PreferenceActivity;
 import org.imogene.android.«name.toLowerCase()».R;
 «FOREACH entities AS e-»
 «IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
@@ -15,7 +15,7 @@ import org.imogene.android.«name.toLowerCase()».roles.«e.name.toFirstUpper()»Rol
 «ENDIF-»
 «ENDFOREACH-»
 
-public class ExtendedPreferences extends Preferences {
+public class ExtendedPreferences extends PreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

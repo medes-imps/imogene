@@ -2,6 +2,8 @@ package org.imogene.android.domain;
 
 import java.util.List;
 
+import org.imogene.android.util.annotation.ReflectionUtils;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -75,47 +77,92 @@ public abstract class ImogHelper {
 	 */
 	public abstract void doWithImogBeans(ImogBeanCallback callback);
 
+	/**
+	 * Return {@link EntityInfo} for an {@link ImogBean} class. This class should contains an {@link ImogBean.Columns}
+	 * class with the correct fields.
+	 * 
+	 * @param clazz the class to retrieve information
+	 * @return The {@link EntityInfo} of the given class if it is representable, {@code null} otherwise
+	 */
 	public static EntityInfo getEntityInfo(Class<? extends ImogBean> clazz) {
-		Class<?>[] classes = clazz.getDeclaredClasses();
-		if (classes != null && classes.length > 0) {
-			for (Class<?> c : classes) {
-				if (c.getName().equals("Columns")) {
-					try {
-						Drawable color = (Drawable) c.getDeclaredField("COLOR").get(null);
-						String table = (String) c.getDeclaredField("TABLE_NAME").get(null);
-						String type = (String) c.getDeclaredField("BEAN_TYPE").get(null);
-						Uri uri = (Uri) c.getDeclaredField("CONTENT_URI").get(null);
-						int desc_sg = (Integer) c.getDeclaredField("DESC_SINGULAR").get(null);
-						int desc_pl = (Integer) c.getDeclaredField("DESC_PLURAL").get(null);
-						int drawable = (Integer) c.getDeclaredField("DRAWABLE").get(null);
-						int notifId = (Integer) c.getDeclaredField("NOTIFICATION_ID").get(null);
-						return new EntityInfo(uri, table, type, desc_sg, desc_pl, drawable, color, notifId);
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
-					} catch (SecurityException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (NoSuchFieldException e) {
-						e.printStackTrace();
-					}
-				}
+		Class<?> columnsClass = ReflectionUtils.getClass(clazz, "Columns");
+		if (columnsClass != null) {
+			try {
+				Drawable color = (Drawable) ReflectionUtils.getField(columnsClass, "COLOR").get(null);
+				String table = (String) ReflectionUtils.getField(columnsClass, "TABLE_NAME").get(null);
+				String type = (String) ReflectionUtils.getField(columnsClass, "BEAN_TYPE").get(null);
+				Uri uri = (Uri) ReflectionUtils.getField(columnsClass, "CONTENT_URI").get(null);
+				int desc_sg = (Integer) ReflectionUtils.getField(columnsClass, "DESC_SINGULAR").get(null);
+				int desc_pl = (Integer) ReflectionUtils.getField(columnsClass, "DESC_PLURAL").get(null);
+				int drawable = (Integer) ReflectionUtils.getField(columnsClass, "DRAWABLE").get(null);
+				int notifId = (Integer) ReflectionUtils.getField(columnsClass, "NOTIFICATION_ID").get(null);
+				return new EntityInfo(uri, table, type, desc_sg, desc_pl, drawable, color, notifId);
+			} catch (IllegalArgumentException e) {
+			} catch (IllegalAccessException e) {
+			} catch (NoSuchFieldException e) {
 			}
 		}
+		// If we arrive here this means that the entity is not representable
 		return null;
 	}
 
+	/**
+	 * Resume the static informations about an {@link ImogBean} class that is representable to the user.
+	 */
 	public static class EntityInfo {
 
+		/**
+		 * The content {@link Uri}
+		 */
 		public final Uri contentUri;
+
+		/**
+		 * The table name
+		 */
 		public final String table;
+
+		/**
+		 * The {@link ImogBean} type
+		 */
 		public final String type;
+
+		/**
+		 * The singular description resource identifier
+		 */
 		public final int description_sg;
+
+		/**
+		 * The plural description resource identifier
+		 */
 		public final int description_pl;
+
+		/**
+		 * The icon drawable resource identifier
+		 */
 		public final int drawable;
+
+		/**
+		 * The {@link Drawable} color
+		 */
 		public final Drawable color;
+
+		/**
+		 * The notification identifier
+		 */
 		public final int notificationId;
 
+		/**
+		 * Default constructor.
+		 * 
+		 * @param contentUri the content {@link Uri}
+		 * @param table the table name
+		 * @param type the {@link ImogBean} type
+		 * @param description_sg the singular description resource identifier
+		 * @param description_pl the plural description resource identifier
+		 * @param drawable the icon drawable resource identifier
+		 * @param color the {@link Drawable} color
+		 * @param notificationId the notification identifier
+		 */
 		public EntityInfo(Uri contentUri, String table, String type, int description_sg, int description_pl,
 				int drawable, Drawable color, int notificationId) {
 			this.contentUri = contentUri;

@@ -14,7 +14,6 @@ import org.imogene.android.domain.ImogHelper.ImogBeanCallback;
 import org.imogene.android.template.R;
 import org.imogene.android.util.content.ContentUrisUtils;
 
-import android.accounts.Account;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -39,9 +38,9 @@ public class NotificationController {
 	private static final String TAG = NotificationController.class.getName();
 
 	/**
-	 * Minimum interval between notification sounds. Since a long sync (either on account setup or after a long period
-	 * of being offline) can cause several notifications consecutively, it can be pretty overwhelming to get a barrage
-	 * of notification sounds. Throttle them using this value.
+	 * Minimum interval between notification sounds. Since a long sync (after a long period of being offline) can cause
+	 * several notifications consecutively, it can be pretty overwhelming to get a barrage of notification sounds.
+	 * Throttle them using this value.
 	 */
 	private static final long MIN_SOUND_INTERVAL_MS = 15 * 1000; // 15 seconds
 
@@ -54,7 +53,7 @@ public class NotificationController {
 	private final HashSet<ContentObserver> mNotificationSet;
 
 	/**
-	 * Timestamp indicating when the last message notification sound was played. Used for throttling.
+	 * Timestamp indicating when the last notification sound was played. Used for throttling.
 	 */
 	private long mLastMessageNotifyTime;
 
@@ -65,10 +64,6 @@ public class NotificationController {
 		}
 		return sInstance;
 	}
-	
-	public static void cancelNotification(int notificationId) {
-		sInstance.mNotificationManager.cancel(notificationId);
-	}
 
 	private NotificationController(Context context) {
 		mContext = context.getApplicationContext();
@@ -78,13 +73,11 @@ public class NotificationController {
 	}
 
 	/**
-	 * Tells the notification controller if it should be watching for changes to the message table. This is the main
-	 * life cycle method for message notifications. When we stop observing database changes, we save the state [e.g.
-	 * message ID and count] of the most recent notification shown to the user. And, when we start observing database
-	 * changes, we restore the saved state.
+	 * Tells the notification controller if it should be watching for changes to the entities table. This is the main
+	 * life cycle method for entities notifications. When we start observing database changes, we check the entities
+	 * state.
 	 * 
-	 * @param watch If {@code true}, we register observers for all accounts whose settings have notifications enabled.
-	 *            Otherwise, all observers are unregistered.
+	 * @param watch If {@code true}, we register observers. Otherwise, all observers are unregistered.
 	 */
 	public void watchForMessages(final boolean watch) {
 		Log.i(TAG, "Notifications being toggled: " + watch);
@@ -112,13 +105,7 @@ public class NotificationController {
 	}
 
 	/**
-	 * Registers an observer for changes to the INBOX for the given account. Since accounts may only have a single
-	 * INBOX, we will never have more than one observer for an account. NOTE: This must be called on the notification
-	 * handler thread.
-	 * 
-	 * @param accountId The ID of the account to register the observer for. May be
-	 *            {@link Account#ACCOUNT_ID_COMBINED_VIEW} to register observers for all accounts that allow for user
-	 *            notification.
+	 * Registers the observers for changes. NOTE: This must be called on the notification handler thread.
 	 */
 	private void registerMessageNotification() {
 		final ContentResolver resolver = mContext.getContentResolver();
@@ -128,11 +115,13 @@ public class NotificationController {
 			@Override
 			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
 				if (!hidden.contains(uri)) {
-					EntityContentObserver observer = new EntityContentObserver(sNotificationHandler, ImogHelper
-							.getEntityInfo(clazz));
-					resolver.registerContentObserver(uri, true, observer);
-					mNotificationSet.add(observer);
-					observer.onChange(true);
+					EntityInfo info = ImogHelper.getEntityInfo(clazz);
+					if (info != null) {
+						EntityContentObserver observer = new EntityContentObserver(sNotificationHandler, info);
+						resolver.registerContentObserver(uri, true, observer);
+						mNotificationSet.add(observer);
+						observer.onChange(true);
+					}
 				}
 
 			}
@@ -140,12 +129,7 @@ public class NotificationController {
 	}
 
 	/**
-	 * Unregisters the observer for the given account. If the specified account does not have a registered observer, no
-	 * action is performed. This will not clear any existing notification for the specified account. Use
-	 * {@link NotificationManager#cancel(int)}. NOTE: This must be called on the notification handler thread.
-	 * 
-	 * @param accountId The ID of the account to unregister from. To unregister all accounts that have observers,
-	 *            specify an ID of {@link Account#ACCOUNT_ID_COMBINED_VIEW}.
+	 * Unregisters the observers. NOTE: This must be called on the notification handler thread.
 	 */
 	private void unregisterMessageNotification() {
 		ContentResolver resolver = mContext.getContentResolver();
@@ -165,6 +149,17 @@ public class NotificationController {
 		}
 	}
 
+	/**
+	 * Returns a {@link Notification} that resumes the informations about the entity and ready to be post in the status
+	 * bar.
+	 * 
+	 * @param title the notification title
+	 * @param contentText the notification main text
+	 * @param ticker the ticker text displayed in the status bar
+	 * @param intent the intent when notification is clicked
+	 * @param iconRes the icon resource identifier
+	 * @return The built notification
+	 */
 	private Notification createNotification(CharSequence title, CharSequence contentText, CharSequence ticker,
 			Intent intent, int iconRes) {
 		Notification notification = new Notification(iconRes, ticker, System.currentTimeMillis());
@@ -192,6 +187,11 @@ public class NotificationController {
 		return notification;
 	}
 
+	/**
+	 * Sets up the notification's sound and vibration.
+	 * 
+	 * @param notification the notification to update
+	 */
 	private void setupSoundAndVibration(Notification notification) {
 		boolean vibrateAlways = true;
 		boolean vibrateSilent = false;
@@ -206,6 +206,13 @@ public class NotificationController {
 		notification.defaults |= Notification.DEFAULT_LIGHTS;
 	}
 
+	/**
+	 * Convenient method to create a ticker message from the title and the content text.
+	 * 
+	 * @param header the title text
+	 * @param body the content text
+	 * @return a resume of both parameters
+	 */
 	private static CharSequence buildTickerMessage(String header, String body) {
 		StringBuilder buf = new StringBuilder(header.replace('\n', ' ').replace('\r', ' '));
 		buf.append(':').append(' ');
@@ -222,6 +229,9 @@ public class NotificationController {
 		return spanText;
 	}
 
+	/**
+	 * Observer invoked whenever an entity we're notifying the user about changes.
+	 */
 	private static class EntityContentObserver extends ContentObserver {
 
 		private final EntityInfo mInfo;
@@ -240,7 +250,6 @@ public class NotificationController {
 			if (c == null) {
 				return;
 			}
-
 			try {
 				if (!c.moveToFirst()) {
 					sInstance.mNotificationManager.cancel(mInfo.notificationId);

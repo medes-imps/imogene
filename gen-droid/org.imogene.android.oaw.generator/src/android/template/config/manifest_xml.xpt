@@ -7,6 +7,10 @@
 	package="org.imogene.android.«name.toLowerCase()»"
 	android:versionCode="«versionCode»"
     android:versionName="«versionCode».0">
+    
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="14" />
 	
     <supports-screens
         android:anyDensity="true"
@@ -57,10 +61,6 @@
 			</intent-filter>
 		</activity>
 			
-		<activity
-			android:name="org.imogene.android.app.HighPreferences"
-			android:label="@string/ig_high_preferences" />
-		
 		<activity 
 			android:name="org.imogene.android.app.setup.AccountCheckPassword"
 			android:label="@string/ig_account_check_password_title"/>
@@ -107,14 +107,16 @@
 			android:name=".app.«name.toFirstUpper()»Listing"
 			android:label="@string/ig_list_availables_entities"
 			android:icon="@drawable/ig_logo_android_s" />
-		
+			
 		<activity 
-		«IF hasFilter(this)-»
-			android:name=".app.ExtendedPreferences"
-		«ELSE-»
-			android:name="org.imogene.android.app.Preferences"
-		«ENDIF-»
+			android:name="org.imogene.android.app.PreferenceActivity"
 			android:label="@string/ig_preferences" />
+		
+		«IF hasFilter(this)-»
+		<activity 
+			android:name=".app.ExtendedPreferences"
+			android:label="@string/ig_preferences" />
+		«ENDIF-»
 		
 		«FOREACH entities AS entity»
 		<activity
@@ -313,11 +315,9 @@
  			</intent-filter>
  		</receiver>
  		
- 		<receiver
-			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentReceiver" />
-		
-		<receiver
-			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentFailedReceiver" />
+		<activity
+			android:name="org.imogene.android.app.ProxyServicesActivity"
+			android:theme="@android:style/Theme.NoDisplay" />
 		
         <service
             android:name="org.imogene.android.sync.SynchronizationService"

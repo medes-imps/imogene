@@ -3,7 +3,7 @@ package org.imogene.android.app;
 import java.util.Arrays;
 
 import org.imogene.android.database.ImogActorCursorJoiner;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.encryption.EncryptionManager;
@@ -110,12 +110,8 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 	public void onClick(DialogInterface dialog, int which) {
 		final String pwd = ((TextView)((Dialog) dialog).findViewById(R.id.ig_password_edit)).getText().toString();
 		if (validate(pwd)) {
-			EncryptionManager em = EncryptionManager.getInstance(this);
-			String encLogin = new String(Base64.encodeBase64(em.encrypt(login.getBytes())));
-			PreferenceHelper.getSharedPreferences(this).edit()
-			.putString(getString(R.string.ig_current_login_key), encLogin)
-			.putString(getString(R.string.ig_current_roles_key), roles)
-			.commit();
+			Preferences.setCurrentLogin(this, login);
+			Preferences.setCurrentRoles(this, roles);
 			setResult(RESULT_OK);
 			finish();
 		} else {

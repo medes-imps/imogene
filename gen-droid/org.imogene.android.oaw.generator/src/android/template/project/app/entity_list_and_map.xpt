@@ -8,9 +8,9 @@ import greendroid.app.GDTabActivity;
 import greendroid.widget.ActionBarItem;
 import greendroid.widget.NormalActionBarItem;
 
+import org.imogene.android.Constants.Categories;
 import org.imogene.android.maps.app.MapActivityWithoutActionBar;
-import org.imogene.android.notification.NotificationController;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
@@ -37,8 +37,6 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 		mCanCreate = «name.toFirstUpper()-»Roles.canWrite(this);
 		«ENDIF-»
 		
-		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
-
 		Intent list = new Intent(this, «name.toFirstUpper()»List.class);
 		list.putExtras(getIntent());
 		addTab("LIST", "List", list);
@@ -64,9 +62,10 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (item.getItemId()) {
 		case ACTIONBAR_ADD_ID:
+			boolean wizard = Preferences.isWizardEnabled(this);
 			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
 			intent.putExtras(getIntent());
-			intent.addCategory(PreferenceHelper.getEditionCategory(this));
+			intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
 			startActivity(intent);
 			return true;
 		case ACTIONBAR_SEARCH_ID:

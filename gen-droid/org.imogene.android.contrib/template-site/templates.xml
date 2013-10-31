@@ -7,7 +7,7 @@
 		</natures>
 		<content>template.zip</content>
  		<parseSet>
-              <include filenames="account_setup_basics.xml,Constants.java,MapsConstants.java,PreferenceHelper.java,.project,.classpath"/>
+              <include filenames="account_setup_basics.xml,Constants.java,MapsConstants.java,Preferences.java,.project,.classpath"/>
               <exclude extensions="jar"/>
         </parseSet>
 	</template>

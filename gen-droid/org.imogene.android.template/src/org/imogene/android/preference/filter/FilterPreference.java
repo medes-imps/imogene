@@ -1,7 +1,7 @@
 package org.imogene.android.preference.filter;
 
 import org.imogene.android.domain.ClientFilter;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
 import android.content.Context;
@@ -31,8 +31,8 @@ public abstract class FilterPreference<T extends ClientFilter> extends DialogPre
 		mEntityField = a.getString(R.styleable.FilterPreference_igFilterField);
 		a.recycle();
 		
-		mUserId = PreferenceHelper.getSyncLogin(context);
-		mTerminalId = PreferenceHelper.getHardwareId(context);
+		mUserId = Preferences.getSyncLogin(context);
+		mTerminalId = Preferences.getSyncTerminal(context);
 
 		mCreator = creator;
 		

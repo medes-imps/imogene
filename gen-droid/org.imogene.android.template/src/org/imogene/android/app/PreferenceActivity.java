@@ -3,14 +3,12 @@ package org.imogene.android.app;
 import greendroid.app.GDPreferenceActivity;
 
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.app.setup.AccountSetupBasics;
-import org.imogene.android.preference.PreferenceHelper;
 import org.imogene.android.template.R;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 
-public class Preferences extends GDPreferenceActivity {
+public class PreferenceActivity extends GDPreferenceActivity {
 	
 	protected int mLayoutId = 0;
 
@@ -30,11 +28,4 @@ public class Preferences extends GDPreferenceActivity {
 		addPreferencesFromResource(mLayoutId);
 	}
 
-	@Override
-	public void finish() {
-		if (PreferenceHelper.getShortPassword(this) == null) {
-			AccountSetupBasics.actionModifyAccount(this);
-		}
-		super.finish();
-	}
 }

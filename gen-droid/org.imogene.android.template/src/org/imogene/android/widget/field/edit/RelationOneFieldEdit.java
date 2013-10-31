@@ -1,12 +1,13 @@
 package org.imogene.android.widget.field.edit;
 
+import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.database.sqlite.stmt.Where;
 import org.imogene.android.domain.ImogBean;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
 
@@ -59,9 +60,10 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 			if (uri != null) {
 				getContext().startActivity(new Intent(Intent.ACTION_EDIT, uri));
 			} else {
+				boolean wizard = Preferences.isWizardEnabled(getContext());
 				Intent intent = new Intent(Intent.ACTION_INSERT, mContentUri);
 				intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
-				intent.addCategory(PreferenceHelper.getEditionCategory(getContext()));
+				intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
 				getFieldManager().getActivity().startActivityForResult(intent, mRequestCode);
 			}
 			return;

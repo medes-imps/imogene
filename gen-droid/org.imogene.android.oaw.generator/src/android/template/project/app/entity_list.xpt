@@ -31,13 +31,13 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.notification.NotificationController;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
@@ -120,8 +120,6 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 		mCanModify = canModify && mCanCreate;
 		«ENDIF-»
 		
-		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
-
 		IamLost.getInstance().add(getTitle().toString());
 
 		if (getIntent().hasExtra(Extras.EXTRA_WHERE)) {
@@ -281,9 +279,10 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (item.getItemId()) {
 		case ACTIONBAR_ADD_ID:
+			boolean wizard = Preferences.isWizardEnabled(this);
 			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
 			intent.putExtras(getIntent());
-			intent.addCategory(PreferenceHelper.getEditionCategory(this));
+			intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
 			if (Intent.ACTION_PICK.equals(getIntent().getAction())) {
 				startActivityForResult(intent, ACTIVITY_INSERT);
 			} else {

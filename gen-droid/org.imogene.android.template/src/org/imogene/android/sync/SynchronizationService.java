@@ -1,8 +1,6 @@
 package org.imogene.android.sync;
 
-import org.imogene.android.notification.SynchronizationNotification;
-import org.imogene.android.preference.PreferenceHelper;
-import org.imogene.android.template.R;
+import org.imogene.android.preference.Preferences;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -45,15 +43,12 @@ public class SynchronizationService extends Service {
 	private SynchronizationController mController;
 //	private SynchronizationNotification mNotifier;
 //	private ControllerCallback mControllerCallback = new ControllerCallback();
-	private Context mContext;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, final int startId) {
-
 		mController = SynchronizationController.getInstance(this);
 //		mController.addResultCallback(mControllerCallback);
 //		mNotifier = SynchronizationNotification.getInstance(this);
-		mContext = this;
 
 		String action = intent.getAction();
 
@@ -67,12 +62,7 @@ public class SynchronizationService extends Service {
 
 					mController.synchronize();
 
-					if (PreferenceHelper.getSynchronizationStatus(mContext)) {
-						reschedule(alarmManager);
-					} else {
-						// Cancel watchdog
-						cancel(alarmManager);
-					}
+					reschedule(alarmManager);
 
 					stopSelf(startId);
 				};
@@ -112,10 +102,14 @@ public class SynchronizationService extends Service {
 	private void reschedule(AlarmManager alarmMgr) {
 		Log.i(TAG, "*** SynchronizationService: reschedule");
 		PendingIntent pi = createAlarmIntent();
-		long period = PreferenceHelper.getSynchronizationPeriod(this);
-		long timeNow = SystemClock.elapsedRealtime();
-		long nextCheckTime = timeNow + period * 1000;
-		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);
+		if (Preferences.isSyncEnabled(this)) {
+			long period = Preferences.getSyncPeriod(this);
+			long timeNow = SystemClock.elapsedRealtime();
+			long nextCheckTime = timeNow + period * 1000;
+			alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);			
+		} else {
+			alarmMgr.cancel(pi);
+		}
 	}
 
 	/**

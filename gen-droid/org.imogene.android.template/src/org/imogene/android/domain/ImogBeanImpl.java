@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.content.ContentUrisUtils;
@@ -154,29 +154,29 @@ public abstract class ImogBeanImpl implements ImogBean {
 			id = BeanKeyGenerator.getNewId(beanType);
 		}
 		if (created == null) {
-			created = PreferenceHelper.getRealTime(context);
+			created = Preferences.getRealTime(context);
 		}
 		if (uploadDate == null) {
 			uploadDate = created;
 		}
 		modified = null;
 		
-		String login = PreferenceHelper.getCurrentLogin(context);
+		String login = Preferences.getCurrentLogin(context);
 		modifiedBy = login;
 		if (createdBy == null) {
 			createdBy = login;
 		}
-		modifiedFrom = PreferenceHelper.getHardwareId(context);
+		modifiedFrom = Preferences.getSyncTerminal(context);
 		mSynchronized = false;
 	}
 	
 	protected void preCommit(Context context) {/* nothing to do */}
 	
 	protected void postCommit(Context context) {
-		boolean sync = PreferenceHelper.isSynchronizeOnSaveEnabled(context);
-		if (sync) {
-			SynchronizationService.actionCheck(context);
-		}
+//		boolean sync = PreferenceHelper.isSynchronizeOnSaveEnabled(context);
+//		if (sync) {
+//			SynchronizationService.actionCheck(context);
+//		}
 	}
 	
 	protected abstract void addValues(Context context, ContentValues values);
@@ -198,7 +198,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 		addValues(context, values);
 		
 		if (modified == null) {
-			modified = PreferenceHelper.getRealTime(context);
+			modified = Preferences.getRealTime(context);
 			values.put(Columns.MODIFIED, modified.getTime());
 		}
 		

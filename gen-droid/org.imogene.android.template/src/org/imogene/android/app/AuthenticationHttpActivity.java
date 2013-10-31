@@ -1,12 +1,10 @@
 package org.imogene.android.app;
 
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.template.R;
-import org.imogene.android.util.base64.Base64;
-import org.imogene.android.util.encryption.EncryptionManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -56,8 +54,8 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 		mPassword = intent.getStringExtra(EXTRA_PASSWORD);
 		mHardware = intent.getStringExtra(EXTRA_HARDWARE);
 
-		if (PreferenceHelper.isAdmin(this, mLogin, mPassword))
-			onAuthSucceed(PreferenceHelper.getAdminRoles(this));
+		if (Preferences.isAdmin(this, mLogin, mPassword))
+			onAuthSucceed(Preferences.getAdminRoles(this));
 		else
 			launchAuthentication();
 	}
@@ -122,17 +120,12 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 	}
 	
 	private void onAuthSucceed(String roles) {
-		EncryptionManager em = EncryptionManager.getInstance(this);
-		String encLogin = new String(Base64.encodeBase64(em.encrypt(mLogin.getBytes())));
-		String encPassword = new String(Base64.encodeBase64(em.encrypt(mPassword.getBytes())));
-		PreferenceHelper.getSharedPreferences(this).edit()
-		.remove(getString(R.string.ig_current_login_key))
-		.remove(getString(R.string.ig_current_roles_key))
-		.putString(getString(R.string.ig_sync_login_key), encLogin)
-		.putString(getString(R.string.ig_sync_password_key), encPassword)
-		.putString(getString(R.string.ig_sync_roles_key), roles)
-		.putString(getString(R.string.ig_sync_server_url_key), mServer)
-		.commit();
+		Preferences.clearCurrentLogin(this);
+		Preferences.clearCurrentRoles(this);
+		Preferences.setSyncLogin(this, mLogin);
+		Preferences.setSyncPassword(this, mPassword);
+		Preferences.setSyncRoles(this, roles);
+		Preferences.setSyncServer(this, mServer);
 		removeDialog(DIALOG_AUTHING_ID);
 		setResult(RESULT_OK);
 		finish();
@@ -149,7 +142,7 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 		public void run() {
 			reportAuthRunning();
 			OptimizedSyncClient sync;
-			if(PreferenceHelper.isHttpAuthenticated(AuthenticationHttpActivity.this)){
+			if(Preferences.isHttpAuthenticationEnabled(AuthenticationHttpActivity.this)){
 				sync = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
 			}else{
 				sync = new OptimizedSyncClientHttp(mServer);

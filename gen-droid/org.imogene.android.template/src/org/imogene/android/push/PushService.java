@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.http.ssl.TrustAllSSLSocketFactory;
 
@@ -33,11 +33,12 @@ public class PushService extends Service {
 
 	private static final String TAG = PushService.class.getName();
 
-	private static final String ACTION_START = "fr.medes.android.keepalive.action.START";
-	private static final String ACTION_STOP = "fr.medes.android.keepalive.action.STOP";
-	private static final String ACTION_PING = "fr.medes.android.keepalive.action.HEARTBEAT";
-	private static final String ACTION_RECONNECT = "fr.medes.android.keepalive.action.RECONNECT";
-	private static final String ACTION_PING_TIMEOUT = "fr.medes.android.keepalive.action.PING_TIMEOUT";
+	private static final String ACTION_START = "org.imogene.android.action.START";
+	private static final String ACTION_STOP = "org.imogene.android.action.STOP";
+	private static final String ACTION_RESCHEDULE = "org.imogene.android.action.RESCHEDULE";
+	private static final String ACTION_PING = "org.imogene.android.action.HEARTBEAT";
+	private static final String ACTION_RECONNECT = "org.imogene.android.action.RECONNECT";
+	private static final String ACTION_PING_TIMEOUT = "org.imogene.android.action.PING_TIMEOUT";
 
 	private static final String MSG_AUTH = "AUTH";
 	private static final String MSG_PING = "PING";
@@ -117,12 +118,12 @@ public class PushService extends Service {
 		mPreferences = getSharedPreferences(PushService.class.getName(), Context.MODE_PRIVATE);
 		mConnMan = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 
-		mHost = PreferenceHelper.getPushHost(this);
-		mPort = PreferenceHelper.getPushPort(this);
-		mSsl = PreferenceHelper.isPushSsl(this);
-		mTerminal = PreferenceHelper.getHardwareId(this);
-		mLogin = PreferenceHelper.getSyncLogin(this);
-		mPassword = PreferenceHelper.getSyncPassword(this);
+		mHost = Preferences.getPushHost(this);
+		mPort = Preferences.getPushPort(this);
+		mSsl = Preferences.isPushSslEnabled(this);
+		mTerminal = Preferences.getSyncTerminal(this);
+		mLogin = Preferences.getSyncLogin(this);
+		mPassword = Preferences.getSyncPassword(this);
 
 		/*
 		 * If our process was reaped by the system for any reason we need to restore our state with merely a call to
@@ -176,6 +177,13 @@ public class PushService extends Service {
 			reconnectIfNecessary();
 		} else if (ACTION_PING_TIMEOUT.equals(action)) {
 			pingTimeout();
+		} else if (ACTION_RESCHEDULE.equals(action)) {
+			if (Preferences.isPushEnabled(this)) {
+				start();
+			} else {
+				stop();
+				stopSelf();
+			}
 		}
 	}
 

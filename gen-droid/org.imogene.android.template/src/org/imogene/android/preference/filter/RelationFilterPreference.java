@@ -9,7 +9,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.imogene.android.domain.filters.RelationFilter;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.util.http.ssl.SSLHttpClient;
 import org.xmlpull.v1.XmlPullParser;
@@ -175,10 +175,10 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 		
 		@Override
 		public void run() {
-			final String webService = PreferenceHelper.getWebServiceUrl(mContext);
-			final String login = PreferenceHelper.getSyncLogin(mContext);
-			final String password = PreferenceHelper.getSyncPassword(mContext);
-			final String terminal = PreferenceHelper.getHardwareId(mContext);
+			final String webService = Preferences.getWebServiceServer(mContext);
+			final String login = Preferences.getSyncLogin(mContext);
+			final String password = Preferences.getSyncPassword(mContext);
+			final String terminal = Preferences.getSyncTerminal(mContext);
 			final Controller controller = Controller.getInstance();
 			controller.startReceiving();
 			

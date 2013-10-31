@@ -32,7 +32,6 @@ import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.ViewPagerIndicatorActivity;
 import org.imogene.android.domain.DynamicFieldInstance;
 import org.imogene.android.domain.DynamicFieldManager;
-import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.util.content.IntentUtils;
@@ -102,8 +101,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		if (!Intent.ACTION_INSERT.equals(getIntent().getAction()))
 			DatabaseUtils.markAs(getContentResolver(), getIntent().getData(), false);
 		IamLost.getInstance().add(getTitle().toString());
-		
-		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
 		
 		«IF hasDynamicFields-»
 		SavedState state = (SavedState) getLastNonConfigurationInstance();

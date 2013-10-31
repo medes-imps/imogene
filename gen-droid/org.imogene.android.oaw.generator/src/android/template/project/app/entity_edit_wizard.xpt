@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.FieldFlipperActivity;
-import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.util.content.IntentUtils;
@@ -71,8 +70,6 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		super.onCreate(savedInstanceState);
 		IamLost.getInstance().add(getTitle().toString());
 		
-		NotificationController.cancelNotification(«name.toFirstUpper()».Columns.NOTIFICATION_ID);
-
 		Object entity = getLastNonConfigurationInstance();
 		if (entity != null && entity instanceof «name.toFirstUpper()») {
 			mEntity = («name.toFirstUpper()») entity;

@@ -10,6 +10,7 @@ import java.net.URLConnection;
 
 import org.imogene.android.app.MyProgressDialog;
 import org.imogene.android.app.MyProgressDialog.Formatter;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.update.PackageHelper.State;
 import org.imogene.android.util.file.FileUtils;
@@ -26,27 +27,35 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Pair;
 
 public class UpdateActivity extends Activity {
-	
+
 	private static final String EXTRA_APPLICATION = "UpdateAvailableActivity_application";
-	
+
 	private static final int DIALOG_AVAILABLE_ID = 1;
 	private static final int DIALOG_UNAVAILABLE_ID = 2;
 	private static final int DIALOG_DOWNLOADING_ID = 3;
-	
+
 	private MarketApp mApplication;
 	private MyProgressDialog mProgressDialog;
-	
+
 	Pair<CheckUpdateTask, DownloadFileTask> mPair;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ig_media_content);
-		
+
+		String baseUrl = Preferences.getUpdateServer(this);
+		if (TextUtils.isEmpty(baseUrl)) {
+			setResult(RESULT_CANCELED);
+			finish();
+			return;
+		}
+
 		mPair = (Pair<CheckUpdateTask, DownloadFileTask>) getLastNonConfigurationInstance();
 		if (mPair == null) {
 			CheckUpdateTask checkTask = new CheckUpdateTask();
@@ -55,74 +64,67 @@ public class UpdateActivity extends Activity {
 		}
 		mPair.first.setActitity(this);
 		mPair.second.setActivity(this);
-		
+
 		if (mPair.first.getStatus() == AsyncTask.Status.PENDING) {
-			String url = UpdatePreferenceHelper.getApplicationUrl(this, getPackageName());
+			String url = createApplicationUrl(baseUrl, getPackageName());
 			mPair.first.execute(url);
 		}
 	}
-	
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		mPair.first.setActitity(null);
 		mPair.second.setActivity(null);
 		return mPair;
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(EXTRA_APPLICATION, mApplication);
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		mApplication = savedInstanceState.getParcelable(EXTRA_APPLICATION);
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DIALOG_AVAILABLE_ID:
-			return new AlertDialog.Builder(this)
-			.setTitle(R.string.ig_check_available_title)
-			.setMessage(R.string.ig_check_available_message)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					launchDownload();
-				}
-			})
-			.setNegativeButton(android.R.string.no, new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
-			})
-			.create();
+			return new AlertDialog.Builder(this).setTitle(R.string.ig_check_available_title)
+					.setMessage(R.string.ig_check_available_message).setCancelable(false)
+					.setPositiveButton(android.R.string.ok, new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							launchDownload();
+						}
+					}).setNegativeButton(android.R.string.no, new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					}).create();
 		case DIALOG_UNAVAILABLE_ID:
-			return new AlertDialog.Builder(this)
-			.setTitle(R.string.ig_check_available_title)
-			.setMessage(R.string.ig_check_unavailable_message)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, new OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
-			})
-			.create();
+			return new AlertDialog.Builder(this).setTitle(R.string.ig_check_available_title)
+					.setMessage(R.string.ig_check_unavailable_message).setCancelable(false)
+					.setPositiveButton(android.R.string.ok, new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							finish();
+						}
+					}).create();
 		case DIALOG_DOWNLOADING_ID:
-            mProgressDialog = new MyProgressDialog(this);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setTitle(R.string.ig_update_app_title);
-            mProgressDialog.setMessage(getString(R.string.ig_update_app_message));
-            mProgressDialog.setFormatter(new Formatter() {
+			mProgressDialog = new MyProgressDialog(this);
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			mProgressDialog.setTitle(R.string.ig_update_app_title);
+			mProgressDialog.setMessage(getString(R.string.ig_update_app_message));
+			mProgressDialog.setFormatter(new Formatter() {
 				@Override
 				public String format(int progress, int max) {
 					String readableProgress = FileUtils.readableFileSize(progress);
@@ -130,22 +132,22 @@ public class UpdateActivity extends Activity {
 					return String.format("%s / %s", readableProgress, readableMax);
 				}
 			});
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel), 
-            		new OnClickListener() {
-						
+			mProgressDialog.setCancelable(false);
+			mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel),
+					new OnClickListener() {
+
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							mPair.second.cancel(true);
 							finish();
 						}
 					});
-            return mProgressDialog;
+			return mProgressDialog;
 		default:
 			return super.onCreateDialog(id);
 		}
 	}
-	
+
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		switch (id) {
@@ -158,14 +160,14 @@ public class UpdateActivity extends Activity {
 			break;
 		}
 	}
-	
+
 	private void launchDownload() {
 		showDialog(DIALOG_DOWNLOADING_ID);
 		if (mPair.second.getStatus() == AsyncTask.Status.PENDING) {
-			mPair.second.execute(UpdatePreferenceHelper.getUpdateServer(this), mApplication.getFile());
+			mPair.second.execute(Preferences.getUpdateServer(this), mApplication.getFile());
 		}
 	}
-	
+
 	private void onApplicationReceived(MarketApp app) {
 		if (app == null) {
 			finish();
@@ -179,11 +181,11 @@ public class UpdateActivity extends Activity {
 			showDialog(DIALOG_UNAVAILABLE_ID);
 		}
 	}
-	
+
 	private void onIncrementProgressBy(int diff) {
 		mProgressDialog.incrementProgressBy(diff);
 	}
-	
+
 	private void onApkReceived(File file) {
 		mProgressDialog.setIndeterminate(true);
 		if (file != null) {
@@ -193,15 +195,26 @@ public class UpdateActivity extends Activity {
 		}
 		finish();
 	}
-	
+
+	public static String createApplicationUrl(String baseUrl, String packageName) {
+		StringBuilder builder = new StringBuilder(baseUrl);
+		if (!baseUrl.endsWith("/")) {
+			builder.append('/');
+		}
+		builder.append("package/");
+		builder.append(packageName);
+		builder.append(".xml");
+		return builder.toString();
+	}
+
 	private static class CheckUpdateTask extends AsyncTask<String, Void, MarketApp> {
-		
+
 		private UpdateActivity mActivity;
-		
+
 		public synchronized void setActitity(UpdateActivity activity) {
 			mActivity = activity;
 		}
-		
+
 		@Override
 		protected MarketApp doInBackground(String... params) {
 			try {
@@ -212,22 +225,22 @@ public class UpdateActivity extends Activity {
 			}
 			return null;
 		}
-		
+
 		@Override
 		protected synchronized void onPostExecute(MarketApp result) {
 			if (mActivity != null) {
 				mActivity.onApplicationReceived(result);
 			}
 		}
-		
+
 	}
-	
+
 	private static class DownloadFileTask extends AsyncTask<String, Integer, File> {
-		
+
 		private final Locker mLocker = new Locker();
-		
+
 		private UpdateActivity mActivity = null;
-		
+
 		public synchronized void setActivity(UpdateActivity activity) {
 			mActivity = activity;
 		}
@@ -246,7 +259,7 @@ public class UpdateActivity extends Activity {
 				connection.connect();
 				// this will be useful so that you can show a tipical 0-100%
 				// progress bar
-				
+
 				// download the file
 				File dir = new File(Environment.getExternalStorageDirectory(), "imogenemarket");
 				dir.mkdirs();
@@ -257,7 +270,7 @@ public class UpdateActivity extends Activity {
 				file.createNewFile();
 				InputStream input = new BufferedInputStream(url.openStream());
 				OutputStream output = new FileOutputStream(file);
-				
+
 				byte data[] = new byte[1024];
 
 				int count;
@@ -278,7 +291,7 @@ public class UpdateActivity extends Activity {
 				}
 				mLocker.cancel();
 				publishProgress(bigCount);
-				
+
 				output.flush();
 				output.close();
 				input.close();
@@ -292,21 +305,21 @@ public class UpdateActivity extends Activity {
 			}
 			return null;
 		}
-		
+
 		@Override
 		protected synchronized void onProgressUpdate(Integer... values) {
 			if (mActivity != null) {
 				mActivity.onIncrementProgressBy(values[0]);
 			}
 		}
-		
+
 		@Override
 		protected synchronized void onPostExecute(File result) {
 			if (mActivity != null) {
 				mActivity.onApkReceived(result);
 			}
 		}
-		
+
 	}
-	
+
 }
