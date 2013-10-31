@@ -1,6 +1,5 @@
 package org.imogene.android.notification;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.imogene.android.Constants.Extras;
@@ -32,6 +31,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.util.SparseArray;
 
 public class NotificationController {
 
@@ -50,7 +50,7 @@ public class NotificationController {
 	private final NotificationManager mNotificationManager;
 	private final AudioManager mAudioManager;
 	private final Context mContext;
-	private final HashSet<ContentObserver> mNotificationSet;
+	private final SparseArray<ContentObserver> mNotificationMap;
 
 	/**
 	 * Timestamp indicating when the last notification sound was played. Used for throttling.
@@ -69,7 +69,7 @@ public class NotificationController {
 		mContext = context.getApplicationContext();
 		mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		mNotificationSet = new HashSet<ContentObserver>();
+		mNotificationMap = new SparseArray<ContentObserver>();
 	}
 
 	/**
@@ -114,14 +114,26 @@ public class NotificationController {
 
 			@Override
 			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
-				if (!hidden.contains(uri)) {
-					EntityInfo info = ImogHelper.getEntityInfo(clazz);
-					if (info != null) {
-						EntityContentObserver observer = new EntityContentObserver(sNotificationHandler, info);
-						resolver.registerContentObserver(uri, true, observer);
-						mNotificationSet.add(observer);
-						observer.onChange(true);
+				EntityInfo info = ImogHelper.getEntityInfo(clazz);
+				if (info == null) {
+					// Not an observable entity
+					return;
+				}
+				ContentObserver obs = mNotificationMap.get(info.notificationId);
+				if (hidden.contains(uri)) {
+					if (obs != null) {
+						resolver.unregisterContentObserver(obs);
+						mNotificationMap.delete(info.notificationId);
 					}
+				} else {
+					if (obs != null) {
+						// we're already observing; nothing to do
+						return;
+					}
+					EntityContentObserver observer = new EntityContentObserver(sNotificationHandler, info);
+					resolver.registerContentObserver(uri, true, observer);
+					mNotificationMap.put(info.notificationId, observer);
+					observer.onChange(true);
 				}
 
 			}
@@ -133,10 +145,10 @@ public class NotificationController {
 	 */
 	private void unregisterMessageNotification() {
 		ContentResolver resolver = mContext.getContentResolver();
-		for (ContentObserver observer : mNotificationSet) {
-			resolver.unregisterContentObserver(observer);
+		for (int i = 0; i < mNotificationMap.size(); i++) {
+			resolver.unregisterContentObserver(mNotificationMap.valueAt(i));
 		}
-		mNotificationSet.clear();
+		mNotificationMap.clear();
 	}
 
 	/**
