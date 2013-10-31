@@ -39,6 +39,8 @@ public class Preferences {
 	public static final String PUSH_PORT = "pushPort";
 	public static final String PUSH_ENABLED = "pushEnabled";
 	public static final String PUSH_SSL_ENABLED = "pushSslEnabled";
+	public static final String PUSH_STARTED = "pushStarted";
+	private static final String PUSH_RETRY_INTERVAL = "pushRetryInterval";
 
 	private static Preferences sPreferences;
 
@@ -218,11 +220,11 @@ public class Preferences {
 		}
 		return false;
 	}
-	
+
 	public void setAdminLogin(String value) {
 		setEncryptedString(ADMIN_LOGIN, value);
 	}
-	
+
 	public void setAdminPassword(String value) {
 		setEncryptedString(ADMIN_PASSWORD, value);
 	}
@@ -230,7 +232,7 @@ public class Preferences {
 	public String getAdminRoles() {
 		return mSharedPreferences.getString(ADMIN_ROLES, null);
 	}
-	
+
 	public void setAdminRoles(String value) {
 		mSharedPreferences.edit().putString(ADMIN_ROLES, value).commit();
 	}
@@ -257,6 +259,22 @@ public class Preferences {
 
 	public boolean isPushSslEnabled() {
 		return mSharedPreferences.getBoolean(PUSH_SSL_ENABLED, false);
+	}
+
+	public boolean isPushStarted() {
+		return mSharedPreferences.getBoolean(PUSH_STARTED, false);
+	}
+
+	public void setPushStarted(boolean value) {
+		mSharedPreferences.edit().putBoolean(PUSH_STARTED, value).commit();
+	}
+
+	public long getPushRetryInterval(long defaultValue) {
+		return mSharedPreferences.getLong(PUSH_RETRY_INTERVAL, defaultValue);
+	}
+
+	public void setPushRetryInterval(long value) {
+		mSharedPreferences.edit().putLong(PUSH_RETRY_INTERVAL, value).commit();
 	}
 
 	private String getDecryptedString(String key) {

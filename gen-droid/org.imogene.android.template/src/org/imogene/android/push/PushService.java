@@ -16,7 +16,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -49,16 +48,12 @@ public class PushService extends Service {
 
 	private static final String CMD_SYNC = "SYNC";
 
-	private static final String PREF_STARTED = "started";
-	private static final String PREF_RETRY_INTERVAL = "retryInterval";
-
 	private static final long INITIAL_RETRY_INTERVAL = 10 * 1000;
 	private static final long MAXIMUM_RETRY_INTERVAL = 30 * 60 * 1000;
 
 	private static final long PING_INTERVAL = 5 * 60 * 1000;
 	private static final long PING_TIMEOUT = 1 * 60 * 1000;
 
-	private SharedPreferences mPreferences;
 	private Preferences mPrefs;
 
 	private boolean mStarted;
@@ -122,7 +117,6 @@ public class PushService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mPreferences = getSharedPreferences(PushService.class.getName(), Context.MODE_PRIVATE);
 		mConnMan = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		mPrefs = Preferences.getPreferences(this);
 
@@ -162,11 +156,11 @@ public class PushService extends Service {
 	}
 
 	private boolean wasStarted() {
-		return mPreferences.getBoolean(PREF_STARTED, false);
+		return mPrefs.isPushStarted();
 	}
 
 	private void setStarted(boolean started) {
-		mPreferences.edit().putBoolean(PREF_STARTED, started).commit();
+		mPrefs.setPushStarted(started);
 		mStarted = started;
 	}
 
@@ -223,7 +217,7 @@ public class PushService extends Service {
 	}
 
 	private void scheduleReconnect(long startTime) {
-		long interval = mPreferences.getLong(PREF_RETRY_INTERVAL, INITIAL_RETRY_INTERVAL);
+		long interval = mPrefs.getPushRetryInterval(INITIAL_RETRY_INTERVAL);
 
 		long now = System.currentTimeMillis();
 		long elapsed = now - startTime;
@@ -235,7 +229,7 @@ public class PushService extends Service {
 
 		Log.i(TAG, "Rescheduling connection in " + interval + "ms.");
 
-		mPreferences.edit().putLong(PREF_RETRY_INTERVAL, interval).commit();
+		mPrefs.setPushRetryInterval(interval);
 
 		Intent i = new Intent(this, PushService.class);
 		i.setAction(ACTION_RECONNECT);
@@ -246,7 +240,7 @@ public class PushService extends Service {
 	}
 
 	private void resetReconnectInterval() {
-		mPreferences.edit().putLong(PREF_RETRY_INTERVAL, INITIAL_RETRY_INTERVAL).commit();
+		mPrefs.setPushRetryInterval(INITIAL_RETRY_INTERVAL);
 	}
 
 	private void unscheduleReconnect() {
