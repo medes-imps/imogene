@@ -49,6 +49,7 @@ public class SynchronizationController {
 	}
 
 	private final Context mContext;
+	private final Preferences mPreferences;
 	private final HashSet<Callback> mListeners = new HashSet<Callback>();
 	private OptimizedSyncClient mSyncClient;
 	private ImogXmlConverter mConverter;
@@ -62,6 +63,7 @@ public class SynchronizationController {
 
 	private SynchronizationController(Context context) {
 		mContext = context.getApplicationContext();
+		mPreferences = Preferences.getPreferences(context);
 	}
 
 	/**
@@ -95,15 +97,15 @@ public class SynchronizationController {
 	}
 
 	public synchronized void synchronize() {
-		mTerminal = Preferences.getSyncTerminal(mContext);
-		mLogin = Preferences.getSyncLogin(mContext);
-		mPassword = Preferences.getSyncPassword(mContext);
-		mDebug = Preferences.isDebugEnabled(mContext);
+		mTerminal = mPreferences.getSyncTerminal();
+		mLogin = mPreferences.getSyncLogin();
+		mPassword = mPreferences.getSyncPassword();
+		mDebug = mPreferences.isDebugEnabled();
 
-		mServer = Preferences.getSyncServer(mContext);
-		mBidirectional = Preferences.isSyncBirdirectionnalEnabled(mContext);
+		mServer = mPreferences.getSyncServer();
+		mBidirectional = mPreferences.isSyncBirdirectionnalEnabled();
 
-		if (Preferences.isHttpAuthenticationEnabled(mContext)) {
+		if (mPreferences.isHttpAuthenticationEnabled()) {
 			mSyncClient = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
 		} else {
 			mSyncClient = new OptimizedSyncClientHttp(mServer);
@@ -135,7 +137,7 @@ public class SynchronizationController {
 			// 2 - send client modification
 			notifySend();
 
-			long syncTime = Preferences.getRealTime(mContext).getTime();
+			long syncTime = mPreferences.getRealTime().getTime();
 
 			File outFile = new File(Paths.PATH_SYNCHRO, sessionId + ".lmodif");
 			FileOutputStream fos = new FileOutputStream(outFile);
@@ -200,9 +202,9 @@ public class SynchronizationController {
 
 	private void updateTimeOffset() {
 		try {
-			String url = Preferences.getNtpHost(mContext);
+			String url = mPreferences.getNtpHost();
 			long offset = SntpProvider.getTimeOffsetFromNtp(url);
-			Preferences.setNtpOffset(mContext, offset);
+			mPreferences.setNtpOffset(offset);
 		} catch (SntpException e) {
 			Log.e(TAG, "update offset from ntp ->", e);
 		}

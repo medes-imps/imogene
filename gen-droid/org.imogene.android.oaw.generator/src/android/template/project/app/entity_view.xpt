@@ -301,8 +301,8 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		«IF getMoreFields(groups.fields).size > 0-»
 		«FOREACH getMoreFields(groups.fields) AS f-»
 		case R.id.menu_action_new_«f.name.toLowerCase()»: {
-			Intent intent = new Intent(Intent.ACTION_INSERT, «f.entity.name.toFirstUpper()».Columns.CONTENT_URI)
-				.addCategory(Preferences.isWizardEnabled(this) ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
+			Intent intent = new Intent(Intent.ACTION_INSERT, «f.entity.name.toFirstUpper()».Columns.CONTENT_URI);
+			intent.addCategory(Preferences.getPreferences(this).isWizardEnabled() ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
 			«IF f.oppositeRelationField.cardinality == 1 || f.commonFields.size > 0-»
 			Bundle bundle = new Bundle();
 			«FOREACH f.commonFields AS c ITERATOR i-»

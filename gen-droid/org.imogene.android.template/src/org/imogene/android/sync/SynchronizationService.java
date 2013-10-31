@@ -102,8 +102,9 @@ public class SynchronizationService extends Service {
 	private void reschedule(AlarmManager alarmMgr) {
 		Log.i(TAG, "*** SynchronizationService: reschedule");
 		PendingIntent pi = createAlarmIntent();
-		if (Preferences.isSyncEnabled(this)) {
-			long period = Preferences.getSyncPeriod(this);
+		Preferences prefs = Preferences.getPreferences(this);
+		if (prefs.isSyncEnabled()) {
+			long period = prefs.getSyncPeriod();
 			long timeNow = SystemClock.elapsedRealtime();
 			long nextCheckTime = timeNow + period * 1000;
 			alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);			

@@ -12,40 +12,42 @@ import android.preference.PreferenceManager;
 
 public class Preferences {
 
-	private static final String MULTILOGIN_ENABLED = "multiloginEnabled";
-	private static final String ADMIN_LOGIN = "adminLogin";
-	private static final String ADMIN_PASSWORD = "adminPassword";
-	private static final String ADMIN_ROLES = "adminRoles";
-	private static final String CURRENT_LOGIN = "currentLogin";
-	private static final String CURRENT_ROLES = "currentRoles";
-	private static final String SYNC_LOGIN = "syncLogin";
-	private static final String SYNC_PASSWORD = "syncPassword";
-	private static final String SYNC_ROLES = "syncRoles";
-	private static final String SYNC_TERMINAL = "syncTerminal";
-	private static final String SYNC_SERVER = "syncServer";
-	private static final String SYNC_PERIOD = "syncPeriod";
-	private static final String SYNC_ENABLED = "syncEnabled";
-	private static final String SYNC_BIDIRECTIONAL_ENABLED = "syncBidirectionnalEnabled";
-	private static final String SHORT_PASSWORD = "shortPassword";
-	private static final String SYNC_ONSAVE_ENABLED = "syncOnSaveEnabled";
-	private static final String WIZARD_ENABLED = "wizardEnabled";
-	private static final String DEBUG_ENABLED = "debugEnabled";
-	private static final String NTP_HOST = "ntpHost";
-	private static final String NTP_OFFSET = "ntpOffset";
-	private static final String WS_SERVER = "webServiceServer";
-	private static final String HTTP_AUTHENTICATION_ENABLED = "httpAuthenticationEnabled";
-	private static final String UPDATE_SERVER = "updateServer";
-	private static final String PUSH_HOST = "pushHost";
-	private static final String PUSH_PORT = "pushPort";
-	private static final String PUSH_ENABLED = "pushEnabled";
-	private static final String PUSH_SSL_ENABLED = "pushSslEnabled";
+	public static final String MULTILOGIN_ENABLED = "multiloginEnabled";
+	public static final String ADMIN_LOGIN = "adminLogin";
+	public static final String ADMIN_PASSWORD = "adminPassword";
+	public static final String ADMIN_ROLES = "adminRoles";
+	public static final String CURRENT_LOGIN = "currentLogin";
+	public static final String CURRENT_ROLES = "currentRoles";
+	public static final String SYNC_LOGIN = "syncLogin";
+	public static final String SYNC_PASSWORD = "syncPassword";
+	public static final String SYNC_ROLES = "syncRoles";
+	public static final String SYNC_TERMINAL = "syncTerminal";
+	public static final String SYNC_SERVER = "syncServer";
+	public static final String SYNC_PERIOD = "syncPeriod";
+	public static final String SYNC_ENABLED = "syncEnabled";
+	public static final String SYNC_BIDIRECTIONAL_ENABLED = "syncBidirectionnalEnabled";
+	public static final String SHORT_PASSWORD = "shortPassword";
+	public static final String SYNC_ONSAVE_ENABLED = "syncOnSaveEnabled";
+	public static final String WIZARD_ENABLED = "wizardEnabled";
+	public static final String DEBUG_ENABLED = "debugEnabled";
+	public static final String NTP_HOST = "ntpHost";
+	public static final String NTP_OFFSET = "ntpOffset";
+	public static final String WS_SERVER = "webServiceServer";
+	public static final String HTTP_AUTHENTICATION_ENABLED = "httpAuthenticationEnabled";
+	public static final String UPDATE_SERVER = "updateServer";
+	public static final String PUSH_HOST = "pushHost";
+	public static final String PUSH_PORT = "pushPort";
+	public static final String PUSH_ENABLED = "pushEnabled";
+	public static final String PUSH_SSL_ENABLED = "pushSslEnabled";
 
 	private static Preferences sPreferences;
 
 	private final SharedPreferences mSharedPreferences;
+	private final EncryptionManager mEncryptionManager;
 
 	private Preferences(Context context) {
 		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		mEncryptionManager = EncryptionManager.getInstance(context);
 	}
 
 	/**
@@ -63,219 +65,219 @@ public class Preferences {
 		return getPreferences(context).mSharedPreferences;
 	}
 
-	public static Date getRealTime(Context context) {
+	public Date getRealTime() {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis() - getNtpOffset(context));
+		calendar.setTimeInMillis(System.currentTimeMillis() - getNtpOffset());
 		return calendar.getTime();
 	}
 
-	public static long getNtpOffset(Context context) {
-		return getPreferences(context).mSharedPreferences.getLong(NTP_OFFSET, 0);
+	public long getNtpOffset() {
+		return mSharedPreferences.getLong(NTP_OFFSET, 0);
 	}
 
-	public static void setNtpOffset(Context context, long value) {
-		getPreferences(context).mSharedPreferences.edit().putLong(NTP_OFFSET, value).commit();
+	public void setNtpOffset(long value) {
+		mSharedPreferences.edit().putLong(NTP_OFFSET, value).commit();
 	}
 
-	public static String getNtpHost(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(NTP_HOST, "%Android_sntpServer%");
+	public String getNtpHost() {
+		return mSharedPreferences.getString(NTP_HOST, "%Android_sntpServer%");
 	}
 
-	public static void setNtpHost(Context context, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(NTP_HOST, value).commit();
+	public void setNtpHost(String value) {
+		mSharedPreferences.edit().putString(NTP_HOST, value).commit();
 	}
 
-	public static String getShortPassword(Context context) {
-		return getDecryptedString(context, SHORT_PASSWORD);
+	public String getShortPassword() {
+		return getDecryptedString(SHORT_PASSWORD);
 	}
 
-	public static void setShortPassword(Context context, String value) {
-		setEncryptedString(context, SHORT_PASSWORD, value);
+	public void setShortPassword(String value) {
+		setEncryptedString(SHORT_PASSWORD, value);
 	}
 
-	public static String getSyncTerminal(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(SYNC_TERMINAL, null);
+	public String getSyncTerminal() {
+		return mSharedPreferences.getString(SYNC_TERMINAL, null);
 	}
 
-	public static void setSyncTerminal(Context context, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(SYNC_TERMINAL, value).commit();
+	public void setSyncTerminal(String value) {
+		mSharedPreferences.edit().putString(SYNC_TERMINAL, value).commit();
 	}
 
-	public static String getSyncServer(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(SYNC_SERVER, null);
+	public String getSyncServer() {
+		return mSharedPreferences.getString(SYNC_SERVER, null);
 	}
 
-	public static void setSyncServer(Context context, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(SYNC_SERVER, value).commit();
+	public void setSyncServer(String value) {
+		mSharedPreferences.edit().putString(SYNC_SERVER, value).commit();
 	}
 
-	public static String getWebServiceServer(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(WS_SERVER, null);
+	public String getWebServiceServer() {
+		return mSharedPreferences.getString(WS_SERVER, null);
 	}
 
-	public static boolean isSyncEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(SYNC_ENABLED, false);
+	public boolean isSyncEnabled() {
+		return mSharedPreferences.getBoolean(SYNC_ENABLED, false);
 	}
 
-	public static long getSyncPeriod(Context context) {
-		return Long.parseLong(getPreferences(context).mSharedPreferences.getString(SYNC_PERIOD, "15"));
+	public long getSyncPeriod() {
+		return Long.parseLong(mSharedPreferences.getString(SYNC_PERIOD, "15"));
 	}
 
-	public static boolean isSyncBirdirectionnalEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(SYNC_BIDIRECTIONAL_ENABLED, true);
+	public boolean isSyncBirdirectionnalEnabled() {
+		return mSharedPreferences.getBoolean(SYNC_BIDIRECTIONAL_ENABLED, true);
 	}
 
-	public static boolean isSyncOnSaveEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(SYNC_ONSAVE_ENABLED, true);
+	public boolean isSyncOnSaveEnabled() {
+		return mSharedPreferences.getBoolean(SYNC_ONSAVE_ENABLED, true);
 	}
 
-	public static boolean isDebugEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(DEBUG_ENABLED, false);
+	public boolean isDebugEnabled() {
+		return mSharedPreferences.getBoolean(DEBUG_ENABLED, false);
 	}
 
-	public static boolean isWizardEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(WIZARD_ENABLED, false);
+	public boolean isWizardEnabled() {
+		return mSharedPreferences.getBoolean(WIZARD_ENABLED, false);
 	}
 
-	public static String getSyncLogin(Context context) {
-		return getDecryptedString(context, SYNC_LOGIN);
+	public String getSyncLogin() {
+		return getDecryptedString(SYNC_LOGIN);
 	}
 
-	public static void setSyncLogin(Context context, String value) {
-		setEncryptedString(context, SYNC_LOGIN, value);
+	public void setSyncLogin(String value) {
+		setEncryptedString(SYNC_LOGIN, value);
 	}
 
-	public static String getSyncPassword(Context context) {
-		return getDecryptedString(context, SYNC_PASSWORD);
+	public String getSyncPassword() {
+		return getDecryptedString(SYNC_PASSWORD);
 	}
 
-	public static void setSyncPassword(Context context, String value) {
-		setEncryptedString(context, SYNC_PASSWORD, value);
+	public void setSyncPassword(String value) {
+		setEncryptedString(SYNC_PASSWORD, value);
 	}
 
-	public static String getSyncRoles(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(SYNC_ROLES, null);
+	public String getSyncRoles() {
+		return mSharedPreferences.getString(SYNC_ROLES, null);
 	}
 
-	public static void setSyncRoles(Context context, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(SYNC_ROLES, value).commit();
+	public void setSyncRoles(String value) {
+		mSharedPreferences.edit().putString(SYNC_ROLES, value).commit();
 	}
 
-	public static boolean isMultiloginEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(MULTILOGIN_ENABLED, false);
+	public boolean isMultiloginEnabled() {
+		return mSharedPreferences.getBoolean(MULTILOGIN_ENABLED, false);
 	}
 
-	public static void setMultiloginEnabled(Context context, boolean value) {
-		getPreferences(context).mSharedPreferences.edit().putBoolean(MULTILOGIN_ENABLED, value).commit();
+	public void setMultiloginEnabled(boolean value) {
+		mSharedPreferences.edit().putBoolean(MULTILOGIN_ENABLED, value).commit();
 	}
 
-	public static String getCurrentLogin(Context context) {
-		if (isMultiloginEnabled(context)) {
-			String login = getDecryptedString(context, CURRENT_LOGIN);
-			return login != null ? login : getSyncLogin(context);
+	public String getCurrentLogin() {
+		if (isMultiloginEnabled()) {
+			String login = getDecryptedString(CURRENT_LOGIN);
+			return login != null ? login : getSyncLogin();
 		} else {
-			return getSyncLogin(context);
+			return getSyncLogin();
 		}
 	}
 
-	public static void setCurrentLogin(Context context, String value) {
-		setEncryptedString(context, CURRENT_LOGIN, value);
+	public void setCurrentLogin(String value) {
+		setEncryptedString(CURRENT_LOGIN, value);
 	}
 
-	public static void clearCurrentLogin(Context context) {
-		getPreferences(context).mSharedPreferences.edit().remove(CURRENT_LOGIN).commit();
+	public void clearCurrentLogin() {
+		mSharedPreferences.edit().remove(CURRENT_LOGIN).commit();
 	}
 
-	public static String getCurrentRoles(Context context) {
-		if (isMultiloginEnabled(context)) {
-			String roles = getPreferences(context).mSharedPreferences.getString(CURRENT_ROLES, null);
-			return roles != null ? roles : getSyncRoles(context);
+	public String getCurrentRoles() {
+		if (isMultiloginEnabled()) {
+			String roles = mSharedPreferences.getString(CURRENT_ROLES, null);
+			return roles != null ? roles : getSyncRoles();
 		} else {
-			return getSyncRoles(context);
+			return getSyncRoles();
 		}
 	}
 
-	public static void setCurrentRoles(Context context, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(CURRENT_ROLES, value).commit();
+	public void setCurrentRoles(String value) {
+		mSharedPreferences.edit().putString(CURRENT_ROLES, value).commit();
 	}
 
-	public static void clearCurrentRoles(Context context) {
-		getPreferences(context).mSharedPreferences.edit().remove(CURRENT_ROLES).commit();
+	public void clearCurrentRoles() {
+		mSharedPreferences.edit().remove(CURRENT_ROLES).commit();
 	}
 
-	public static boolean isSetAdmin(Context context) {
-		SharedPreferences sp = getPreferences(context).mSharedPreferences;
+	public boolean isSetAdmin() {
+		SharedPreferences sp = mSharedPreferences;
 		return sp.contains(ADMIN_LOGIN) && sp.contains(ADMIN_PASSWORD) && sp.contains(ADMIN_ROLES);
 	}
 
-	public static boolean isAdmin(Context context, String login, String password) {
-		if (login != null & password != null & isSetAdmin(context)) {
-			String adminLogin = getDecryptedString(context, ADMIN_LOGIN);
-			String adminPassword = getDecryptedString(context, ADMIN_PASSWORD);
+	public boolean isAdmin(String login, String password) {
+		if (login != null & password != null & isSetAdmin()) {
+			String adminLogin = getDecryptedString(ADMIN_LOGIN);
+			String adminPassword = getDecryptedString(ADMIN_PASSWORD);
 			return login.equals(adminLogin) && password.equals(adminPassword);
 		}
 		return false;
 	}
 	
-	public static void setAdminLogin(Context context, String value) {
-		setEncryptedString(context, ADMIN_LOGIN, value);
+	public void setAdminLogin(String value) {
+		setEncryptedString(ADMIN_LOGIN, value);
 	}
 	
-	public static void setAdminPassword(Context context, String value) {
-		setEncryptedString(context, ADMIN_PASSWORD, value);
+	public void setAdminPassword(String value) {
+		setEncryptedString(ADMIN_PASSWORD, value);
 	}
 
-	public static String getAdminRoles(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(ADMIN_ROLES, null);
+	public String getAdminRoles() {
+		return mSharedPreferences.getString(ADMIN_ROLES, null);
 	}
 	
-	public static void setAdminRoles(Context context, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(ADMIN_ROLES, value).commit();
+	public void setAdminRoles(String value) {
+		mSharedPreferences.edit().putString(ADMIN_ROLES, value).commit();
 	}
 
-	public static boolean isHttpAuthenticationEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(HTTP_AUTHENTICATION_ENABLED, true);
+	public boolean isHttpAuthenticationEnabled() {
+		return mSharedPreferences.getBoolean(HTTP_AUTHENTICATION_ENABLED, true);
 	}
 
-	public static String getUpdateServer(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(UPDATE_SERVER, null);
+	public String getUpdateServer() {
+		return mSharedPreferences.getString(UPDATE_SERVER, null);
 	}
 
-	public static String getPushHost(Context context) {
-		return getPreferences(context).mSharedPreferences.getString(PUSH_HOST, null);
+	public String getPushHost() {
+		return mSharedPreferences.getString(PUSH_HOST, null);
 	}
 
-	public static int getPushPort(Context context) {
-		return Integer.parseInt(getPreferences(context).mSharedPreferences.getString(PUSH_PORT, "0"));
+	public int getPushPort() {
+		return Integer.parseInt(mSharedPreferences.getString(PUSH_PORT, "0"));
 	}
 
-	public static boolean isPushEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(PUSH_ENABLED, false);
+	public boolean isPushEnabled() {
+		return mSharedPreferences.getBoolean(PUSH_ENABLED, false);
 	}
 
-	public static boolean isPushSslEnabled(Context context) {
-		return getPreferences(context).mSharedPreferences.getBoolean(PUSH_SSL_ENABLED, false);
+	public boolean isPushSslEnabled() {
+		return mSharedPreferences.getBoolean(PUSH_SSL_ENABLED, false);
 	}
 
-	private static String getDecryptedString(Context context, String key) {
-		String enc = getPreferences(context).mSharedPreferences.getString(key, null);
-		return decrypt(context, enc);
+	private String getDecryptedString(String key) {
+		String enc = mSharedPreferences.getString(key, null);
+		return decrypt(enc);
 	}
 
-	private static void setEncryptedString(Context context, String key, String value) {
-		getPreferences(context).mSharedPreferences.edit().putString(key, encrypt(context, value)).commit();
+	private void setEncryptedString(String key, String value) {
+		mSharedPreferences.edit().putString(key, encrypt(value)).commit();
 	}
 
-	private static String decrypt(Context context, String value) {
+	private String decrypt(String value) {
 		if (value != null) {
-			return new String(EncryptionManager.getInstance(context).decrypt(Base64.decodeBase64(value.getBytes())));
+			return new String(mEncryptionManager.decrypt(Base64.decodeBase64(value.getBytes())));
 		}
 		return null;
 	}
 
-	private static String encrypt(Context context, String value) {
+	private String encrypt(String value) {
 		if (value != null) {
-			return new String(Base64.encodeBase64(EncryptionManager.getInstance(context).encrypt(value.getBytes())));
+			return new String(mEncryptionManager.encrypt(value.getBytes()));
 		}
 		return null;
 	}

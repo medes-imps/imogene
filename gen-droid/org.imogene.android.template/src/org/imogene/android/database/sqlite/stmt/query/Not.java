@@ -2,6 +2,8 @@ package org.imogene.android.database.sqlite.stmt.query;
 
 import java.util.List;
 
+import org.imogene.android.database.sqlite.stmt.Where;
+
 /**
  * Internal class handling the SQL 'NOT' boolean comparison operation. Used by
  * {@link Where#not}.

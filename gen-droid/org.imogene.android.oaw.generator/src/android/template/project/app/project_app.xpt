@@ -41,24 +41,25 @@ public class «name.toFirstUpper()»App extends GDApplication {
 		«name.toFirstUpper()»Helper.init();
 		«name.toFirstUpper()»LocalizedText.init();
 
-		if (Preferences.getSyncTerminal(this) == null) {
-        	Preferences.setSyncTerminal(this, UUID.randomUUID().toString());
+		Preferences prefs = Preferences.getPreferences(this);
+		if (prefs.getSyncTerminal() == null) {
+        	prefs.setSyncTerminal(UUID.randomUUID().toString());
         }
 
         «IF multilogin-»
-        if (!Preferences.isMultiloginEnabled(this)) {
-        	Preferences.setMultiloginEnabled(this, true);
+        if (!prefs.isMultiloginEnabled()) {
+        	prefs.setMultiloginEnabled(true);
         }
         «ELSE-»
-        if (Preferences.isMultiloginEnabled(this)) {
-        	Preferences.setMultiloginEnabled(this, false);
+        if (prefs.isMultiloginEnabled()) {
+        	prefs.setMultiloginEnabled(false);
         }
         «ENDIF-»
         
-        if (!Preferences.isSetAdmin(this)) {
-        	Preferences.setAdminLogin(this, "admin");
-        	Preferences.setAdminPassword(this, "epipassword");
-			Preferences.setAdminRoles(this, "«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»");
+        if (!prefs.isSetAdmin()) {
+        	prefs.setAdminLogin("admin");
+        	prefs.setAdminPassword("epipassword");
+			prefs.setAdminRoles("«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»");
         }
         NotificationController.getInstance(this).watchForMessages(true);
 	}

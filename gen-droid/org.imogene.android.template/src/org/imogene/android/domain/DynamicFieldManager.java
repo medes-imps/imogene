@@ -69,8 +69,10 @@ public class DynamicFieldManager implements OnValueChangeListener {
 		where.and(
 				where.eq(DynamicFieldTemplate.Columns.FORMTYPE, formType),
 				where.eq(DynamicFieldTemplate.Columns.ISACTIVATED, "true"),
-				where.or(where.eq(DynamicFieldTemplate.Columns.ALLUSERS, "true"),
-						where.eq(DynamicFieldTemplate.Columns.TEMPLATECREATOR, Preferences.getCurrentLogin(context)).and()
+				where.or(
+						where.eq(DynamicFieldTemplate.Columns.ALLUSERS, "true"),
+						where.eq(DynamicFieldTemplate.Columns.TEMPLATECREATOR,
+								Preferences.getPreferences(context).getCurrentLogin()).and()
 								.eq(DynamicFieldTemplate.Columns.ISDEFAULT, "true")));
 		DynamicFieldTemplateCursor cursor = (DynamicFieldTemplateCursor) builder.query();
 		for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -296,7 +298,8 @@ public class DynamicFieldManager implements OnValueChangeListener {
 			((BaseField<Date>) field).init(FormatHelper.toDate(value));
 			break;
 		case ENUM_M:
-			((BaseField<boolean[]>) field).init(EnumHelper.parse(template.getParameters().split(EnumHelper.separator), value));
+			((BaseField<boolean[]>) field).init(EnumHelper.parse(template.getParameters().split(EnumHelper.separator),
+					value));
 			break;
 		case ENUM_S:
 			((BaseField<Integer>) field).init(Arrays.find(template.getParameters().split(EnumHelper.separator), value));
@@ -321,7 +324,8 @@ public class DynamicFieldManager implements OnValueChangeListener {
 		DynamicFieldInstance instance = instancesMap.get(templatesToInstancesMap.get(templateId));
 		if (instance == null) {
 			instance = new DynamicFieldInstance();
-			instance.setFieldTemplate(ContentUrisUtils.withAppendedId(DynamicFieldTemplate.Columns.CONTENT_URI, templateId));
+			instance.setFieldTemplate(ContentUrisUtils.withAppendedId(DynamicFieldTemplate.Columns.CONTENT_URI,
+					templateId));
 			loadInstance(instance);
 		}
 		switch (template.getFieldType()) {

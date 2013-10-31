@@ -279,7 +279,7 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (item.getItemId()) {
 		case ACTIONBAR_ADD_ID:
-			boolean wizard = Preferences.isWizardEnabled(this);
+			boolean wizard = Preferences.getPreferences(this).isWizardEnabled();
 			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
 			intent.putExtras(getIntent());
 			intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);

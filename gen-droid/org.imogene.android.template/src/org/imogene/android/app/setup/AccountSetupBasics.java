@@ -18,9 +18,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountSetupBasics extends GDActivity implements OnClickListener,
-		TextWatcher {
-	
+public class AccountSetupBasics extends GDActivity implements OnClickListener, TextWatcher {
+
 	private static final int ACTIVITY_OFFSET_ID = 1;
 	private static final int ACTIVITY_AUTHENTICATION_ID = 2;
 
@@ -30,7 +29,7 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 	private EditText mPasswordView;
 	private EditText mServerView;
 	private Button mNextButton;
-	
+
 	private String mHardwareId = null;
 
 	public static final void actionNewAccount(Activity fromActivity) {
@@ -43,7 +42,7 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 		i.putExtra(EXTRA_CHANGE_ACCOUNT, true);
 		fromActivity.startActivity(i);
 	}
-	
+
 	public AccountSetupBasics() {
 		super(ActionBar.Type.Empty);
 	}
@@ -63,12 +62,12 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 		mLoginView.addTextChangedListener(this);
 		mPasswordView.addTextChangedListener(this);
 		mServerView.addTextChangedListener(this);
-		
-		mHardwareId = Preferences.getSyncTerminal(this);
-		
+
+		mHardwareId = Preferences.getPreferences(this).getSyncTerminal();
+
 		if (getIntent().getBooleanExtra(EXTRA_CHANGE_ACCOUNT, false)) {
-			mServerView.setText(Preferences.getSyncServer(this));
-			
+			mServerView.setText(Preferences.getPreferences(this).getSyncServer());
+
 			validateFields();
 
 			if (mNextButton.isEnabled()) {
@@ -79,7 +78,7 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 			mPasswordView.setText(null);
 		}
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ACTIVITY_OFFSET_ID) {
@@ -104,7 +103,7 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 	}
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count,	int after) {
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 	}
 
 	@Override
@@ -120,7 +119,8 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener,
 		String login = mLoginView.getText().toString();
 		String password = mPasswordView.getText().toString();
 		String serverUrl = mServerView.getText().toString();
-		Intent intent = AuthenticationHttpActivity.getAuthenticationIntent(this, serverUrl, login, password, mHardwareId);
+		Intent intent = AuthenticationHttpActivity.getAuthenticationIntent(this, serverUrl, login, password,
+				mHardwareId);
 		startActivityForResult(intent, ACTIVITY_AUTHENTICATION_ID);
 	}
 

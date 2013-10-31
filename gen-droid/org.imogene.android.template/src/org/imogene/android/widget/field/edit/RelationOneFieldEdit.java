@@ -60,7 +60,7 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 			if (uri != null) {
 				getContext().startActivity(new Intent(Intent.ACTION_EDIT, uri));
 			} else {
-				boolean wizard = Preferences.isWizardEnabled(getContext());
+				boolean wizard = Preferences.getPreferences(getContext()).isWizardEnabled();
 				Intent intent = new Intent(Intent.ACTION_INSERT, mContentUri);
 				intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
 				intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);

@@ -16,20 +16,21 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 
 public class AuthenticationHttpActivity extends Activity implements OnClickListener {
-	
+
 	private static final String EXTRA_SERVER = "Authentication_server";
 	private static final String EXTRA_LOGIN = "Authentication_login";
 	private static final String EXTRA_PASSWORD = "Authentication_password";
 	private static final String EXTRA_HARDWARE = "Authentication_hardware";
-	
+
 	private static final int DIALOG_AUTHING_ID = 1;
 	private static final int DIALOG_AUTH_FAILED_ID = 2;
-	
-		
-	public static final Intent getAuthenticationIntent(Context context, String server, String login, String password, String hardware) {
+
+	public static final Intent getAuthenticationIntent(Context context, String server, String login, String password,
+			String hardware) {
 		Intent intent = new Intent(context, AuthenticationHttpActivity.class);
 		intent.putExtra(EXTRA_SERVER, server);
 		intent.putExtra(EXTRA_LOGIN, login);
@@ -37,14 +38,15 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 		intent.putExtra(EXTRA_HARDWARE, hardware);
 		return intent;
 	}
-	
+
 	private String mServer;
 	private String mLogin;
 	private String mPassword;
 	private String mHardware;
 
 	private Thread mAuthenticationThread;
-	
+	private Preferences mPreferences;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,12 +56,14 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 		mPassword = intent.getStringExtra(EXTRA_PASSWORD);
 		mHardware = intent.getStringExtra(EXTRA_HARDWARE);
 
-		if (Preferences.isAdmin(this, mLogin, mPassword))
-			onAuthSucceed(Preferences.getAdminRoles(this));
+		mPreferences = Preferences.getPreferences(this);
+
+		if (mPreferences.isAdmin(mLogin, mPassword))
+			onAuthSucceed(mPreferences.getAdminRoles());
 		else
 			launchAuthentication();
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -70,19 +74,15 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 			dialog.setCancelable(false);
 			return dialog;
 		case DIALOG_AUTH_FAILED_ID:
-			return new AlertDialog.Builder(this)
-			.setTitle(android.R.string.dialog_alert_title)
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setMessage(R.string.ig_obtaining_roles_failed)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, this)
-			.setNegativeButton(android.R.string.no, this)
-			.create();
+			return new AlertDialog.Builder(this).setTitle(android.R.string.dialog_alert_title)
+					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.ig_obtaining_roles_failed)
+					.setCancelable(false).setPositiveButton(android.R.string.ok, this)
+					.setNegativeButton(android.R.string.no, this).create();
 		default:
 			return super.onCreateDialog(id);
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -95,7 +95,7 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 			}
 		}
 	}
-	
+
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
@@ -108,43 +108,43 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 			break;
 		}
 	}
-	
+
 	private void launchAuthentication() {
 		mAuthenticationThread = new Thread(new AuthenticationRunnable(), "AuthenticationThread");
 		mAuthenticationThread.setPriority(Thread.MAX_PRIORITY);
 		mAuthenticationThread.start();
 	}
-	
+
 	private void onAuthRunning() {
 		showDialog(DIALOG_AUTHING_ID);
 	}
-	
+
 	private void onAuthSucceed(String roles) {
-		Preferences.clearCurrentLogin(this);
-		Preferences.clearCurrentRoles(this);
-		Preferences.setSyncLogin(this, mLogin);
-		Preferences.setSyncPassword(this, mPassword);
-		Preferences.setSyncRoles(this, roles);
-		Preferences.setSyncServer(this, mServer);
+		mPreferences.clearCurrentLogin();
+		mPreferences.clearCurrentRoles();
+		mPreferences.setSyncLogin(mLogin);
+		mPreferences.setSyncPassword(mPassword);
+		mPreferences.setSyncRoles(roles);
+		mPreferences.setSyncServer(mServer);
 		removeDialog(DIALOG_AUTHING_ID);
 		setResult(RESULT_OK);
 		finish();
 	}
-	
+
 	private void onAuthFailed() {
 		removeDialog(DIALOG_AUTHING_ID);
 		showDialog(DIALOG_AUTH_FAILED_ID);
 	}
-	
+
 	private class AuthenticationRunnable implements Runnable {
-		
+
 		@Override
 		public void run() {
 			reportAuthRunning();
 			OptimizedSyncClient sync;
-			if(Preferences.isHttpAuthenticationEnabled(AuthenticationHttpActivity.this)){
+			if (mPreferences.isHttpAuthenticationEnabled()) {
 				sync = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
-			}else{
+			} else {
 				sync = new OptimizedSyncClientHttp(mServer);
 			}
 			try {
@@ -160,29 +160,30 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 				reportAuthFailed();
 			}
 		}
-		
+
 		private void reportAuthRunning() {
 			mHandler.sendEmptyMessage(MSG_AUTHING);
 		}
-		
+
 		private void reportAuthSucceed(String roles) {
 			mHandler.sendMessage(Message.obtain(mHandler, MSG_AUTH_SUCCES, roles));
 		}
-		
+
 		private void reportAuthFailed() {
 			mHandler.sendEmptyMessage(MSG_AUTH_FAILED);
 		}
 
 	}
-	
+
 	private static final int MSG_AUTHING = 1;
 	private static final int MSG_AUTH_SUCCES = 2;
 	private static final int MSG_AUTH_FAILED = 3;
-	
-	private final Handler mHandler = new Handler() {
+
+	private final Handler mHandler = new Handler(new Callback() {
+
 		@Override
-		public void handleMessage(Message msg) {
-			switch(msg.what) {
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
 			case MSG_AUTHING:
 				onAuthRunning();
 				break;
@@ -193,8 +194,8 @@ public class AuthenticationHttpActivity extends Activity implements OnClickListe
 				onAuthFailed();
 				break;
 			}
-			super.handleMessage(msg);
-		};
-	};
+			return false;
+		}
+	});
 
 }

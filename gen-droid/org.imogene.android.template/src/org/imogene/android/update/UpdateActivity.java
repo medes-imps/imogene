@@ -41,6 +41,8 @@ public class UpdateActivity extends Activity {
 	private MarketApp mApplication;
 	private MyProgressDialog mProgressDialog;
 
+	private Preferences mPreferences;
+
 	Pair<CheckUpdateTask, DownloadFileTask> mPair;
 
 	@SuppressWarnings("unchecked")
@@ -48,8 +50,10 @@ public class UpdateActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ig_media_content);
+		
+		mPreferences = Preferences.getPreferences(this);
 
-		String baseUrl = Preferences.getUpdateServer(this);
+		String baseUrl = mPreferences.getUpdateServer();
 		if (TextUtils.isEmpty(baseUrl)) {
 			setResult(RESULT_CANCELED);
 			finish();
@@ -164,7 +168,7 @@ public class UpdateActivity extends Activity {
 	private void launchDownload() {
 		showDialog(DIALOG_DOWNLOADING_ID);
 		if (mPair.second.getStatus() == AsyncTask.Status.PENDING) {
-			mPair.second.execute(Preferences.getUpdateServer(this), mApplication.getFile());
+			mPair.second.execute(mPreferences.getUpdateServer(), mApplication.getFile());
 		}
 	}
 

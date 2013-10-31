@@ -92,7 +92,7 @@ public class DatabaseUtils {
 		c.close();
 
 		context.getContentResolver().notifyChange(ContentUrisUtils.buildUriForFragment(null), null);
-		Preferences.setSyncTerminal(context, UUID.randomUUID().toString());
+		Preferences.getPreferences(context).setSyncTerminal(UUID.randomUUID().toString());
 	}
 
 	/**

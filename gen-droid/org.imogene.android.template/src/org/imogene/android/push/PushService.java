@@ -59,6 +59,7 @@ public class PushService extends Service {
 	private static final long PING_TIMEOUT = 1 * 60 * 1000;
 
 	private SharedPreferences mPreferences;
+	private Preferences mPrefs;
 
 	private boolean mStarted;
 	private ConnectionThread mConnection;
@@ -112,18 +113,25 @@ public class PushService extends Service {
 		context.startService(intent);
 	}
 
+	public static void actionReschdule(Context context) {
+		Intent intent = new Intent(context, PushService.class);
+		intent.setAction(ACTION_RESCHEDULE);
+		context.startService(intent);
+	}
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		mPreferences = getSharedPreferences(PushService.class.getName(), Context.MODE_PRIVATE);
 		mConnMan = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		mPrefs = Preferences.getPreferences(this);
 
-		mHost = Preferences.getPushHost(this);
-		mPort = Preferences.getPushPort(this);
-		mSsl = Preferences.isPushSslEnabled(this);
-		mTerminal = Preferences.getSyncTerminal(this);
-		mLogin = Preferences.getSyncLogin(this);
-		mPassword = Preferences.getSyncPassword(this);
+		mHost = mPrefs.getPushHost();
+		mPort = mPrefs.getPushPort();
+		mSsl = mPrefs.isPushSslEnabled();
+		mTerminal = mPrefs.getSyncTerminal();
+		mLogin = mPrefs.getSyncLogin();
+		mPassword = mPrefs.getSyncPassword();
 
 		/*
 		 * If our process was reaped by the system for any reason we need to restore our state with merely a call to
@@ -178,7 +186,7 @@ public class PushService extends Service {
 		} else if (ACTION_PING_TIMEOUT.equals(action)) {
 			pingTimeout();
 		} else if (ACTION_RESCHEDULE.equals(action)) {
-			if (Preferences.isPushEnabled(this)) {
+			if (mPrefs.isPushEnabled()) {
 				start();
 			} else {
 				stop();
@@ -393,12 +401,12 @@ public class PushService extends Service {
 				 * succeed even when the remote peer would reject the connection. Shortly after an attempt to send data
 				 * an exception will occur indicating the connection was reset.
 				 */
-				//out.write("Hello, world.\n".getBytes());
+				// out.write("Hello, world.\n".getBytes());
 
 				authenticate();
 
 				resetReconnectInterval();
-				
+
 				startPinging();
 
 				InputStream in = s.getInputStream();

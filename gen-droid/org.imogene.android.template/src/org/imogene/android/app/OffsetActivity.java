@@ -26,7 +26,7 @@ public class OffsetActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mServerUrl = Preferences.getNtpHost(this);
+		mServerUrl = Preferences.getPreferences(this).getNtpHost();
 
 		mTask = (SntpOffsetTask) getLastNonConfigurationInstance();
 		if (mTask == null) {
@@ -92,7 +92,7 @@ public class OffsetActivity extends Activity {
 				return;
 			}
 
-			Preferences.setNtpOffset(OffsetActivity.this, offset);
+			Preferences.getPreferences(OffsetActivity.this).setNtpOffset(offset);
 
 			finish();
 		}

@@ -5,8 +5,6 @@ import greendroid.widget.ActionBar;
 
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.base64.Base64;
-import org.imogene.android.util.encryption.EncryptionManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,8 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountSetupShortPassword extends GDActivity implements
-		OnClickListener, TextWatcher {
+public class AccountSetupShortPassword extends GDActivity implements OnClickListener, TextWatcher {
 
 	private static final int ERROR_DIALOG_ID = 1;
 
@@ -38,7 +35,7 @@ public class AccountSetupShortPassword extends GDActivity implements
 	public AccountSetupShortPassword() {
 		super(ActionBar.Type.Empty);
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,16 +47,13 @@ public class AccountSetupShortPassword extends GDActivity implements
 
 		mNextButton.setOnClickListener(this);
 
-		mShortpwView.setTransformationMethod(PasswordTransformationMethod
-				.getInstance());
-		mShortpwConfirmView
-				.setTransformationMethod(PasswordTransformationMethod
-						.getInstance());
+		mShortpwView.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		mShortpwConfirmView.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
 		mShortpwView.addTextChangedListener(this);
 		mShortpwConfirmView.addTextChangedListener(this);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -69,11 +63,9 @@ public class AccountSetupShortPassword extends GDActivity implements
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		if (id == ERROR_DIALOG_ID) {
-			return new AlertDialog.Builder(this).setTitle(
-					android.R.string.dialog_alert_title).setIcon(
-					android.R.drawable.ic_dialog_alert).setMessage(
-					R.string.ig_account_setup_shortpw_error).setCancelable(false)
-					.setPositiveButton(android.R.string.ok, null).create();
+			return new AlertDialog.Builder(this).setTitle(android.R.string.dialog_alert_title)
+					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.ig_account_setup_shortpw_error)
+					.setCancelable(false).setPositiveButton(android.R.string.ok, null).create();
 		} else {
 			return super.onCreateDialog(id);
 		}
@@ -94,8 +86,7 @@ public class AccountSetupShortPassword extends GDActivity implements
 	}
 
 	@Override
-	public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-			int arg3) {
+	public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 	}
 
 	@Override
@@ -115,7 +106,7 @@ public class AccountSetupShortPassword extends GDActivity implements
 		String shortpw = mShortpwView.getText().toString();
 		String shortpwConfirm = mShortpwConfirmView.getText().toString();
 		if (shortpw != null && shortpw.equals(shortpwConfirm)) {
-			Preferences.setShortPassword(this, shortpw);
+			Preferences.getPreferences(this).setShortPassword(shortpw);
 			Intent intent = new Intent(this, getGDApplication().getHomeActivityClass());
 			startActivity(intent);
 			finish();

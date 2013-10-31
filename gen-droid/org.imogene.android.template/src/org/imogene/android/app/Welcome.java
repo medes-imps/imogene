@@ -8,12 +8,12 @@ import android.app.Activity;
 import android.os.Bundle;
 
 public class Welcome extends Activity {
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		final String shortpw = Preferences.getShortPassword(this);
+
+		final String shortpw = Preferences.getPreferences(this).getShortPassword();
 		if (shortpw != null) {
 			AccountCheckPassword.accountCheckShortPassword(this);
 		} else {

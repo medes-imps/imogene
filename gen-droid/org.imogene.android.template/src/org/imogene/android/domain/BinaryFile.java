@@ -21,23 +21,23 @@ import android.os.ParcelFileDescriptor;
 
 @XmlAlias("org.imogene.lib.common.binary.file.BinaryFile")
 public final class BinaryFile extends ImogBeanImpl implements Binary {
-	
+
 	@XmlAlias("fileName")
 	private String fileName = null;
-	
+
 	@XmlAlias("contentType")
 	private String contentType = null;
-	
+
 	@XmlAlias("length")
 	private long length = 0;
-	
+
 	@XmlAlias("content")
 	@XmlConverter(ContentConverter.class)
 	private Uri data = null;
 
 	public BinaryFile() {
 	}
-	
+
 	public BinaryFile(BinaryCursor c) {
 		init(c);
 		fileName = c.getFileName();
@@ -90,7 +90,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 	public void prepareForSave(Context context) {
 		prepareForSave(context, Binary.Columns.TYPE);
 	}
-	
+
 	@Override
 	public Uri saveOrUpdate(Context context) {
 		Uri uri = saveOrUpdate(context, Binary.Columns.CONTENT_URI);
@@ -104,52 +104,54 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 		}
 		return uri;
 	}
-	
+
 	@Override
 	protected void addValues(Context context, ContentValues values) {
 		values.put(Binary.Columns.CONTENT_TYPE, contentType);
 		values.put(Binary.Columns.FILE_NAME, fileName);
 		values.put(Binary.Columns.LENGTH, length);
 	}
-	
+
 	public static boolean isBinary(Uri uri) {
 		return uri != null && Constants.AUTHORITY.equals(uri.getAuthority());
 	}
-	
+
 	public static Uri toBinary(Context context, Uri data) {
 		if (data == null || isBinary(data)) {
 			return data;
 		}
-		
-		String login = Preferences.getCurrentLogin(context);
-		
+
+		Preferences prefs = Preferences.getPreferences(context);
+
+		String login = prefs.getCurrentLogin();
+
 		String id = BeanKeyGenerator.getNewId(Binary.Columns.TYPE);
-		
+
 		ContentResolver r = context.getContentResolver();
-		
+
 		MimeType mime = MimeType.getInstance(context);
 		String contentType = r.getType(data);
 		if (contentType == null) {
 			contentType = mime.guessMimeType(data.toString());
 		}
-		
+
 		String extension = mime.getExtension(contentType);
 		String fileName = id + (extension == null ? ".bin" : extension);
 
 		BinaryFile binary = new BinaryFile();
 		binary.setId(id);
-		binary.setCreated(Preferences.getRealTime(context));
+		binary.setCreated(prefs.getRealTime());
 		binary.setCreatedBy(login);
 		binary.setModified(new Date(0));
 		binary.setModifiedBy(login);
-		binary.setModifiedFrom(Preferences.getSyncTerminal(context));
+		binary.setModifiedFrom(prefs.getSyncTerminal());
 		binary.setSynchronized(false);
 
 		binary.setContentType(contentType);
 		binary.setFileName(fileName);
-		
+
 		Uri uri = binary.saveOrUpdate(context);
-		
+
 		try {
 			FileUtils.appendFile(context.getContentResolver(), data, uri);
 

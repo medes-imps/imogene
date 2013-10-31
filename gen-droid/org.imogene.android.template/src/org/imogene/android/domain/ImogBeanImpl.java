@@ -5,7 +5,6 @@ import java.util.Date;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
-import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.xml.annotation.XmlAlias;
@@ -16,34 +15,34 @@ import android.content.Context;
 import android.net.Uri;
 
 public abstract class ImogBeanImpl implements ImogBean {
-	
+
 	@XmlAlias("id")
 	private String id = null;
-	
+
 	@XmlAlias("modified")
 	private Date modified;
-	
+
 	@XmlAlias("modifiedBy")
 	private String modifiedBy = null;
-	
+
 	@XmlAlias("modifiedFrom")
 	private String modifiedFrom = null;
-	
+
 	@XmlAlias("uploadDate")
 	private Date uploadDate;
-	
+
 	@XmlAlias("created")
 	private Date created;
-	
+
 	@XmlAlias("createdBy")
 	private String createdBy = null;
-	
+
 	@XmlOmitField
 	private boolean unread = false;
-	
+
 	@XmlOmitField
 	private boolean mSynchronized = false;
-	
+
 	protected void init(ImogBeanCursor cursor) {
 		id = cursor.getId();
 		modified = cursor.getModified();
@@ -55,12 +54,12 @@ public abstract class ImogBeanImpl implements ImogBean {
 		unread = cursor.getUnread();
 		mSynchronized = cursor.getSynchronized();
 	}
-	
+
 	@Override
 	public final String getId() {
 		return id;
 	}
-	
+
 	@Override
 	public final void setId(String id) {
 		this.id = id;
@@ -125,7 +124,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 	public final void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	
+
 	@Override
 	public final boolean getUnread() {
 		return unread;
@@ -145,45 +144,49 @@ public abstract class ImogBeanImpl implements ImogBean {
 	public final void setSynchronized(boolean isSynchronized) {
 		mSynchronized = isSynchronized;
 	}
-	
+
 	@Override
-	public void reset() { /* Nothing to do */ }
-	
+	public void reset() { /* Nothing to do */
+	}
+
 	protected void prepareForSave(Context context, String beanType) {
+		Preferences prefs = Preferences.getPreferences(context);
+
 		if (id == null) {
 			id = BeanKeyGenerator.getNewId(beanType);
 		}
 		if (created == null) {
-			created = Preferences.getRealTime(context);
+			created = prefs.getRealTime();
 		}
 		if (uploadDate == null) {
 			uploadDate = created;
 		}
 		modified = null;
-		
-		String login = Preferences.getCurrentLogin(context);
+
+		String login = prefs.getCurrentLogin();
 		modifiedBy = login;
 		if (createdBy == null) {
 			createdBy = login;
 		}
-		modifiedFrom = Preferences.getSyncTerminal(context);
+		modifiedFrom = prefs.getSyncTerminal();
 		mSynchronized = false;
 	}
-	
-	protected void preCommit(Context context) {/* nothing to do */}
-	
-	protected void postCommit(Context context) {
-//		boolean sync = PreferenceHelper.isSynchronizeOnSaveEnabled(context);
-//		if (sync) {
-//			SynchronizationService.actionCheck(context);
-//		}
+
+	protected void preCommit(Context context) {/* nothing to do */
 	}
-	
+
+	protected void postCommit(Context context) {
+		// boolean sync = PreferenceHelper.isSynchronizeOnSaveEnabled(context);
+		// if (sync) {
+		// SynchronizationService.actionCheck(context);
+		// }
+	}
+
 	protected abstract void addValues(Context context, ContentValues values);
-	
+
 	protected Uri saveOrUpdate(Context context, Uri contentUri) {
 		preCommit(context);
-		
+
 		ContentValues values = new ContentValues();
 		values.put(Columns._ID, id);
 		values.put(Columns.MODIFIED, modified != null ? modified.getTime() : null);
@@ -194,14 +197,14 @@ public abstract class ImogBeanImpl implements ImogBean {
 		values.put(Columns.CREATEDBY, createdBy);
 		values.put(Columns.UNREAD, unread ? 1 : 0);
 		values.put(Columns.SYNCHRONIZED, mSynchronized ? 1 : 0);
-		
+
 		addValues(context, values);
-		
+
 		if (modified == null) {
-			modified = Preferences.getRealTime(context);
+			modified = Preferences.getPreferences(context).getRealTime();
 			values.put(Columns.MODIFIED, modified.getTime());
 		}
-		
+
 		Uri uri = null;
 		if (ImogOpenHelper.getHelper().exists(contentUri.getLastPathSegment(), id)) {
 			uri = ContentUrisUtils.withAppendedId(contentUri, id);
@@ -209,10 +212,10 @@ public abstract class ImogBeanImpl implements ImogBean {
 		} else {
 			uri = context.getContentResolver().insert(contentUri, values);
 		}
-		
+
 		postCommit(context);
-		
+
 		return uri;
 	}
-	
+
 }
