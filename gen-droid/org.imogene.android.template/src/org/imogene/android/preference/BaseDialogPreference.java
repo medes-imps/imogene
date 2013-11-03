@@ -6,6 +6,10 @@ import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
+/**
+ * A base class for {@link Preference} objects that are dialog-based. These preferences will, when clicked, open a
+ * dialog showing the actual preference controls.
+ */
 public class BaseDialogPreference extends DialogPreference {
 
 	/**
@@ -22,7 +26,7 @@ public class BaseDialogPreference extends DialogPreference {
 		public void onDialogClosed(Preference preference, boolean positiveResult);
 	}
 
-	private OnDialogCloseListener mListener;
+	private OnDialogCloseListener mOnDialogCloseListener;
 
 	public BaseDialogPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -32,14 +36,26 @@ public class BaseDialogPreference extends DialogPreference {
 		super(context, attrs, defStyle);
 	}
 
-	public void setOnDialogCloseListener(OnDialogCloseListener listener) {
-		mListener = listener;
+	/**
+	 * Sets the callback to be invoked when the dialog has been closed by the user.
+	 * 
+	 * @param onDialogCloseListener The callback to be invoked.
+	 */
+	public void setOnDialogCloseListener(OnDialogCloseListener onDialogCloseListener) {
+		mOnDialogCloseListener = onDialogCloseListener;
+	}
+
+	/**
+	 * Returns the callback to be invoked when the dialog has been closed by the user.
+	 */
+	public OnDialogCloseListener getOnDialogCloseListener() {
+		return mOnDialogCloseListener;
 	}
 
 	@Override
 	protected void onDialogClosed(boolean positiveResult) {
-		if (mListener != null) {
-			mListener.onDialogClosed(this, positiveResult);
+		if (mOnDialogCloseListener != null) {
+			mOnDialogCloseListener.onDialogClosed(this, positiveResult);
 		}
 	}
 

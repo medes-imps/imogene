@@ -7,6 +7,11 @@ import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
+/**
+ * A {@link Preference} that allows for encrypted string visualization.
+ * <p>
+ * The encrypted string is decrypted and displayed in the summary.
+ */
 public class EncryptedPreference extends Preference {
 
 	private final EncryptionManager mManager;

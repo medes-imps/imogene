@@ -43,16 +43,10 @@ public class SynchronizationService extends Service {
 	private SynchronizationController mController;
 	private Preferences mPreferences;
 
-	// private SynchronizationNotification mNotifier;
-	// private ControllerCallback mControllerCallback = new ControllerCallback();
-
 	@Override
 	public int onStartCommand(Intent intent, int flags, final int startId) {
 		mController = SynchronizationController.getInstance(this);
 		mPreferences = Preferences.getPreferences(this);
-
-		// mController.addResultCallback(mControllerCallback);
-		// mNotifier = SynchronizationNotification.getInstance(this);
 
 		String action = intent.getAction();
 
@@ -89,12 +83,6 @@ public class SynchronizationService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		// mController.removeResultCallback(mControllerCallback);
 	}
 
 	private void cancel(AlarmManager alarmMgr) {
@@ -136,79 +124,5 @@ public class SynchronizationService extends Service {
 		intent.setAction(ACTION_CHECK);
 		return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
-
-	// class ControllerCallback extends SynchronizationController.Callback {
-	// @Override
-	// public void onStart() {
-	// Log.i(TAG, "Starting");
-	// mNotifier.notifyState(getString(R.string.ig_sync_start));
-	// }
-	//
-	// @Override
-	// public void onInit() {
-	// Log.i(TAG, "Initializing");
-	// mNotifier.notifyState(getString(R.string.ig_sync_init));
-	// }
-	//
-	// @Override
-	// public void onInitResume() {
-	// Log.i(TAG, "Initializing a resumed session");
-	// mNotifier.notifyState(getString(R.string.ig_sync_init_resume));
-	// }
-	//
-	// @Override
-	// public void onSend() {
-	// Log.i(TAG, "Sending");
-	// mNotifier.notifyState(getString(R.string.ig_sync_send));
-	// }
-	//
-	// @Override
-	// public void onSendResume() {
-	// Log.i(TAG, "Sending from a resumed session");
-	// mNotifier.notifyState(getString(R.string.ig_sync_send_resume));
-	// }
-	//
-	// @Override
-	// public void onSent(int number) {
-	// }
-	//
-	// @Override
-	// public void onReceive() {
-	// Log.i(TAG, "Receiving");
-	// mNotifier.notifyState(getString(R.string.ig_sync_receive));
-	// }
-	//
-	// @Override
-	// public void onReceiveResume() {
-	// Log.i(TAG, "Receiving from a resumed session");
-	// mNotifier.notifyState(getString(R.string.ig_sync_receive_resume));
-	// }
-	//
-	// @Override
-	// public void onReceived(int number) {
-	// }
-	//
-	// @Override
-	// public void onClose() {
-	// Log.i(TAG, "Closing");
-	// mNotifier.notifyState(getString(R.string.ig_sync_close));
-	// }
-	//
-	// @Override
-	// public void onCloseResume() {
-	// Log.i(TAG, "Closing a resumed session");
-	// mNotifier.notifyState(getString(R.string.ig_sync_close_resume));
-	// }
-	//
-	// @Override
-	// public void onFinish() {
-	// Log.i(TAG, "Synchronization finished");
-	// mNotifier.cancel();
-	// }
-	//
-	// @Override
-	// public void onFailure(int code) {
-	// }
-	// }
 
 }
