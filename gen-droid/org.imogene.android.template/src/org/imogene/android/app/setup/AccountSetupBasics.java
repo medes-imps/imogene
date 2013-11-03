@@ -231,6 +231,7 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 		} else {
 			showDialog(DIALOG_SNTP_FAILED_ID);
 		}
+		mTaskManager.remove(2);
 	}
 
 	private void onRolesReceived(String server, String login, String password, String roles) {
@@ -241,8 +242,10 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 			mPreferences.setSyncRoles(roles);
 			mPreferences.setSyncServer(server);
 			launchSntpOffsetTask();
-		} else
+		} else {
 			showDialog(DIALOG_AUTH_FAILED_ID);
+		}
+		mTaskManager.remove(1);
 	}
 
 	private static final boolean required(EditText editText) {
