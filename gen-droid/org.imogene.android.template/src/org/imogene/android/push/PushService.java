@@ -528,7 +528,7 @@ public class PushService extends Service {
 
 		@Override
 		public boolean handleMessage(Message msg) {
-			if (msg.what == 1) {
+			if (msg.what == MESSAGE_SYNC) {
 				SynchronizationService.actionCheck(PushService.this);
 			}
 			return false;
