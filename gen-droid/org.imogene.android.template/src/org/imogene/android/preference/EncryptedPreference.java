@@ -8,16 +8,19 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 
 public class EncryptedPreference extends Preference {
-	
+
+	private final EncryptionManager mManager;
+
 	public EncryptedPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		mManager = EncryptionManager.getInstance(context);
 	}
-	
+
 	@Override
 	public CharSequence getSummary() {
 		final String enc = getPersistedString(null);
 		if (enc != null) {
-			return new String(EncryptionManager.getInstance(getContext()).decrypt(Base64.decodeBase64(enc.getBytes())));
+			return new String(mManager.decrypt(Base64.decodeBase64(enc.getBytes())));
 		}
 		return getPersistedString(getContext().getString(android.R.string.unknownName));
 	}

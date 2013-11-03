@@ -130,13 +130,6 @@
     <string name="ig_filter_relation_downloading">Downloading</string>
     <string name="ig_filter_relation_download_error">Download error</string>
 
-    <!-- Check for updates -->
-    <string name="ig_check_available_title">"Application Update"</string>
-    <string name="ig_check_available_message">"New application available. Would you like to install it now ?"</string>
-    <string name="ig_check_unavailable_message">"There is no update available, check later."</string>
-    <string name="ig_update_app_title">"Loading&#8230;"</string>
-    <string name="ig_update_app_message">"Downloading updates"</string>
-    
     <!-- Dynamic Fields -->
     <string name="ig_dynamic_field_group">Dynamic fields</string>
     

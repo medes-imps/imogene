@@ -34,7 +34,6 @@ public class PushService extends Service {
 
 	private static final String ACTION_START = "org.imogene.android.action.START";
 	private static final String ACTION_STOP = "org.imogene.android.action.STOP";
-	private static final String ACTION_RESCHEDULE = "org.imogene.android.action.RESCHEDULE";
 	private static final String ACTION_PING = "org.imogene.android.action.HEARTBEAT";
 	private static final String ACTION_RECONNECT = "org.imogene.android.action.RECONNECT";
 	private static final String ACTION_PING_TIMEOUT = "org.imogene.android.action.PING_TIMEOUT";
@@ -108,12 +107,6 @@ public class PushService extends Service {
 		context.startService(intent);
 	}
 
-	public static void actionReschdule(Context context) {
-		Intent intent = new Intent(context, PushService.class);
-		intent.setAction(ACTION_RESCHEDULE);
-		context.startService(intent);
-	}
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -179,13 +172,6 @@ public class PushService extends Service {
 			reconnectIfNecessary();
 		} else if (ACTION_PING_TIMEOUT.equals(action)) {
 			pingTimeout();
-		} else if (ACTION_RESCHEDULE.equals(action)) {
-			if (mPrefs.isPushEnabled()) {
-				start();
-			} else {
-				stop();
-				stopSelf();
-			}
 		}
 	}
 

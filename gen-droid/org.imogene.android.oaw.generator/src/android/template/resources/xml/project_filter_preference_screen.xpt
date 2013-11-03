@@ -2,7 +2,7 @@
 «EXTENSION android::template::MedooAndroidFieldUtilExt»
 «DEFINE generate(String webService) FOR Project »
 «IF hasFilter(this)»
-«FILE 'xml/preferences_screen_filters.xml'-»
+«FILE 'xml/filter_preference_screen.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,21 +14,16 @@
 		android:inputType="textUri"
 		android:defaultValue="«webService»" />
 	«FOREACH entities AS e-»
-	«IF e.clientPeriodFilterable || e.clientFilterFields.size > 0-»
+	«IF hasFilter(e)-»
 	<PreferenceScreen
 		android:key="«e.name.toLowerCase()»_filters"
 		android:title="@string/«e.name.toLowerCase()»_des_sg">
 		
 		<intent
-            android:targetClass="org.imogene.android.«name.toLowerCase()».app.ExtendedPreferences"
-            android:targetPackage="org.imogene.android.«name.toLowerCase()»" >
-
-            <extra
-                android:name="org.imogene.android.extra.FILENAME"
-                android:value="preferences_screen_«e.name.toLowerCase()»_filters" />
-        </intent>
+            android:targetClass="org.imogene.android.«name.toLowerCase()».app.«e.name.toFirstUpper()»FilterPreferenceScreen"
+            android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
 	</PreferenceScreen>
-	«ENDIF»
+	«ENDIF-»
 	«ENDFOREACH»
 </PreferenceScreen>
 «ENDFILE»

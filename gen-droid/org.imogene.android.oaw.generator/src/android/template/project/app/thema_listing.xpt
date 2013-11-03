@@ -11,7 +11,7 @@ import greendroid.widget.NormalActionBarItem;
 
 import java.util.ArrayList;
 
-import org.imogene.android.app.PreferenceActivity;
+import org.imogene.android.app.GeneralSettings;
 import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.sync.SynchronizationService;
@@ -116,7 +116,7 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
 		«IF multilogin-»
 		menu.findItem(R.id.ig_menu_change_user).setVisible(true).setIntent(new Intent(this, MultiUserListing.class));
 		«ENDIF-»
-		menu.findItem(R.id.ig_menu_preferences).setIntent(new Intent(this, «IF hasFilter(this)»ExtendedPreferences«ELSE»PreferenceActivity«ENDIF».class));
+		menu.findItem(R.id.ig_menu_preferences).setIntent(new Intent(this, GeneralSettings.class));
 		return result;
 	}
 

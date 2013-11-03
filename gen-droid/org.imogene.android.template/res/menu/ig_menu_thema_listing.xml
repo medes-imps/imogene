@@ -4,8 +4,7 @@
     <item
         android:id="@+id/ig_menu_preferences"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/ig_preferences"/>
-
+        android:title="@string/ig_general_settings"/>
     <item
         android:id="@+id/ig_menu_change_user"
         android:icon="@android:drawable/ic_menu_manage"

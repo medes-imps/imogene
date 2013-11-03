@@ -2,8 +2,8 @@
 <resources>
 
     <!-- XML files to generate -->
-    <item name="preferences" type="xml"/>
-    <item name="high_preferences" type="xml"/>
+    <item name="general_settings" type="xml"/>
+    <item name="hidden_settings" type="xml"/>
     
     <!-- Arrays to generate -->
     <item name="languages_iso" type="array"/>

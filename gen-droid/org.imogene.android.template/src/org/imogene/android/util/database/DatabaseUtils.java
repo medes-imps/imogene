@@ -80,6 +80,7 @@ public class DatabaseUtils {
 	public static void deleteAll(Context context) {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(SQLITE_MASTER);
 		builder.selectColumns(KEY_NAME);
+		builder.distinct();
 		builder.where().eq(KEY_TYPE, TYPE_TABLE);
 
 		Cursor c = builder.query();

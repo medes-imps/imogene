@@ -1,7 +1,8 @@
 «IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
 «DEFINE generate(String projectName) FOR CardEntity»
-«IF clientPeriodFilterable || clientFilterFields.size > 0»
-«FILE 'xml/preferences_screen_' + name.toLowerCase() + '_filters.xml'-»
+«IF hasFilter(this)»
+«FILE 'xml/' + name.toLowerCase() + '_filter_preference_screen.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"

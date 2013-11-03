@@ -109,13 +109,15 @@
 			android:icon="@drawable/ig_logo_android_s" />
 			
 		<activity 
-			android:name="org.imogene.android.app.PreferenceActivity"
-			android:label="@string/ig_preferences" />
+			android:name="org.imogene.android.app.GeneralSettings"
+			android:label="@string/ig_general_settings" />
+			
+		<activity 
+			android:name="org.imogene.android.app.HiddenSettings"
+			android:label="@string/ig_hidden_settings" />
 		
 		«IF hasFilter(this)-»
-		<activity 
-			android:name=".app.ExtendedPreferences"
-			android:label="@string/ig_preferences" />
+		<activity android:name=".app.FilterPreferenceScreen" />
 		«ENDIF-»
 		
 		«FOREACH entities AS entity»
@@ -188,6 +190,10 @@
 			</intent-filter>
 		</activity>
 		
+		«IF hasFilter(entity)»
+		<activity android:name=".app.«entity.name.toFirstUpper()»FilterPreferenceScreen" />
+		«ENDIF»
+		
 		«ENDFOREACH»
 		
 		<activity 
@@ -196,26 +202,6 @@
 			<category android:name="android.intent.category.DEFAULT"/>
 		</activity>
 		
-		<activity
-			android:name="org.imogene.android.app.OffsetActivity"
-			android:label="offset"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:configChanges="orientation|keyboardHidden" />
-		
-		<activity
-			android:name="org.imogene.android.app.AuthenticationHttpActivity"
-			android:label="authentication"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:configChanges="orientation|keyboardHidden" />
-		
-		<activity
-			android:name="org.imogene.android.app.UnSyncDialog"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-			
-        <activity
-            android:name="org.imogene.android.update.UpdateActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-            
         <activity
             android:name="org.imogene.android.maps.app.MapActivityWithoutActionBar" />
             
@@ -315,10 +301,6 @@
  			</intent-filter>
  		</receiver>
  		
-		<activity
-			android:name="org.imogene.android.app.ProxyServicesActivity"
-			android:theme="@android:style/Theme.NoDisplay" />
-		
         <service
             android:name="org.imogene.android.sync.SynchronizationService"
             android:exported="false" />

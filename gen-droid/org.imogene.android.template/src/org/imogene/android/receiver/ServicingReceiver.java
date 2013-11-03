@@ -1,8 +1,7 @@
 package org.imogene.android.receiver;
 
-import org.imogene.android.Constants.Extras;
 import org.imogene.android.Constants.Intents;
-import org.imogene.android.app.PreferenceActivity;
+import org.imogene.android.app.HiddenSettings;
 import org.imogene.android.push.PushService;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.FormatHelper;
@@ -23,8 +22,7 @@ public class ServicingReceiver extends BroadcastReceiver {
 			FormatHelper.updateFormats();
 		} else if (Intents.ACTION_SECRET_CODE.equals(action)) {
 			Intent i = new Intent(Intent.ACTION_MAIN);
-			i.setClass(context, PreferenceActivity.class);
-			i.putExtra(Extras.EXTRA_FILENAME, "ig_high_preferences");
+			i.setClass(context, HiddenSettings.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);
 		}

@@ -1,6 +1,6 @@
 «IMPORT core»
 «EXTENSION android::template::MedooAndroidFieldUtilExt»
-«DEFINE generate(String canDelete, String canModify, String projectName) FOR CardEntity»
+«DEFINE generate(String projectName) FOR CardEntity»
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "View.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
@@ -15,12 +15,10 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -118,17 +116,13 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 
 		IamLost.getInstance().add(getTitle().toString());
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean canDelete = prefs.getBoolean(getString(R.string.«name.toLowerCase()-»_delete), «canDelete»);
-		boolean canModify = prefs.getBoolean(getString(R.string.«name.toLowerCase()-»_modify), «canModify»);
-		
 		«IF creators.size > 0-»
-		mCanDelete = canDelete && «name.toFirstUpper()-»Roles.canCreate(this);
-		mCanModify = canModify && «name.toFirstUpper()-»Roles.canWrite(this);
+		mCanDelete = «name.toFirstUpper()-»Roles.canCreate(this);
+		mCanModify = «name.toFirstUpper()-»Roles.canWrite(this);
 		«ELSE-»
 		boolean canWrite = «name.toFirstUpper()-»Roles.canWrite(this);
-		mCanDelete = canDelete && canWrite;
-		mCanModify = canModify && canWrite;
+		mCanDelete = canWrite;
+		mCanModify = canWrite;
 		«ENDIF-»
 		
 		mManager = new FieldManager(this, 100);

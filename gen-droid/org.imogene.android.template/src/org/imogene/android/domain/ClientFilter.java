@@ -74,8 +74,8 @@ public class ClientFilter extends ImogBeanImpl {
 		public final T create(Context context, String userId, String terminalId, String entity, String field) {
 			ImogOpenHelper helper = ImogOpenHelper.getHelper();
 			QueryBuilder builder = helper.queryBuilder(Columns.CONTENT_URI);
-			builder.where().eq(Columns.USERID, userId).eq(Columns.TERMINALID, terminalId).eq(Columns.CARDENTITY, entity)
-					.eq(Columns.ENTITYFIELD, field);
+			builder.where().eq(Columns.USERID, userId).and().eq(Columns.TERMINALID, terminalId).and()
+					.eq(Columns.CARDENTITY, entity).and().eq(Columns.ENTITYFIELD, field);
 
 			T filter;
 			ClientFilterCursor c = (ClientFilterCursor) builder.query();

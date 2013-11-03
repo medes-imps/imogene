@@ -1,5 +1,5 @@
 «IMPORT core»
-«DEFINE generate(String canDelete, String canModify, String projectName) FOR CardEntity»
+«DEFINE generate(String projectName) FOR CardEntity»
 «IF georeferenced != null-»
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "ListAndMap.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;

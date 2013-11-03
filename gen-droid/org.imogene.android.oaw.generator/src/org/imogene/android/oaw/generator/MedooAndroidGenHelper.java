@@ -19,13 +19,12 @@ import org.imogene.model.core.TextField;
 import org.imogene.model.core.Thema;
 import org.imogene.model.core.ValidationRule;
 
-
 /**
  */
 public class MedooAndroidGenHelper {
-	
+
 	public static int increment = 0;
-	
+
 	public static void log(Object o) {
 		System.out.println(o);
 	}
@@ -33,7 +32,7 @@ public class MedooAndroidGenHelper {
 	public static int getDatabaseVersion() {
 		return (int) (System.currentTimeMillis() / 1000);
 	}
-	
+
 	public static boolean hasLocalizedField(CardEntity entity) {
 		for (FieldGroup group : entity.getGroups()) {
 			for (FieldEntity field : group.getFields()) {
@@ -50,10 +49,8 @@ public class MedooAndroidGenHelper {
 	public static boolean hasDependancyField(FieldEntity field) {
 		for (FieldGroup group : field.getParentCard().getGroups()) {
 			for (FieldEntity f : group.getFields()) {
-				for (FieldDependentVisibility fdv : f
-						.getFieldDependentVisibility()) {
-					if (fdv.getDependencyField().getShortName().equals(
-							field.getShortName()))
+				for (FieldDependentVisibility fdv : f.getFieldDependentVisibility()) {
+					if (fdv.getDependencyField().getShortName().equals(field.getShortName()))
 						return true;
 				}
 			}
@@ -71,14 +68,12 @@ public class MedooAndroidGenHelper {
 		return false;
 	}
 
-	public static List<RelationFieldEntity> getMoreFields(
-			List<FieldEntity> fields) {
+	public static List<RelationFieldEntity> getMoreFields(List<FieldEntity> fields) {
 		ArrayList<RelationFieldEntity> result = new ArrayList<RelationFieldEntity>();
 		for (FieldEntity field : fields) {
 			if (!field.isHidden()) {
 				if (field instanceof RelationFieldEntity)
-					if (((RelationFieldEntity) field)
-							.getOppositeRelationField() != null
+					if (((RelationFieldEntity) field).getOppositeRelationField() != null
 							&& ((RelationFieldEntity) field).getCardinality() != 1) {
 						result.add((RelationFieldEntity) field);
 					}
@@ -87,8 +82,7 @@ public class MedooAndroidGenHelper {
 		return result;
 	}
 
-	public static boolean hasMiscellaneousThema(List<CardEntity> entities,
-			List<Thema> themas) {
+	public static boolean hasMiscellaneousThema(List<CardEntity> entities, List<Thema> themas) {
 		for (CardEntity entity : entities) {
 			if (isInMiscellaneousThema(themas, entity))
 				return true;
@@ -96,8 +90,7 @@ public class MedooAndroidGenHelper {
 		return false;
 	}
 
-	public static boolean isInMiscellaneousThema(List<Thema> themas,
-			CardEntity entity) {
+	public static boolean isInMiscellaneousThema(List<Thema> themas, CardEntity entity) {
 		if (!entity.isTopLevel())
 			return false;
 		for (Thema thema : themas) {
@@ -114,7 +107,7 @@ public class MedooAndroidGenHelper {
 		}
 		return false;
 	}
-	
+
 	public static List<FieldEntity> getMainFields(CardEntity entity) {
 		ArrayList<FieldEntity> main = new ArrayList<FieldEntity>();
 		for (FieldEntity field : entity.getMainFields())
@@ -122,43 +115,48 @@ public class MedooAndroidGenHelper {
 				main.add(field);
 		return main;
 	}
-	
+
 	public static boolean isForbiddenCase(FieldEntity field) {
 		if (field instanceof ReverseRelationFieldEntity) {
 			ReverseRelationFieldEntity rel = (ReverseRelationFieldEntity) field;
-			return rel.getCardinality() == 1 && rel.getOppositeRelationField() != null && rel.getOppositeRelationField().getCardinality() == 1;
+			return rel.getCardinality() == 1 && rel.getOppositeRelationField() != null
+					&& rel.getOppositeRelationField().getCardinality() == 1;
 		}
 		return false;
 	}
-	
+
 	public static List<RelationFieldEntity> getFilteredFields(CardEntity entity, FieldEntity filter) {
 		ArrayList<RelationFieldEntity> result = new ArrayList<RelationFieldEntity>();
 		if (filter instanceof RelationFieldEntity)
 			for (FieldGroup group : entity.getGroups())
-				for (FieldEntity field: group.getFields())
+				for (FieldEntity field : group.getFields())
 					if (field instanceof RelationFieldEntity) {
 						RelationFieldEntity relation = (RelationFieldEntity) field;
-						if (relation.getRelationHierarchicalFilter() != null && relation.getRelationHierarchicalFilter().size() == 2)
+						if (relation.getRelationHierarchicalFilter() != null
+								&& relation.getRelationHierarchicalFilter().size() == 2)
 							if (relation.getRelationHierarchicalFilter().get(0).equals(filter))
 								result.add(relation);
 					}
 		return result;
 	}
-	
+
 	public static Integer mod2(Integer i) {
 		return i % 2;
 	}
-	
+
 	public static boolean hasFilter(Project project) {
-		for (CardEntity entity : project.getEntities())
-			if (entity.getGeoreferenced() != null ||
-					entity.isClientPeriodFilterable() ||
-					entity.getClientFilterFields().size() > 0) {
+		for (CardEntity entity : project.getEntities()) {
+			if (hasFilter(entity)) {
 				return true;
 			}
+		}
 		return false;
 	}
-	
+
+	public static boolean hasFilter(CardEntity entity) {
+		return entity.isClientPeriodFilterable() || entity.getClientFilterFields().size() > 0;
+	}
+
 	public static List<FieldGroup> getFilteredGroups(List<FieldEntity> filters) {
 		ArrayList<FieldGroup> result = new ArrayList<FieldGroup>();
 		for (FieldEntity field : filters)
@@ -166,11 +164,11 @@ public class MedooAndroidGenHelper {
 				result.add(field.getParentGroup());
 		return result;
 	}
-	
+
 	public static int getGeoType(GeoField field) {
 		return field.getType().getValue();
 	}
-	
+
 	public static boolean hasConstraint(FieldEntity field) {
 		if (field.isRequired()) {
 			return true;
@@ -201,7 +199,7 @@ public class MedooAndroidGenHelper {
 		}
 		return false;
 	}
-	
+
 	public static int next() {
 		if (increment == 0) {
 			increment = (int) System.currentTimeMillis() / 1000;

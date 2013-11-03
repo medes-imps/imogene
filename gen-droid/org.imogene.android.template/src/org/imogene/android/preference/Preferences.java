@@ -25,6 +25,7 @@ public class Preferences {
 	public static final String SYNC_SERVER = "syncServer";
 	public static final String SYNC_PERIOD = "syncPeriod";
 	public static final String SYNC_ENABLED = "syncEnabled";
+	public static final String SYNC_CHECK = "syncCheck";
 	public static final String SYNC_BIDIRECTIONAL_ENABLED = "syncBidirectionnalEnabled";
 	public static final String SHORT_PASSWORD = "shortPassword";
 	public static final String SYNC_ONSAVE_ENABLED = "syncOnSaveEnabled";
@@ -35,12 +36,18 @@ public class Preferences {
 	public static final String WS_SERVER = "webServiceServer";
 	public static final String HTTP_AUTHENTICATION_ENABLED = "httpAuthenticationEnabled";
 	public static final String UPDATE_SERVER = "updateServer";
+	public static final String UPDATE_AVAILABLE = "updateAvailable";
 	public static final String PUSH_HOST = "pushHost";
 	public static final String PUSH_PORT = "pushPort";
 	public static final String PUSH_ENABLED = "pushEnabled";
 	public static final String PUSH_SSL_ENABLED = "pushSslEnabled";
 	public static final String PUSH_STARTED = "pushStarted";
-	private static final String PUSH_RETRY_INTERVAL = "pushRetryInterval";
+	public static final String PUSH_RETRY_INTERVAL = "pushRetryInterval";
+	public static final String MAP_AUTOMATIC_CACHE = "mapAutomaticCache";
+	public static final String MAP_CLEAR_CACHE = "mapClearCache";
+	public static final String MAP_PRECACHE_AREA = "mapPrecacheArea";
+	public static final String DELETE_DATABASE = "deleteDatabase";
+	public static final String DELETE_HISTORY = "deleteHistory";
 
 	private static Preferences sPreferences;
 
@@ -295,7 +302,7 @@ public class Preferences {
 
 	private String encrypt(String value) {
 		if (value != null) {
-			return new String(mEncryptionManager.encrypt(value.getBytes()));
+			return new String(Base64.encodeBase64(mEncryptionManager.encrypt(value.getBytes())));
 		}
 		return null;
 	}

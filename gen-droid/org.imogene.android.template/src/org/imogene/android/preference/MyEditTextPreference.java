@@ -9,7 +9,7 @@ public class MyEditTextPreference extends EditTextPreference {
 	public MyEditTextPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public CharSequence getSummary() {
 		return getPersistedString(getContext().getString(android.R.string.unknownName));

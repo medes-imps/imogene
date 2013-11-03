@@ -43,6 +43,9 @@ Integer mod2(Integer i) :
   
 boolean hasFilter(Project project) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasFilter(org.imogene.model.core.Project);
+
+boolean hasFilter(CardEntity entity) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasFilter(org.imogene.model.core.CardEntity);
   
 List[FieldGroup] getFilteredGroups(List[FieldEntity] filters) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getFilteredGroups(java.util.List);
