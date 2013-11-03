@@ -23,7 +23,7 @@ public class TaskManager<Callback> {
 		if (mTasks != null) {
 			for (int i = 0; i < mTasks.size(); i++) {
 				mTasks.valueAt(i).setCallback(callback);
-				
+
 			}
 		}
 	}
@@ -32,9 +32,15 @@ public class TaskManager<Callback> {
 		attach(null);
 	}
 
+	public void remove(int key) {
+		if (mTasks != null) {
+			mTasks.delete(key);
+		}
+	}
+
 	private void ensureTaskMap() {
 		if (mTasks == null) {
-			mTasks = new SparseArray<BaseAsyncTask<Callback,?,?,?>>();
+			mTasks = new SparseArray<BaseAsyncTask<Callback, ?, ?, ?>>();
 		}
 	}
 

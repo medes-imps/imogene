@@ -10,6 +10,9 @@ import org.imogene.android.domain.ImogBean;
 import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.domain.ImogHelper.ImogBeanCallback;
+import org.imogene.android.sync.SynchronizationController;
+import org.imogene.android.sync.SynchronizationObserver;
+import org.imogene.android.sync.SynchronizationController.Status;
 import org.imogene.android.template.R;
 import org.imogene.android.util.content.ContentUrisUtils;
 
@@ -51,6 +54,7 @@ public class NotificationController {
 	private final AudioManager mAudioManager;
 	private final Context mContext;
 	private final SparseArray<ContentObserver> mNotificationMap;
+	private MySynchronizationObserver mSynchronizationObserver;
 
 	/**
 	 * Timestamp indicating when the last notification sound was played. Used for throttling.
@@ -138,6 +142,14 @@ public class NotificationController {
 
 			}
 		});
+
+		if (mSynchronizationObserver == null) {
+			mSynchronizationObserver = new MySynchronizationObserver(sNotificationHandler);
+		}
+		if (!mSynchronizationObserver.isRegistered()) {
+			SynchronizationController.getInstance(mContext).registerSynchronizationObserver(mSynchronizationObserver);
+		}
+
 	}
 
 	/**
@@ -190,10 +202,6 @@ public class NotificationController {
 		if (enableAudio) {
 			setupSoundAndVibration(notification);
 		}
-
-		// TODO set up delete intent
-		// Intent intent = new Intent(context, OnDeletedReceiver.class);
-		// notification.deleteIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
 		mLastMessageNotifyTime = now;
 		return notification;
@@ -296,6 +304,31 @@ public class NotificationController {
 
 	}
 
+	private static class MySynchronizationObserver extends SynchronizationObserver {
+
+		private static final int NOTIFICATION_STATUS_ID = 1111;
+
+		public MySynchronizationObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(Status status, Object object) {
+			if (status == Status.START) {
+				String ticker = sInstance.mContext.getString(R.string.ig_notification_sync_ticker);
+				String title = sInstance.mContext.getString(R.string.ig_notification_sync_title);
+				Notification n = sInstance.createNotification(title, ticker, ticker, new Intent(),
+						R.drawable.ig_logo_android_s);
+				n.flags |= Notification.FLAG_NO_CLEAR;
+				n.defaults &= ~Notification.DEFAULT_VIBRATE;
+
+				sInstance.mNotificationManager.notify(NOTIFICATION_STATUS_ID, n);
+			} else if (status == Status.FINISH) {
+				sInstance.mNotificationManager.cancel(NOTIFICATION_STATUS_ID);
+			}
+		}
+	}
+
 	/**
 	 * Thread to handle all notification actions through its own {@link Looper}.
 	 */
@@ -306,7 +339,7 @@ public class NotificationController {
 		private Looper mLooper;
 
 		NotificationThread() {
-			new Thread(null, this, "EmailNotification").start();
+			new Thread(null, this, "SyncNotification").start();
 			synchronized (mLock) {
 				while (mLooper == null) {
 					try {

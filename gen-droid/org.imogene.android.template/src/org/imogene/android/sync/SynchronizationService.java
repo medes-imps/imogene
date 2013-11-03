@@ -114,7 +114,6 @@ public class SynchronizationService extends Service {
 		long timeNow = SystemClock.elapsedRealtime();
 		long nextCheckTime = timeNow + period * 1000;
 		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);
-		
 	}
 
 	/**

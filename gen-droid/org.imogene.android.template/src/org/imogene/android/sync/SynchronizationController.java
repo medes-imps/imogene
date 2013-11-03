@@ -48,9 +48,13 @@ public class SynchronizationController {
 		return sInstance;
 	}
 
+	public enum Status {
+		START, INITIALIZATION, SEND, SENT, RECEIVE, RECEIVED, CLOSE, RESUME, FINISH, FAILURE
+	}
+
 	private final Context mContext;
 	private final Preferences mPreferences;
-	private final HashSet<Callback> mListeners = new HashSet<Callback>();
+	private final HashSet<SynchronizationObserver> mSynchronizationObservers = new HashSet<SynchronizationObserver>();
 	private OptimizedSyncClient mSyncClient;
 	private ImogXmlConverter mConverter;
 
@@ -71,13 +75,12 @@ public class SynchronizationController {
 	 * onResume()). Unregistered callbacks will never be called, to prevent problems when the command completes and the
 	 * activity has already paused or finished.
 	 * 
-	 * @param listener
-	 *        The callback that may be used in action methods
+	 * @param observer The callback that may be used in action methods
 	 */
-	public void addResultCallback(Callback listener) {
-		synchronized (mListeners) {
-			listener.setRegistered(true);
-			mListeners.add(listener);
+	public void registerSynchronizationObserver(SynchronizationObserver observer) {
+		synchronized (mSynchronizationObservers) {
+			observer.setRegistered(true);
+			mSynchronizationObservers.add(observer);
 		}
 	}
 
@@ -86,13 +89,12 @@ public class SynchronizationController {
 	 * (typically from onPause()). Unregistered callbacks will never be called, to prevent problems when the command
 	 * completes and the activity has already paused or finished.
 	 * 
-	 * @param listener
-	 *        The callback that may no longer be used
+	 * @param observer The callback that may no longer be used
 	 */
-	public void removeResultCallback(Callback listener) {
-		synchronized (mListeners) {
-			listener.setRegistered(false);
-			mListeners.remove(listener);
+	public void unregisterSynchronizationObserver(SynchronizationObserver observer) {
+		synchronized (mSynchronizationObservers) {
+			observer.setRegistered(false);
+			mSynchronizationObservers.remove(observer);
 		}
 	}
 
@@ -219,10 +221,10 @@ public class SynchronizationController {
 			Log.i(TAG, "Resuming the sent for the session " + his.id);
 			try {
 				/* 1 - initialize the resumed session */
-				notifyInitResume();
+				notifyInit();
 				String result = mSyncClient.resumeSend(mLogin, mPassword, mTerminal, "xml", his.id);
 				/* 2 - sending local modifications */
-				notifySendResume();
+				notifySend();
 				if (result.equals("error")) {
 					throw new SynchronizationException("Error resuming the session, the server return an error code",
 							SynchronizationException.ERROR_SEND);
@@ -257,7 +259,7 @@ public class SynchronizationController {
 				his.saveOrUpdate(mContext);
 
 				/* 3 - receiving the server modifications */
-				notifyReceiveResume();
+				notifyReceive();
 				received = requestServerModification(his.id);
 
 				his.status = SyncHistory.Columns.STATUS_OK;
@@ -266,7 +268,7 @@ public class SynchronizationController {
 				notifyReceived(received);
 
 				/* 4 - closing the session */
-				notifyCloseResume();
+				notifyClose();
 				mSyncClient.closeSession(his.id, mDebug);
 			} catch (Exception ex) {
 				SynchronizationException syx = new SynchronizationException("Error resuming a sent", ex,
@@ -289,18 +291,18 @@ public class SynchronizationController {
 						tmp.delete();
 				}
 				/* 1 - initialize the resumed session */
-				notifyInitResume();
+				notifyInit();
 				File inFile = new File(Paths.PATH_SYNCHRO, his.id + ".smodif");
 				String result = mSyncClient.resumeReceive(mLogin, mPassword, mTerminal, "xml", his.id, inFile.length());
 				/* 2 - receiving data */
-				notifyReceiveResume();
+				notifyReceive();
 				if (!result.equals("error")) {
 					received = resumeRequestModification(his.id);
 					his.status = SyncHistory.Columns.STATUS_OK;
 					his.saveOrUpdate(mContext);
 
 					/* 3 - closing the session */
-					notifyCloseResume();
+					notifyClose();
 					mSyncClient.closeSession(his.id, mDebug);
 				} else {
 					throw new SynchronizationException("The server return an error code",
@@ -320,8 +322,7 @@ public class SynchronizationController {
 	/**
 	 * Request the server modification in normal mode
 	 * 
-	 * @param sessionId
-	 *        the session Id
+	 * @param sessionId the session Id
 	 * @throws SynchronizationException
 	 * @throws IOException
 	 * @throws XmlPullParserException
@@ -422,157 +423,74 @@ public class SynchronizationController {
 	}
 
 	private void notifyStart() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onStart();
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.START, null);
 			}
 		}
 	}
 
 	private void notifyInit() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onInit();
-			}
-		}
-	}
-
-	private void notifyInitResume() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onInitResume();
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.INITIALIZATION, null);
 			}
 		}
 	}
 
 	private void notifySend() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onSend();
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.SEND, null);
 			}
 		}
 	}
 
-	private void notifySendResume() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onSendResume();
-			}
-		}
-	}
-
-	private void notifySent(int number) {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onSent(number);
+	private void notifySent(int sent) {
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.SENT, sent);
 			}
 		}
 	}
 
 	private void notifyReceive() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onReceive();
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.RECEIVE, null);
 			}
 		}
 	}
 
-	private void notifyReceiveResume() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onReceiveResume();
-			}
-		}
-	}
-
-	private void notifyReceived(int number) {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onReceived(number);
+	private void notifyReceived(int received) {
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.RECEIVED, received);
 			}
 		}
 	}
 
 	private void notifyClose() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onClose();
-			}
-		}
-	}
-
-	private void notifyCloseResume() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onCloseResume();
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.CLOSE, null);
 			}
 		}
 	}
 
 	private void notifyFinish() {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onFinish();
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.FINISH, null);
 			}
 		}
 	}
 
 	private void notifyFailure(int code) {
-		synchronized (mListeners) {
-			for (Callback callback : mListeners) {
-				callback.onFailure(code);
+		synchronized (mSynchronizationObservers) {
+			for (SynchronizationObserver callback : mSynchronizationObservers) {
+				callback.dispatchChange(Status.FAILURE, code);
 			}
-		}
-	}
-
-	public static abstract class Callback {
-		private volatile boolean mRegistered;
-
-		protected void setRegistered(boolean registered) {
-			mRegistered = registered;
-		}
-
-		protected final boolean isRegistered() {
-			return mRegistered;
-		}
-
-		public void onStart() {
-		}
-
-		public void onInit() {
-		}
-
-		public void onInitResume() {
-		}
-
-		public void onSend() {
-		}
-
-		public void onSendResume() {
-		}
-
-		public void onSent(int number) {
-		}
-
-		public void onReceive() {
-		}
-
-		public void onReceiveResume() {
-		}
-
-		public void onReceived(int number) {
-		}
-
-		public void onClose() {
-		}
-
-		public void onCloseResume() {
-		}
-
-		public void onFinish() {
-		}
-
-		public void onFailure(int code) {
 		}
 	}
 

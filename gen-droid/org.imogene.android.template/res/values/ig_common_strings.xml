@@ -61,23 +61,8 @@
     <string name="ig_iamlost_title">"I am lost !"</string>
 
     <!-- Synchronization messages -->
-    <string name="ig_synchronization">"Synchronization"</string>
-    <string name="ig_sync_start">"Synchronization starting"</string>
-    <string name="ig_sync_init">"Initialize session"</string>
-    <string name="ig_sync_init_resume">"Initialize the resumed session"</string>
-    <string name="ig_sync_send">"Sending client modifications"</string>
-    <string name="ig_sync_send_resume">"Sending client modifications on resumed session"</string>
-    <string name="ig_sync_receive">"Receiving server modifications"</string>
-    <string name="ig_sync_receive_resume">"Receiving server modifications on resumed session"</string>
-    <string name="ig_sync_close">"Closing session"</string>
-    <string name="ig_sync_close_resume">"Closing the resumed session"</string>
-    <string name="ig_sync_manually">"Starting synchronization manually"</string>
-    <string name="ig_notification_sent_ticker">"Sending completed"</string>
-    <string name="ig_notification_sent_title">"Data sent"</string>
-    <string name="ig_notification_sent_description">"Your data have been correctly sent"</string>
-    <string name="ig_notification_sent_failed_ticker">"Sending failed"</string>
-    <string name="ig_notification_sent_failed_title">"Data was not sent"</string>
-    <string name="ig_notification_sent_failed_description">"Try to synchronize again or later."</string>
+    <string name="ig_notification_sync_title">"Synchronization"</string>
+    <string name="ig_notification_sync_ticker">"Synchronizing data"</string>
 
     <!-- Account creation -->
     <string name="ig_account_welcome">"Account creation"</string>
