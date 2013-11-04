@@ -22,11 +22,7 @@ import org.imogene.android.util.http.multipart.MultipartEntity;
 import org.imogene.android.util.http.multipart.Part;
 import org.imogene.android.util.http.ssl.SSLHttpClient;
 
-import android.util.Log;
-
 public class OptimizedSyncClientHttp implements OptimizedSyncClient {
-
-	private static final String TAG = OptimizedSyncClientHttp.class.getName();
 
 	private String mUrl = null;
 
@@ -189,7 +185,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId).append(
 					"&" + CMD_PARAM + "=" + cmd);
-			Log.i(TAG, builder.toString());
 
 			HttpPost method = httpPostMethod(builder.toString());
 
@@ -204,14 +199,12 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			if (header != null && HEADER_VALUE.equals(header.getValue())) {
 				int code = response.getStatusLine().getStatusCode();
 				if (code == HttpStatus.SC_OK) {
-					Log.i(TAG, "Status OK");
 					InputStream is = response.getEntity().getContent();
 					StringBuffer sb = new StringBuffer();
 					int i;
 					while ((i = is.read()) != -1) {
 						sb.append((char) i);
 					}
-					Log.i(TAG, sb.toString());
 					if (sb.toString().startsWith("ACK")) {
 						String result = sb.toString().split("_")[1];
 						return result != null ? result.length() != 0 ? Integer.parseInt(result) : 0 : 0;

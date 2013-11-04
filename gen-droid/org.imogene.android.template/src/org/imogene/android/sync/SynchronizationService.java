@@ -1,5 +1,6 @@
 package org.imogene.android.sync;
 
+import org.imogene.android.Constants;
 import org.imogene.android.preference.Preferences;
 
 import android.app.AlarmManager;
@@ -53,6 +54,9 @@ public class SynchronizationService extends Service {
 		final AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 		if (ACTION_CHECK.equals(action)) {
+			if (Constants.DEBUG) {
+				Log.i(TAG, "**** checking");
+			}
 			new Thread() {
 				@Override
 				public void run() {
@@ -86,18 +90,22 @@ public class SynchronizationService extends Service {
 	}
 
 	private void cancel(AlarmManager alarmMgr) {
-		Log.i(TAG, "*** SynchronizationService: cancel");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "*** cancel");
+		}
 		PendingIntent pi = createAlarmIntent();
 		alarmMgr.cancel(pi);
 	}
 
 	private void reschedule(AlarmManager alarmMgr) {
-		Log.i(TAG, "*** SynchronizationService: reschedule");
-		PendingIntent pi = createAlarmIntent();
 		if (!mPreferences.isSyncEnabled()) {
-			alarmMgr.cancel(pi);
+			cancel(alarmMgr);
 			return;
 		}
+		if (Constants.DEBUG) {
+			Log.i(TAG, "*** reschedule");
+		}
+		PendingIntent pi = createAlarmIntent();
 		long period = mPreferences.getSyncPeriod();
 		long timeNow = SystemClock.elapsedRealtime();
 		long nextCheckTime = timeNow + period * 1000;

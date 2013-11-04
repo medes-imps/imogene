@@ -13,7 +13,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * Contains static methods which operate on {@link Intent}.
@@ -23,9 +22,8 @@ import android.util.Log;
 public class IntentUtils {
 
 	/**
-	 * Method to catch {@link ActivityNotFoundException}. If the {@link Intent}
-	 * initiated is known it opens the market page of the application that can
-	 * handle it. If not it nicely opens an information dialog.
+	 * Method to catch {@link ActivityNotFoundException}. If the {@link Intent} initiated is known it opens the market
+	 * page of the application that can handle it. If not it nicely opens an information dialog.
 	 * 
 	 * @param exception The catch exception.
 	 * @param context The current context.
@@ -37,14 +35,13 @@ public class IntentUtils {
 			Intent i = new Intent(Intent.ACTION_VIEW, uri);
 			context.startActivity(i);
 		} else {
-			Log.e(IntentUtils.class.getName(), "error launching an activity", exception);
+			exception.printStackTrace();
 			DialogFactory.createActivityNotFoundDialog(context).show();
 		}
 	}
 
 	/**
-	 * Append a where query to an intent using {@link Extras#EXTRA_WHERE} and
-	 * {@link Extras#EXTRA_ARGS}.
+	 * Append a where query to an intent using {@link Extras#EXTRA_WHERE} and {@link Extras#EXTRA_ARGS}.
 	 * 
 	 * @param intent The intent to append the where clause.
 	 * @param where The where clause.

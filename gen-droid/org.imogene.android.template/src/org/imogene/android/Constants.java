@@ -6,14 +6,21 @@ import android.os.Environment;
 
 public final class Constants {
 
+	public static final boolean DEBUG = true;
+
 	public static final String AUTHORITY = "org.imogene.android.%realProjectName%.entity";
 
 	public static interface Paths {
-		public static final File PATH_BACKUP = new File(Environment.getExternalStorageDirectory(), ".%realProjectName%/backup");
-		public static final File PATH_BINARIES = new File(Environment.getExternalStorageDirectory(), ".%realProjectName%/binaries");
-		public static final File PATH_SYNCHRO = new File(Environment.getExternalStorageDirectory(), ".%realProjectName%/synchro");
-		public static final File PATH_TEMPORARY = new File(Environment.getExternalStorageDirectory(), ".%realProjectName%/temporary");
-		public static final File PATH_MEDIA = new File(Environment.getExternalStorageDirectory(), "%realProjectName%/media");
+		public static final File PATH_BACKUP = new File(Environment.getExternalStorageDirectory(),
+				".%realProjectName%/backup");
+		public static final File PATH_BINARIES = new File(Environment.getExternalStorageDirectory(),
+				".%realProjectName%/binaries");
+		public static final File PATH_SYNCHRO = new File(Environment.getExternalStorageDirectory(),
+				".%realProjectName%/synchro");
+		public static final File PATH_TEMPORARY = new File(Environment.getExternalStorageDirectory(),
+				".%realProjectName%/temporary");
+		public static final File PATH_MEDIA = new File(Environment.getExternalStorageDirectory(),
+				"%realProjectName%/media");
 	}
 
 	public static interface Intents {

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.UUID;
 
+import org.imogene.android.Constants;
 import org.imogene.android.Constants.Paths;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
@@ -128,8 +129,6 @@ public class SynchronizationController {
 			 * We resume the synchronization process
 			 */
 			if (syncError != null) {
-				Log.i(TAG, "resume on error : " + syncError.id + ", level : " + syncError.level + ", date : "
-						+ syncError.date);
 				received += resumeOnError(syncError);
 			}
 
@@ -161,10 +160,7 @@ public class SynchronizationController {
 			}
 
 			markAsSentForSession(syncTime);
-			if (res > 0) {
-				notifySent(res);
-			}
-			Log.i(TAG, "number of server modifications applied: " + res);
+			notifySent(res);
 
 			if (res > -1) {
 				his.level = SyncHistory.Columns.LEVEL_RECEIVE;
@@ -208,17 +204,21 @@ public class SynchronizationController {
 			long offset = SntpProvider.getTimeOffsetFromNtp(url);
 			mPreferences.setNtpOffset(offset);
 		} catch (SntpException e) {
-			Log.e(TAG, "update offset from ntp ->", e);
 		}
 	}
 
 	private int resumeOnError(SyncHistory his) throws SynchronizationException {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "resume on error : " + his.id + ", level : " + his.level + ", date : " + his.date);
+		}
 		/*
 		 * we resume a sent, by re-sending local data an retrieving all the data from the server
 		 */
 		int received = 0;
 		if (his.level == SyncHistory.Columns.LEVEL_SEND) {
-			Log.i(TAG, "Resuming the sent for the session " + his.id);
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Resuming the sent for the session " + his.id);
+			}
 			try {
 				/* 1 - initialize the resumed session */
 				notifyInit();
@@ -239,8 +239,10 @@ public class SynchronizationController {
 						throw new SynchronizationException("Error skipping bytes: " + bytesReceived + " bytes to skip,"
 								+ skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
 					}
-					Log.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
-							+ bytesReceived + " bytes");
+					if (Constants.DEBUG) {
+						Log.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
+								+ bytesReceived + " bytes");
+					}
 					int res = mSyncClient.resumeSendModification(his.id, fis);
 					fis.close();
 					if (!mDebug) {
@@ -248,12 +250,7 @@ public class SynchronizationController {
 					}
 
 					markAsSentForSession(his.date);
-					if (res > 0) {
-						notifySent(res);
-					}
-
-					Log.i(TAG, "number of server modifications applied on resume: " + res);
-
+					notifySent(res);
 				}
 				his.level = SyncHistory.Columns.LEVEL_RECEIVE;
 				his.saveOrUpdate(mContext);
@@ -282,7 +279,9 @@ public class SynchronizationController {
 		 * we resume a reception, by re-receiving the server data
 		 */
 		if (his.level == SyncHistory.Columns.LEVEL_RECEIVE) {
-			Log.i(TAG, "Resuming the receive operation for the session " + his.id);
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Resuming the receive operation for the session " + his.id);
+			}
 			try {
 				/* clear the sent file */
 				if (!mDebug) {
@@ -405,6 +404,9 @@ public class SynchronizationController {
 	}
 
 	private void markAsSentForSession(long time) {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "mark send entities as synchronized");
+		}
 		ContentValues values = new ContentValues();
 		values.put(ImogBean.Columns.FLAG_SYNCHRONIZED, 1);
 
@@ -417,12 +419,18 @@ public class SynchronizationController {
 	}
 
 	private void markHiddenAsRead() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "mark hidden received entities as read");
+		}
 		for (Uri uri : ImogHelper.getInstance().getHiddenUris(mContext)) {
 			DatabaseUtils.markRead(mContext.getContentResolver(), uri, true);
 		}
 	}
 
 	private void notifyStart() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Synchronization starting: " + mServer);
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.START, null);
@@ -431,6 +439,9 @@ public class SynchronizationController {
 	}
 
 	private void notifyInit() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Initializing the synchronization");
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.INITIALIZATION, null);
@@ -439,6 +450,9 @@ public class SynchronizationController {
 	}
 
 	private void notifySend() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Sending client modifications");
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.SEND, null);
@@ -447,6 +461,9 @@ public class SynchronizationController {
 	}
 
 	private void notifySent(int sent) {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Number of sent modification: " + sent);
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.SENT, sent);
@@ -455,6 +472,9 @@ public class SynchronizationController {
 	}
 
 	private void notifyReceive() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Receiving server modifications");
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.RECEIVE, null);
@@ -463,6 +483,9 @@ public class SynchronizationController {
 	}
 
 	private void notifyReceived(int received) {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Number of modifications applied: " + received);
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.RECEIVED, received);
@@ -471,6 +494,9 @@ public class SynchronizationController {
 	}
 
 	private void notifyClose() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Synchronization session closed");
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.CLOSE, null);
@@ -479,6 +505,9 @@ public class SynchronizationController {
 	}
 
 	private void notifyFinish() {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Synchronization process finished");
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.FINISH, null);
@@ -487,6 +516,9 @@ public class SynchronizationController {
 	}
 
 	private void notifyFailure(int code) {
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Synchronization failure. code: " + code);
+		}
 		synchronized (mSynchronizationObservers) {
 			for (SynchronizationObserver callback : mSynchronizationObservers) {
 				callback.dispatchChange(Status.FAILURE, code);

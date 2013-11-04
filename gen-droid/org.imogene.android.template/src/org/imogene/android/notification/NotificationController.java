@@ -2,6 +2,7 @@ package org.imogene.android.notification;
 
 import java.util.List;
 
+import org.imogene.android.Constants;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
@@ -96,7 +97,9 @@ public class NotificationController {
 	 * @param watch If {@code true}, we register observers. Otherwise, all observers are unregistered.
 	 */
 	public void watchForMessages(final boolean watch) {
-		Log.i(TAG, "Notifications being toggled: " + watch);
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Notifications being toggled: " + watch);
+		}
 		// Don't create the thread if we're only going to stop watching
 		if (!watch && sNotificationThread == null)
 			return;

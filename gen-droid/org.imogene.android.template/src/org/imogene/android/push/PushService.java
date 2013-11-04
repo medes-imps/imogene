@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.imogene.android.Constants;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.http.ssl.TrustAllSSLSocketFactory;
@@ -75,7 +76,9 @@ public class PushService extends Service {
 
 			boolean hasConnectivity = (info != null && info.isConnected()) ? true : false;
 
-			Log.i(TAG, "Connecting changed: connected=" + hasConnectivity);
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Connecting changed: connected=" + hasConnectivity);
+			}
 
 			if (hasConnectivity) {
 				PushService.actionReconnect(context);
@@ -129,7 +132,9 @@ public class PushService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Log.i(TAG, "Service destroyed (started=" + mStarted + ")");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Service destroyed (started=" + mStarted + ")");
+		}
 
 		if (mStarted == true) {
 			stop();
@@ -181,7 +186,9 @@ public class PushService extends Service {
 	}
 
 	private void startPinging() {
-		Log.i(TAG, "Start pinging");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Start pinging");
+		}
 
 		Intent i = new Intent(this, PushService.class);
 		i.setAction(ACTION_PING);
@@ -192,7 +199,9 @@ public class PushService extends Service {
 	}
 
 	private void stopPinging() {
-		Log.i(TAG, "Stop pinging");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Stop pinging");
+		}
 
 		Intent i = new Intent(this, PushService.class);
 		i.setAction(ACTION_PING);
@@ -213,7 +222,9 @@ public class PushService extends Service {
 			interval = INITIAL_RETRY_INTERVAL;
 		}
 
-		Log.i(TAG, "Rescheduling connection in " + interval + "ms.");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Rescheduling connection in " + interval + "ms.");
+		}
 
 		mPrefs.setPushRetryInterval(interval);
 
@@ -230,7 +241,9 @@ public class PushService extends Service {
 	}
 
 	private void unscheduleReconnect() {
-		Log.i(TAG, "Stop trying to reconnect");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Stop trying to reconnect");
+		}
 
 		Intent i = new Intent(this, PushService.class);
 		i.setAction(ACTION_RECONNECT);
@@ -241,7 +254,9 @@ public class PushService extends Service {
 	}
 
 	private void schedulePingTimeout() {
-		Log.i(TAG, "Scheduling ping timeout in " + PING_TIMEOUT + "ms.");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Scheduling ping timeout in " + PING_TIMEOUT + "ms.");
+		}
 
 		Intent i = new Intent(this, PushService.class);
 		i.setAction(ACTION_PING_TIMEOUT);
@@ -252,7 +267,9 @@ public class PushService extends Service {
 	}
 
 	private void unschedulePingTimeout() {
-		Log.i(TAG, "Unscheduling ping timeout");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Unscheduling ping timeout");
+		}
 
 		Intent i = new Intent(this, PushService.class);
 		i.setAction(ACTION_PING_TIMEOUT);
@@ -264,7 +281,9 @@ public class PushService extends Service {
 
 	private synchronized void start() {
 		if (mStarted == true) {
-			Log.i(TAG, "Attempt to start connection that is already active");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Attempt to start connection that is already active");
+			}
 			return;
 		}
 
@@ -272,7 +291,9 @@ public class PushService extends Service {
 
 		registerReceiver(mConnectionReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-		Log.i(TAG, "Connecting...");
+		if (Constants.DEBUG) {
+			Log.i(TAG, "Connecting...");
+		}
 
 		mConnection = new ConnectionThread();
 		mConnection.start();
@@ -280,7 +301,9 @@ public class PushService extends Service {
 
 	private synchronized void stop() {
 		if (mStarted == false) {
-			Log.i(TAG, "Nothing to do, connection do not exist");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Nothing to do, connection do not exist");
+			}
 			return;
 		}
 
@@ -313,7 +336,9 @@ public class PushService extends Service {
 
 	private synchronized void reconnectIfNecessary() {
 		if (mStarted == true && mConnection == null) {
-			Log.i(TAG, "Reconnecting...");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Reconnecting...");
+			}
 
 			mConnection = new ConnectionThread();
 			mConnection.start();
@@ -374,7 +399,9 @@ public class PushService extends Service {
 				 */
 				// s.setSoTimeout((int)KEEP_ALIVE_INTERVAL + 120000);
 
-				Log.i(TAG, "Connection established to " + s.getInetAddress() + ":" + mPort);
+				if (Constants.DEBUG) {
+					Log.i(TAG, "Connection established to " + s.getInetAddress() + ":" + mPort);
+				}
 
 				/*
 				 * Note that T-Mobile appears to implement an opportunistic connect algorithm where the connect call may
@@ -395,13 +422,19 @@ public class PushService extends Service {
 				int length = 0;
 				while ((length = in.read(b)) != -1) {
 					String message = new String(b, 0, length);
-					Log.i(TAG, "**** Receiving: " + message);
+					if (Constants.DEBUG) {
+						Log.i(TAG, "**** Receiving: " + message);
+					}
 					process(message);
 				}
-				Log.i(TAG, "Has finished reading");
+				if (Constants.DEBUG) {
+					Log.i(TAG, "Has finished reading");
+				}
 
 				if (mAbort == false) {
-					Log.i(TAG, "Server closed connection unexpectedly.");
+					if (Constants.DEBUG) {
+						Log.i(TAG, "Server closed connection unexpectedly.");
+					}
 				}
 			} catch (IOException e) {
 				Log.e(TAG, "Unexpected I/O error", e);
@@ -410,7 +443,9 @@ public class PushService extends Service {
 				unschedulePingTimeout();
 
 				if (mAbort == true) {
-					Log.i(TAG, "Connection aborted, shutting down.");
+					if (Constants.DEBUG) {
+						Log.i(TAG, "Connection aborted, shutting down.");
+					}
 				} else {
 					try {
 						s.close();
@@ -436,21 +471,30 @@ public class PushService extends Service {
 		private void process(String message) throws IOException {
 			if (message.startsWith(MSG_PONG)) {
 				unschedulePingTimeout();
-				Log.i(TAG, "Pong received unschedule timeout");
+				if (Constants.DEBUG) {
+					Log.i(TAG, "Pong received unschedule timeout");
+				}
 			} else if (message.startsWith(MSG_PING)) {
+				if (Constants.DEBUG) {
+					Log.i(TAG, "Ping received answer pong");
+				}
 				pong();
 			} else if (message.startsWith(MSG_PUSH)) {
 				String[] parts = message.split(";");
 				if (parts.length == 3) {
 					String id = parts[1];
 					String cmd = parts[2];
-					Log.i(TAG, "Command received: " + cmd);
+					if (Constants.DEBUG) {
+						Log.i(TAG, "Command received: " + cmd);
+					}
 					acknowledge(id);
 					if (cmd.equals(CMD_SYNC)) {
 						mHandler.sendEmptyMessage(MESSAGE_SYNC);
 					}
 				} else {
-					Log.i(TAG, "Push message malformed");
+					if (Constants.DEBUG) {
+						Log.i(TAG, "Push message malformed");
+					}
 				}
 			}
 		}
@@ -469,31 +513,40 @@ public class PushService extends Service {
 
 		public synchronized void pong() throws IOException {
 			write(MSG_PONG);
-
-			Log.i(TAG, "PONG sent.");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "PONG sent.");
+			}
 		}
 
 		public synchronized void acknowledge(String id) throws IOException {
 			write(MSG_ACK + ";" + id);
 
-			Log.i(TAG, "ACKNOLEDGEMENT sent for message " + id);
+			if (Constants.DEBUG) {
+				Log.i(TAG, "ACKNOLEDGEMENT sent for message " + id);
+			}
 		}
 
 		public synchronized void ping() throws IOException {
 			write(MSG_PING);
 			schedulePingTimeout();
 
-			Log.i(TAG, "PING sent.");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "PING sent.");
+			}
 		}
 
 		public synchronized void quit() throws IOException {
 			write(MSG_QUIT);
 
-			Log.i(TAG, "QUIT sent.");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "QUIT sent.");
+			}
 		}
 
 		public synchronized void abort() {
-			Log.i(TAG, "Connection aborting.");
+			if (Constants.DEBUG) {
+				Log.i(TAG, "Connection aborting.");
+			}
 
 			mAbort = true;
 
