@@ -26,7 +26,7 @@ import android.util.Log;
 /**
  * 
  * @author julien
- * @see {@link https://code.google.com/p/android-random/}
+ * @see <a href="https://code.google.com/p/android-random/">https://code.google.com/p/android-random/</a>
  */
 public class PushService extends Service {
 
