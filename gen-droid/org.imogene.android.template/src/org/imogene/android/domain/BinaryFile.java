@@ -145,7 +145,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 		binary.setModified(new Date(0));
 		binary.setModifiedBy(login);
 		binary.setModifiedFrom(prefs.getSyncTerminal());
-		binary.setSynchronized(false);
+		binary.setFlagSynchronized(false);
 
 		binary.setContentType(contentType);
 		binary.setFileName(fileName);

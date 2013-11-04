@@ -30,17 +30,17 @@ public class DatabaseUtils {
 	private static final String ANDROID_METADATA = "android_metadata";
 
 	/**
-	 * Update the column {@link ImogBean.Columns#UNREAD} of the entity represented by the {@link Uri} with the given
+	 * Update the column {@link ImogBean.Columns#FLAG_READ} of the entity represented by the {@link Uri} with the given
 	 * value.
 	 * 
 	 * @param res The current {@link ContentResolver}.
 	 * @param uri The {@link Uri} of the element to update.
 	 * @param unread The marker for the column.
 	 */
-	public static void markAs(ContentResolver res, Uri uri, boolean unread) {
+	public static void markRead(ContentResolver res, Uri uri, boolean read) {
 		ContentValues values = new ContentValues();
-		values.put(ImogBean.Columns.UNREAD, unread ? 1 : 0);
-		res.update(uri, values, null, null);
+		values.put(ImogBean.Columns.FLAG_READ, read ? 1 : 0);
+		res.update(uri, values, ImogBean.Columns.FLAG_READ + "=" + (read ? 0 : 1), null);
 	}
 
 	/**
@@ -105,13 +105,13 @@ public class DatabaseUtils {
 	public static boolean hasUnSync() {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(SQLITE_MASTER);
 		builder.selectColumns(KEY_NAME);
-		builder.where().like(KEY_SQL, ImogBean.Columns.SYNCHRONIZED).and().eq(KEY_TYPE, TYPE_TABLE);
+		builder.where().like(KEY_SQL, ImogBean.Columns.FLAG_SYNCHRONIZED).and().eq(KEY_TYPE, TYPE_TABLE);
 
 		Cursor c = builder.query();
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 			QueryBuilder b = ImogOpenHelper.getHelper().queryBuilder(c.getString(0));
 			b.setCountOf(true);
-			b.where().eq(ImogBean.Columns.SYNCHRONIZED, 0);
+			b.where().eq(ImogBean.Columns.FLAG_SYNCHRONIZED, 0);
 			long count = b.queryForLong();
 			if (count > 0) {
 				c.close();

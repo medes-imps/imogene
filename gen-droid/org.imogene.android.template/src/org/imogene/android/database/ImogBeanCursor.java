@@ -25,9 +25,9 @@ public interface ImogBeanCursor extends Cursor /*CrossProcessCursor*/{
 
 	public String getCreatedBy();
 	
-	public boolean getUnread();
+	public boolean getFlagRead();
 
-	public boolean getSynchronized();
+	public boolean getFlagSynchronized();
 
 	public String getMainDisplay(Context context);
 	

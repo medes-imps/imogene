@@ -74,13 +74,13 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 	}
 
 	@Override
-	public final boolean getUnread() {
-		return getBoolean(ImogBean.Columns.UNREAD);
+	public final boolean getFlagRead() {
+		return getBoolean(ImogBean.Columns.FLAG_READ);
 	}
 
 	@Override
-	public final boolean getSynchronized() {
-		return getBoolean(ImogBean.Columns.SYNCHRONIZED);
+	public final boolean getFlagSynchronized() {
+		return getBoolean(ImogBean.Columns.FLAG_SYNCHRONIZED);
 	}
 
 	protected final Uri getEntity(String id) {

@@ -35,6 +35,7 @@ import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.database.sqlite.stmt.Where;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.IamLost;
@@ -186,6 +187,18 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	}
 	
 	@Override
+	protected void onResume() {
+		super.onResume();
+		adjustMessageNotification(true);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		adjustMessageNotification(false);
+	}
+	
+	@Override
 	public int createLayout() {
 		return R.layout.ig_list_content_empty;
 	}
@@ -236,6 +249,11 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 			IntentUtils.treatException(e, this, intent);
 		}
 	}
+	
+	private void adjustMessageNotification(boolean suspend) {
+		NotificationController notifier = NotificationController.getInstance(this);
+		notifier.suspendMessageNotification(suspend, «name.toFirstUpper()».Columns.NOTIFICATION_ID);
+    }
 	
 	private ImogBeanCursor query() {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(«name.toFirstUpper()».Columns.CONTENT_URI);
@@ -332,7 +350,7 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
 		case MENU_MARK_ALL_AS_READ_ID:
-			DatabaseUtils.markAs(getContentResolver(), «name.toFirstUpper()».Columns.CONTENT_URI, false);
+			DatabaseUtils.markRead(getContentResolver(), «name.toFirstUpper()».Columns.CONTENT_URI, true);
 			return true;
 		case MENU_SORT_BY_MODIFIED_ID:
 			if («name.toFirstUpper()».Columns.MODIFIED.equals(mSortKey)) {
@@ -368,12 +386,10 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 
 		ImogBeanCursor c = (ImogBeanCursor) getListAdapter().getItem(
 				info.position - getListView().getHeaderViewsCount());
-		if (c.getUnread()) {
-			menu.add(Menu.NONE, CMENU_MARK_AS_READ_ID, Menu.NONE,
-					R.string.ig_menu_mark_as_read);
+		if (c.getFlagRead()) {
+			menu.add(Menu.NONE, CMENU_MARK_AS_UNREAD_ID, Menu.NONE, R.string.ig_menu_mark_as_unread);
 		} else {
-			menu.add(Menu.NONE, CMENU_MARK_AS_UNREAD_ID, Menu.NONE,
-					R.string.ig_menu_mark_as_unread);
+			menu.add(Menu.NONE, CMENU_MARK_AS_READ_ID, Menu.NONE, R.string.ig_menu_mark_as_read);
 		}
 	}
 
@@ -394,10 +410,10 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 			startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			return true;
 		case CMENU_MARK_AS_READ_ID:
-			DatabaseUtils.markAs(getContentResolver(), uri, false);
+			DatabaseUtils.markRead(getContentResolver(), uri, true);
 			return true;
 		case CMENU_MARK_AS_UNREAD_ID:
-			DatabaseUtils.markAs(getContentResolver(), uri, true);
+			DatabaseUtils.markRead(getContentResolver(), uri, false);
 			return true;
 		default:
 			return super.onContextItemSelected(item);

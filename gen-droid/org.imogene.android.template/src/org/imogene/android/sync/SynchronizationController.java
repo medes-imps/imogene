@@ -406,7 +406,7 @@ public class SynchronizationController {
 
 	private void markAsSentForSession(long time) {
 		ContentValues values = new ContentValues();
-		values.put(ImogBean.Columns.SYNCHRONIZED, 1);
+		values.put(ImogBean.Columns.FLAG_SYNCHRONIZED, 1);
 
 		ContentResolver res = mContext.getContentResolver();
 
@@ -418,7 +418,7 @@ public class SynchronizationController {
 
 	private void markHiddenAsRead() {
 		for (Uri uri : ImogHelper.getInstance().getHiddenUris(mContext)) {
-			DatabaseUtils.markAs(mContext.getContentResolver(), uri, false);
+			DatabaseUtils.markRead(mContext.getContentResolver(), uri, true);
 		}
 	}
 

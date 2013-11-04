@@ -110,9 +110,8 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		DatabaseUtils.markAs(getContentResolver(), getIntent().getData(), false);
-		getContentResolver().registerContentObserver(getIntent().getData(),
-				false, mContentObserver);
+		DatabaseUtils.markRead(getContentResolver(), getIntent().getData(), true);
+		getContentResolver().registerContentObserver(getIntent().getData(), false, mContentObserver);
 
 		IamLost.getInstance().add(getTitle().toString());
 		

@@ -88,8 +88,8 @@ public class ImogXmlConverter {
 			}
 			
 			bean.reset();
-			bean.setUnread(true);
-			bean.setSynchronized(true);
+			bean.setFlagRead(false);
+			bean.setFlagSynchronized(true);
 			
 			parse(parser, bean);
 			

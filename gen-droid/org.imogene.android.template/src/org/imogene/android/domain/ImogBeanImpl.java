@@ -5,6 +5,7 @@ import java.util.Date;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
+import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.xml.annotation.XmlAlias;
@@ -38,10 +39,10 @@ public abstract class ImogBeanImpl implements ImogBean {
 	private String createdBy = null;
 
 	@XmlOmitField
-	private boolean unread = false;
+	private boolean flagRead = false;
 
 	@XmlOmitField
-	private boolean mSynchronized = false;
+	private boolean flagSynchronized = false;
 
 	protected void init(ImogBeanCursor cursor) {
 		id = cursor.getId();
@@ -51,8 +52,8 @@ public abstract class ImogBeanImpl implements ImogBean {
 		uploadDate = cursor.getUploadDate();
 		created = cursor.getCreated();
 		createdBy = cursor.getCreatedBy();
-		unread = cursor.getUnread();
-		mSynchronized = cursor.getSynchronized();
+		flagRead = cursor.getFlagRead();
+		flagSynchronized = cursor.getFlagSynchronized();
 	}
 
 	@Override
@@ -126,23 +127,23 @@ public abstract class ImogBeanImpl implements ImogBean {
 	}
 
 	@Override
-	public final boolean getUnread() {
-		return unread;
+	public final boolean getFlagRead() {
+		return flagRead;
 	}
 
 	@Override
-	public final void setUnread(boolean unread) {
-		this.unread = unread;
+	public final void setFlagRead(boolean read) {
+		this.flagRead = read;
 	}
 
 	@Override
-	public final boolean getSynchronized() {
-		return mSynchronized;
+	public final boolean getFlagSynchronized() {
+		return flagSynchronized;
 	}
 
 	@Override
-	public final void setSynchronized(boolean isSynchronized) {
-		mSynchronized = isSynchronized;
+	public final void setFlagSynchronized(boolean isSynchronized) {
+		flagSynchronized = isSynchronized;
 	}
 
 	@Override
@@ -169,17 +170,17 @@ public abstract class ImogBeanImpl implements ImogBean {
 			createdBy = login;
 		}
 		modifiedFrom = prefs.getSyncTerminal();
-		mSynchronized = false;
+		flagSynchronized = false;
 	}
 
-	protected void preCommit(Context context) {/* nothing to do */
+	protected void preCommit(Context context) {
 	}
 
 	protected void postCommit(Context context) {
-		// boolean sync = PreferenceHelper.isSynchronizeOnSaveEnabled(context);
-		// if (sync) {
-		// SynchronizationService.actionCheck(context);
-		// }
+		Preferences prefs = Preferences.getPreferences(context);
+		if (prefs.isSyncOnSaveEnabled() && prefs.getSyncTerminal().equals(modifiedFrom)) {
+			SynchronizationService.actionCheck(context);
+		}
 	}
 
 	protected abstract void addValues(Context context, ContentValues values);
@@ -195,8 +196,8 @@ public abstract class ImogBeanImpl implements ImogBean {
 		values.put(Columns.UPLOADDATE, uploadDate != null ? uploadDate.getTime() : null);
 		values.put(Columns.CREATED, created != null ? created.getTime() : null);
 		values.put(Columns.CREATEDBY, createdBy);
-		values.put(Columns.UNREAD, unread ? 1 : 0);
-		values.put(Columns.SYNCHRONIZED, mSynchronized ? 1 : 0);
+		values.put(Columns.FLAG_READ, flagRead ? 1 : 0);
+		values.put(Columns.FLAG_SYNCHRONIZED, flagSynchronized ? 1 : 0);
 
 		addValues(context, values);
 

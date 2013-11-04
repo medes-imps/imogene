@@ -11,11 +11,12 @@ import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.domain.ImogHelper.ImogBeanCallback;
 import org.imogene.android.sync.SynchronizationController;
-import org.imogene.android.sync.SynchronizationObserver;
 import org.imogene.android.sync.SynchronizationController.Status;
+import org.imogene.android.sync.SynchronizationObserver;
 import org.imogene.android.template.R;
 import org.imogene.android.util.content.ContentUrisUtils;
 
+import android.accounts.Account;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -41,6 +42,12 @@ public class NotificationController {
 	private static final String TAG = NotificationController.class.getName();
 
 	/**
+	 * Pseudo notification ID to represent "no notification". This may be used any time the notification ID may not be
+	 * known or when we want to specifically select "no" account.
+	 */
+	public static final int NO_NOTIFICATION = -1;
+
+	/**
 	 * Minimum interval between notification sounds. Since a long sync (after a long period of being offline) can cause
 	 * several notifications consecutively, it can be pretty overwhelming to get a barrage of notification sounds.
 	 * Throttle them using this value.
@@ -55,6 +62,11 @@ public class NotificationController {
 	private final Context mContext;
 	private final SparseArray<ContentObserver> mNotificationMap;
 	private MySynchronizationObserver mSynchronizationObserver;
+	/**
+	 * Suspend notifications for . If {@link Account#NO_ACCOUNT}, no account notifications are suspended. If
+	 * {@link Account#ACCOUNT_ID_COMBINED_VIEW}, notifications for all accounts are suspended.
+	 */
+	private long mSuspendNotificationId = NO_NOTIFICATION;
 
 	/**
 	 * Timestamp indicating when the last notification sound was played. Used for throttling.
@@ -149,7 +161,28 @@ public class NotificationController {
 		if (!mSynchronizationObserver.isRegistered()) {
 			SynchronizationController.getInstance(mContext).registerSynchronizationObserver(mSynchronizationObserver);
 		}
+	}
 
+	/**
+	 * Temporarily suspend from receiving notifications. NOTE: only a single notification may ever be suspended at a
+	 * time. So, if this method is invoked a second time, notifications for the previously suspended account will
+	 * automatically be re-activated.
+	 * 
+	 * @param suspend If {@code true}, suspend notifications for the given entity notification identifier. Otherwise,
+	 *        re-activate notifications for the previously suspended entity notifications.
+	 * @param notificationId The ID of the notification. If this is the special notification ID
+	 *        {@link NotificationController#NO_NOTIFICATION}, notifications for are re-activated. If {@code suspend} is
+	 *        {@code false}, the notification ID is ignored.
+	 */
+	public void suspendMessageNotification(boolean suspend, int notificationId) {
+		if (mSuspendNotificationId != NO_NOTIFICATION) {
+			// we're already suspending an account; un-suspend it
+			mSuspendNotificationId = NO_NOTIFICATION;
+		}
+		if (suspend && notificationId != NO_NOTIFICATION && notificationId > 0) {
+			mSuspendNotificationId = notificationId;
+			mNotificationManager.cancel(notificationId);
+		}
 	}
 
 	/**
@@ -263,8 +296,11 @@ public class NotificationController {
 
 		@Override
 		public void onChange(boolean selfChange) {
+			if (mInfo.notificationId == sInstance.mSuspendNotificationId) {
+				return;
+			}
 			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(mInfo.contentUri);
-			builder.where().eq(ImogBean.Columns.UNREAD, 1);
+			builder.where().eq(ImogBean.Columns.FLAG_READ, 0);
 			builder.orderBy(ImogBean.Columns.MODIFIED, false);
 			ImogBeanCursor c = (ImogBeanCursor) builder.query();
 			if (c == null) {
@@ -281,8 +317,8 @@ public class NotificationController {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				if (count > 1) {
 					intent.setData(mInfo.contentUri);
-					intent.putExtra(Extras.EXTRA_SORT_KEY, ImogBean.Columns.UNREAD);
-					intent.putExtra(Extras.EXTRA_ASCENDING, false);
+					intent.putExtra(Extras.EXTRA_SORT_KEY, ImogBean.Columns.FLAG_READ);
+					intent.putExtra(Extras.EXTRA_ASCENDING, true);
 				} else {
 					intent.setData(ContentUrisUtils.withAppendedId(mInfo.contentUri, c.getId()));
 				}
