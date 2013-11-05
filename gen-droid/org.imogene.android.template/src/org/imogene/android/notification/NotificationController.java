@@ -218,10 +218,11 @@ public class NotificationController {
 	 * @param ticker the ticker text displayed in the status bar
 	 * @param intent the intent when notification is clicked
 	 * @param iconRes the icon resource identifier
+	 * @param enableAudio If {@code false}, do not play any sound. Otherwise, play sound.
 	 * @return The built notification
 	 */
 	private Notification createNotification(CharSequence title, CharSequence contentText, CharSequence ticker,
-			Intent intent, int iconRes) {
+			Intent intent, int iconRes, boolean enableAudio) {
 		Notification notification = new Notification(iconRes, ticker, System.currentTimeMillis());
 
 		// Make a startActivity() PendingIntent for the notification.
@@ -234,12 +235,12 @@ public class NotificationController {
 		notification.setLatestEventInfo(mContext, title, contentText, pendingIntent);
 
 		long now = System.currentTimeMillis();
-		boolean enableAudio = (now - mLastMessageNotifyTime) > MIN_SOUND_INTERVAL_MS;
+		enableAudio &= (now - mLastMessageNotifyTime) > MIN_SOUND_INTERVAL_MS;
 		if (enableAudio) {
 			setupSoundAndVibration(notification);
+			mLastMessageNotifyTime = now;
 		}
 
-		mLastMessageNotifyTime = now;
 		return notification;
 	}
 
@@ -331,7 +332,7 @@ public class NotificationController {
 						count, count);
 				CharSequence ticker = buildTickerMessage(title, description);
 
-				Notification n = sInstance.createNotification(title, description, ticker, intent, mInfo.drawable);
+				Notification n = sInstance.createNotification(title, description, ticker, intent, mInfo.drawable, true);
 
 				if (n != null) {
 					sInstance.mNotificationManager.notify(mInfo.notificationId, n);
@@ -357,7 +358,7 @@ public class NotificationController {
 				String ticker = sInstance.mContext.getString(R.string.ig_notification_sync_ticker);
 				String title = sInstance.mContext.getString(R.string.ig_notification_sync_title);
 				Notification n = sInstance.createNotification(title, ticker, ticker, new Intent(),
-						R.drawable.ig_logo_android_s);
+						R.drawable.ig_logo_android_s, false);
 				n.flags |= Notification.FLAG_NO_CLEAR;
 				n.defaults &= ~Notification.DEFAULT_VIBRATE;
 
