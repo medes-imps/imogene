@@ -18,16 +18,16 @@ import android.net.Uri;
 public abstract class ImogBeanImpl implements ImogBean {
 
 	@XmlAlias("id")
-	private String id = null;
+	private String id;
 
 	@XmlAlias("modified")
 	private Date modified;
 
 	@XmlAlias("modifiedBy")
-	private String modifiedBy = null;
+	private String modifiedBy;
 
 	@XmlAlias("modifiedFrom")
-	private String modifiedFrom = null;
+	private String modifiedFrom;
 
 	@XmlAlias("uploadDate")
 	private Date uploadDate;
@@ -36,13 +36,13 @@ public abstract class ImogBeanImpl implements ImogBean {
 	private Date created;
 
 	@XmlAlias("createdBy")
-	private String createdBy = null;
+	private String createdBy;
 
 	@XmlOmitField
-	private boolean flagRead = false;
+	private boolean flagRead;
 
 	@XmlOmitField
-	private boolean flagSynchronized = false;
+	private boolean flagSynchronized;
 
 	protected void init(ImogBeanCursor cursor) {
 		id = cursor.getId();
@@ -170,6 +170,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 			createdBy = login;
 		}
 		modifiedFrom = prefs.getSyncTerminal();
+		flagRead = true;
 		flagSynchronized = false;
 	}
 

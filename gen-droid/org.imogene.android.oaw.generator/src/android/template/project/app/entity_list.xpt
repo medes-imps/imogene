@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,7 +39,6 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.content.IntentUtils;
 import org.imogene.android.util.database.DatabaseUtils;
 import org.imogene.android.util.dialog.DialogFactory;
 import org.imogene.android.widget.ImogBeanCursorAdapter;
@@ -230,24 +228,6 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	protected void onRestoreInstanceState(Bundle state) {
 		super.onRestoreInstanceState(state);
 		mCurrentUri = state.getParcelable(EXTRA_CURRENT_URI);
-	}
-	
-	@Override
-	public void startActivity(Intent intent) {
-		try {
-			super.startActivity(intent);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
-		}
-	}
-	
-	@Override
-	public void startActivityForResult(Intent intent, int requestCode) {
-		try {
-			super.startActivityForResult(intent, requestCode);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
-		}
 	}
 	
 	private void adjustMessageNotification(boolean suspend) {

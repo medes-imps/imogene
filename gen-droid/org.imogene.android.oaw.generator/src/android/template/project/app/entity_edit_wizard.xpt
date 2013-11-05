@@ -9,7 +9,6 @@ import greendroid.widget.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -19,9 +18,10 @@ import android.widget.Toast;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.FieldFlipperActivity;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.database.DatabaseUtils;
 import org.imogene.android.widget.field.FieldFlipper;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.FieldContainer;
@@ -61,6 +61,9 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	
 	private «name.toFirstUpper()» mEntity;
 	
+	private Uri mUri;
+	private boolean mMarkAsRead = false;
+	
 	public «name.toFirstUpper()»Wizard() {
 		super(ActionBar.Type.Empty);
 	}
@@ -81,7 +84,11 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 					mEntity = new «name.toFirstUpper()»();
 				}
 			} else {
-				mEntity = new «name.toFirstUpper()»(getIntent().getData());
+				mUri = getIntent().getData();
+				mEntity = «name.toFirstUpper()».fromUri(mUri);
+				if (!mEntity.getFlagRead()) {
+					mMarkAsRead = true;
+				}
 			}
 		}
 		
@@ -122,6 +129,22 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	}
 	
 	@Override
+	protected void onResume() {
+		super.onResume();
+		adjustMessageNotification(true);
+		if (mMarkAsRead) {
+			DatabaseUtils.markRead(getContentResolver(), mUri, true);
+			mMarkAsRead = false;
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		adjustMessageNotification(false);
+	}
+	
+	@Override
 	public Object onRetainNonConfigurationInstance() {
 		return mEntity;
 	}
@@ -147,24 +170,6 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		if (which == Dialog.BUTTON_POSITIVE) {
 			setResult(RESULT_CANCELED);
 			super.finish();
-		}
-	}
-	
-	@Override
-	public final void startActivity(Intent intent) {
-		try {
-			super.startActivity(intent);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
-		}
-	}
-	
-	@Override
-	public final void startActivityForResult(Intent intent, int requestCode) {
-		try {
-			super.startActivityForResult(intent, requestCode);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
 		}
 	}
 	
@@ -205,6 +210,11 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		default:
 			break;
 		}
+	}
+	
+	private void adjustMessageNotification(boolean suspend) {
+		NotificationController notifier = NotificationController.getInstance(this);
+		notifier.suspendMessageNotification(suspend, «name.toFirstUpper()».Columns.NOTIFICATION_ID);
 	}
 	
 	private void save(boolean temporary) {

@@ -69,16 +69,30 @@ public class «name.toFirstUpper()» extends
 		«EXPAND nTonTable FOREACH groups.fields-»
 	}
 	
+	public static «name.toFirstUpper()» fromUri(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+		«name.toFirstUpper()»Cursor cursor = («name.toFirstUpper()»Cursor) ImogOpenHelper.getHelper().query(uri);
+		if (cursor == null) {
+			return null;
+		}
+		try {
+			if (!cursor.moveToFirst()) {
+				return null;
+			}
+			if (cursor.getCount() > 1) {
+				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
+			}
+			return new «name.toFirstUpper()»(cursor);
+		} finally {
+			cursor.close();
+		}
+	}
+	
 	«EXPAND declaration FOREACH groups.fields-»
 	
 	public «name.toFirstUpper()»() {
-	}
-	
-	public «name.toFirstUpper()»(Uri uri) {
-		«name.toFirstUpper()»Cursor cursor = («name.toFirstUpper()»Cursor) ImogOpenHelper.getHelper().query(uri);
-		cursor.moveToFirst();
-		init(cursor);
-		cursor.close();
 	}
 	
 	public «name.toFirstUpper()»(«name.toFirstUpper()»Cursor cursor) {

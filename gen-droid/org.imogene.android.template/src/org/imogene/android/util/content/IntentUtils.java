@@ -9,6 +9,7 @@ import org.imogene.android.Constants.Packages;
 import org.imogene.android.database.sqlite.stmt.Where;
 import org.imogene.android.util.dialog.DialogFactory;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,41 @@ import android.net.Uri;
 public class IntentUtils {
 
 	/**
+	 * Launch a new activity. You will not receive any information about when the activity exits.
+	 * <p>
+	 * This method catches the {@link ActivityNotFoundException} for our greatest pleasure.
+	 * 
+	 * @param context The context from where to start the activity.
+	 * @param intent The description of the activity to start.
+	 */
+	public static void starActivity(Context context, Intent intent) {
+		try {
+			context.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, context, intent);
+		}
+	}
+
+	/**
+	 * Launch an activity for which you would like a result when it finished. When this activity exits, your
+	 * onActivityResult() method will be called with the given requestCode. Using a negative requestCode is the same as
+	 * calling {@link #starActivity(Context, Intent)} (the activity is not launched as a sub-activity).
+	 * <p>
+	 * This method catches the {@link ActivityNotFoundException} for our greatest pleasure.
+	 * 
+	 * @param activity The context from where to start the activity and waiting for a result.
+	 * @param intent The intent to start.
+	 * @param requestCode If >= 0, this code will be returned in onActivityResult() when the activity exits.
+	 */
+	public static void startActivityForResult(Activity activity, Intent intent, int requestCode) {
+		try {
+			activity.startActivityForResult(intent, requestCode);
+		} catch (ActivityNotFoundException e) {
+			IntentUtils.treatException(e, activity, intent);
+		}
+	}
+
+	/**
 	 * Method to catch {@link ActivityNotFoundException}. If the {@link Intent} initiated is known it opens the market
 	 * page of the application that can handle it. If not it nicely opens an information dialog.
 	 * 
@@ -29,13 +65,13 @@ public class IntentUtils {
 	 * @param context The current context.
 	 * @param intent The initial intent.
 	 */
-	public static void treatException(ActivityNotFoundException exception, Context context, Intent intent) {
+	public static void treatException(ActivityNotFoundException e, Context context, Intent intent) {
 		if (Intents.ACTION_SCAN.equals(intent.getAction())) {
 			Uri uri = Uri.parse("market://search?q=pname:" + Packages.PACKAGE_ZXING);
 			Intent i = new Intent(Intent.ACTION_VIEW, uri);
 			context.startActivity(i);
 		} else {
-			exception.printStackTrace();
+			e.printStackTrace();
 			DialogFactory.createActivityNotFoundDialog(context).show();
 		}
 	}

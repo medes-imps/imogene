@@ -11,7 +11,6 @@ import greendroid.widget.NormalActionBarItem;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -28,7 +27,9 @@ import android.view.ViewGroup;
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.ViewPagerIndicatorActivity;
+import org.imogene.android.database.ImogBeanObserver;
 import org.imogene.android.domain.DynamicFieldManager;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.IamLost;
@@ -76,13 +77,8 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	private static final int DIALOG_INFO_ID = 2;
 	private static final int DIALOG_IAMLOST_ID = 3;
 	
-	private final Handler mHandler = new Handler();
-
-	private final ContentObserver mContentObserver = new ContentObserver(mHandler) {
-		public void onChange(boolean selfChange) {
-			refresh();
-		};
-	};
+	private ImogBeanObserver mContentObserver;
+	private Uri mUri;
 	
 	private boolean mCanDelete;
 	private boolean mCanModify;
@@ -110,10 +106,16 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		DatabaseUtils.markRead(getContentResolver(), getIntent().getData(), true);
-		getContentResolver().registerContentObserver(getIntent().getData(), false, mContentObserver);
-
 		IamLost.getInstance().add(getTitle().toString());
+		
+		mUri = getIntent().getData();
+		
+		mContentObserver = new ImogBeanObserver(new Handler(), this) {
+			@Override
+			public void onChange(boolean selfChange) {
+				refresh();
+			}
+		};
 		
 		«IF creators.size > 0-»
 		mCanDelete = «name.toFirstUpper()-»Roles.canCreate(this);
@@ -167,21 +169,20 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	}
 	
 	@Override
-	public final void startActivity(Intent intent) {
-		try {
-			super.startActivity(intent);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
+	protected void onResume() {
+		super.onResume();
+		adjustMessageNotification(true);
+		if (mEntity != null && !mEntity.getFlagRead()) {
+			DatabaseUtils.markRead(getContentResolver(), mUri, true);
 		}
+		mContentObserver.register(mUri);
 	}
 	
 	@Override
-	public final void startActivityForResult(Intent intent, int requestCode) {
-		try {
-			super.startActivityForResult(intent, requestCode);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
-		}
+	protected void onPause() {
+		super.onPause();
+		adjustMessageNotification(false);
+		mContentObserver.unregister();
 	}
 	
 	@Override
@@ -193,13 +194,17 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		getContentResolver().unregisterContentObserver(mContentObserver);
 		IamLost.getInstance().remove();
 		mManager.dispatchActivityDestroy();
 	}
 	
 	private void refresh() {
-		mEntity = new «name.toFirstUpper()»(getIntent().getData());
+		mEntity = «name.toFirstUpper()».fromUri(mUri);
+		if (mEntity == null) {
+			// Entity deleted.
+			onBackPressed();
+			return;
+		}
 		«IF hasDynamicFields-»
 		mDynamicFieldManager.clear();
 		mDynamicFieldManager.loadInstancesUris(mEntity.getDynamicFieldValues());
@@ -238,11 +243,16 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		changePageIfNeeded();
 	}
 	
+	private void adjustMessageNotification(boolean suspend) {
+		NotificationController notifier = NotificationController.getInstance(this);
+		notifier.suspendMessageNotification(suspend, «name.toFirstUpper()».Columns.NOTIFICATION_ID);
+    }
+	
 	@Override
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
 		switch (item.getItemId()) {
 		case ACTIONBAR_EDIT_ID:
-			startActivity(new Intent(Intent.ACTION_EDIT, getIntent().getData()));
+			startActivity(new Intent(Intent.ACTION_EDIT, mUri));
 			return true;
 		case ACTIONBAR_SYNC_ID:
 			SynchronizationService.actionCheck(this);
@@ -357,10 +367,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	
 	public void onClick(DialogInterface dialog, int which) {
 		if (which == Dialog.BUTTON_POSITIVE) {
-			setResult(RESULT_CANCELED);
-			finish();
-			getContentResolver().unregisterContentObserver(mContentObserver);
-			getContentResolver().delete(getIntent().getData(), null, null);
+			getContentResolver().delete(mUri, null, null);
 		}
 	}
 	
@@ -373,7 +380,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	}
 	
 	public Uri getUri() {
-		return getIntent().getData();
+		return mUri;
 	}
 	
 	public Uri getContentUri() {

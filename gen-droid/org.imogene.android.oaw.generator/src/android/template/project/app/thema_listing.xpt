@@ -15,7 +15,6 @@ import org.imogene.android.app.GeneralSettings;
 import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.sync.SynchronizationService;
-import org.imogene.android.util.content.IntentUtils;
 import org.imogene.android.widget.ThemaExpandableListAdapter;
 «FOREACH entities AS entity-»
 «IF entity.topLevel || entity.directAccess.size > 0-»
@@ -29,7 +28,6 @@ import org.imogene.android.«name.toLowerCase()».R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -81,24 +79,6 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		getContentResolver().unregisterContentObserver(mObserver);
-	}
-	
-	@Override
-	public final void startActivity(Intent intent) {
-		try {
-			super.startActivity(intent);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
-		}
-	}
-	
-	@Override
-	public final void startActivityForResult(Intent intent, int requestCode) {
-		try {
-			super.startActivityForResult(intent, requestCode);
-		} catch (ActivityNotFoundException e) {
-			IntentUtils.treatException(e, this, intent);
-		}
 	}
 	
 	public final void restart() {
