@@ -41,19 +41,18 @@
 	    <g:HorizontalPanel>
 			<g:VerticalPanel>
 	
-				«REM»<g:HorizontalPanel  verticalAlignment="middle" >
+				<g:HorizontalPanel  verticalAlignment="middle" >
 				
 					«FOREACH entity.nestedFields AS f -»
 					<g:cell verticalAlignment="middle" horizontalAlignment="center">
 					    <g:Label ui:field="«EXPAND template::CommonFieldUtil::propertyName FOR f»Label" stylePrimaryName="{style.header}"/>
 					</g:cell>
-					«ENDFOREACH -»«ENDREM»	
+					«ENDFOREACH -»	
 									
-					«REM»<g:cell verticalAlignment="middle" horizontalAlignment="left" width="24px">«ENDREM»
 					<g:cell verticalAlignment="middle" horizontalAlignment="right">
 					    <g:Image ui:field="addItem" stylePrimaryName="{style.imog-AddImage}" width="24px" />		
 					</g:cell>
-				«REM»</g:HorizontalPanel>	«ENDREM»	    
+				</g:HorizontalPanel>	    
 			    
 				<g:VerticalPanel ui:field="listContainer" />
 				

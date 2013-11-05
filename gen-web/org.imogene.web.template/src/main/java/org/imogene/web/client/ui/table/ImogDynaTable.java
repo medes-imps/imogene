@@ -65,9 +65,9 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 
 	private static Binder imogDynaTableUiBinder = GWT.create(Binder.class);
 
-	interface TableResources extends DataGrid.Resources {
+	public interface TableResources extends DataGrid.Resources {
 		@Override
-		@Source(value = { ImogDataGridStyle.IMOG_CSS})
+		@Source(value = { ImogDataGridStyle.IMOG_CSS })
 		ImogDataGridStyle dataGridStyle();
 	}
 
@@ -83,24 +83,25 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	private Timer refreshTimer = null;
 
 	private int lastFetch;
-	protected int itemByPage = 20;
+	protected int itemByPage = 30;
 	private String sortProperty = "";
 	private boolean newSort = true;
 	private boolean ascSort = true;
-	boolean checkBoxesVisible = false; 
+	boolean checkBoxesVisible = false;
 	private int lastScrollPos = 0;
 
 	protected final ImogRequestFactory requestFactory;
 	protected ImogBeanDataProvider<T> beanDataProvider;
 	protected MultiSelectionModel<T> selectionModel;
 
-	public ImogDynaTable(final ImogRequestFactory requestFactory, ImogBeanDataProvider<T> provider, boolean checkBoxesVisible) {
+	public ImogDynaTable(final ImogRequestFactory requestFactory, ImogBeanDataProvider<T> provider, boolean checkBoxesVisible, int itemByPage, DataGrid.Resources resource) {
 
 		this.requestFactory = requestFactory;
 		this.beanDataProvider = provider;
 		this.checkBoxesVisible = checkBoxesVisible;
+		this.itemByPage = itemByPage;
 
-		table = new ImogDataGrid<T>(itemByPage, GWT.<TableResources> create(TableResources.class));
+		table = new ImogDataGrid<T>(itemByPage, resource);
 
 		initWidget(imogDynaTableUiBinder.createAndBindUi(this));
 
@@ -109,35 +110,32 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		pager = new ImogSimplePager();
 		pager.setDisplay(table);
 		pager.setRangeLimited(true);
-//		addMouseWheelHandler();
+		// addMouseWheelHandler();
 
 		if (checkBoxesVisible) {
 
 			Column<T, Boolean> checkColumn = new CheckColumn();
 			CheckHeader checkHeader = new CheckHeader();
 			checkHeader.setUpdater(new ValueUpdater<Boolean>() {
-		        @Override
-		        public void update(Boolean value) {
-		          for (T item : table.getVisibleItems())
-		        	  selectionModel.setSelected(item, value);
-		        }
-		      });
-			
+				@Override
+				public void update(Boolean value) {
+					for (T item : table.getVisibleItems())
+						selectionModel.setSelected(item, value);
+				}
+			});
+
 			table.addColumn(checkColumn, checkHeader);
 			table.addStyleName("with-checkboxes");
 
 			selectionModel = new MultiSelectionModel<T>();
-			table.setSelectionModel(selectionModel,
-					DefaultSelectionEventManager.<T> createCheckboxManager(0));
+			table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<T> createCheckboxManager(0));
 
-			selectionModel
-					.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-						@Override
-						public void onSelectionChange(SelectionChangeEvent event) {
-							requestFactory.getEventBus().fireEvent(new SelectionChangedInTableEvent(
-									selectionModel.getSelectedSet().size()));
-						}
-					});
+			selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+				@Override
+				public void onSelectionChange(SelectionChangeEvent event) {
+					requestFactory.getEventBus().fireEvent(new SelectionChangedInTableEvent(selectionModel.getSelectedSet().size()));
+				}
+			});
 		}
 
 		setColumns();
@@ -146,20 +144,16 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		dataProvider.addDataDisplay(table);
 	}
 
-	private void viewSelection(T value) {
+	public ImogDynaTable(final ImogRequestFactory requestFactory, ImogBeanDataProvider<T> provider, boolean checkBoxesVisible) {
+		this(requestFactory, provider, checkBoxesVisible, 30, GWT.<TableResources> create(TableResources.class));
+	}
+
+	protected void viewSelection(T value) {
 		if (value == null) {
 			return;
 		}
-		if(getViewEvent(value)!=null)
+		if (getViewEvent(value) != null)
 			requestFactory.getEventBus().fireEvent(getViewEvent(value));
-	}
-
-	public int getItemByPage() {
-		return itemByPage;
-	}
-
-	public void setItemByPage(int itemByPage) {
-		this.itemByPage = itemByPage;
 	}
 
 	/**
@@ -186,25 +180,23 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	public ImogSimplePager getTablePager() {
 		return pager;
 	}
-	
+
 	/**
-	 * 
 	 * @param filterPanel
 	 * @return
 	 */
 	protected ImogFilterPanel configureFilterPanel(final ImogFilterPanel filterPanel) {
-		
+
 		filterPanel.setFilterButtonClickHandler((new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				List<FilterCriteria> criteria = filterPanel.getFilterCriteria();				
-				String message = beanDataProvider.filter(criteria);		
+				List<FilterCriteria> criteria = filterPanel.getFilterCriteria();
+				String message = beanDataProvider.filter(criteria);
 				table.setVisibleRangeAndClearData(new Range(0, itemByPage), true);
-				if(message!=null) {												
-					LocalSession.get().setSearchCriterions(beanDataProvider.getSearchCriterions(), message);		
+				if (message != null) {
+					LocalSession.get().setSearchCriterions(beanDataProvider.getSearchCriterions(), message);
 					requestFactory.getEventBus().fireEvent(new IsTableFilteredEvent(true, message));
-				}
-				else
+				} else
 					requestFactory.getEventBus().fireEvent(new IsTableFilteredEvent(false, null));
 			}
 		}));
@@ -218,72 +210,70 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 				requestFactory.getEventBus().fireEvent(new IsTableFilteredEvent(false, null));
 			}
 		}));
-		
+
 		return filterPanel;
 	}
-	
+
 	/**
 	 * Converts the search criteria in URL query parameters for the CSV export
 	 * @return
 	 */
 	protected String getDataProviderCriteria() {
 		StringBuffer result = new StringBuffer();
-		ImogJunctionProxy criterions = beanDataProvider.getSearchCriterions();			
-		if(criterions instanceof ImogConjunctionProxy) {
-			
-			ImogConjunctionProxy conj = (ImogConjunctionProxy)criterions;
+		ImogJunctionProxy criterions = beanDataProvider.getSearchCriterions();
+		if (criterions instanceof ImogConjunctionProxy) {
+
+			ImogConjunctionProxy conj = (ImogConjunctionProxy) criterions;
 			List<ImogCriterionProxy> secondLevelCrits = conj.getCriterions();
-			
-			if(secondLevelCrits!=null) {
-				for(ImogCriterionProxy secondLevelCrit:secondLevelCrits) {
-					if(secondLevelCrit instanceof BasicCriteriaProxy) {
+
+			if (secondLevelCrits != null) {
+				for (ImogCriterionProxy secondLevelCrit : secondLevelCrits) {
+					if (secondLevelCrit instanceof BasicCriteriaProxy) {
 						BasicCriteriaProxy crit = (BasicCriteriaProxy) secondLevelCrit;
-						if(crit.getOperation().equals(CriteriaConstants.DATE_OPERATOR_BEFORE))
+						if (crit.getOperation().equals(CriteriaConstants.DATE_OPERATOR_BEFORE))
 							result.append("&" + crit.getField().replace(".", "_") + "Before=" + crit.getValue());
-						else if(crit.getOperation().equals(CriteriaConstants.DATE_OPERATOR_AFTER))
+						else if (crit.getOperation().equals(CriteriaConstants.DATE_OPERATOR_AFTER))
 							result.append("&" + crit.getField().replace(".", "_") + "After=" + crit.getValue());
 						else
 							result.append("&" + crit.getField().replace(".", "_") + "=" + crit.getValue());
 					}
 				}
 			}
-		}		
+		}
 		return result.toString();
 	}
-	
-	
+
 	/**
 	 * Sets the handlers for the DynaTable
 	 */
 	private void setHandlers() {
-		
+
 		// column sort handler
 		AsyncHandler columnSortHandler = new AsyncHandler(table);
 		registrations.add(table.addColumnSortHandler(columnSortHandler));
 
 		// row view handler
-		registrations.add(table
-				.addCellPreviewHandler(new CellPreviewEvent.Handler<T>() {
-					@Override
-					public void onCellPreview(CellPreviewEvent<T> event) {
+		registrations.add(table.addCellPreviewHandler(new CellPreviewEvent.Handler<T>() {
+			@Override
+			public void onCellPreview(CellPreviewEvent<T> event) {
 
-						event.setCanceled(true);
-						String type = event.getNativeEvent().getType();
-						if (type.equals("click")) {
-							T value = event.getValue();
-							if (checkBoxesVisible) {
-								if (event.getColumn() > 0)
-									viewSelection(value);
-							} else {
-								viewSelection(value);
-							}
-						}
+				event.setCanceled(true);
+				String type = event.getNativeEvent().getType();
+				if (type.equals("click")) {
+					T value = event.getValue();
+					if (checkBoxesVisible) {
+						if (event.getColumn() > 0)
+							viewSelection(value);
+					} else {
+						viewSelection(value);
 					}
-				}));
-		
+				}
+			}
+		}));
+
 		// mouse wheel handler
-//		registrations.add(table.addDomHandler(addMouseWheelHandler(), MouseWheelEvent.getType()));
-		
+		// registrations.add(table.addDomHandler(addMouseWheelHandler(), MouseWheelEvent.getType()));
+
 		final ScrollPanel scrollable = table.getScrollPanel();
 		registrations.add(scrollable.addScrollHandler(new ScrollHandler() {
 			@Override
@@ -291,11 +281,10 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 
 				int oldScrollPos = lastScrollPos;
 				lastScrollPos = scrollable.getVerticalScrollPosition();
-				int newScroll = lastScrollPos;
 
-				if (oldScrollPos >= lastScrollPos) {
+				if (oldScrollPos > lastScrollPos) {
 					// Scrolling up
-					if (lastScrollPos > 0 && lastScrollPos <= 10) {
+					if (lastScrollPos > 0 && lastScrollPos <= 20) {
 						// We are near the start, so previous page.
 						if (pager.hasPreviousPage())
 							pager.previousPage();
@@ -311,34 +300,37 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 				}
 			}
 		}));
-		
+
 	}
-	
+
 	public void setTableWidth(String width) {
 		table.getElement().getStyle().setProperty("minWidth", width);
 	}
-	
+
+	public void setTableHeight(String height) {
+		table.getElement().getStyle().setProperty("minHeight", height);
+	}
+
 	/**
 	 * Sets if the table shall refresh itself automatically
 	 * @param autorefresh true if the table shall refresh itself automatically
 	 * @param millisecons the refresh period in milliseconds
 	 */
 	public void setAutoRefresh(boolean autorefresh, int millisecons) {
-		
-		if(autorefresh) {
+
+		if (autorefresh) {
 			closeTimer();
 			refreshTimer = new Timer() {
 				public void run() {
-					table.setVisibleRangeAndClearData(new Range(0,itemByPage), true);
+					table.setVisibleRangeAndClearData(new Range(0, itemByPage), true);
 				}
 			};
 			refreshTimer.scheduleRepeating(millisecons);
-		}
-		else {
-			 closeTimer();
+		} else {
+			closeTimer();
 		}
 	}
-	
+
 	/**
 	 * Sets if the table shall refresh itself automatically
 	 * @param autorefresh true if the table shall refresh itself automatically
@@ -346,14 +338,14 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	public void setAutoRefresh(boolean autorefresh) {
 		setAutoRefresh(autorefresh, 30000);
 	}
-	
+
 	/**
 	 * Closes the timer if it has been set
 	 */
 	private void closeTimer() {
-		if(refreshTimer!=null){
+		if (refreshTimer != null) {
 			refreshTimer.cancel();
-			refreshTimer=null;
+			refreshTimer = null;
 		}
 	}
 
@@ -362,12 +354,12 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		for (HandlerRegistration r : registrations)
 			r.removeHandler();
 		registrations.clear();
-		
-		 closeTimer();
-		
+
+		closeTimer();
+
 		super.onUnload();
 	}
-	
+
 	@Override
 	protected void onLoad() {
 		setHandlers();
@@ -380,17 +372,16 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 	protected abstract void setColumns();
 
 	protected abstract GwtEvent<?> getViewEvent(T value);
-		
-	protected abstract String getDefaultSortProperty();
-	
-	protected abstract boolean getDefaultSortPropertyOrder();
 
+	protected abstract String getDefaultSortProperty();
+
+	protected abstract boolean getDefaultSortPropertyOrder();
 
 	/**
 	 * @author MEDES-IMPS
 	 */
 	public class CheckHeader extends Header<Boolean> {
-		
+
 		public CheckHeader() {
 			super(new CheckboxCell(true, false));
 			this.setHeaderStyleNames("dynatable-select-checkbox");
@@ -398,16 +389,14 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 
 		@Override
 		public Boolean getValue() {
-			  for (T item : table.getVisibleItems()) {
-		            if (!selectionModel.isSelected(item))
-		              return false;
-		          }
-		          return table.getVisibleItems().size() > 0;
+			for (T item : table.getVisibleItems()) {
+				if (!selectionModel.isSelected(item))
+					return false;
+			}
+			return table.getVisibleItems().size() > 0;
 		}
-		
+
 	}
-	
-	
 
 	/**
 	 * @author MEDES-IMPS
@@ -433,8 +422,7 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		protected void onRangeChanged(final HasData<T> display) {
 
 			/** count total nb of rows and display the table **/
-			Request<Long> countRowsRequest = beanDataProvider
-					.getTotalRowCount();
+			Request<Long> countRowsRequest = beanDataProvider.getTotalRowCount();
 			countRowsRequest.fire(new Receiver<Long>() {
 				@Override
 				public void onSuccess(Long count) {
@@ -450,7 +438,6 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		}
 
 		/**
-		 * 
 		 * @param display
 		 */
 		private void updateTable(final HasData<T> display) {
@@ -465,15 +452,12 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 			Request<List<T>> request;
 
 			if (sortProperty.isEmpty())
-				request = beanDataProvider.getList(getDefaultSortProperty(), start, itemByPage,
-						getDefaultSortPropertyOrder());
+				request = beanDataProvider.getList(getDefaultSortProperty(), start, itemByPage, getDefaultSortPropertyOrder());
 			else {
 				if (newSort)
-					request = beanDataProvider.getList(sortProperty, 0,
-							itemByPage, ascSort);
+					request = beanDataProvider.getList(sortProperty, 0, itemByPage, ascSort);
 				else
-					request = beanDataProvider.getList(sortProperty, start,
-							itemByPage, ascSort);
+					request = beanDataProvider.getList(sortProperty, start, itemByPage, ascSort);
 			}
 
 			request.fire(new Receiver<List<T>>() {
@@ -492,7 +476,6 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		}
 
 		/**
-		 * 
 		 * @param start
 		 */
 		private void setSortConfiguration(int start) {
@@ -501,8 +484,7 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 			ColumnSortList sortList = table.getColumnSortList();
 			if (sortList != null && sortList.size() > 0) {
 				@SuppressWarnings("unchecked")
-				ImogColumn<T, String> sortColumn = (ImogColumn<T, String>) sortList
-						.get(0).getColumn();
+				ImogColumn<T, String> sortColumn = (ImogColumn<T, String>) sortList.get(0).getColumn();
 				String newSortProperty = sortColumn.getPropertyName();
 				if (newSortProperty.equals(sortProperty)) {
 					newSort = false;

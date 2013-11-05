@@ -25,6 +25,8 @@
 			color: #BBB !important;
 			font-weight: bold;
 			font-size: 14px;
+			position: relative;
+			left: -100px;
 		}
 		
 		.actorInfo {
@@ -63,9 +65,11 @@
 		}
 		
 		.versionNumber {
-			margin-left: 10px;
+			margin-left: 20px;
 			margin-bottom: 5px;
 			color: #efefef;
+			font-style: italic;
+			width: 80px;
 		}	
 	</ui:style>
 
@@ -75,7 +79,7 @@
 		<g:cell horizontalAlignment="left" verticalAlignment="middle" width="32px" styleName="{style.icon}">
 			<g:Image ui:field="appliIcon" width="32px" styleName="{style.icon}"/>
 		</g:cell>
-		<g:cell horizontalAlignment="left" verticalAlignment="bottom">		
+		<g:cell horizontalAlignment="left" verticalAlignment="bottom" width="80px">		
 			<g:Label ui:field="versionNumber" text="version:0.0.0" styleName="{style.versionNumber}"/>
 		</g:cell>		
 		<g:cell horizontalAlignment="center" verticalAlignment="middle">
