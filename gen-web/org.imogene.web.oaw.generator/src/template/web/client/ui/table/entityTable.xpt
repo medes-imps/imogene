@@ -420,7 +420,7 @@ private «projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUppe
 		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
 			value = "";
 		else
-			value = DateUtil.getFormatedDateTime(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+			value = DateUtil.getDateTime(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 «ENDDEFINE»
 «DEFINE getColumnValue FOR EnumField-»
 		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)

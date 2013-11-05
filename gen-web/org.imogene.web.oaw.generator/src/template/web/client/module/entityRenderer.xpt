@@ -212,7 +212,7 @@ public class «projectName.toFirstUpper()»Renderer extends ImogBeanRenderer {
 
 «DEFINE stringRepresentation(String projectName) FOR DateTimeField -»
 	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
-		value = value + DateUtil.getFormatedDateTime(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " " ;
+		value = value + DateUtil.getDateTime(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " " ;
 «ENDDEFINE»
 
 «DEFINE stringRepresentation(String projectName) FOR TimeField -»

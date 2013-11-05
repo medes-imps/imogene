@@ -26,6 +26,7 @@ import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.DateUtil;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.FilterCriteria;
+import org.imogene.web.client.util.SimpleImogDateFormat;
 
 import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.DoubleBox;
@@ -184,6 +185,12 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 	private DateBox «prefix + name.toFirstLower()»AfterBox;
 	private ImogFilterBox «prefix + name.toFirstLower()»AfterFilterBox;
 «ENDDEFINE»
+«DEFINE declareFilter(String prefix) FOR DateTimeField-»
+	private DateBox «prefix + name.toFirstLower()»BeforeBox;
+	private ImogFilterBox «prefix + name.toFirstLower()»BeforeFilterBox;
+	private DateBox «prefix + name.toFirstLower()»AfterBox;
+	private ImogFilterBox «prefix + name.toFirstLower()»AfterFilterBox;
+«ENDDEFINE»
 «DEFINE declareFilter(String prefix) FOR IntegerField-»
 	private IntegerBox «prefix + name.toFirstLower()»Box;
 	private ImogFilterBox «prefix + name.toFirstLower()»FilterBox;
@@ -218,6 +225,10 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 	«prefix + name.toFirstLower()»BeforeBox.setValue(null);
 	«prefix + name.toFirstLower()»AfterBox.setValue(null);	
 «ENDDEFINE»
+«DEFINE resetWidget(String prefix) FOR DateTimeField-»
+	«prefix + name.toFirstLower()»BeforeBox.setValue(null);
+	«prefix + name.toFirstLower()»AfterBox.setValue(null);	
+«ENDDEFINE»
 «DEFINE resetWidget(String prefix) FOR IntegerField-»
 	«prefix + name.toFirstLower()»Box.setValue(null);
 «ENDDEFINE»
@@ -248,15 +259,30 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		addTableFilter(«prefix + name.toFirstLower()»FilterBox);		
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR DateField-»
-		«prefix + name.toFirstLower()»BeforeBox = new DateBox();
-		«prefix + name.toFirstLower()»BeforeFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»BeforeBox);
-		«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
-		addTableFilter(«prefix + name.toFirstLower()»BeforeFilterBox);
-		
 		«prefix + name.toFirstLower()»AfterBox = new DateBox();
+		«prefix + name.toFirstLower()»AfterBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
 		«prefix + name.toFirstLower()»AfterFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»AfterBox);
 		«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
 		addTableFilter(«prefix + name.toFirstLower()»AfterFilterBox);		
+
+		«prefix + name.toFirstLower()»BeforeBox = new DateBox();
+		«prefix + name.toFirstLower()»BeforeBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
+		«prefix + name.toFirstLower()»BeforeFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»BeforeBox);
+		«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		addTableFilter(«prefix + name.toFirstLower()»BeforeFilterBox);
+«ENDDEFINE»
+«DEFINE createWidget(String prefix, String projectName) FOR DateTimeField-»
+		«prefix + name.toFirstLower()»AfterBox = new DateBox();
+		«prefix + name.toFirstLower()»AfterBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
+		«prefix + name.toFirstLower()»AfterFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»AfterBox);
+		«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		addTableFilter(«prefix + name.toFirstLower()»AfterFilterBox);		
+
+		«prefix + name.toFirstLower()»BeforeBox = new DateBox();
+		«prefix + name.toFirstLower()»BeforeBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
+		«prefix + name.toFirstLower()»BeforeFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»BeforeBox);
+		«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		addTableFilter(«prefix + name.toFirstLower()»BeforeFilterBox);
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR IntegerField-»
 		«prefix + name.toFirstLower()»Box = new IntegerBox();
@@ -314,6 +340,28 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		criteria.add(«prefix + name.toFirstLower()»Crit);	
 «ENDDEFINE»
 «DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR DateField-»
+		
+		if(«prefix + name.toFirstLower()»BeforeBox.getValue()!=null) {
+			FilterCriteria «prefix + name.toFirstLower()»BeforeCrit = new FilterCriteria();
+			«prefix + name.toFirstLower()»BeforeCrit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			«prefix + name.toFirstLower()»BeforeCrit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+			«prefix + name.toFirstLower()»BeforeCrit.setOperation(CriteriaConstants.DATE_OPERATOR_BEFORE);
+			«prefix + name.toFirstLower()»BeforeCrit.setValue(DateUtil.getDate(«prefix + name.toFirstLower()»BeforeBox.getValue()));
+			«prefix + name.toFirstLower()»BeforeCrit.setValueDisplayName(DateUtil.getDate(«prefix + name.toFirstLower()»BeforeBox.getValue()));
+			criteria.add(«prefix + name.toFirstLower()»BeforeCrit);
+		}
+		
+		if(«prefix + name.toFirstLower()»AfterBox.getValue()!=null) {
+			FilterCriteria «prefix + name.toFirstLower()»AfterCrit = new FilterCriteria();
+			«prefix + name.toFirstLower()»AfterCrit.setField("«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+			«prefix + name.toFirstLower()»AfterCrit.setFieldDisplayName(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+			«prefix + name.toFirstLower()»AfterCrit.setOperation(CriteriaConstants.DATE_OPERATOR_AFTER);
+			«prefix + name.toFirstLower()»AfterCrit.setValue(DateUtil.getDate(«prefix + name.toFirstLower()»AfterBox.getValue()));
+			«prefix + name.toFirstLower()»AfterCrit.setValueDisplayName(DateUtil.getDate(«prefix + name.toFirstLower()»AfterBox.getValue()));
+			criteria.add(«prefix + name.toFirstLower()»AfterCrit);
+		}	
+«ENDDEFINE»
+«DEFINE configureCriteria(String projectName, Project p, String prefix, String property) FOR DateTimeField-»
 		
 		if(«prefix + name.toFirstLower()»BeforeBox.getValue()!=null) {
 			FilterCriteria «prefix + name.toFirstLower()»BeforeCrit = new FilterCriteria();
@@ -400,6 +448,12 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR DateField-»
+		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»")) {		
+			«prefix + name.toFirstLower()»BeforeFilterBox.setVisible(false);
+			«prefix + name.toFirstLower()»AfterFilterBox.setVisible(false);
+		}
+«ENDDEFINE»
+«DEFINE setAccess(String prefix) FOR DateTimeField-»
 		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»")) {		
 			«prefix + name.toFirstLower()»BeforeFilterBox.setVisible(false);
 			«prefix + name.toFirstLower()»AfterFilterBox.setVisible(false);

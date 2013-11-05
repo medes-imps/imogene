@@ -525,6 +525,11 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirst
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(«defaultValue»);
 	«ENDIF-»
 «ENDDEFINE»
+«DEFINE defaultValue(String variable) FOR FloatField-»
+	«IF defaultValue!=null && defaultValue.matches("[0-9]+\\.[0-9]+") -»
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(«defaultValue»);
+	«ENDIF-»
+«ENDDEFINE»
 «DEFINE defaultValue(String variable) FOR EnumField-»
 	«IF defaultValue!=null»
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»("«defaultValue»");
