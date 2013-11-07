@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Paths;
@@ -30,13 +32,13 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Process;
 import android.util.Log;
 import android.util.Xml;
 
-public class SynchronizationController {
+public class SynchronizationController implements Runnable {
 
 	private static final String TAG = SynchronizationController.class.getName();
 
@@ -53,9 +55,13 @@ public class SynchronizationController {
 		START, INITIALIZATION, SEND, SENT, RECEIVE, RECEIVED, CLOSE, RESUME, FINISH, FAILURE
 	}
 
+	private final BlockingQueue<Runnable> mCommands = new LinkedBlockingQueue<Runnable>();
+	private final Thread mThread;
+	private boolean mBusy;
+
+	private final HashSet<SynchronizationObserver> mSynchronizationObservers = new HashSet<SynchronizationObserver>();
 	private final Context mContext;
 	private final Preferences mPreferences;
-	private final HashSet<SynchronizationObserver> mSynchronizationObservers = new HashSet<SynchronizationObserver>();
 	private OptimizedSyncClient mSyncClient;
 	private ImogXmlConverter mConverter;
 
@@ -69,6 +75,38 @@ public class SynchronizationController {
 	private SynchronizationController(Context context) {
 		mContext = context.getApplicationContext();
 		mPreferences = Preferences.getPreferences(context);
+		mThread = new Thread(this);
+		mThread.start();
+	}
+
+	// TODO: seems that this reading of mBusy isn't thread-safe
+	public boolean isBusy() {
+		return mBusy;
+	}
+
+	@Override
+	public void run() {
+		Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+		// TODO: add an end test to this infinite loop
+		while (true) {
+			Runnable runnable;
+			try {
+				runnable = mCommands.take();
+			} catch (InterruptedException e) {
+				continue; // re-test the condition on the eclosing while
+			}
+			mBusy = true;
+			runnable.run();
+			mBusy = false;
+		}
+	}
+
+	private void put(Runnable runnable) {
+		try {
+			mCommands.offer(runnable);
+		} catch (IllegalStateException ie) {
+			throw new Error(ie);
+		}
 	}
 
 	/**
@@ -99,7 +137,17 @@ public class SynchronizationController {
 		}
 	}
 
-	public synchronized void synchronize() {
+	public void synchronize() {
+		put(new Runnable() {
+
+			@Override
+			public void run() {
+				synchronizeSynchronous();
+			}
+		});
+	}
+
+	private void synchronizeSynchronous() {
 		mTerminal = mPreferences.getSyncTerminal();
 		mLogin = mPreferences.getSyncLogin();
 		mPassword = mPreferences.getSyncPassword();
@@ -407,14 +455,11 @@ public class SynchronizationController {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "mark send entities as synchronized");
 		}
-		ContentValues values = new ContentValues();
-		values.put(ImogBean.Columns.FLAG_SYNCHRONIZED, 1);
 
 		ContentResolver res = mContext.getContentResolver();
-
-		res.update(ClientFilter.Columns.CONTENT_URI, values, ClientFilter.Columns.MODIFIED + " < " + time, null);
+		DatabaseUtils.markSent(res, ClientFilter.Columns.CONTENT_URI, time, true);
 		for (Uri uri : ImogHelper.getInstance().getAllUris()) {
-			res.update(uri, values, ImogBean.Columns.MODIFIED + " < " + time, null);
+			DatabaseUtils.markSent(res, uri, time, true);
 		}
 	}
 

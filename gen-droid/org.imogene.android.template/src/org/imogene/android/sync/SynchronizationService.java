@@ -41,12 +41,12 @@ public class SynchronizationService extends Service {
 		context.startService(i);
 	}
 
-	private SynchronizationController mController;
+	private Controller mController;
 	private Preferences mPreferences;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, final int startId) {
-		mController = SynchronizationController.getInstance(this);
+		mController = Controller.getInstance(this);
 		mPreferences = Preferences.getPreferences(this);
 
 		String action = intent.getAction();

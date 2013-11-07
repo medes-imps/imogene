@@ -44,6 +44,24 @@ public class DatabaseUtils {
 	}
 
 	/**
+	 * Update the column {@link ImogBean.Columns#FLAG_SYNCHRONIZED} with the given value for the entities represented by
+	 * the {@link Uri} and which last modification date column {@link ImogBean.Columns#MODIFIED} is below the given
+	 * time.
+	 * 
+	 * @param res The current {@link ContentResolver}.
+	 * @param uri The {@link Uri} of the element to update.
+	 * @param time The last synchronization time.
+	 * @param sent The marker for the column.
+	 */
+	public static void markSent(ContentResolver res, Uri uri, long time, boolean sent) {
+		ContentValues values = new ContentValues();
+		values.put(ImogBean.Columns.FLAG_SYNCHRONIZED, sent ? 1 : 0);
+		String where = "(" + ImogBean.Columns.MODIFIED + " < ?) AND (" + ImogBean.Columns.FLAG_SYNCHRONIZED + " = ?)";
+		String[] args = new String[] { Long.toString(time), sent ? "0" : "1" };
+		res.update(uri, values, where, args);
+	}
+
+	/**
 	 * Should save the database of the application to the folder given by {@link Paths#PATH_BACKUP}.
 	 * 
 	 * @param context The current context.
