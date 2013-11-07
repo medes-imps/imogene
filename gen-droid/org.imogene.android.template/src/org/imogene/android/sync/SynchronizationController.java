@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -55,11 +57,13 @@ public class SynchronizationController implements Runnable {
 		START, INITIALIZATION, SEND, SENT, RECEIVE, RECEIVED, CLOSE, RESUME, FINISH, FAILURE
 	}
 
-	private final BlockingQueue<Runnable> mCommands = new LinkedBlockingQueue<Runnable>();
+	private final BlockingQueue<Command> mCommands = new LinkedBlockingQueue<Command>();
+	private final Set<String> mTags = Collections.synchronizedSet(new HashSet<String>());
 	private final Thread mThread;
 	private boolean mBusy;
 
-	private final HashSet<SynchronizationObserver> mSynchronizationObservers = new HashSet<SynchronizationObserver>();
+	private final Set<SynchronizationListener> mListeners = Collections
+			.synchronizedSet(new HashSet<SynchronizationListener>());
 	private final Context mContext;
 	private final Preferences mPreferences;
 	private OptimizedSyncClient mSyncClient;
@@ -89,24 +93,32 @@ public class SynchronizationController implements Runnable {
 		Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 		// TODO: add an end test to this infinite loop
 		while (true) {
-			Runnable runnable;
+			Command command;
 			try {
-				runnable = mCommands.take();
+				command = mCommands.take();
 			} catch (InterruptedException e) {
 				continue; // re-test the condition on the eclosing while
 			}
 			mBusy = true;
-			runnable.run();
+			command.runnable.run();
+			synchronized (mTags) {
+				mTags.remove(command.tag);
+			}
 			mBusy = false;
 		}
 	}
 
-	private void put(Runnable runnable) {
-		try {
-			mCommands.offer(runnable);
-		} catch (IllegalStateException ie) {
-			throw new Error(ie);
+	private void put(String tag, Runnable runnable) {
+		synchronized (mTags) {
+			if (mTags.contains(tag)) {
+				Log.i(TAG, "Command " + tag + " already in queue");
+				return;
+			}
 		}
+		Command command = new Command();
+		command.runnable = runnable;
+		command.tag = tag;
+		mCommands.offer(command);
 	}
 
 	/**
@@ -116,10 +128,10 @@ public class SynchronizationController implements Runnable {
 	 * 
 	 * @param observer The callback that may be used in action methods
 	 */
-	public void registerSynchronizationObserver(SynchronizationObserver observer) {
-		synchronized (mSynchronizationObservers) {
+	public void registerSynchronizationObserver(SynchronizationListener observer) {
+		synchronized (mListeners) {
 			observer.setRegistered(true);
-			mSynchronizationObservers.add(observer);
+			mListeners.add(observer);
 		}
 	}
 
@@ -130,15 +142,15 @@ public class SynchronizationController implements Runnable {
 	 * 
 	 * @param observer The callback that may no longer be used
 	 */
-	public void unregisterSynchronizationObserver(SynchronizationObserver observer) {
-		synchronized (mSynchronizationObservers) {
+	public void unregisterSynchronizationObserver(SynchronizationListener observer) {
+		synchronized (mListeners) {
 			observer.setRegistered(false);
-			mSynchronizationObservers.remove(observer);
+			mListeners.remove(observer);
 		}
 	}
 
 	public void synchronize() {
-		put(new Runnable() {
+		put("Sync", new Runnable() {
 
 			@Override
 			public void run() {
@@ -476,8 +488,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Synchronization starting: " + mServer);
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.START, null);
 			}
 		}
@@ -487,8 +499,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Initializing the synchronization");
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.INITIALIZATION, null);
 			}
 		}
@@ -498,8 +510,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Sending client modifications");
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.SEND, null);
 			}
 		}
@@ -509,8 +521,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Number of sent modification: " + sent);
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.SENT, sent);
 			}
 		}
@@ -520,8 +532,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Receiving server modifications");
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.RECEIVE, null);
 			}
 		}
@@ -531,8 +543,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Number of modifications applied: " + received);
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.RECEIVED, received);
 			}
 		}
@@ -542,8 +554,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Synchronization session closed");
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.CLOSE, null);
 			}
 		}
@@ -553,8 +565,8 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Synchronization process finished");
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.FINISH, null);
 			}
 		}
@@ -564,11 +576,16 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Log.i(TAG, "Synchronization failure. code: " + code);
 		}
-		synchronized (mSynchronizationObservers) {
-			for (SynchronizationObserver callback : mSynchronizationObservers) {
+		synchronized (mListeners) {
+			for (SynchronizationListener callback : mListeners) {
 				callback.dispatchChange(Status.FAILURE, code);
 			}
 		}
+	}
+
+	private static class Command {
+		public Runnable runnable;
+		public String tag;
 	}
 
 }

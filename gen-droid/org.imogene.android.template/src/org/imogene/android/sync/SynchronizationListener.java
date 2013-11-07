@@ -8,7 +8,7 @@ import android.os.Handler;
  * Receives call backs for synchronization {@link Status}. May be added using
  * {@link SynchronizationController#registerSynchronizationObserver(SynchronizationObserver).}
  */
-public abstract class SynchronizationObserver {
+public abstract class SynchronizationListener {
 
 	private volatile boolean mRegistered;
 	private Handler mHandler;
@@ -24,11 +24,11 @@ public abstract class SynchronizationObserver {
 
 		@Override
 		public void run() {
-			SynchronizationObserver.this.onChange(mStatus, mObject);
+			SynchronizationListener.this.onChange(mStatus, mObject);
 		}
 	}
 
-	public SynchronizationObserver(Handler handler) {
+	public SynchronizationListener(Handler handler) {
 		mHandler = handler;
 	}
 

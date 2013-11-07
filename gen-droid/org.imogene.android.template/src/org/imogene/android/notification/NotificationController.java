@@ -13,7 +13,7 @@ import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.domain.ImogHelper.ImogBeanCallback;
 import org.imogene.android.sync.SynchronizationController;
 import org.imogene.android.sync.SynchronizationController.Status;
-import org.imogene.android.sync.SynchronizationObserver;
+import org.imogene.android.sync.SynchronizationListener;
 import org.imogene.android.template.R;
 import org.imogene.android.util.content.ContentUrisUtils;
 
@@ -344,7 +344,7 @@ public class NotificationController {
 
 	}
 
-	private static class MySynchronizationObserver extends SynchronizationObserver {
+	private static class MySynchronizationObserver extends SynchronizationListener {
 
 		private static final int NOTIFICATION_STATUS_ID = 1111;
 

@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -57,18 +58,16 @@ public class SynchronizationService extends Service {
 			if (Constants.DEBUG) {
 				Log.i(TAG, "**** checking");
 			}
-			new Thread() {
+			new AsyncTask<Void, Void, Void>() {
 				@Override
-				public void run() {
+				protected Void doInBackground(Void... params) {
 					setWatchdog(alarmManager);
-
-					mController.synchronize();
-
+					mController.serviceSynchronize();
 					reschedule(alarmManager);
-
 					stopSelf(startId);
+					return null;
 				};
-			}.start();
+			}.execute();
 		} else if (ACTION_RESCHEDULE.equals(action)) {
 			reschedule(alarmManager);
 			stopSelf(startId);

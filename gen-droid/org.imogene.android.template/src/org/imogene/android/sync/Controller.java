@@ -20,7 +20,7 @@ public class Controller {
 		mLegacyController = SynchronizationController.getInstance(context);
 	}
 
-	public void synchronize() {
+	public void serviceSynchronize() {
 		new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {
