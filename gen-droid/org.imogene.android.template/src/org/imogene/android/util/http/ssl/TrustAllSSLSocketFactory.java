@@ -7,31 +7,45 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
-
-
 public class TrustAllSSLSocketFactory extends SSLSocketFactory {
+
+	private static final TrustManager[] INSECURE_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] certs, String authType) {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] certs, String authType) {
+		}
+	} };
+
 	private javax.net.ssl.SSLSocketFactory factory;
 
-	public TrustAllSSLSocketFactory() throws KeyManagementException,
-			NoSuchAlgorithmException, KeyStoreException,
+	public TrustAllSSLSocketFactory() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
 			UnrecoverableKeyException {
 		super(null);
 		SSLContext sslcontext = SSLContext.getInstance("TLS");
-		sslcontext.init(null, new TrustManager[] { new TrustAllManager() }, null);
+		sslcontext.init(null, INSECURE_TRUST_MANAGER, null);
 		factory = sslcontext.getSocketFactory();
 		setHostnameVerifier(new AllowAllHostnameVerifier());
 	}
 
-	public SocketFactory getDefault() throws KeyManagementException,
-			NoSuchAlgorithmException, KeyStoreException,
+	public SocketFactory getDefault() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
 			UnrecoverableKeyException {
 		return new TrustAllSSLSocketFactory();
 	}
@@ -42,23 +56,19 @@ public class TrustAllSSLSocketFactory extends SSLSocketFactory {
 	}
 
 	@Override
-	public Socket createSocket(Socket socket, String s, int i, boolean flag)
-			throws IOException {
+	public Socket createSocket(Socket socket, String s, int i, boolean flag) throws IOException {
 		return factory.createSocket(socket, s, i, flag);
 	}
 
-	public Socket createSocket(InetAddress inaddr, int i,
-			InetAddress inaddr1, int j) throws IOException {
+	public Socket createSocket(InetAddress inaddr, int i, InetAddress inaddr1, int j) throws IOException {
 		return factory.createSocket(inaddr, i, inaddr1, j);
 	}
 
-	public Socket createSocket(InetAddress inaddr, int i)
-			throws IOException {
+	public Socket createSocket(InetAddress inaddr, int i) throws IOException {
 		return factory.createSocket(inaddr, i);
 	}
 
-	public Socket createSocket(String s, int i, InetAddress inaddr, int j)
-			throws IOException {
+	public Socket createSocket(String s, int i, InetAddress inaddr, int j) throws IOException {
 		return factory.createSocket(s, i, inaddr, j);
 	}
 
