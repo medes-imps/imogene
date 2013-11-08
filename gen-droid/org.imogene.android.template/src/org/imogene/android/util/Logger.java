@@ -12,18 +12,29 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import android.os.Environment;
 import android.os.Process;
+import android.util.Log;
 
 public class Logger implements Runnable {
+
+	private static final boolean DEFAULT = true;
 
 	private static final File LOG_FILE = new File(Environment.getExternalStorageDirectory(), "log.txt");
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
 
 	public static void e(String tag, String message, Exception e) {
-		getIntance().log(Type.ERROR, new Date(), tag, message, e);
+		if (DEFAULT) {
+			Log.e(tag, message, e);
+		} else {
+			getIntance().log(Type.ERROR, new Date(), tag, message, e);
+		}
 	}
 
 	public static void i(String tag, String message) {
-		getIntance().log(Type.INFO, new Date(), tag, message, null);
+		if (DEFAULT) {
+			Log.i(tag, message);
+		} else {
+			getIntance().log(Type.INFO, new Date(), tag, message, null);
+		}
 	}
 
 	private static Logger sInstance = null;
@@ -36,7 +47,7 @@ public class Logger implements Runnable {
 	}
 
 	private final Thread mThread;
-	private final LinkedBlockingQueue<Log> mLogs = new LinkedBlockingQueue<Log>();
+	private final LinkedBlockingQueue<LogEntry> mLogs = new LinkedBlockingQueue<LogEntry>();
 
 	private Logger() {
 		mThread = new Thread(this);
@@ -44,7 +55,7 @@ public class Logger implements Runnable {
 	}
 
 	private void log(Type type, Date date, String tag, String message, Exception e) {
-		Log log = new Log();
+		LogEntry log = new LogEntry();
 		log.type = type;
 		log.date = date;
 		log.tag = tag;
@@ -57,7 +68,7 @@ public class Logger implements Runnable {
 	public void run() {
 		while (true) {
 			Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-			Log log;
+			LogEntry log;
 			try {
 				log = mLogs.take();
 			} catch (InterruptedException e) {
@@ -67,7 +78,7 @@ public class Logger implements Runnable {
 		}
 	}
 
-	private void write(Log log) {
+	private void write(LogEntry log) {
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(LOG_FILE, true);
@@ -90,7 +101,7 @@ public class Logger implements Runnable {
 		ps.close();
 	}
 
-	private static class Log {
+	private static class LogEntry {
 		Type type;
 		Date date;
 		String tag;

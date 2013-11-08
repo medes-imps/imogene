@@ -13,6 +13,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.util.base64.Base64;
@@ -24,12 +27,12 @@ import org.imogene.android.util.http.ssl.SSLHttpClient;
 
 public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
+	private static final int CONN_TIMEOUT = 10 * 1000;
+	private static final int SO_TIMEOUT = 60 * 1000;
+
 	private String mUrl = null;
-
 	private boolean mHttpAuthentication = false;
-
 	private String mHttpLogin;
-
 	private String mHttpPassword;
 
 	public OptimizedSyncClientHttp(String url) {
@@ -66,7 +69,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8"))
 					.append("&" + TERMINALID_PARAM + "=" + terminalId);
 
-			HttpGet get = httpGetMethod(builder.toString());
+			HttpGet get = createHttpGetMethod(builder.toString());
 
 			/* request execution */
 			HttpResponse response = client.execute(get);
@@ -102,7 +105,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 				.append("&" + SESSION_PARAM + "=" + sessionId)
 				.append("&" + DEBUG_PARAM + "=" + Boolean.toString(debug));
 
-		HttpGet method = httpGetMethod(builder.toString());
+		HttpGet method = createHttpGetMethod(builder.toString());
 
 		try {
 			/* request execution */
@@ -143,7 +146,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8"))
 					.append("&" + TERMINALID_PARAM + "=" + terminalId).append("&" + TYPE_PARAM + "=" + type);
 
-			HttpGet get = httpGetMethod(builder.toString());
+			HttpGet get = createHttpGetMethod(builder.toString());
 
 			/* request execution */
 			HttpResponse response = client.execute(get);
@@ -186,7 +189,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId).append(
 					"&" + CMD_PARAM + "=" + cmd);
 
-			HttpPost method = httpPostMethod(builder.toString());
+			HttpPost method = createHttpPostMethod(builder.toString());
 
 			String fileName = sessionId + ".cmodif";
 			FileInputStreamPart part = new FileInputStreamPart("data", fileName, fis);
@@ -237,7 +240,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					.append("&" + SESSION_PARAM + "=" + sessionId)
 					.append("&" + LENGTH_PARAM + "=" + String.valueOf(bytesReceived));
 
-			HttpGet get = httpGetMethod(builder.toString());
+			HttpGet get = createHttpGetMethod(builder.toString());
 
 			/* request execution */
 			HttpResponse response = client.execute(get);
@@ -276,7 +279,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 				.append("&" + CMD_PARAM + "=" + CMD_RESUME_RECEIVE)
 				.append("&" + LENGTH_PARAM + "=" + String.valueOf(bytesReceived));
 
-		HttpGet method = httpGetMethod(builder.toString());
+		HttpGet method = createHttpGetMethod(builder.toString());
 
 		try {
 			/* request execution */
@@ -315,7 +318,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					.append("&" + TERMINALID_PARAM + "=" + terminalId).append("&" + TYPE_PARAM + "=" + type)
 					.append("&" + SESSION_PARAM + "=" + sessionId);
 
-			HttpGet method = httpGetMethod(builder.toString());
+			HttpGet method = createHttpGetMethod(builder.toString());
 
 			/* request execution */
 			HttpResponse response = client.execute(method);
@@ -360,7 +363,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 		StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId).append(
 				"&" + CMD_PARAM + "=" + CMD_SERVERMODIF);
 
-		HttpGet method = httpGetMethod(builder.toString());
+		HttpGet method = createHttpGetMethod(builder.toString());
 
 		try {
 			/* request execution */
@@ -402,7 +405,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8"))
 					.append("&" + SEARCH_PARAM + "=" + searcheId);
 
-			HttpGet method = httpGetMethod(builder.toString());
+			HttpGet method = createHttpGetMethod(builder.toString());
 
 			/* request execution */
 			HttpResponse response = client.execute(method);
@@ -427,8 +430,9 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	/** */
-	private HttpPost httpPostMethod(String url) {
+	private HttpPost createHttpPostMethod(String url) {
 		HttpPost post = new HttpPost(url);
+		prepareRequest(post);
 		if (mHttpAuthentication) {
 			setBasicAuthentication(post);
 		}
@@ -436,12 +440,20 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	/** */
-	private HttpGet httpGetMethod(String url) {
+	private HttpGet createHttpGetMethod(String url) {
 		HttpGet get = new HttpGet(url);
+		prepareRequest(get);
 		if (mHttpAuthentication) {
 			setBasicAuthentication(get);
 		}
 		return get;
+	}
+
+	private static void prepareRequest(HttpUriRequest request) {
+		HttpParams params = request.getParams();
+		HttpConnectionParams.setConnectionTimeout(params, CONN_TIMEOUT);
+		HttpConnectionParams.setSoTimeout(params, SO_TIMEOUT);
+		request.setHeader("Connection", "close");
 	}
 
 	/** */

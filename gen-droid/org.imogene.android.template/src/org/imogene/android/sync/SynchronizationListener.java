@@ -37,7 +37,7 @@ public abstract class SynchronizationListener {
 	 * 
 	 * @param registered whether it registered or not.
 	 */
-	public final void setRegistered(boolean registered) {
+	public final synchronized void setRegistered(boolean registered) {
 		mRegistered = registered;
 	}
 
@@ -46,7 +46,7 @@ public abstract class SynchronizationListener {
 	 * 
 	 * @return {@code true} if it has been registered, {@code false} otherwise.
 	 */
-	public final boolean isRegistered() {
+	public final synchronized boolean isRegistered() {
 		return mRegistered;
 	}
 

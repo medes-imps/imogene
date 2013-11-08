@@ -62,7 +62,7 @@ public class NotificationController {
 	private final AudioManager mAudioManager;
 	private final Context mContext;
 	private final SparseArray<ContentObserver> mNotificationMap;
-	private MySynchronizationObserver mSynchronizationObserver;
+	private MySynchronizationListener mSynchronizationListener;
 	/**
 	 * Suspend notifications for . If {@link Account#NO_ACCOUNT}, no account notifications are suspended. If
 	 * {@link Account#ACCOUNT_ID_COMBINED_VIEW}, notifications for all accounts are suspended.
@@ -158,11 +158,11 @@ public class NotificationController {
 			}
 		});
 
-		if (mSynchronizationObserver == null) {
-			mSynchronizationObserver = new MySynchronizationObserver(sNotificationHandler);
+		if (mSynchronizationListener == null) {
+			mSynchronizationListener = new MySynchronizationListener(sNotificationHandler);
 		}
-		if (!mSynchronizationObserver.isRegistered()) {
-			SynchronizationController.getInstance(mContext).registerSynchronizationObserver(mSynchronizationObserver);
+		if (!mSynchronizationListener.isRegistered()) {
+			SynchronizationController.getInstance(mContext).addListener(mSynchronizationListener);
 		}
 	}
 
@@ -344,11 +344,11 @@ public class NotificationController {
 
 	}
 
-	private static class MySynchronizationObserver extends SynchronizationListener {
+	private static class MySynchronizationListener extends SynchronizationListener {
 
 		private static final int NOTIFICATION_STATUS_ID = 1111;
 
-		public MySynchronizationObserver(Handler handler) {
+		public MySynchronizationListener(Handler handler) {
 			super(handler);
 		}
 

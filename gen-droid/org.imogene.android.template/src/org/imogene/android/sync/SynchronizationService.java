@@ -2,6 +2,8 @@ package org.imogene.android.sync;
 
 import org.imogene.android.Constants;
 import org.imogene.android.preference.Preferences;
+import org.imogene.android.sync.SynchronizationController.Status;
+import org.imogene.android.util.Logger;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -11,7 +13,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
 
 public class SynchronizationService extends Service {
 
@@ -42,13 +43,19 @@ public class SynchronizationService extends Service {
 		context.startService(i);
 	}
 
-	private Controller mController;
+	private SynchronizationController mController;
+	private final Listener mListener = new Listener();
 	private Preferences mPreferences;
+
+	private int mStartId;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, final int startId) {
-		mController = Controller.getInstance(this);
+		mStartId = startId;
+
+		mController = SynchronizationController.getInstance(this);
 		mPreferences = Preferences.getPreferences(this);
+		mController.addListener(mListener);
 
 		String action = intent.getAction();
 
@@ -56,15 +63,13 @@ public class SynchronizationService extends Service {
 
 		if (ACTION_CHECK.equals(action)) {
 			if (Constants.DEBUG) {
-				Log.i(TAG, "**** checking");
+				Logger.i(TAG, "**** checking");
 			}
 			new AsyncTask<Void, Void, Void>() {
 				@Override
 				protected Void doInBackground(Void... params) {
 					setWatchdog(alarmManager);
-					mController.serviceSynchronize();
-					reschedule(alarmManager);
-					stopSelf(startId);
+					mController.serviceSynchronize(startId);
 					return null;
 				};
 			}.execute();
@@ -88,9 +93,15 @@ public class SynchronizationService extends Service {
 		return null;
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		SynchronizationController.getInstance(getApplication()).removeListener(mListener);
+	}
+
 	private void cancel(AlarmManager alarmMgr) {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "*** cancel");
+			Logger.i(TAG, "*** cancel");
 		}
 		PendingIntent pi = createAlarmIntent();
 		alarmMgr.cancel(pi);
@@ -102,7 +113,7 @@ public class SynchronizationService extends Service {
 			return;
 		}
 		if (Constants.DEBUG) {
-			Log.i(TAG, "*** reschedule");
+			Logger.i(TAG, "*** reschedule");
 		}
 		PendingIntent pi = createAlarmIntent();
 		long period = mPreferences.getSyncPeriod();
@@ -130,6 +141,26 @@ public class SynchronizationService extends Service {
 		Intent intent = new Intent(this, SynchronizationService.class);
 		intent.setAction(ACTION_CHECK);
 		return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+
+	private class Listener extends SynchronizationListener {
+
+		public Listener() {
+			super(null);
+		}
+
+		@Override
+		public void onChange(Status status, Object object) {
+			if (status == Status.FINISH) {
+				AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+				reschedule(alarmManager);
+				int serviceId = mStartId;
+				if (object != null && object instanceof Integer) {
+					serviceId = (Integer) object;
+				}
+				stopSelf(serviceId);
+			}
+		}
 	}
 
 }

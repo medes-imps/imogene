@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,6 +21,7 @@ import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.domain.SyncHistory;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
+import org.imogene.android.util.Logger;
 import org.imogene.android.util.database.DatabaseUtils;
 import org.imogene.android.util.ntp.SntpException;
 import org.imogene.android.util.ntp.SntpProvider;
@@ -36,8 +34,8 @@ import org.xmlpull.v1.XmlSerializer;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Process;
-import android.util.Log;
 import android.util.Xml;
 
 public class SynchronizationController implements Runnable {
@@ -54,16 +52,17 @@ public class SynchronizationController implements Runnable {
 	}
 
 	public enum Status {
-		START, INITIALIZATION, SEND, SENT, RECEIVE, RECEIVED, CLOSE, RESUME, FINISH, FAILURE
+		START, INITIALIZATION, SEND, SENT, RECEIVE, RECEIVED, CLOSE, RESUME, FINISH, FAILURE, CHECK_FINISHED
 	}
 
 	private final BlockingQueue<Command> mCommands = new LinkedBlockingQueue<Command>();
-	private final Set<String> mTags = Collections.synchronizedSet(new HashSet<String>());
 	private final Thread mThread;
 	private boolean mBusy;
 
-	private final Set<SynchronizationListener> mListeners = Collections
-			.synchronizedSet(new HashSet<SynchronizationListener>());
+	/**
+	 * All access to mListeners *must* be synchronized
+	 */
+	private final GroupSynchronizationListener mListeners = new GroupSynchronizationListener();
 	private final Context mContext;
 	private final Preferences mPreferences;
 	private OptimizedSyncClient mSyncClient;
@@ -101,23 +100,14 @@ public class SynchronizationController implements Runnable {
 			}
 			mBusy = true;
 			command.runnable.run();
-			synchronized (mTags) {
-				mTags.remove(command.tag);
-			}
 			mBusy = false;
 		}
 	}
 
-	private void put(String tag, Runnable runnable) {
-		synchronized (mTags) {
-			if (mTags.contains(tag)) {
-				Log.i(TAG, "Command " + tag + " already in queue");
-				return;
-			}
-		}
+	private void put(String description, Runnable runnable) {
 		Command command = new Command();
 		command.runnable = runnable;
-		command.tag = tag;
+		command.description = description;
 		mCommands.offer(command);
 	}
 
@@ -126,13 +116,10 @@ public class SynchronizationController implements Runnable {
 	 * onResume()). Unregistered callbacks will never be called, to prevent problems when the command completes and the
 	 * activity has already paused or finished.
 	 * 
-	 * @param observer The callback that may be used in action methods
+	 * @param listener The callback that may be used in action methods
 	 */
-	public void registerSynchronizationObserver(SynchronizationListener observer) {
-		synchronized (mListeners) {
-			observer.setRegistered(true);
-			mListeners.add(observer);
-		}
+	public void addListener(SynchronizationListener listener) {
+		mListeners.addListener(listener);
 	}
 
 	/**
@@ -140,26 +127,33 @@ public class SynchronizationController implements Runnable {
 	 * (typically from onPause()). Unregistered callbacks will never be called, to prevent problems when the command
 	 * completes and the activity has already paused or finished.
 	 * 
-	 * @param observer The callback that may no longer be used
+	 * @param listener The callback that may no longer be used
 	 */
-	public void unregisterSynchronizationObserver(SynchronizationListener observer) {
-		synchronized (mListeners) {
-			observer.setRegistered(false);
-			mListeners.remove(observer);
-		}
+	public void removeListener(SynchronizationListener listener) {
+		mListeners.removeListener(listener);
 	}
 
-	public void synchronize() {
+	private void synchronize(final int tag) {
 		put("Sync", new Runnable() {
 
 			@Override
 			public void run() {
-				synchronizeSynchronous();
+				synchronizeSynchronous(tag);
 			}
 		});
 	}
 
-	private void synchronizeSynchronous() {
+	public void serviceSynchronize(final int tag) {
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				synchronize(tag);
+				return null;
+			}
+		}.execute();
+	}
+
+	private void synchronizeSynchronous(final int tag) {
 		mTerminal = mPreferences.getSyncTerminal();
 		mLogin = mPreferences.getSyncLogin();
 		mPassword = mPreferences.getSyncPassword();
@@ -244,17 +238,17 @@ public class SynchronizationController implements Runnable {
 			notifyClose();
 			mSyncClient.closeSession(sessionId, mDebug);
 		} catch (FileNotFoundException e) {
-			Log.e(TAG, "error during synchronization", e);
+			Logger.e(TAG, "error during synchronization", e);
 		} catch (IOException e) {
-			Log.e(TAG, "error during synchronization", e);
+			Logger.e(TAG, "error during synchronization", e);
 		} catch (SynchronizationException e) {
-			Log.e(TAG, "error during synchronization", e);
+			Logger.e(TAG, "error during synchronization", e);
 			notifyFailure(e.getCode());
 		} catch (Exception e) {
-			Log.e(TAG, "error during synchronization", e);
+			Logger.e(TAG, "error during synchronization", e);
 		} finally {
 			markHiddenAsRead();
-			notifyFinish();
+			notifyFinish(tag);
 		}
 	}
 
@@ -269,7 +263,7 @@ public class SynchronizationController implements Runnable {
 
 	private int resumeOnError(SyncHistory his) throws SynchronizationException {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "resume on error : " + his.id + ", level : " + his.level + ", date : " + his.date);
+			Logger.i(TAG, "resume on error : " + his.id + ", level : " + his.level + ", date : " + his.date);
 		}
 		/*
 		 * we resume a sent, by re-sending local data an retrieving all the data from the server
@@ -277,7 +271,7 @@ public class SynchronizationController implements Runnable {
 		int received = 0;
 		if (his.level == SyncHistory.Columns.LEVEL_SEND) {
 			if (Constants.DEBUG) {
-				Log.i(TAG, "Resuming the sent for the session " + his.id);
+				Logger.i(TAG, "Resuming the sent for the session " + his.id);
 			}
 			try {
 				/* 1 - initialize the resumed session */
@@ -300,7 +294,7 @@ public class SynchronizationController implements Runnable {
 								+ skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
 					}
 					if (Constants.DEBUG) {
-						Log.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
+						Logger.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
 								+ bytesReceived + " bytes");
 					}
 					int res = mSyncClient.resumeSendModification(his.id, fis);
@@ -340,7 +334,7 @@ public class SynchronizationController implements Runnable {
 		 */
 		if (his.level == SyncHistory.Columns.LEVEL_RECEIVE) {
 			if (Constants.DEBUG) {
-				Log.i(TAG, "Resuming the receive operation for the session " + his.id);
+				Logger.i(TAG, "Resuming the receive operation for the session " + his.id);
 			}
 			try {
 				/* clear the sent file */
@@ -465,7 +459,7 @@ public class SynchronizationController implements Runnable {
 
 	private void markAsSentForSession(long time) {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "mark send entities as synchronized");
+			Logger.i(TAG, "mark send entities as synchronized");
 		}
 
 		ContentResolver res = mContext.getContentResolver();
@@ -477,7 +471,7 @@ public class SynchronizationController implements Runnable {
 
 	private void markHiddenAsRead() {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "mark hidden received entities as read");
+			Logger.i(TAG, "mark hidden received entities as read");
 		}
 		for (Uri uri : ImogHelper.getInstance().getHiddenUris(mContext)) {
 			DatabaseUtils.markRead(mContext.getContentResolver(), uri, true);
@@ -486,106 +480,75 @@ public class SynchronizationController implements Runnable {
 
 	private void notifyStart() {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Synchronization starting: " + mServer);
+			Logger.i(TAG, "Synchronization starting: " + mServer);
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.START, null);
-			}
-		}
+		mListeners.dispatchChange(Status.START, null);
 	}
 
 	private void notifyInit() {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Initializing the synchronization");
+			Logger.i(TAG, "Initializing the synchronization");
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.INITIALIZATION, null);
-			}
-		}
+		mListeners.dispatchChange(Status.INITIALIZATION, null);
 	}
 
 	private void notifySend() {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Sending client modifications");
+			Logger.i(TAG, "Sending client modifications");
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.SEND, null);
-			}
-		}
+		mListeners.dispatchChange(Status.SEND, null);
 	}
 
 	private void notifySent(int sent) {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Number of sent modification: " + sent);
+			Logger.i(TAG, "Number of sent modification: " + sent);
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.SENT, sent);
-			}
-		}
+		mListeners.dispatchChange(Status.SENT, sent);
 	}
 
 	private void notifyReceive() {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Receiving server modifications");
+			Logger.i(TAG, "Receiving server modifications");
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.RECEIVE, null);
-			}
-		}
+		mListeners.dispatchChange(Status.RECEIVE, null);
 	}
 
 	private void notifyReceived(int received) {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Number of modifications applied: " + received);
+			Logger.i(TAG, "Number of modifications applied: " + received);
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.RECEIVED, received);
-			}
-		}
+		mListeners.dispatchChange(Status.RECEIVED, received);
 	}
 
 	private void notifyClose() {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Synchronization session closed");
+			Logger.i(TAG, "Synchronization session closed");
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.CLOSE, null);
-			}
-		}
+		mListeners.dispatchChange(Status.CLOSE, null);
 	}
 
-	private void notifyFinish() {
+	private void notifyFinish(int tag) {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Synchronization process finished");
+			Logger.i(TAG, "Synchronization process finished");
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.FINISH, null);
-			}
-		}
+		mListeners.dispatchChange(Status.FINISH, tag);
 	}
 
 	private void notifyFailure(int code) {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "Synchronization failure. code: " + code);
+			Logger.i(TAG, "Synchronization failure. code: " + code);
 		}
-		synchronized (mListeners) {
-			for (SynchronizationListener callback : mListeners) {
-				callback.dispatchChange(Status.FAILURE, code);
-			}
-		}
+		mListeners.dispatchChange(Status.FAILURE, code);
 	}
 
 	private static class Command {
 		public Runnable runnable;
-		public String tag;
+		public String description;
+
+		@Override
+		public String toString() {
+			return description;
+		}
 	}
 
 }

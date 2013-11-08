@@ -11,8 +11,8 @@ public class SSLHttpClient extends DefaultHttpClient {
 
 	private static final String TAG = SSLHttpClient.class.getName();
 
-	private static final int CONN_TIMEOUT = 60000;
-	private static final int SO_TIMEOUT = 60000;
+	private static final int CONN_TIMEOUT = 10 * 1000;
+	private static final int SO_TIMEOUT = 60 * 1000;
 
 	public SSLHttpClient() {
 		super();
