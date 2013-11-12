@@ -97,6 +97,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 		if (data != null) {
 			try {
 				FileUtils.appendFile(context.getContentResolver(), data, uri);
+				FileUtils.deleteFile(data.getPath());
 				data = null;
 			} catch (IOException e) {
 				e.printStackTrace();
