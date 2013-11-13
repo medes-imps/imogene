@@ -11,10 +11,10 @@ import org.imogene.android.preference.BaseDialogPreference.OnDialogCloseListener
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.util.database.DatabaseUtils;
-import org.imogene.android.util.ntp.SntpException;
-import org.imogene.android.util.ntp.SntpProvider;
+import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.util.os.BaseAsyncTask;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -130,13 +130,19 @@ public class HiddenSettings extends GDPreferenceActivity implements OnDialogClos
 
 	private void executeNtpOffsetUpdate() {
 		if (mSntpOffsetTask == null || mSntpOffsetTask.isFinished()) {
-			mSntpOffsetTask = new SntpOffsetTask();
+			mSntpOffsetTask = new SntpOffsetTask(this);
 			mSntpOffsetTask.setCallback(this);
 			mSntpOffsetTask.execute(mNtpHost.getText());
 		}
 	}
 
-	private static class SntpOffsetTask extends BaseAsyncTask<HiddenSettings, String, Void, Long> {
+	private static class SntpOffsetTask extends BaseAsyncTask<HiddenSettings, String, Void, Boolean> {
+
+		private final Context context;
+
+		public SntpOffsetTask(Context context) {
+			this.context = context.getApplicationContext();
+		}
 
 		@Override
 		protected void onPreExecute() {
@@ -146,20 +152,14 @@ public class HiddenSettings extends GDPreferenceActivity implements OnDialogClos
 		}
 
 		@Override
-		protected Long doInBackground(String... params) {
-			try {
-				return SntpProvider.getTimeOffsetFromNtp(params[0]);
-			} catch (SntpException e) {
-				e.printStackTrace();
-			}
-			return null;
+		protected Boolean doInBackground(String... params) {
+			return NTPClock.getInstance(context).updateOffsetSync(params[0]);
 		}
 
 		@Override
-		protected void onPostExecute(Long result) {
+		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
-			if (callback != null && result != null) {
-				callback.mPreferences.setNtpOffset(result);
+			if (callback != null) {
 				callback.mNtpOffset.setEnabled(true);
 				callback.updateNtpOffsetSummary();
 			}

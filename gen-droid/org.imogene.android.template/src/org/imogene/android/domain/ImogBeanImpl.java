@@ -8,6 +8,7 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.content.ContentUrisUtils;
+import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.xml.annotation.XmlAlias;
 import org.imogene.android.xml.annotation.XmlOmitField;
 
@@ -157,7 +158,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 			id = BeanKeyGenerator.getNewId(beanType);
 		}
 		if (created == null) {
-			created = prefs.getRealTime();
+			created = NTPClock.getInstance(context).getTime();
 		}
 		if (uploadDate == null) {
 			uploadDate = created;
@@ -203,7 +204,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 		addValues(context, values);
 
 		if (modified == null) {
-			modified = Preferences.getPreferences(context).getRealTime();
+			modified = NTPClock.getInstance(context).getTime();
 			values.put(Columns.MODIFIED, modified.getTime());
 		}
 

@@ -23,8 +23,7 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.util.Logger;
 import org.imogene.android.util.database.DatabaseUtils;
-import org.imogene.android.util.ntp.SntpException;
-import org.imogene.android.util.ntp.SntpProvider;
+import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.xml.ImogXmlConverter;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -175,8 +174,6 @@ public class SynchronizationController implements Runnable {
 
 			Paths.PATH_SYNCHRO.mkdirs();
 
-			updateTimeOffset();
-
 			// look for synchronization ERROR.
 			SyncHistory syncError = SyncHistory.getLastErrorSyncHistory(mContext);
 			/*
@@ -192,7 +189,7 @@ public class SynchronizationController implements Runnable {
 			// 2 - send client modification
 			notifySend();
 
-			long syncTime = mPreferences.getRealTime().getTime();
+			long syncTime = NTPClock.getInstance(mContext).currentTimeMillis();
 
 			File outFile = new File(Paths.PATH_SYNCHRO, sessionId + ".lmodif");
 			FileOutputStream fos = new FileOutputStream(outFile);
@@ -249,15 +246,6 @@ public class SynchronizationController implements Runnable {
 		} finally {
 			markHiddenAsRead();
 			notifyFinish(tag);
-		}
-	}
-
-	private void updateTimeOffset() {
-		try {
-			String url = mPreferences.getNtpHost();
-			long offset = SntpProvider.getTimeOffsetFromNtp(url);
-			mPreferences.setNtpOffset(offset);
-		} catch (SntpException e) {
 		}
 	}
 

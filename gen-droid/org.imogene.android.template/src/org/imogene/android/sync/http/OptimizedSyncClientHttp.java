@@ -14,15 +14,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.file.FileUtils;
-import org.imogene.android.util.http.multipart.FileInputStreamPart;
-import org.imogene.android.util.http.multipart.MultipartEntity;
-import org.imogene.android.util.http.multipart.Part;
 import org.imogene.android.util.http.ssl.SSLHttpClient;
 
 public class OptimizedSyncClientHttp implements OptimizedSyncClient {
@@ -191,11 +190,11 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			HttpPost method = createHttpPostMethod(builder.toString());
 
-			String fileName = sessionId + ".cmodif";
-			FileInputStreamPart part = new FileInputStreamPart("data", fileName, fis);
-			MultipartEntity requestContent = new MultipartEntity(new Part[] { part });
-
-			method.setEntity(requestContent);
+			String filename = sessionId + ".cmodif";
+			MultipartEntity entity = new MultipartEntity();
+			InputStreamBody part = new InputStreamBody(fis, filename);
+			entity.addPart("data", part);
+			method.setEntity(entity);
 
 			HttpResponse response = client.execute(method);
 			Header header = response.getFirstHeader(HEADER_NAME);

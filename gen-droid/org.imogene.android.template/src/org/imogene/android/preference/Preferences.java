@@ -1,6 +1,5 @@
 package org.imogene.android.preference;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.imogene.android.util.base64.Base64;
@@ -33,6 +32,7 @@ public class Preferences {
 	public static final String DEBUG_ENABLED = "debugEnabled";
 	public static final String NTP_HOST = "ntpHost";
 	public static final String NTP_OFFSET = "ntpOffset";
+	public static final String NTP_LASTUPDATE = "ntpLastUpdate";
 	public static final String WS_SERVER = "webServiceServer";
 	public static final String HTTP_AUTHENTICATION_ENABLED = "httpAuthenticationEnabled";
 	public static final String UPDATE_SERVER = "updateServer";
@@ -74,18 +74,13 @@ public class Preferences {
 		return getPreferences(context).mSharedPreferences;
 	}
 
-	public Date getRealTime() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis() - getNtpOffset());
-		return calendar.getTime();
-	}
-
 	public long getNtpOffset() {
 		return mSharedPreferences.getLong(NTP_OFFSET, 0);
 	}
 
 	public void setNtpOffset(long value) {
-		mSharedPreferences.edit().putLong(NTP_OFFSET, value).commit();
+		mSharedPreferences.edit().putLong(NTP_OFFSET, value)
+				.putString(NTP_LASTUPDATE, new Date(System.currentTimeMillis() + value).toLocaleString()).commit();
 	}
 
 	public String getNtpHost() {

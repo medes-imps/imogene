@@ -8,8 +8,7 @@ import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.template.R;
-import org.imogene.android.util.ntp.SntpException;
-import org.imogene.android.util.ntp.SntpProvider;
+import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.util.os.BaseAsyncTask;
 import org.imogene.android.util.os.TaskManager;
 
@@ -17,6 +16,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -219,13 +219,12 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 	}
 
 	private void launchSntpOffsetTask() {
-		mTaskManager.execute(2, new SntpOffsetTask(), mPreferences.getNtpHost());
+		mTaskManager.execute(2, new SntpOffsetTask(this), mPreferences.getNtpHost());
 	}
 
-	private void onSntpOffsetUpdated(Long offset) {
+	private void onSntpOffsetUpdated(Boolean success) {
 		dismissDialog(DIALOG_SNTPING_ID);
-		if (offset != null) {
-			mPreferences.setNtpOffset(offset);
+		if (success != null && success) {
 			AccountSetupShortPassword.actionNewShortPassword(this);
 			finish();
 		} else {
@@ -252,7 +251,13 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 		return editText.getText() != null && editText.getText().length() != 0;
 	}
 
-	private static class SntpOffsetTask extends BaseAsyncTask<AccountSetupBasics, String, Void, Long> {
+	private static class SntpOffsetTask extends BaseAsyncTask<AccountSetupBasics, String, Void, Boolean> {
+
+		private final Context context;
+
+		public SntpOffsetTask(Context context) {
+			this.context = context.getApplicationContext();
+		}
 
 		@Override
 		protected void onPreExecute() {
@@ -262,17 +267,12 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 		}
 
 		@Override
-		protected Long doInBackground(String... params) {
-			try {
-				return SntpProvider.getTimeOffsetFromNtp(params[0]);
-			} catch (SntpException e) {
-				e.printStackTrace();
-			}
-			return null;
+		protected Boolean doInBackground(String... params) {
+			return NTPClock.getInstance(context).updateOffsetSync(params[0]);
 		}
 
 		@Override
-		protected void onPostExecute(Long result) {
+		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			if (callback != null) {
 				callback.onSntpOffsetUpdated(result);

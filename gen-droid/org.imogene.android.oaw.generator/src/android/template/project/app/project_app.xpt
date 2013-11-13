@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.net.Uri;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
+import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
 import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»Helper;
@@ -61,7 +63,9 @@ public class «name.toFirstUpper()»App extends GDApplication {
         	prefs.setAdminPassword("epipassword");
 			prefs.setAdminRoles("«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»");
         }
+        SynchronizationService.actionReschedule(this);
         NotificationController.getInstance(this).watchForMessages(true);
+        NTPClock.getInstance(this).updateOffsetAsync();
 	}
 	
 	@Override
