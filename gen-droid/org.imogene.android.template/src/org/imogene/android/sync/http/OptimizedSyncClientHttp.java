@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -20,7 +21,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
-import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.file.FileUtils;
 import org.imogene.android.util.ssl.SSLHttpClient;
 

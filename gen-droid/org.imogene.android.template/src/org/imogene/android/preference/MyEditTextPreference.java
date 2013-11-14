@@ -2,6 +2,7 @@ package org.imogene.android.preference;
 
 import android.content.Context;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.util.AttributeSet;
 
 /**

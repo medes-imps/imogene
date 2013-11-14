@@ -1,6 +1,6 @@
 package org.imogene.android.preference;
 
-import org.imogene.android.util.base64.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.imogene.android.util.encryption.EncryptionManager;
 
 import android.content.Context;
