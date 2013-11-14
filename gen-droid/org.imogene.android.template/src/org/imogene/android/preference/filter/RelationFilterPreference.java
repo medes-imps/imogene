@@ -11,7 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.imogene.android.domain.filters.RelationFilter;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.http.ssl.SSLHttpClient;
+import org.imogene.android.util.ssl.SSLHttpClient;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 

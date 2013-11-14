@@ -1,4 +1,4 @@
-package org.imogene.android.util.http.ssl;
+package org.imogene.android.util.ssl;
 
 import java.io.IOException;
 import java.net.InetAddress;

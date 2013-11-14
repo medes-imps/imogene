@@ -1,4 +1,4 @@
-package org.imogene.android.util.http.ssl;
+package org.imogene.android.util.ssl;
 
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.impl.client.DefaultHttpClient;

@@ -22,7 +22,7 @@ import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.file.FileUtils;
-import org.imogene.android.util.http.ssl.SSLHttpClient;
+import org.imogene.android.util.ssl.SSLHttpClient;
 
 public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
