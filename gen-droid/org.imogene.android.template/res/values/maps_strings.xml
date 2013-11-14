@@ -30,7 +30,6 @@
     <string name="maps_set_mode_hide_me">hiding my current location</string>
 
     <!-- Resource proxy strings -->
-    <string name="maps_osmarender">"Osmarender"</string>
     <string name="maps_mapnik">"Mapnik"</string>
     <string name="maps_cyclemap">"Cycle Map"</string>
     <string name="maps_public_transport">"Public transport"</string>

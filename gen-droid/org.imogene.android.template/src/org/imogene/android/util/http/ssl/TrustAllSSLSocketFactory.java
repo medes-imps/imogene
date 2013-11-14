@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -38,7 +39,7 @@ public class TrustAllSSLSocketFactory extends SSLSocketFactory {
 
 	public TrustAllSSLSocketFactory() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
 			UnrecoverableKeyException {
-		super(null);
+		super((KeyStore) null);
 		SSLContext sslcontext = SSLContext.getInstance("TLS");
 		sslcontext.init(null, INSECURE_TRUST_MANAGER, null);
 		factory = sslcontext.getSocketFactory();
