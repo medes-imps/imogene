@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Expand TB" uid="org.imogene.rcp.container.product" id="org.imogene.rcp.container.product" application="org.imogene.rcp.container.application" version="2.0.0" useFeatures="false" includeLaunchers="true">
+<product name="Imogene RCP" uid="org.imogene.rcp.container.product" id="org.imogene.rcp.container.product" application="org.imogene.rcp.container.application" version="2.0.0" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.imogene.rcp.container/icons/about_image.png"/>
@@ -28,7 +28,7 @@
       startupProgressRect="0,280,455,15"
       startupMessageRect="7,220,441,20"
       startupForegroundColor="C8D5EA" />
-   <launcher name="extbcam">
+   <launcher name="imogene">
       <linux icon="/org.imogene.rcp.container/icons/laboratory.xpm"/>
       <solaris/>
       <win useIco="true">
@@ -200,7 +200,6 @@
       <plugin id="org.imogene.rcp.jetty"/>
       <plugin id="org.imogene.rcp.lib.derby"/>
       <plugin id="org.imogene.rcp.webapps"/>
-      <plugin id="org.imogene.sync.client.extbcam"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
       <plugin id="org.slf4j.log4j"/>
@@ -217,7 +216,7 @@
       <property name="derby.stream.error.logSeverityLevel" value="0" />
       <property name="jetty.port" value="8888" />
       <property name="org.apache.jasper.compiler.disablejsr199" value="true" />
-      <property name="osgi.instance.area.default" value="@user.home/.extbcam" />
+      <property name="osgi.instance.area.default" value="@user.home/.imogene" />
       <property name="sun.net.client.defaultConnectTimeout" value="60000" />
       <property name="sun.net.client.defaultReadTimeout" value="60000" />
    </configurations>

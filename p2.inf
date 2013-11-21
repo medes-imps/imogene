@@ -1,3 +1,3 @@
 instructions.configure=\
-   addRepository(name:ExTBCam Update Site,type:0,location:http${#58}//extbcam.pnlt.cm/update-site/);\
-   addRepository(name:ExTBCam Update Site,type:1,location:http${#58}//extbcam.pnlt.cm/update-site/);
+   addRepository(name:ExTBCam Update Site,type:0,location:http${#58}//update.site.org/update-site/);\
+   addRepository(name:ExTBCam Update Site,type:1,location:http${#58}//update.site.org/update-site/);

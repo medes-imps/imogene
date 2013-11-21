@@ -34,7 +34,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		startBundle("org.imogene.rcp.initializer");
 		startBundle("org.imogene.rcp.derby");
 		startBundle("org.imogene.rcp.jetty");
-		startBundle("org.imogene.sync.client.extbcam");
+		startBundle("org.imogene.sync.client.<client>"); //TODO Replace with the correct plugin
 	}
 
 	private void startBundle(String name) {

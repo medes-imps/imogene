@@ -21,7 +21,7 @@ public class Application implements IApplication {
 
 	private static final Logger logger = Logger.getLogger(Application.class.getName());
 
-	private static final String INSTANCE_PATH = "/opt/extbcam.d/data"; //$NON-NLS-1$
+	private static final String INSTANCE_PATH = "/opt/imogene.d/data"; //$NON-NLS-1$
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {

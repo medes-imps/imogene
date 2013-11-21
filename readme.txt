@@ -12,7 +12,7 @@ org.eclipse.equinox.p2.transport.ecf
       <plugin id="org.imogene.rcp.derby" autoStart="true" startLevel="4" />
       <plugin id="org.imogene.rcp.initializer" autoStart="true" startLevel="3" />
       <plugin id="org.imogene.rcp.jetty" autoStart="true" startLevel="5" />
-      <plugin id="org.imogene.sync.client.extbcam" autoStart="true" startLevel="5" />
+      <plugin id="org.imogene.sync.client.<client>" autoStart="true" startLevel="5" />
    </configurations>
 
 ------- Jetty enable jsp --------------------------------------------------------
@@ -31,7 +31,7 @@ org.eclipse.equinox.p2.transport.ecf
 -Dosgi.instance.area=@user.home/.imogene
 
 ------- VM linux argument -------------------------------------------------------
--Dosgi.instance.area=/opt/extbcam.d/data
+-Dosgi.instance.area=/opt/imogene.d/data
 
 ------- Imogene properties ------------------------------------------------------
 -Dimogene.debug=false
