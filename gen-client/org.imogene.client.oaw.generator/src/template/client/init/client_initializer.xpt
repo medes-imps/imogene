@@ -1,0 +1,95 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/init/ClientInitializerImpl.java"»
+package org.imogene.«projectName.toLowerCase()».init;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.common.role.ImogRole;
+import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+import org.imogene.lib.common.sync.entity.SynchronizableEntityDao;
+import org.imogene.lib.sync.client.parameter.SyncParameter;
+import org.imogene.sync.client.SyncActivator;
+import org.imogene.sync.client.init.ClientInitializer;
+import org.imogene.sync.client.ui.ISyncConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+
+public class ClientInitializerImpl implements ClientInitializer {
+
+	@Autowired
+	@Qualifier(value = "syncEntityDao")
+	private SynchronizableEntityDao synchronizableEntityDao;
+
+	@Autowired
+	@Qualifier(value = "genericDao")
+	private GenericDao genericDao;
+	
+	@Override
+	@Transactional
+	public void initDatase() {
+		IPreferenceStore preferences = SyncActivator.getDefault().getPreferenceStore();
+		if (preferences.getInt(ISyncConstants.VERSION) >= ISyncConstants.VERSION_NUMBER) {
+			return;
+		}
+		addRole("administrator");
+		addRole("delete");
+		addRole("export");
+		«FOREACH roles AS role-»
+		addRole("«role.name»");
+		«ENDFOREACH-»
+		
+		«FOREACH entities AS entity-»
+		addEntity("«entity.shortName»", «entity.name.toFirstUpper()».class);
+		«ENDFOREACH-»
+		addEntity("BIN", BinaryFile.class);
+		addEntity("DFT", DynamicFieldTemplate.class);
+		addEntity("DFI", DynamicFieldInstance.class);
+		
+		SyncParameter params = genericDao.load(SyncParameter.class, "sync-parameter"); //$NON-NLS-1$
+		if (params != null) {
+			List<SynchronizableEntity> list = genericDao.load(SynchronizableEntity.class);
+			Set<SynchronizableEntity> set = new HashSet<SynchronizableEntity>();
+			set.addAll(list);
+			params.setSynchronizables(set);
+			genericDao.saveOrUpdate(params);
+		}
+
+		preferences.setValue(ISyncConstants.VERSION, ISyncConstants.VERSION_NUMBER);
+	}
+	
+	private void addRole(String role) {
+		ImogRole r = new ImogRole();
+		r.setId(role);
+		r.setName(role);
+		genericDao.saveOrUpdate(r);
+	}
+
+	/**
+	 * Add an entity to entity that could be synchronizable
+	 * 
+	 * @param classToAdd the entity class
+	 * @return the synchronizable entity description
+	 */
+	private SynchronizableEntity addEntity(String shortName, Class<? extends ImogBean> clazz) {
+		SynchronizableEntity entity = new SynchronizableEntity();
+		entity.setId(shortName);
+		entity.setName(clazz.getName());
+		synchronizableEntityDao.store(entity);
+		return entity;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

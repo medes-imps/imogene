@@ -12,7 +12,7 @@ public class WebServiceClasspathContainer extends AbstractClasspathContainer {
 	private static String DESCRIPTION = "Imogene web services library";
 	
 	public WebServiceClasspathContainer(){	
-		addWebService();
+//		addWebService();
 	}
 	
 	@Override

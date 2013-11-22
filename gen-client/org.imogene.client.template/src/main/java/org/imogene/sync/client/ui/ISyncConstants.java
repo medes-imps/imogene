@@ -14,7 +14,7 @@ public interface ISyncConstants {
 	public static final String NTP_RATE = "org.imogene.sync.client.Rate"; //$NON-NLS-1$
 	public static final String NTP_OFFSET = "org.imogene.sync.client.Offset"; //$NON-NLS-1$
 
-	public static final String DEFAULT_SYNC_URL = "https://extbcam.pnlt.cm/extbcam-sync"; //$NON-NLS-1$
+	public static final String DEFAULT_SYNC_URL = "http://localhost/imogene-sync"; //$NON-NLS-1$
 	public static final boolean DEFAULT_SYNC_AUTO = false;
 	public static final long DEFAULT_SYNC_PERIOD = 15; // every 15 minutes
 	public static final String DEFAULT_NTP_HOST = "africa.pool.ntp.org"; //$NON-NLS-1$

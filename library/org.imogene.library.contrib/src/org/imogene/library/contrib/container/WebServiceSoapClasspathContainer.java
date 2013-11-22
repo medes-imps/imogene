@@ -12,7 +12,7 @@ public class WebServiceSoapClasspathContainer extends AbstractClasspathContainer
 	private static String DESCRIPTION = "Imogene SOAP web services library";
 	
 	public WebServiceSoapClasspathContainer(){	
-		addWebServiceSoap();
+//		addWebServiceSoap();
 	}
 	
 	@Override

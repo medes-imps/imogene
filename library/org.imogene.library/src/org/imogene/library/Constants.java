@@ -8,9 +8,9 @@ public class Constants {
 	
 	public static final String ADMIN_DESC_PATH="libs/admin.xml";
 	
-	public static final String WS_DESC_PATH="libs/webservices.xml";
-	
-	public static final String WS_SOAP_DESC_PATH="libs/webservices_soap.xml";
+//	public static final String WS_DESC_PATH="libs/webservices.xml";
+//	
+//	public static final String WS_SOAP_DESC_PATH="libs/webservices_soap.xml";
 	
 	public static final String SYNC_DESC_PATH="libs/sync-server.xml";
 	

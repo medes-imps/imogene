@@ -47,15 +47,15 @@ public abstract class AbstractClasspathContainer implements IClasspathContainer 
 		addJarsToEntries(confFile);
 	}
 	
-	protected void addWebService(){
-		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_DESC_PATH);
-		addJarsToEntries(confFile);
-	}
+//	protected void addWebService(){
+//		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_DESC_PATH);
+//		addJarsToEntries(confFile);
+//	}
 	
-	protected void addWebServiceSoap(){
-		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_SOAP_DESC_PATH);
-		addJarsToEntries(confFile);
-	}
+//	protected void addWebServiceSoap(){
+//		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_SOAP_DESC_PATH);
+//		addJarsToEntries(confFile);
+//	}
 	
 	protected void addInitializer(){
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.INIT_DESC_PATH);

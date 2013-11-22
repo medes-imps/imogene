@@ -56,7 +56,7 @@
 	«ENDFOREACH»
 
 	<!-- Client Initializer -->
-	<bean id="clientInitializer" class="org.imogene.sync.client.init.ClientInitializerImpl" />	
+	<bean id="clientInitializer" class="org.imogene.«projectName.toLowerCase()».init.ClientInitializerImpl" />	
 
 	<!-- Initialize the Synchronizer -->
 	<bean id="synchronizer" class="org.imogene.sync.client.jobs.SynchronizerImpl">

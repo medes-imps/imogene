@@ -14,8 +14,6 @@ import org.imogene.studio.contrib.ui.navigator.InitializerShadow;
 import org.imogene.studio.contrib.ui.navigator.NotifierShadow;
 import org.imogene.studio.contrib.ui.navigator.SynchroClientShadow;
 import org.imogene.studio.contrib.ui.navigator.SynchroShadow;
-import org.imogene.studio.contrib.ui.navigator.WebServiceShadow;
-import org.imogene.studio.contrib.ui.navigator.WebServiceSoapShadow;
 import org.imogene.studio.contrib.ui.navigator.WebShadow;
 
 public class ExportManager {
@@ -29,10 +27,10 @@ public class ExportManager {
 			return getEntries(Constants.SYNC_DESC_PATH);
 		} else if(AdminShadow.NATURE.equals(id)){
 			return getEntries(Constants.ADMIN_DESC_PATH);
-		} else if(WebServiceShadow.NATURE.equals(id)){
-			return getEntries(Constants.WS_DESC_PATH);
-		} else if(WebServiceSoapShadow.NATURE.equals(id)){
-			return getEntries(Constants.WS_SOAP_DESC_PATH);
+//		} else if(WebServiceShadow.NATURE.equals(id)){
+//			return getEntries(Constants.WS_DESC_PATH);
+//		} else if(WebServiceSoapShadow.NATURE.equals(id)){
+//			return getEntries(Constants.WS_SOAP_DESC_PATH);
 		} else if(InitializerShadow.NATURE.equals(id)){
 			return getEntries(Constants.INIT_DESC_PATH);
 		} else if (DaoShadow.NATURE.equals(id)){

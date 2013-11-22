@@ -65,7 +65,7 @@
 	
 	<!-- Initialize the DynamicFieldInstance converter for the entities -->
 	<bean id="dynamicFieldInstancePropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
-	    <property name="className" value="org.imogene.lib.common.entity.ImogBeanImpl"/>
+	    <property name="className" value="org.imogene.lib.common.entity.ImogEntityImpl"/>
 		<property name="propertyName" value="dynamicFieldValues"/>
 		<property name="converter" ref="collectionConverter"/>
 	</bean>
