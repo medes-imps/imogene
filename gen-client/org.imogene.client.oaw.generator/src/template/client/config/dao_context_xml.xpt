@@ -14,7 +14,11 @@
 
 	<!-- Instantiate the binary file manager (singleton) -->
 	<bean id="binaryFileManager" class="org.imogene.lib.common.binary.file.BinaryFileManager" factory-method="getInstance" >
-		<property name="binaryPath" value="${binary.file.directory}"/>
+		<property name="binaryPath">
+			<bean class="java.lang.System" factory-method="getProperty">
+				<constructor-arg value="imogene.binary.path" />
+			</bean>
+		</property>
 	</bean>
 	
 	<!-- Session factory -->

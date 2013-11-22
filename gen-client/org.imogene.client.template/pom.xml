@@ -11,11 +11,20 @@
 	<name>org.imogene.client.template</name>
 	<packaging>jar</packaging>
 
+	<properties>
+		<imogene.version>2.0.1-SNAPSHOT</imogene.version>
+		<hibernate.version>4.2.3.Final</hibernate.version>
+		<xstream.version>1.4.4</xstream.version>
+		<spring.version>3.0.7.RELEASE</spring.version>
+		<derby.client.version>10.10.1.1</derby.client.version>
+		<commons.net.version>3.3</commons.net.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.imogene.lib</groupId>
 			<artifactId>sync-client</artifactId>
-			<version>${project.version}</version>
+			<version>${imogene.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
@@ -28,11 +37,6 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
@@ -40,13 +44,56 @@
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbyclient</artifactId>
-			<version>${derbyclient.version}</version>
+			<version>${derby.client.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.log4j12.version}</version>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons.net.version}</version>
 		</dependency>
-
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+					<useProjectReferences>false</useProjectReferences>
+					<additionalProjectnatures>
+						<nature>org.eclipse.pde.PluginNature</nature>
+					</additionalProjectnatures>
+					<additionalBuildcommands>
+						<buildcommand>org.eclipse.pde.ManifestBuilder</buildcommand>
+						<buildcommand>org.eclipse.pde.SchemaBuilder</buildcommand>
+					</additionalBuildcommands>
+					<classpathContainers>
+						<classpathContainer>org.eclipse.pde.core.requiredPlugins</classpathContainer>
+					</classpathContainers>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

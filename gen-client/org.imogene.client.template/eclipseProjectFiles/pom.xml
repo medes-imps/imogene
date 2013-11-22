@@ -8,34 +8,46 @@
 	<artifactId>%projectName%</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
-	<description>
-	</description>
+
+	<properties>
+		<imogene.version>2.0.1-SNAPSHOT</imogene.version>
+		<hibernate.version>4.2.3.Final</hibernate.version>
+		<xstream.version>1.4.4</xstream.version>
+		<spring.version>3.0.7.RELEASE</spring.version>
+		<derby.client.version>10.10.1.1</derby.client.version>
+		<commons.net.version>3.3</commons.net.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.imogene.lib</groupId>
 			<artifactId>sync-client</artifactId>
-			<version>1.2.5</version>
+			<version>${imogene.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.3</version>
+			<version>${xstream.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.6.10.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbyclient</artifactId>
-			<version>10.9.1.0</version>
+			<version>${derby.client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons.net.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -50,9 +62,29 @@
 					<useProjectReferences>false</useProjectReferences>
 					<additionalProjectnatures>
 						<projectnature>org.imogene.nature.gen.client</projectnature>
-						<projectnature>org.imogene.nature.model.%modelName%</projectnature>
+						<projectnature>org.imogene.nature.model.ExTbCam</projectnature>
 					</additionalProjectnatures>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

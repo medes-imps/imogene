@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Client Template
+Bundle-SymbolicName: org.imogene.client.template;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Localization: plugin
+Export-Package: org.imogene.sync.client,
+ org.imogene.sync.client.jobs,
+ org.imogene.sync.client.ui
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ javax.servlet
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Medes-IMPS
+Bundle-Activator: org.imogene.sync.client.SyncActivator
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

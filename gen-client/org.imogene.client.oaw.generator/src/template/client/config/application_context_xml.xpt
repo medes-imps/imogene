@@ -16,7 +16,7 @@
     <context:annotation-config/>
     
 	<!-- Properties placeholder -->
-	<bean id="propertyConfigurer" class="org.imogene.sync.client.MyPropertyPlaceholderConfigurer" factory-method="getInstance" />
+	<bean id="propertyConfigurer" class="org.imogene.sync.client.config.MyPropertyPlaceholderConfigurer" factory-method="getInstance" />
 
 	<!--  Encryption system initialization -->
 	<bean id="encryptionKeyProvider" class="org.imogene.lib.sync.client.encryption.DefaultSecretKeyProvider"/>	
@@ -53,10 +53,13 @@
 
     «FOREACH entities AS e»
 	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" />
-	«ENDFOREACH»	
-	
-	<!-- Initialize the OptimizedSynchronizer -->
-	<bean id="optimizedSynchronizer" class="org.imogene.lib.sync.client.OptimizedSynchronizerImpl">
+	«ENDFOREACH»
+
+	<!-- Client Initializer -->
+	<bean id="clientInitializer" class="org.imogene.sync.client.init.ClientInitializerImpl" />	
+
+	<!-- Initialize the Synchronizer -->
+	<bean id="synchronizer" class="org.imogene.sync.client.jobs.SynchronizerImpl">
 	    <property name="directoryPath" value="${sync.file.directory}" />
 	    <property name="dataManager" ref="dataHandlerManager" />
 	    <property name="serializer" ref="xmlSerializer" />
@@ -65,18 +68,6 @@
 	    <property name="entityHelper" ref="entityHelper" />
 	    <property name="encryptionManager" ref="encryptionManager" />
 	</bean>
-	
-	<!-- Initialize the synchronization manager -->
-	<bean id="synchronizationManager" class="org.imogene.lib.sync.client.SynchronizationManagerImpl">
-		<property name="parameterDao" ref="syncParameterDao" />
-		<property name="synchronizer" ref="optimizedSynchronizer" />
-	</bean>
-	
-	<!-- Client Initializer -->
-	<bean id="clientInitializer" class="org.imogene.sync.client.ClientInitializerImpl" />
-	
-	<!-- Synchro utils -->
-	<bean id="synchroUtils" class="org.imogene.sync.client.SynchroUtils" />
 	
 </beans>
 «ENDFILE»
