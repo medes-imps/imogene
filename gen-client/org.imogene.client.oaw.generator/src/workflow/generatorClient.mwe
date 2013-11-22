@@ -17,7 +17,6 @@
 	<property name="JDBCLOGIN" value="login"/>
 	<property name="JDBCPASSWORD" value="password"/>
 	<property name="HIBERNATEDIALECT" value="password"/>
-	<property name="applicationType" value="sync.plugin"/>
 
 	<!-- Model reader -->
 	<component file="workflow/modelReader.mwe" inheritAll="true" />
@@ -77,7 +76,7 @@
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
-		<expand value='template::client::config::application_properties::generate("${applicationType}","${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}","${audioConverter}") FOR project' />
+		<expand value='template::client::config::application_properties::generate("${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}","${audioConverter}") FOR project' />
 		<genPath value="${home-gen}/src/main/resources" />		
 	</component>
 	

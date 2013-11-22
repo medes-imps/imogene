@@ -18,17 +18,15 @@ public class ClasspathCopyTask implements PostGenerationTask {
 
 	private static final String LIBRARY_PATH = "src/main/webapp/WEB-INF/lib";
 
-	private static final String[] EXCLUDES = new String[] {
-		"gwt-voices",
-		"gwt-servlet",
-		"gwt-user",
-		"gwt-dev"
-	};
+	private static final String[] EXCLUDES = new String[] { "gwt-voices", "gwt-servlet", "gwt-user", "gwt-dev" };
 
 	@Override
 	public void onPostGeneration(GenerationManager manager) throws CoreException {
 		List<ExportedEntry> entries = ExportManager.getClasspath(WebShadow.NATURE);
 		IFolder iDestination = manager.getGeneratedProject().getFolder(LIBRARY_PATH);
+		if (!iDestination.exists()) {
+			iDestination.create(true, true, null);
+		}
 		for (ExportedEntry e : entries) {
 			if (!canInclude(e.getFileName())) {
 				continue;

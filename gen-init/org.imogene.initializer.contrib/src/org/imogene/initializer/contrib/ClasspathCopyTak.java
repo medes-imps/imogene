@@ -17,24 +17,26 @@ import org.imogene.studio.contrib.ui.navigator.WebShadow;
 public class ClasspathCopyTak implements PostGenerationTask {
 
 	private static String LIBRARY_PATH = "lib";
-	
+
 	@Override
-	public void onPostGeneration(GenerationManager manager)
-			throws CoreException {		
+	public void onPostGeneration(GenerationManager manager) throws CoreException {
 		List<ExportedEntry> entries = ExportManager.getClasspath(WebShadow.NATURE);
 		IFolder iDestination = manager.getGeneratedProject().getFolder(LIBRARY_PATH);
-		for(ExportedEntry e : entries){
-			try{
+		if (!iDestination.exists()) {
+			iDestination.create(true, true, null);
+		}
+		for (ExportedEntry e : entries) {
+			try {
 				IFile iFile = iDestination.getFile(e.getFileName());
-				if(!iFile.exists())
+				if (!iFile.exists())
 					iFile.create(e.openStream(), true, null);
-			}catch(IOException ioe){
+			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
 		}
 		IProject p = manager.getGeneratedProject();
 		p.refreshLocal(IResource.DEPTH_INFINITE, null);
-		
+
 	}
-	
+
 }

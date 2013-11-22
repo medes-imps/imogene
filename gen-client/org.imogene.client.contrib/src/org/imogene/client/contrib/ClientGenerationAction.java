@@ -14,7 +14,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.imogene.studio.contrib.ui.generation.GenerationWizard;
 
-
 public class ClientGenerationAction implements IObjectActionDelegate {
 
 	// Store the current model resource selection
@@ -32,19 +31,15 @@ public class ClientGenerationAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		try {
 			GenerationWizard wizard = new GenerationWizard();
-			wizard.setWindowTitle("Generation of a synchronization client project");			
+			wizard.setWindowTitle("Generation of a synchronization client project");
 			wizard.setSelectedProject(mSelectedProject);
-			wizard.addPropertiesPage(new SpecificWizardPage());
-			wizard.setArchive(FileLocator
-					.openStream(Activator.getDefault().getBundle(), new Path(
-							"template-site/template.zip"), false));
-			wizard.setDefinition(FileLocator.openStream(Activator.getDefault()
-					.getBundle(), new Path("template-site/templates.xml"),
-					false));
+			wizard.setArchive(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
+					"template-site/template.zip"), false));
+			wizard.setDefinition(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
+					"template-site/templates.xml"), false));
 			wizard.setWorkflow("workflow/generatorClient.mwe");
 			wizard.addPostGenerationTask(new ClasspathCopyTask());
-			WizardDialog dialog = new WizardDialog(Display.getCurrent()
-					.getActiveShell(), wizard);
+			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 			dialog.open();
 		} catch (IOException e) {
 			e.printStackTrace();
