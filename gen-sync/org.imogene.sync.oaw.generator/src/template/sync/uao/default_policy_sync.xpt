@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 public class ImogDefaultPolicy implements ImogSecurityPolicy {
 
+	public static final String ADMIN_ROLE_NAME = "administrator";
+
 	/* generic DAO access */
 	@Autowired
 	@Qualifier(value = "genericDao")
@@ -108,7 +110,7 @@ public class ImogDefaultPolicy implements ImogSecurityPolicy {
 		if (!isSecured) isSecured = true;
 				«EXPAND setField FOREACH g.fields-»
 			«ELSE»
-				if(«FOREACH g.readers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»«IF g.writers.size>0»||«ENDIF»«FOREACH g.writers AS w ITERATOR i» roleNames.contains("«w.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»){
+				if(roleNames.contains(ADMIN_ROLE_NAME) || «FOREACH g.readers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»«IF g.writers.size>0»||«ENDIF»«FOREACH g.writers AS w ITERATOR i» roleNames.contains("«w.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»){
 					if (!isSecured) isSecured = true;
 					«EXPAND setField FOREACH g.fields-»
 				} else {
@@ -148,7 +150,7 @@ public class ImogDefaultPolicy implements ImogSecurityPolicy {
 		«FOREACH e.groups AS g»
 			«IF g.writers.size == 0»
 				«IF g.readers.size>0»					
-					if («FOREACH g.readers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH») {		
+					if (roleNames.contains(ADMIN_ROLE_NAME) || «FOREACH g.readers AS r ITERATOR i» roleNames.contains("«r.name»") «IF !i.lastIteration»||«ENDIF»«ENDFOREACH») {		
 						if (!isSecured) isSecured = true;
 						«EXPAND setField FOREACH g.fields-»
 				}
