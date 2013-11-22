@@ -15,8 +15,8 @@ public interface ImogBean {
 		public static final String MODIFIEDFROM = "modifiedFrom";
 		public static final String CREATED = "created";
 		public static final String CREATEDBY = "createdBy";
-		public static final String UNREAD = "unread";
-		public static final String SYNCHRONIZED = "synchronized";
+		public static final String FLAG_READ = "flagRead";
+		public static final String FLAG_SYNCHRONIZED = "flagSynchronized";
 		
 		public static final String SYNC_SYSTEM = "sync-system";
 	}
@@ -49,13 +49,13 @@ public interface ImogBean {
 
 	public void setCreatedBy(String createdBy);
 
-	public boolean getUnread();
+	public boolean getFlagRead();
 
-	public void setUnread(boolean unread);
+	public void setFlagRead(boolean unread);
 
-	public boolean getSynchronized();
+	public boolean getFlagSynchronized();
 
-	public void setSynchronized(boolean isSynchronized);
+	public void setFlagSynchronized(boolean isSynchronized);
 	
 	public void prepareForSave(Context context);
 		

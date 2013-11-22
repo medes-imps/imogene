@@ -17,14 +17,14 @@ public class BubbleOverlay extends Overlay {
 
 	private final Drawable mBubble;
 	private final Drawable mShadow;
-	
+
 	private final Rect rect = new Rect();
 	private final Point reuse = new Point();
-	
+
 	private View mParent;
 
 	private IGeoPoint mGeoPoint;
-	
+
 	public BubbleOverlay(Context context, GeoPoint point) {
 		super(context);
 		mGeoPoint = point;
@@ -32,22 +32,22 @@ public class BubbleOverlay extends Overlay {
 		mBubble = context.getResources().getDrawable(R.drawable.maps_bubble);
 		mShadow = context.getResources().getDrawable(R.drawable.maps_shadow);
 	}
-	
+
 	public IGeoPoint getGeoPoint() {
 		return mGeoPoint;
 	}
-	
+
 	public void setGeoPoint(IGeoPoint point) {
 		mGeoPoint = point;
 		refreshOverlay();
 	}
-	
+
 	public void refreshOverlay() {
 		if (mParent != null) {
 			mParent.postInvalidate();
 		}
 	}
-	
+
 	void assignParent(View parent) {
 		if (mParent != parent) {
 			mParent = parent;
@@ -57,19 +57,19 @@ public class BubbleOverlay extends Overlay {
 	@Override
 	protected void draw(Canvas canvas, MapView mapView, boolean shadow) {
 		assignParent(mapView);
-   		drawMapLocations(canvas, mapView);
+		drawMapLocations(canvas, mapView);
 	}
 
-    private void drawMapLocations(Canvas canvas, MapView mapView) {
+	private void drawMapLocations(Canvas canvas, MapView mapView) {
 		mapView.getProjection().toMapPixels(mGeoPoint, reuse);
-		
+
 		bound(mBubble, false);
 		bound(mShadow, true);
-		
-		Overlay.drawAt(canvas, mBubble, reuse.x, reuse.y, true);
-		Overlay.drawAt(canvas, mShadow, reuse.x, reuse.y, true);
-    }
-    
+
+		Overlay.drawAt(canvas, mBubble, reuse.x, reuse.y, true, 0.0f);
+		Overlay.drawAt(canvas, mShadow, reuse.x, reuse.y, true, 0.0f);
+	}
+
 	private Drawable bound(Drawable d, boolean shadow) {
 		final int markerWidth = (int) (d.getIntrinsicWidth() * mScale);
 		final int markerHeight = (int) (d.getIntrinsicHeight() * mScale);
@@ -77,7 +77,7 @@ public class BubbleOverlay extends Overlay {
 		rect.set(0, 0, 0 + markerWidth, 0 + markerHeight);
 
 		if (shadow) {
-			rect.offset(0, -markerHeight);			
+			rect.offset(0, -markerHeight);
 		} else {
 			rect.offset(-markerWidth / 2, -markerHeight);
 		}
@@ -85,7 +85,7 @@ public class BubbleOverlay extends Overlay {
 		d.setBounds(rect);
 		return d;
 	}
-	
+
 	protected final boolean overlayIsSelected(int x, int y) {
 		// Track which MapLocation was hit...if any
 		// Create a 'hit' testing Rectangle w/size and coordinates of our icon
@@ -97,9 +97,9 @@ public class BubbleOverlay extends Overlay {
 		// location clicked by the user
 		return hit.contains(x, y);
 	}
-	
+
 	protected Point getMarkerPoint() {
 		return reuse;
 	}
-	
+
 }

@@ -59,22 +59,40 @@ public class «name.toFirstUpper()» extends
 		public static final String TABLE_NAME = "«name.toLowerCase()»";
 		public static final String BEAN_TYPE = "«shortName»";
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final int DESC_SINGULAR = R.string.«name.toLowerCase()»_des_sg;
+		public static final int DESC_PLURAL = R.string.«name.toLowerCase()»_des_pl;
+		public static final int DRAWABLE = «IF icon.length > 0»R.drawable.«icon.split("\\.").get(0).toLowerCase()»«ELSE»R.drawable.ig_logo_android_s«ENDIF»;
+		public static final int NOTIFICATION_ID = «next()»;
 		
 		«EXPAND column FOREACH groups.fields-»
 		
 		«EXPAND nTonTable FOREACH groups.fields-»
 	}
 	
+	public static «name.toFirstUpper()» fromUri(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+		«name.toFirstUpper()»Cursor cursor = («name.toFirstUpper()»Cursor) ImogOpenHelper.getHelper().query(uri);
+		if (cursor == null) {
+			return null;
+		}
+		try {
+			if (!cursor.moveToFirst()) {
+				return null;
+			}
+			if (cursor.getCount() > 1) {
+				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
+			}
+			return new «name.toFirstUpper()»(cursor);
+		} finally {
+			cursor.close();
+		}
+	}
+	
 	«EXPAND declaration FOREACH groups.fields-»
 	
 	public «name.toFirstUpper()»() {
-	}
-	
-	public «name.toFirstUpper()»(Uri uri) {
-		«name.toFirstUpper()»Cursor cursor = («name.toFirstUpper()»Cursor) ImogOpenHelper.getHelper().query(uri);
-		cursor.moveToFirst();
-		init(cursor);
-		cursor.close();
 	}
 	
 	public «name.toFirstUpper()»(«name.toFirstUpper()»Cursor cursor) {
@@ -114,8 +132,8 @@ public class «name.toFirstUpper()» extends
 	
 	@Override
 	protected final void postCommit(Context context) {
-		super.postCommit(context);
 		«EXPAND postCommit FOREACH groups.fields-»
+		super.postCommit(context);
 	}
 	
 	public final void reset() {

@@ -10,13 +10,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 
 public class ResourceProxyImpl implements ResourceProxy {
-	
+
 	private final Resources mResources;
-	
+
 	public ResourceProxyImpl(Context context) {
 		mResources = context.getResources();
 	}
-	
+
 	@Override
 	public Bitmap getBitmap(bitmap resId) {
 		switch (resId) {
@@ -50,12 +50,12 @@ public class ResourceProxyImpl implements ResourceProxy {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public float getDisplayMetricsDensity() {
 		return mResources.getDisplayMetrics().density;
 	}
-	
+
 	@Override
 	public Drawable getDrawable(bitmap resId) {
 		switch (resId) {
@@ -89,7 +89,7 @@ public class ResourceProxyImpl implements ResourceProxy {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public String getString(string resId) {
 		switch (resId) {
@@ -135,8 +135,6 @@ public class ResourceProxyImpl implements ResourceProxy {
 			return mResources.getString(R.string.maps_offline_mode);
 		case online_mode:
 			return mResources.getString(R.string.maps_online_mode);
-		case osmarender:
-			return mResources.getString(R.string.maps_osmarender);
 		case public_transport:
 			return mResources.getString(R.string.maps_public_transport);
 		case roads_nl:
@@ -149,7 +147,7 @@ public class ResourceProxyImpl implements ResourceProxy {
 			return null;
 		}
 	};
-	
+
 	@Override
 	public String getString(string resId, Object... formatArgs) {
 		switch (resId) {
@@ -195,8 +193,6 @@ public class ResourceProxyImpl implements ResourceProxy {
 			return mResources.getString(R.string.maps_offline_mode, formatArgs);
 		case online_mode:
 			return mResources.getString(R.string.maps_online_mode, formatArgs);
-		case osmarender:
-			return mResources.getString(R.string.maps_osmarender, formatArgs);
 		case public_transport:
 			return mResources.getString(R.string.maps_public_transport, formatArgs);
 		case roads_nl:

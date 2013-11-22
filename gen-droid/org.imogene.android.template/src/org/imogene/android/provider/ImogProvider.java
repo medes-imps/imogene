@@ -29,11 +29,8 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
-import android.util.Log;
 
 public abstract class ImogProvider extends ContentProvider implements OpenableColumns {
-
-	private static final String TAG = ImogProvider.class.getName();
 
 	public static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -396,7 +393,6 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 		try {
 			return this.openFileHelper(uri, mode);
 		} catch (FileNotFoundException e) {
-			Log.i(TAG, "File not found");
 			throw new FileNotFoundException();
 		}
 	}

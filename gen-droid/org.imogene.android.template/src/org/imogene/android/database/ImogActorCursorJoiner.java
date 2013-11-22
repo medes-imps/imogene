@@ -104,13 +104,13 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	}
 
 	@Override
-	public boolean getSynchronized() {
-		return mCursors.get(current).cursor.getSynchronized();
+	public boolean getFlagSynchronized() {
+		return mCursors.get(current).cursor.getFlagSynchronized();
 	}
 
 	@Override
-	public boolean getUnread() {
-		return mCursors.get(current).cursor.getUnread();
+	public boolean getFlagRead() {
+		return mCursors.get(current).cursor.getFlagRead();
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package org.imogene.android.widget.field.edit;
 
 import org.imogene.android.Constants.Intents;
 import org.imogene.android.template.R;
+import org.imogene.android.util.content.IntentUtils;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
 
@@ -89,7 +90,7 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 		switch (v.getId()) {
 		case R.id.ig_acquire:
 			Intent intent = new Intent(Intents.ACTION_SCAN);
-			getFieldManager().getActivity().startActivityForResult(intent, mRequestCode);
+			IntentUtils.startActivityForResult(getFieldManager().getActivity(), intent, mRequestCode);
 			break;
 		case R.id.ig_delete:
 			setValue(null);

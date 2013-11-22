@@ -11,8 +11,7 @@ import org.imogene.android.Constants.Paths;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.domain.ImogBean;
-import org.imogene.android.preference.PreferenceHelper;
-import org.imogene.android.template.R;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.util.content.ContentUrisUtils;
 
 import android.content.ContentResolver;
@@ -31,22 +30,39 @@ public class DatabaseUtils {
 	private static final String ANDROID_METADATA = "android_metadata";
 
 	/**
-	 * Update the column {@link ImogBean.Columns#UNREAD} of the entity
-	 * represented by the {@link Uri} with the given value.
+	 * Update the column {@link ImogBean.Columns#FLAG_READ} of the entity represented by the {@link Uri} with the given
+	 * value.
 	 * 
 	 * @param res The current {@link ContentResolver}.
 	 * @param uri The {@link Uri} of the element to update.
 	 * @param unread The marker for the column.
 	 */
-	public static void markAs(ContentResolver res, Uri uri, boolean unread) {
+	public static void markRead(ContentResolver res, Uri uri, boolean read) {
 		ContentValues values = new ContentValues();
-		values.put(ImogBean.Columns.UNREAD, unread ? 1 : 0);
-		res.update(uri, values, null, null);
+		values.put(ImogBean.Columns.FLAG_READ, read ? 1 : 0);
+		res.update(uri, values, ImogBean.Columns.FLAG_READ + "=" + (read ? 0 : 1), null);
 	}
 
 	/**
-	 * Should save the database of the application to the folder given by
-	 * {@link Paths#PATH_BACKUP}.
+	 * Update the column {@link ImogBean.Columns#FLAG_SYNCHRONIZED} with the given value for the entities represented by
+	 * the {@link Uri} and which last modification date column {@link ImogBean.Columns#MODIFIED} is below the given
+	 * time.
+	 * 
+	 * @param res The current {@link ContentResolver}.
+	 * @param uri The {@link Uri} of the element to update.
+	 * @param time The last synchronization time.
+	 * @param sent The marker for the column.
+	 */
+	public static void markSent(ContentResolver res, Uri uri, long time, boolean sent) {
+		ContentValues values = new ContentValues();
+		values.put(ImogBean.Columns.FLAG_SYNCHRONIZED, sent ? 1 : 0);
+		String where = "(" + ImogBean.Columns.MODIFIED + " < ?) AND (" + ImogBean.Columns.FLAG_SYNCHRONIZED + " = ?)";
+		String[] args = new String[] { Long.toString(time), sent ? "0" : "1" };
+		res.update(uri, values, where, args);
+	}
+
+	/**
+	 * Should save the database of the application to the folder given by {@link Paths#PATH_BACKUP}.
 	 * 
 	 * @param context The current context.
 	 */
@@ -82,6 +98,7 @@ public class DatabaseUtils {
 	public static void deleteAll(Context context) {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(SQLITE_MASTER);
 		builder.selectColumns(KEY_NAME);
+		builder.distinct();
 		builder.where().eq(KEY_TYPE, TYPE_TABLE);
 
 		Cursor c = builder.query();
@@ -94,27 +111,25 @@ public class DatabaseUtils {
 		c.close();
 
 		context.getContentResolver().notifyChange(ContentUrisUtils.buildUriForFragment(null), null);
-		PreferenceHelper.getSharedPreferences(context).edit()
-				.putString(context.getString(R.string.ig_sync_hardware_key), UUID.randomUUID().toString()).commit();
+		Preferences.getPreferences(context).setSyncTerminal(UUID.randomUUID().toString());
 	}
 
 	/**
 	 * Check is there is still any unsynchronized entity in the database.
 	 * 
 	 * @param context
-	 * @return true if there is at least one unsynchronized entity, false
-	 *         otherwise.
+	 * @return true if there is at least one unsynchronized entity, false otherwise.
 	 */
 	public static boolean hasUnSync() {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(SQLITE_MASTER);
 		builder.selectColumns(KEY_NAME);
-		builder.where().like(KEY_SQL, ImogBean.Columns.SYNCHRONIZED).and().eq(KEY_TYPE, TYPE_TABLE);
+		builder.where().like(KEY_SQL, ImogBean.Columns.FLAG_SYNCHRONIZED).and().eq(KEY_TYPE, TYPE_TABLE);
 
 		Cursor c = builder.query();
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 			QueryBuilder b = ImogOpenHelper.getHelper().queryBuilder(c.getString(0));
 			b.setCountOf(true);
-			b.where().eq(ImogBean.Columns.SYNCHRONIZED, 0);
+			b.where().eq(ImogBean.Columns.FLAG_SYNCHRONIZED, 0);
 			long count = b.queryForLong();
 			if (count > 0) {
 				c.close();

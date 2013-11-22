@@ -20,15 +20,7 @@ import org.imogene.studio.contrib.ui.generation.GenerationWizardPage;
 
 public class RightsWizard extends WizardPage implements GenerationWizardPage {
 
-	private Button deleteRightButton;
-	private Button modifyRightButton;
-	
-	private Button deleteDatabaseButton;
-	
 	private Button multiloginButton;
-	
-//	private Text smsServerText;
-//	private Button smsButton;
 	
 	private Text sntpAddressText;
 	
@@ -45,12 +37,7 @@ public class RightsWizard extends WizardPage implements GenerationWizardPage {
 	@Override
 	public Map<String, String> getProperties() {
 		HashMap<String, String> result = new HashMap<String, String>();
-		result.put("Android_canDelete", Boolean.toString(deleteRightButton.getSelection()));
-		result.put("Android_canModify", Boolean.toString(modifyRightButton.getSelection()));
-		result.put("Android_canDeleteDatabase", Boolean.toString(deleteDatabaseButton.getSelection()));
 		result.put("Android_multilogin", Boolean.toString(multiloginButton.getSelection()));
-//		result.put("Android_smsEnabled", Boolean.toString(smsButton.getSelection()));
-//		result.put("Android_smsServer", smsServerText.getText());
 		result.put("Android_sntpServer", sntpAddressText.getText());
 		result.put("Android_codeHidden", codeText.getText());
 		return result;
@@ -61,42 +48,13 @@ public class RightsWizard extends WizardPage implements GenerationWizardPage {
 		Composite mainComposite = new Composite(parent, SWT.NONE);
 		mainComposite.setLayout(new GridLayout());
 		
-		createUserRightsGroup(mainComposite);
-		createUserDatabaseRightGroup(mainComposite);
 		createMultiloginGroup(mainComposite);
-//		createSmsGroup(mainComposite);
 		createSntpGroup(mainComposite);
 		createHiddenPreferencesCode(mainComposite);
 		
 		setControl(mainComposite);
 		
 		setPageComplete(false);
-	}
-	
-	private void createUserRightsGroup(Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		group.setLayout(new GridLayout());
-		group.setText("User rights on entities");
-		
-		deleteRightButton = new Button(group, SWT.CHECK);
-		deleteRightButton.setText("Allow users to delete forms form device.");
-		deleteRightButton.setSelection(false);
-		
-		modifyRightButton = new Button(group, SWT.CHECK);
-		modifyRightButton.setText("Allow users to modify forms form device.");
-		modifyRightButton.setSelection(true);
-	}
-	
-	private void createUserDatabaseRightGroup(Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		group.setLayout(new GridLayout());
-		group.setText("Database rights");
-		
-		deleteDatabaseButton = new Button(group, SWT.CHECK);
-		deleteDatabaseButton.setText("Allow user to empty the local database from device");
-		deleteDatabaseButton.setSelection(false);
 	}
 	
 	private void createMultiloginGroup(Composite parent) {
@@ -109,28 +67,6 @@ public class RightsWizard extends WizardPage implements GenerationWizardPage {
 		multiloginButton.setText("Allow multilogin on the device");
 		multiloginButton.setSelection(false);
 	}
-	
-//	private void createSmsGroup(Composite parent) {
-//		Group group = new Group(parent, SWT.NONE);
-//		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		group.setLayout(new GridLayout());
-//		group.setText("SMS synchronization");
-//		
-//		smsButton = new Button(group, SWT.CHECK);
-//		smsButton.setText("Use the SMS layer to synchronize data");
-//		smsButton.setSelection(false);
-//		
-//		Composite subGroup = new Composite(group, SWT.NONE);
-//		subGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		subGroup.setLayout(new GridLayout(2, false));
-//		
-//		Label smsLabel = new Label(subGroup, SWT.NONE);
-//		smsLabel.setText("The SMS server phone number: ");
-//		
-//		smsServerText = new Text(subGroup, SWT.BORDER);
-//		smsServerText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
-//		smsServerText.setMessage("ex: +33123456789");
-//	}
 	
 	private void createSntpGroup(Composite parent) {
 		Group group = new Group(parent, SWT.NONE);

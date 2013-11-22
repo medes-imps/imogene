@@ -1,5 +1,7 @@
 package org.imogene.android.database.sqlite.stmt.query;
 
+import org.imogene.android.database.sqlite.stmt.StatementBuilder;
+
 /**
  * Internal class handling the SQL 'ORDER BY' operation. Used by
  * {@link StatementBuilder#orderBy}.

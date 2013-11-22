@@ -1,7 +1,7 @@
 package org.imogene.android.preference.filter;
 
 import org.imogene.android.domain.ClientFilter;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
 import android.content.Context;
@@ -16,34 +16,34 @@ public abstract class FilterPreference<T extends ClientFilter> extends DialogPre
 	private final String mUserId;
 	private final String mTerminalId;
 	private final String mEntityField;
-	
+
 	private T mFilter;
 
 	protected final String mCardEntity;
-	
+
 	private boolean persisted;
 
 	public FilterPreference(Context context, AttributeSet attrs, ClientFilter.Creator<T> creator) {
 		super(context, attrs);
-		
+
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FilterPreference, 0, 0);
-		mCardEntity = a.getString(R.styleable.FilterPreference_igFilterEntity);		
+		mCardEntity = a.getString(R.styleable.FilterPreference_igFilterEntity);
 		mEntityField = a.getString(R.styleable.FilterPreference_igFilterField);
 		a.recycle();
-		
-		mUserId = PreferenceHelper.getSyncLogin(context);
-		mTerminalId = PreferenceHelper.getHardwareId(context);
+
+		Preferences prefs = Preferences.getPreferences(context);
+		mUserId = prefs.getSyncLogin();
+		mTerminalId = prefs.getSyncTerminal();
 
 		mCreator = creator;
-		
-		
+
 		mFilter = getPersistedFilter();
 	}
 
 	public final T getFilter() {
 		return mFilter;
 	}
-	
+
 	public final boolean persisted() {
 		return persisted;
 	}
@@ -62,7 +62,7 @@ public abstract class FilterPreference<T extends ClientFilter> extends DialogPre
 	protected final T getPersistedFilter() {
 		return mCreator.create(getContext(), mUserId, mTerminalId, mCardEntity, mEntityField);
 	}
-	
+
 	public void notifyFilter() {
 		mFilter = getPersistedFilter();
 		notifyDependencyChange(shouldDisableDependents());

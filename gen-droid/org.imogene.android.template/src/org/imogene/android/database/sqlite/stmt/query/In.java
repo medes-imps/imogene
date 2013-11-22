@@ -42,6 +42,9 @@ public class In extends BaseComparison {
 		sb.append('(');
 		boolean first = true;
 		for (Object value : objects) {
+			if (value == null) {
+				throw new IllegalArgumentException("one of the IN values for '" + columnName + "' is null");
+			}
 			if (first) {
 				first = false;
 			} else {

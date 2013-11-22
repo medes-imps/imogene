@@ -9,9 +9,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.imogene.android.domain.filters.RelationFilter;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.http.ssl.SSLHttpClient;
+import org.imogene.android.util.ssl.SSLHttpClient;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -34,21 +34,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class RelationFilterPreference extends FilterPreference<RelationFilter> {
-	
+
 	private static final String TAG_FOOTER = "footer";
 	private static final String DESC_DOWNLOADING = "downloading";
 	private static final String DESC_ERROR = "error";
 	private static final Item FOOTER_DOWNLOADING = new Item(TAG_FOOTER, DESC_DOWNLOADING);
 	private static final Item FOOTER_ERROR = new Item(TAG_FOOTER, DESC_ERROR);
-	
+
 	private final Controller mController = Controller.getInstance();
 	private final ControllerResults mCallback = new ControllerResults();
 	private final MyAdapter mAdapter;
 	private final ListDownloader mRunnable;
-	
+
 	private final String mEntityWs;
 	private final String mHierarchicalField;
-	
+
 	private boolean stateSaved = false;
 
 	public RelationFilterPreference(Context context, AttributeSet attrs) {
@@ -58,10 +58,10 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 		mHierarchicalField = a.getString(R.styleable.RelationFilterPreference_igFilterHierarchicalField);
 		a.recycle();
 		mAdapter = new MyAdapter(context, android.R.layout.select_dialog_multichoice);
-		
+
 		mRunnable = new ListDownloader(context, mEntityWs, mHierarchicalField, mCardEntity);
 	}
-	
+
 	@Override
 	public void onDependencyChanged(Preference dependency, boolean disableDependent) {
 		super.onDependencyChanged(dependency, disableDependent);
@@ -71,17 +71,17 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 			persistFilter();
 		}
 	}
-	
+
 	@Override
 	public CharSequence getSummary() {
 		return getFilter().getDisplay();
 	}
-	
+
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
 		builder.setAdapter(mAdapter, null);
 	}
-	
+
 	@Override
 	protected void showDialog(Bundle state) {
 		super.showDialog(state);
@@ -91,7 +91,7 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 		Thread thread = new Thread(mRunnable);
 		thread.start();
 	}
-	
+
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		super.onClick(dialog, which);
@@ -124,64 +124,65 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 			persistFilter();
 		}
 	}
-		
+
 	@Override
 	protected Parcelable onSaveInstanceState() {
 		stateSaved = true;
 		mController.stop();
 		return super.onSaveInstanceState();
 	}
-	
+
 	@Override
 	public void onDismiss(DialogInterface dialog) {
 		super.onDismiss(dialog);
 		if (!stateSaved)
 			mController.stop();
 	}
-	
+
 	private void onStarted() {
 		stateSaved = false;
 		mAdapter.clear();
 		mAdapter.add(FOOTER_DOWNLOADING);
 	}
-	
+
 	private void onFinished() {
 		mAdapter.remove(FOOTER_DOWNLOADING);
 	}
-	
+
 	private void onReceived() {
 		mController.update(mCallback);
 	}
-	
+
 	private void onError() {
 		mAdapter.remove(FOOTER_DOWNLOADING);
 		mAdapter.add(FOOTER_ERROR);
 	}
-	
+
 	private static class ListDownloader implements Runnable {
-		
+
 		private final Context mContext;
 
 		private final String mEntity;
 		private final String mHierarchicalField;
 		private final String mCardEntity;
-		
+
 		public ListDownloader(Context context, String entity, String hierarchicalField, String cardEntity) {
 			mContext = context;
 			mEntity = entity;
 			mHierarchicalField = hierarchicalField;
 			mCardEntity = cardEntity;
 		}
-		
+
 		@Override
 		public void run() {
-			final String webService = PreferenceHelper.getWebServiceUrl(mContext);
-			final String login = PreferenceHelper.getSyncLogin(mContext);
-			final String password = PreferenceHelper.getSyncPassword(mContext);
-			final String terminal = PreferenceHelper.getHardwareId(mContext);
+			Preferences prefs = Preferences.getPreferences(mContext);
+			final String webService = prefs.getWebServiceServer();
+			final String login = prefs.getSyncLogin();
+			final String password = prefs.getSyncPassword();
+			final String terminal = prefs.getSyncTerminal();
 			final Controller controller = Controller.getInstance();
 			controller.startReceiving();
-			
+
 			/* request construction */
 			if (webService == null) {
 				controller.error();
@@ -192,39 +193,42 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 				builder.append('/');
 			builder.append("filters/");
 			builder.append(mEntity).append('s');
-			
+
 			if (mHierarchicalField != null) {
-				String value = RelationFilter.FILTER_CREATOR.create(mContext, login, terminal, mCardEntity, mHierarchicalField).getFieldValue();
+				String value = RelationFilter.FILTER_CREATOR.create(mContext, login, terminal, mCardEntity,
+						mHierarchicalField).getFieldValue();
 				if (value != null) {
 					builder.append('/');
 					builder.append(mHierarchicalField.toLowerCase());
 					builder.append('/');
 					String[] ids = value.split(";");
 					for (String id : ids) {
-						URI uri = URI.create(builder.toString()+id);
-						if (!request(uri, controller, login, password)) return;
+						URI uri = URI.create(builder.toString() + id);
+						if (!request(uri, controller, login, password))
+							return;
 					}
 				} else {
 					URI uri = URI.create(builder.toString());
-					if (!request(uri, controller, login, password))	return;
+					if (!request(uri, controller, login, password))
+						return;
 				}
 			} else {
 				URI uri = URI.create(builder.toString());
-				if (!request(uri, controller, login, password))	return;
+				if (!request(uri, controller, login, password))
+					return;
 			}
 			controller.finishReceiving();
 
 		}
-		
+
 		private boolean request(URI uri, Controller controller, String login, String password) {
 			SSLHttpClient client = new SSLHttpClient();
-			client.getCredentialsProvider().setCredentials(
-					new AuthScope(uri.getHost(), uri.getPort()), 
+			client.getCredentialsProvider().setCredentials(new AuthScope(uri.getHost(), uri.getPort()),
 					new UsernamePasswordCredentials(login, password));
-			
+
 			HttpGet get = new HttpGet(uri);
 			get.addHeader("Accept", "application/xml");
-			
+
 			try {
 				/* request execution */
 				HttpResponse response = client.execute(get);
@@ -236,7 +240,7 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 					factory.setNamespaceAware(true);
 					final XmlPullParser parser = factory.newPullParser();
 					parser.setInput(is, null);
-					
+
 					while (parser.next() != XmlPullParser.END_DOCUMENT && !controller.stopped()) {
 						if (parser.getEventType() == XmlPullParser.START_TAG) {
 							String name = parser.getName();
@@ -257,30 +261,30 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 			return true;
 		}
 	}
-	
+
 	private class ControllerResults implements Controller.Result {
-		
+
 		@Override
 		public synchronized void notifyFinished() {
 			mHandler.sendEmptyMessage(MSG_FINISHED);
 		}
-		
+
 		@Override
 		public synchronized void notifyReceived() {
 			mHandler.sendEmptyMessage(MSG_RECEIVED);
-			
+
 		}
-		
+
 		@Override
 		public synchronized void notifyStarted() {
-			mHandler.sendEmptyMessage(MSG_STARTED);			
+			mHandler.sendEmptyMessage(MSG_STARTED);
 		}
-		
+
 		@Override
 		public synchronized void notifyError() {
 			mHandler.sendEmptyMessage(MSG_ERROR);
 		}
-		
+
 		@Override
 		public synchronized void addReceived(Object o) {
 			final Item item = (Item) o;
@@ -298,14 +302,14 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 			}
 		}
 	}
-	
+
 	private static final int MSG_STARTED = 1;
 	private static final int MSG_FINISHED = 2;
 	private static final int MSG_RECEIVED = 3;
 	private static final int MSG_ERROR = 4;
-	
+
 	private final Handler mHandler = new Handler() {
-		
+
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -324,7 +328,7 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 			}
 		};
 	};
-	
+
 	public static class Item {
 
 		String id;
@@ -343,14 +347,14 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 	}
 
 	private static class MyAdapter extends ArrayAdapter<Item> {
-		
+
 		private final LayoutInflater mInflater;
-		
+
 		public MyAdapter(Context context, int textViewResourceId) {
 			super(context, textViewResourceId);
 			mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
-		
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			final Item item = getItem(position);
@@ -368,8 +372,8 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 					view.setTag(TAG_FOOTER);
 				}
 				final boolean down = DESC_DOWNLOADING.equals(item.description);
-				view.findViewById(R.id.ig_footer_downloading).setVisibility(down?View.VISIBLE:View.GONE);
-				view.findViewById(R.id.ig_footer_error).setVisibility(down?View.GONE:View.VISIBLE);
+				view.findViewById(R.id.ig_footer_downloading).setVisibility(down ? View.VISIBLE : View.GONE);
+				view.findViewById(R.id.ig_footer_error).setVisibility(down ? View.GONE : View.VISIBLE);
 				return view;
 			} else {
 				if (convertView != null) {
@@ -383,7 +387,7 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 				return super.getView(position, convertView, parent);
 			}
 		}
-		
+
 	}
 
 }

@@ -24,6 +24,8 @@
 		<class>org.imogene.lib.common.useraction.UserAction</class>
 		<class>org.imogene.lib.sync.history.SyncHistory</class>
 		<class>org.imogene.lib.sync.session.SyncSession</class>
+		<class>org.imogene.lib.push.domain.Connection</class>
+		<class>org.imogene.lib.push.domain.Message</class>
 		«FOREACH entities AS e-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»</class>
 		«ENDFOREACH-»

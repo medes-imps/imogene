@@ -2,7 +2,7 @@ package org.imogene.android.xml.converters;
 
 import java.io.IOException;
 
-import org.imogene.android.util.base64.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.xmlpull.v1.XmlSerializer;
 
 public class ByteArrayConverter extends AbstractSingleValueConverter {

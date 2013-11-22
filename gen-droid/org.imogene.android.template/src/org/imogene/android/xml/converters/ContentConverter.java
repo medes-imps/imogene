@@ -5,9 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.codec.binary.Base64;
 import org.imogene.android.Constants.Paths;
 import org.imogene.android.domain.Binary;
-import org.imogene.android.util.base64.Base64;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

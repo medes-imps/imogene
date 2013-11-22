@@ -12,15 +12,14 @@ import org.acra.annotation.ReportsCrashes;
 import greendroid.app.GDApplication;
 import android.content.Intent;
 import android.net.Uri;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.preference.PreferenceHelper;
-import org.imogene.android.util.base64.Base64;
-import org.imogene.android.util.encryption.EncryptionManager;
+import org.imogene.android.notification.NotificationController;
+import org.imogene.android.preference.Preferences;
+import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
 import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»Helper;
 import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»LocalizedText;
-import org.imogene.android.«name.toLowerCase()».notification.«name.toFirstUpper()»Notification;
 
 @ReportsCrashes(
 		formKey = "dHczWFFCT2ZaTks1MWZoMXJZc0gxWHc6MQ", // google form on medes imps account
@@ -42,41 +41,31 @@ public class «name.toFirstUpper()»App extends GDApplication {
 		
 		«name.toFirstUpper()»OpenHelper.init(this);
 		«name.toFirstUpper()»Helper.init();
-		«name.toFirstUpper()»Notification.init();
 		«name.toFirstUpper()»LocalizedText.init();
 
-		if (PreferenceHelper.getHardwareId(this) == null)
-        	PreferenceHelper.getSharedPreferences(this)
-        	.edit()
-        	.putString(getString(R.string.ig_sync_hardware_key), UUID.randomUUID().toString())
-        	.commit();
-        
+		Preferences prefs = Preferences.getPreferences(this);
+		if (prefs.getSyncTerminal() == null) {
+        	prefs.setSyncTerminal(UUID.randomUUID().toString());
+        }
+
         «IF multilogin-»
-        if (!PreferenceHelper.isMultilogin(this))
-			PreferenceHelper.getSharedPreferences(this)
-			.edit()
-			.putBoolean(getString(R.string.ig_multilogin), true)
-			.commit();
+        if (!prefs.isMultiloginEnabled()) {
+        	prefs.setMultiloginEnabled(true);
+        }
         «ELSE-»
-        if (PreferenceHelper.isMultilogin(this))
-			PreferenceHelper.getSharedPreferences(this)
-			.edit()
-			.putBoolean(getString(R.string.ig_multilogin), false)
-			.commit();
+        if (prefs.isMultiloginEnabled()) {
+        	prefs.setMultiloginEnabled(false);
+        }
         «ENDIF-»
         
-        if (!PreferenceHelper.isSetAdmin(this)) {
-        	EncryptionManager em = EncryptionManager.getInstance(this);
-        	String encLogin = new String(Base64.encodeBase64(em.encrypt("admin".getBytes())));
-			String encPassword = new String(Base64.encodeBase64(em.encrypt("epipassword".getBytes())));
-			String roles = "«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»";
-        	PreferenceHelper.getSharedPreferences(this)
-			.edit()
-			.putString(getString(R.string.ig_admin_login_key), encLogin)
-			.putString(getString(R.string.ig_admin_password_key), encPassword)
-			.putString(getString(R.string.ig_admin_roles_key), roles)
-			.commit();
+        if (!prefs.isSetAdmin()) {
+        	prefs.setAdminLogin("admin");
+        	prefs.setAdminPassword("epipassword");
+			prefs.setAdminRoles("«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»");
         }
+        SynchronizationService.actionReschedule(this);
+        NotificationController.getInstance(this).watchForMessages(true);
+        NTPClock.getInstance(this).updateOffsetAsync();
 	}
 	
 	@Override

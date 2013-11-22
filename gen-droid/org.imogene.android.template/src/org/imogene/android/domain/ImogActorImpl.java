@@ -13,14 +13,14 @@ import android.text.TextUtils;
 public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor {
 
 	@XmlAlias("login")
-	private String login = null;
+	private String login;
 	
 	@XmlAlias("password")
-	private byte[] password = null;
+	private byte[] password;
 	
 	@XmlAlias("roles")
 	@XmlConverter(RolesConverter.class)
-	private String roles = null;
+	private String roles;
 	
 	protected void init(ImogActorCursor cursor) {
 		super.init(cursor);

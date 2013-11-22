@@ -4,7 +4,13 @@
 «FILE 'AndroidManifest.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.imogene.android.«name.toLowerCase()»" android:versionCode="«versionCode-»">
+	package="org.imogene.android.«name.toLowerCase()»"
+	android:versionCode="«versionCode»"
+    android:versionName="«versionCode».0">
+    
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="14" />
 	
     <supports-screens
         android:anyDensity="true"
@@ -18,7 +24,6 @@
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CALL_PHONE" />
-	<uses-permission android:name="android.permission.CALL_PRIVILEGED" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.RECEIVE_SMS" />
 	<uses-permission android:name="android.permission.SEND_SMS" />
@@ -56,10 +61,6 @@
 			</intent-filter>
 		</activity>
 			
-		<activity
-			android:name="org.imogene.android.app.HighPreferences"
-			android:label="@string/ig_high_preferences" />
-		
 		<activity 
 			android:name="org.imogene.android.app.setup.AccountCheckPassword"
 			android:label="@string/ig_account_check_password_title"/>
@@ -106,14 +107,18 @@
 			android:name=".app.«name.toFirstUpper()»Listing"
 			android:label="@string/ig_list_availables_entities"
 			android:icon="@drawable/ig_logo_android_s" />
-		
+			
 		<activity 
+			android:name="org.imogene.android.app.GeneralSettings"
+			android:label="@string/ig_general_settings" />
+			
+		<activity 
+			android:name="org.imogene.android.app.HiddenSettings"
+			android:label="@string/ig_hidden_settings" />
+		
 		«IF hasFilter(this)-»
-			android:name=".app.ExtendedPreferences"
-		«ELSE-»
-			android:name="org.imogene.android.app.Preferences"
+		<activity android:name=".app.FilterPreferenceScreen" />
 		«ENDIF-»
-			android:label="@string/ig_preferences" />
 		
 		«FOREACH entities AS entity»
 		<activity
@@ -185,6 +190,10 @@
 			</intent-filter>
 		</activity>
 		
+		«IF hasFilter(entity)»
+		<activity android:name=".app.«entity.name.toFirstUpper()»FilterPreferenceScreen" />
+		«ENDIF»
+		
 		«ENDFOREACH»
 		
 		<activity 
@@ -193,26 +202,6 @@
 			<category android:name="android.intent.category.DEFAULT"/>
 		</activity>
 		
-		<activity
-			android:name="org.imogene.android.app.OffsetActivity"
-			android:label="offset"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:configChanges="orientation|keyboardHidden" />
-		
-		<activity
-			android:name="org.imogene.android.app.AuthenticationHttpActivity"
-			android:label="authentication"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:configChanges="orientation|keyboardHidden" />
-		
-		<activity
-			android:name="org.imogene.android.app.UnSyncDialog"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-			
-        <activity
-            android:name="org.imogene.android.update.UpdateActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-            
         <activity
             android:name="org.imogene.android.maps.app.MapActivityWithoutActionBar" />
             
@@ -299,13 +288,6 @@
         	android:finishOnTaskLaunch="true" />
 		
 		<receiver
-			android:name="org.imogene.android.notification.MessagingNotification$OnDeletedReceiver">
-			<intent-filter>
-				<action android:name="org.imogene.android.«name.toLowerCase()».receiver.NOTIFICATION_DELETED" />
-			</intent-filter>
-		</receiver>
-		
-		<receiver
 			android:name="org.imogene.android.receiver.ServicingReceiver">
  			<intent-filter>
  				<action android:name="android.provider.Telephony.SECRET_CODE" />
@@ -318,24 +300,14 @@
  				<action android:name="org.imogene.android.«name.toLowerCase()».action.RM_DATABASE" />
  			</intent-filter>
  		</receiver>
-		
-		<receiver
-			android:name="org.imogene.android.receiver.SynchronizationReceiver">
-			<intent-filter>
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
-			</intent-filter>
-		</receiver>
+ 		
+        <service
+            android:name="org.imogene.android.sync.SynchronizationService"
+            android:exported="false" />
 		
 		<service
-			android:name="org.imogene.android.sync.SynchronizationService" >
-			<intent-filter>
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CHECK_SYNC" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.RESCHEDULE" />
-				<action android:name="org.imogene.android.«name.toLowerCase()».action.CANCEL" />
-			</intent-filter>
-		</service>
+            android:name="org.imogene.android.push.PushService"
+            android:exported="false" />
 		
 		<activity
             android:name="org.imogene.android.maps.app.PreCacheMap"
@@ -359,15 +331,10 @@
 
         <service android:name="org.imogene.android.maps.offline.TileLoaderService" />
 		
-		<receiver
-			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentReceiver" />
-		
-		<receiver
-			android:name="org.imogene.android.sync.SynchronizationService$OnClickSentFailedReceiver" />
-		
 		<provider 
 			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
-			android:name=".provider.«name.toFirstUpper()-»Provider" />
+			android:name=".provider.«name.toFirstUpper()-»Provider"
+			android:exported="true" />
 	</application>
 	
 </manifest>

@@ -50,24 +50,24 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 		main.setText(null);
 		secondary.setText(null);
 
-		if (c.getUnread()) {
-			view.setBackgroundResource(R.drawable.ig_list_selector_background_inverse);
-			main.setTextAppearance(context, android.R.style.TextAppearance_Medium_Inverse);
-			main.setTypeface(Typeface.DEFAULT_BOLD);
-			secondary.setTextAppearance(context, android.R.style.TextAppearance_Small_Inverse);
-			secondary.setTypeface(Typeface.DEFAULT_BOLD);
-		} else {
+		if (c.getFlagRead()) {
 			view.setBackgroundResource(android.R.drawable.list_selector_background);
 			main.setTextAppearance(context, android.R.style.TextAppearance_Medium);
 			main.setTypeface(Typeface.DEFAULT);
 			secondary.setTextAppearance(context, android.R.style.TextAppearance_Small);
 			secondary.setTypeface(Typeface.DEFAULT);
+		} else {
+			view.setBackgroundResource(R.drawable.ig_list_selector_background_inverse);
+			main.setTextAppearance(context, android.R.style.TextAppearance_Medium_Inverse);
+			main.setTypeface(Typeface.DEFAULT_BOLD);
+			secondary.setTextAppearance(context, android.R.style.TextAppearance_Small_Inverse);
+			secondary.setTypeface(Typeface.DEFAULT_BOLD);
 		}
 
 		ImageView icon = (ImageView) view.findViewById(R.id.ig_list_icon);
 		if (icon != null) {
 			icon.setImageResource(android.R.drawable.stat_notify_sync);
-			icon.setVisibility(c.getSynchronized() ? View.GONE : View.VISIBLE);
+			icon.setVisibility(c.getFlagSynchronized() ? View.GONE : View.VISIBLE);
 		}
 
 		main.setText(c.getMainDisplay(context));

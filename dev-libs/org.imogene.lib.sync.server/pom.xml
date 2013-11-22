@@ -33,9 +33,9 @@
 			<version>${commons.io.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tomcat</groupId>
+			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>${apache.servlet.api.version}</version>
+			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

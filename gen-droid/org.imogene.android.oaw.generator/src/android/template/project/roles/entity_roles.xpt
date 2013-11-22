@@ -4,14 +4,14 @@
 package org.imogene.android.«projectName.toLowerCase()-».roles;
 
 import android.content.Context;
-import org.imogene.android.preference.PreferenceHelper;
+import org.imogene.android.preference.Preferences;
 
 public class «name.toFirstUpper()-»Roles {
 
 	public static final boolean canRead(Context context) {
 		if (
 			«FOREACH groups AS group SEPARATOR "||" -»
-			canRead«group.name.toFirstUpper()-»(context)
+			canRead«group.name.toFirstUpper()»(context)
 			«ENDFOREACH-») {
 			return true;
 		} else {
@@ -22,7 +22,7 @@ public class «name.toFirstUpper()-»Roles {
 	public static final boolean canWrite(Context context) {
 		if (
 			«FOREACH groups AS group SEPARATOR "||" -»
-			canWrite«group.name.toFirstUpper()-»(context)
+			canWrite«group.name.toFirstUpper()»(context)
 			«ENDFOREACH-») {
 			return true;
 		} else {
@@ -32,11 +32,11 @@ public class «name.toFirstUpper()-»Roles {
 	
 	«IF creators.size > 0-»
 	public static final boolean canCreate(Context context) {
-		String roles = PreferenceHelper.getCurrentRoles(context);
-		if (
+		String roles = Preferences.getPreferences(context).getCurrentRoles();
+		if (roles != null && (
 			«FOREACH creators AS creator SEPARATOR  "||"-»
-			roles.contains(«projectName.toFirstUpper()-»Roles.«creator.name.toUpperCase()-»)
-			«ENDFOREACH-») {
+			roles.contains(«projectName.toFirstUpper()»Roles.«creator.name.toUpperCase()»)
+			«ENDFOREACH-»)) {
 			return true;
 		} else {
 			return false;
@@ -46,11 +46,11 @@ public class «name.toFirstUpper()-»Roles {
 	
 	«IF directAccess.size > 0-»
 	public static final boolean directAccess(Context context) {
-		String roles = PreferenceHelper.getCurrentRoles(context);
-		if (
+		String roles = Preferences.getPreferences(context).getCurrentRoles();
+		if (roles != null && (
 			«FOREACH directAccess AS da SEPARATOR  "||"-»
-			roles.contains(«projectName.toFirstUpper()-»Roles.«da.name.toUpperCase()-»)
-			«ENDFOREACH-») {
+			roles.contains(«projectName.toFirstUpper()»Roles.«da.name.toUpperCase()»)
+			«ENDFOREACH-»)) {
 			return true;
 		} else {
 			return false;
@@ -72,11 +72,11 @@ public static final boolean canRead«name.toFirstUpper()-»(Context context) {
 	«IF readers.size == 0-»
 	return true;
 	«ELSE-»
-	String roles = PreferenceHelper.getCurrentRoles(context);
-	if (
+	String roles = Preferences.getPreferences(context).getCurrentRoles();
+	if (roles != null && (
 		«FOREACH readers AS reader SEPARATOR  "||"-»
 		roles.contains(«project.toFirstUpper()-»Roles.«reader.name.toUpperCase()-»)
-		«ENDFOREACH-») {
+		«ENDFOREACH-»)) {
 		return true;
 	} else {
 		return false;
@@ -90,11 +90,11 @@ public static final boolean canWrite«name.toFirstUpper()-»(Context context) {
 	«IF writers.size == 0-»
 	return true;
 	«ELSE-»
-	String roles = PreferenceHelper.getCurrentRoles(context);
-	if (
+	String roles = Preferences.getPreferences(context).getCurrentRoles();
+	if (roles != null && (
 		«FOREACH writers AS writer SEPARATOR  "||"-»
 		roles.contains(«project.toFirstUpper()-»Roles.«writer.name.toUpperCase()-»)
-		«ENDFOREACH-») {
+		«ENDFOREACH-»)) {
 		return true;
 	} else {
 		return false;
