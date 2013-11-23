@@ -1,5 +1,5 @@
 «IMPORT core»
-«DEFINE generate(String applicationType, String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter, String audioConverter) FOR Project»
+«DEFINE generate(String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter, String audioConverter) FOR Project»
 «FILE "application.properties"»
 # JDBC properties
 jdbc.driverClassName=org.apache.derby.jdbc.ClientDriver
