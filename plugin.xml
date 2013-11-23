@@ -17,10 +17,10 @@
       <product
             application="org.imogene.rcp.container.application"
             description="%productAbout"
-            name="Expand TB">
+            name="Imogene Rcp">
          <property
                name="appName"
-               value="Expand TB">
+               value="Imogene Rcp">
          </property>
          <property
                name="startupProgressRect"
