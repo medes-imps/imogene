@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+import org.imogene.lib.common.model.CardEntity;
 
 /**
  * This interface describe the synchronization parameter object.
@@ -54,7 +54,7 @@ public class SyncParameter implements Serializable {
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "syncparameter_synchronizables", joinColumns = @JoinColumn(name = "syncparameter_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "synchronizableentity_id", referencedColumnName = "id"))
-	private Set<SynchronizableEntity> synchronizables;
+	private Set<CardEntity> synchronizables;
 
 	/**
 	 * Id of the parameters snapshot.
@@ -132,7 +132,7 @@ public class SyncParameter implements Serializable {
 	 * 
 	 * @return Array of class names
 	 */
-	public Set<SynchronizableEntity> getSynchronizables() {
+	public Set<CardEntity> getSynchronizables() {
 		return synchronizables;
 	}
 
@@ -141,7 +141,7 @@ public class SyncParameter implements Serializable {
 	 * 
 	 * @param synchronizables array of synchronizables entities.
 	 */
-	public void setSynchronizables(Set<SynchronizableEntity> synchronizables) {
+	public void setSynchronizables(Set<CardEntity> synchronizables) {
 		this.synchronizables = synchronizables;
 	}
 

@@ -3,12 +3,12 @@ package org.imogene.lib.common.entity;
 import java.util.Date;
 import java.util.Set;
 
-import org.imogene.lib.common.role.ImogRole;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.profile.Profile;
 
 /**
- * This interface describes an Imogene actor, which is an Imogene bean that is
- * an application user too.
+ * This interface describes an Imogene actor, which is an Imogene bean that is an application user too.
+ * 
  * @author Medes-IMPS
  */
 public interface ImogActor extends ImogEntity {
@@ -31,26 +31,30 @@ public interface ImogActor extends ImogEntity {
 	/** Set the actor last login date */
 	public void setLastLoginDate(Date lastLoginDate);
 
-	/** Get the roles associated to this user */
-	public Set<ImogRole> getRoles();
-
-	/** Set the roles associated to this user */
-	public void setRoles(Set<ImogRole> pRoles);
-
-	/** Add a role to the user assigned list of roles */
-	public void addRole(ImogRole role);
-
 	/** Get the synchronizable entities associated to this user */
-	public Set<SynchronizableEntity> getSynchronizables();
+	public Set<CardEntity> getSynchronizables();
 
 	/** Set the synchronizable entities associated to this user **/
-	public void setSynchronizables(Set<SynchronizableEntity> syncs);
+	public void setSynchronizables(Set<CardEntity> syncs);
 
 	/**
-	 * Add an entity type to the list of entity types that the user can
-	 * synchronize
+	 * Add an entity type to the list of entity types that the user can synchronize
 	 */
-	public void addSynchronizable(SynchronizableEntity synchronizable);
+	public void addSynchronizable(CardEntity synchronizable);
+
+	public Set<Profile> getProfiles();
+
+	public void setProfiles(Set<Profile> value);
+
+	/**
+	 * @param param the Profile to add to the profiles collection
+	 */
+	public void addToProfiles(Profile param);
+
+	/**
+	 * @param param the Profile to remove from the profiles collection
+	 */
+	public void removeFromProfiles(Profile param);
 
 	/** Get the local ISO code used by this actor */
 	public String getNotificationLocale();
@@ -59,7 +63,7 @@ public interface ImogActor extends ImogEntity {
 	public void setNotificationLocale(String iso);
 
 	/** Get the data used to send a notification using the specified method */
-    public String getNotificationData(String method);
+	public String getNotificationData(String method);
 
 	/** Is the notification activated for this user */
 	public Boolean getBeNotified();
@@ -67,10 +71,4 @@ public interface ImogActor extends ImogEntity {
 	/** Set if the notification is activated for this user */
 	public void setBeNotified(Boolean notify);
 
-	/**
-	 * Check if the specified role is already assigned to the user
-	 * @param id the role id
-	 * @return true if the role is already assigned
-	 */
-	public boolean isAssignedRole(String id);
 }

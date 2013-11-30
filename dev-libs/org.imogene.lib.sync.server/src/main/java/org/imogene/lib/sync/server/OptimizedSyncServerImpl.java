@@ -19,7 +19,7 @@ import org.imogene.lib.common.entity.ImogActorImpl;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.entity.ImogEntity;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.BeanKeyGenerator;
@@ -103,13 +103,13 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 			SyncSession session = sessionDao.load(sessionId);
 			ImogActor currentUser = genericDao.load(ImogActorImpl.class, session.getUserId());
 			List<ImogBean> allEntities = new Vector<ImogBean>();
-			Set<SynchronizableEntity> synchronizables = currentUser.getSynchronizables();
+			Set<CardEntity> synchronizables = currentUser.getSynchronizables();
 			Date lastDate = computeLastDate(session.getTerminalId());
 
 			boolean allowBinaries = false;
 
 			// serialize entities
-			for (SynchronizableEntity synchronizable : synchronizables) {
+			for (CardEntity synchronizable : synchronizables) {
 				if (BinaryFile.class.getName().equals(synchronizable.getName())) {
 					allowBinaries = true;
 					continue;

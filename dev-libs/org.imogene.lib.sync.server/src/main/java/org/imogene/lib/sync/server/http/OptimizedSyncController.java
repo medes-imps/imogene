@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.role.ImogRole;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.server.OptimizedSyncServer;
 import org.imogene.lib.sync.server.http.command.AuthenticationCommand;
@@ -67,11 +66,9 @@ public class OptimizedSyncController extends MultiActionController {
 				ServletOutputStream out = resp.getOutputStream();
 				logger.debug("SeSt: - list of active sessions - ");
 				/*
-				 * for (SyncSession session :
-				 * SyncSessionManager.getInstance().getAllSessions()) {
-				 * logger.debug("Session " + session.getId().toString() +
-				 * " : termiId=" + session.getTerminalId() + " userId=" +
-				 * session.getUserId() + " type=" + session.getType()); }
+				 * for (SyncSession session : SyncSessionManager.getInstance().getAllSessions()) {
+				 * logger.debug("Session " + session.getId().toString() + " : termiId=" + session.getTerminalId() +
+				 * " userId=" + session.getUserId() + " type=" + session.getType()); }
 				 */
 				out.close();
 			} catch (IOException ioe) {
@@ -97,12 +94,6 @@ public class OptimizedSyncController extends MultiActionController {
 			StringBuffer currentUserString = new StringBuffer();
 
 			currentUserString.append(currentUser.getId());
-			currentUserString.append(";");
-
-			for (ImogRole role : currentUser.getRoles()) {
-				currentUserString.append(role.getId());
-				currentUserString.append(";");
-			}
 
 			try {
 				resp.setStatus(HttpServletResponse.SC_OK);
@@ -334,7 +325,8 @@ public class OptimizedSyncController extends MultiActionController {
 			InputStream fis = new FileInputStream(tempFile);
 			long skipped = fis.skip(command.getLen());
 			if (skipped != command.getLen()) {
-				logger.error("Error skipping bytes: " + command.getLen() + " bytes to skip," + skipped + " bytes skipped");
+				logger.error("Error skipping bytes: " + command.getLen() + " bytes to skip," + skipped
+						+ " bytes skipped");
 				fis.close();
 				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;

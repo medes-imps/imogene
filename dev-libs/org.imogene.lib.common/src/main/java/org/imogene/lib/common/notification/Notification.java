@@ -10,10 +10,10 @@ import javax.persistence.ManyToMany;
 
 import org.imogene.lib.common.entity.ImogActorImpl;
 import org.imogene.lib.common.entity.ImogBeanImpl;
-import org.imogene.lib.common.role.ImogRole;
 
 /**
  * ImogBean implementation for the entity Notification
+ * 
  * @author MEDES-IMPS
  */
 @Entity
@@ -40,10 +40,6 @@ public class Notification extends ImogBeanImpl {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "Notification_Actors", joinColumns = @JoinColumn(name = "notification_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "id"))
 	private List<ImogActorImpl> actorRecipients;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "Notification_Roles", joinColumns = @JoinColumn(name = "notification_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	private List<ImogRole> roleRecipients;
 
 	/* Getters and Setters for Description group fields */
 
@@ -117,28 +113,6 @@ public class Notification extends ImogBeanImpl {
 	 */
 	public void removeFromactorRecipients(ImogActorImpl param) {
 		actorRecipients.remove(param);
-	}
-
-	public List<ImogRole> getRoleRecipients() {
-		return roleRecipients;
-	}
-
-	public void setRoleRecipients(List<ImogRole> value) {
-		roleRecipients = value;
-	}
-
-	/**
-	 * @param param the ImogRole to add to the roleRecipients collection
-	 */
-	public void addToroleRecipients(ImogRole param) {
-		roleRecipients.add(param);
-	}
-
-	/**
-	 * @param param the ImogRole to remove from the roleRecipients collection
-	 */
-	public void removeFromroleRecipients(ImogRole param) {
-		roleRecipients.remove(param);
 	}
 
 }

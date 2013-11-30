@@ -21,6 +21,7 @@ public interface AdminTranslations extends Constants {
 
 	/* Password message */
 	String password_confirm_error();
+
 	String login_without_password_error();
 
 	/* Binary texts */
@@ -65,39 +66,142 @@ public interface AdminTranslations extends Constants {
 
 	String imogActor_field_s_login();
 
-	/* ImogRole texts */
-	String imogRole_name();
-
-	String imogRole_name_plur();
-
-	String imogRole_create_title();
-
-	String imogRole_select_title();
-
-	String imogRole_table_text();
-
-	String imogRole_excel_title();
-
-	/* ImogRole field group texts */
-	String imogRole_group_identification();
-
-	/* ImogRole fields texts */
-	String imogRole_field_name();
-
-	String imogRole_field_s_name();
-
 	/* SynchronizableEntity texts */
-	String synchronizableEntity_name();
+	String cardEntity_name();
 
-	String synchronizableEntity_name_plur();
+	String cardEntity_name_plur();
 
-	String synchronizableEntity_create_title();
+	String cardEntity_create_title();
 
-	String synchronizableEntity_select_title();
+	String cardEntity_select_title();
 
-	String synchronizableEntity_table_text();
+	String cardEntity_table_text();
 
-	String synchronizableEntity_excel_title();
+	String cardEntity_excel_title();
+
+	/* Profile texts */
+	String profile_name();
+
+	String profile_name_plur();
+
+	String profile_create_title();
+
+	String profile_select_title();
+
+	String profile_table_text();
+
+	String profile_excel_title();
+
+	/* Profile field group texts */
+	String profile_group_description();
+
+	/* Profile fields texts */
+	String profile_field_name();
+
+	String profile_field_entityProfiles();
+
+	String profile_field_fieldGroupProfiles();
+
+	String profile_field_s_name();
+
+	/* EntityProfile texts */
+	String entityProfile_name();
+
+	String entityProfile_name_plur();
+
+	String entityProfile_create_title();
+
+	String entityProfile_select_title();
+
+	String entityProfile_table_text();
+
+	String entityProfile_excel_title();
+
+	/* EntityProfile field group texts */
+	String entityProfile_group_description();
+
+	/* EntityProfile fields texts */
+	String entityProfile_field_profile();
+
+	String entityProfile_field_entity();
+
+	String entityProfile_field_create();
+
+	String entityProfile_field_directAccess();
+
+	String entityProfile_field_delete();
+
+	String entityProfile_field_export();
+
+	String entityProfile_field_s_profile();
+
+	String entityProfile_field_s_entity();
+
+	String entityProfile_field_s_directAccess();
+
+	String entityProfile_field_s_create();
+
+	String entityProfile_field_s_delete();
+
+	String entityProfile_field_s_export();
+
+	/* FieldGroupProfile texts */
+	String fieldGroupProfile_name();
+
+	String fieldGroupProfile_name_plur();
+
+	String fieldGroupProfile_create_title();
+
+	String fieldGroupProfile_select_title();
+
+	String fieldGroupProfile_table_text();
+
+	String fieldGroupProfile_excel_title();
+
+	/* FieldGroupProfile field group texts */
+	String fieldGroupProfile_group_description();
+
+	/* FieldGroupProfile fields texts */
+	String fieldGroupProfile_field_profile();
+
+	String fieldGroupProfile_field_fieldGroup();
+
+	String fieldGroupProfile_field_read();
+
+	String fieldGroupProfile_field_write();
+
+	String fieldGroupProfile_field_export();
+
+	String fieldGroupProfile_field_s_profile();
+
+	String fieldGroupProfile_field_s_fieldGroup();
+
+	String fieldGroupProfile_field_s_read();
+
+	String fieldGroupProfile_field_s_write();
+
+	String fieldGroupProfile_field_s_export();
+
+	/* FieldGroup texts */
+	String fieldGroup_name();
+
+	String fieldGroup_name_plur();
+
+	String fieldGroup_create_title();
+
+	String fieldGroup_select_title();
+
+	String fieldGroup_table_text();
+
+	String fieldGroup_excel_title();
+
+	/* FieldGroup field group texts */
+	String fieldGroup_group_description();
+
+	/* FieldGroup fields texts */
+	String fieldGroup_field_name();
+
+	String fieldGroup_field_s_name();
 
 	/* SynchronizableEntity field group texts */
 	String synchronizableEntity_group_identification();
@@ -149,8 +253,6 @@ public interface AdminTranslations extends Constants {
 	String notification_field_message();
 
 	String notification_field_actorRecipients();
-
-	String notification_field_roleRecipients();
 
 	String notification_field_s_name();
 

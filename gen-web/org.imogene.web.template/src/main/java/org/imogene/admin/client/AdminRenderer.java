@@ -9,21 +9,23 @@ import org.imogene.web.client.dynamicfields.ui.field.FormType;
 import org.imogene.web.client.dynamicfields.ui.field.FormTypeUtil;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.util.ImogBeanRenderer;
+import org.imogene.web.shared.proxy.CardEntityProxy;
+import org.imogene.web.shared.proxy.EntityProfileProxy;
+import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
+import org.imogene.web.shared.proxy.FieldGroupProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
-import org.imogene.web.shared.proxy.ImogRoleProxy;
-import org.imogene.web.shared.proxy.SynchronizableEntityProxy;
+import org.imogene.web.shared.proxy.ProfileProxy;
 
 /**
  * Singleton that enables to render a display value of the beans
+ * 
  * @author MEDES-IMPS
  */
 public class AdminRenderer extends ImogBeanRenderer {
 
 	private static AdminRenderer instance = new AdminRenderer();
-	
+
 	private FormTypeUtil formTypeUtil;
-	
-	
 
 	private AdminRenderer() {
 		super();
@@ -34,17 +36,27 @@ public class AdminRenderer extends ImogBeanRenderer {
 	}
 
 	/**
-	 * Get display representation for a ImogBeanProxy     
+	 * Get display representation for a ImogBeanProxy
+	 * 
 	 * @param bean the ImogBeanProxy
 	 * @return string representation for IHM display
 	 */
 	public String getDisplayValue(ImogBeanProxy bean) {
 
-		if (bean instanceof ImogRoleProxy) {
-			return getDisplayValue((ImogRoleProxy) bean);
+		if (bean instanceof ProfileProxy) {
+			return getDisplayValue((ProfileProxy) bean);
 		}
-		if (bean instanceof SynchronizableEntityProxy) {
-			return getDisplayValue((SynchronizableEntityProxy) bean);
+		if (bean instanceof EntityProfileProxy) {
+			return getDisplayValue((EntityProfileProxy) bean);
+		}
+		if (bean instanceof FieldGroupProfileProxy) {
+			return getDisplayValue((FieldGroupProfileProxy) bean);
+		}
+		if (bean instanceof CardEntityProxy) {
+			return getDisplayValue((CardEntityProxy) bean);
+		}
+		if (bean instanceof FieldGroupProxy) {
+			return getDisplayValue((FieldGroupProxy) bean);
 		}
 		if (bean instanceof NotificationProxy) {
 			return getDisplayValue((NotificationProxy) bean);
@@ -53,7 +65,7 @@ public class AdminRenderer extends ImogBeanRenderer {
 	}
 
 	/**	 */
-	private String getDisplayValue(ImogRoleProxy bean) {
+	private String getDisplayValue(ProfileProxy bean) {
 		String value = new String();
 		if (bean.getName() != null) {
 			value = value + bean.getName() + " ";
@@ -61,24 +73,53 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 		return value.trim();
 	}
+
 	/**	 */
-	private String getDisplayValue(SynchronizableEntityProxy bean) {
+	private String getDisplayValue(EntityProfileProxy bean) {
 		String value = new String();
-		
-		String entity = bean.getId();
-		if (entity != null) {
-			
-			List<FormType> forms = formTypeUtil.getFormTypes();
-			for(FormType type: forms) {
-				if(type.getValue().equals(entity))
-					return type.getDisplayValue();
-			}
-			
+
+		if (bean.getProfile() != null)
+			value = value + getDisplayValue(bean.getProfile()) + " ";
+
+		if (bean.getEntity() != null)
+			value = value + getDisplayValue(bean.getEntity()) + " ";
+
+		return value.trim();
+	}
+
+	/**	 */
+	private String getDisplayValue(FieldGroupProfileProxy bean) {
+		String value = new String();
+
+		if (bean.getProfile() != null)
+			value = value + getDisplayValue(bean.getProfile()) + " ";
+
+		if (bean.getFieldGroup() != null)
+			value = value + getDisplayValue(bean.getFieldGroup()) + " ";
+
+		return value.trim();
+	}
+
+	/**	 */
+	private String getDisplayValue(CardEntityProxy bean) {
+		String value = new String();
+		if (bean.getName() != null) {
 			value = value + bean.getName() + " ";
 		}
 
 		return value.trim();
 	}
+
+	/**	 */
+	private String getDisplayValue(FieldGroupProxy bean) {
+		String value = new String();
+		if (bean.getName() != null) {
+			value = value + bean.getName() + " ";
+		}
+
+		return value.trim();
+	}
+
 	/**	 */
 	private String getDisplayValue(NotificationProxy bean) {
 		String value = new String();
@@ -91,23 +132,34 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 	/**
 	 * Get an enumeration representation for a ImogBeanProxy type enumeration field
+	 * 
 	 * @param beanClass a ImogBeanProxy class type
-	 * @param fieldName the ImogBeanProxy field name     
-	 * @param fieldValue the bean field value    
+	 * @param fieldName the ImogBeanProxy field name
+	 * @param fieldValue the bean field value
 	 * @return string representation for IHM display
 	 */
-	public String getEnumDisplayValue(Class<?> beanClass, String fieldName,
-			String fieldValue) {
+	public String getEnumDisplayValue(Class<?> beanClass, String fieldName, String fieldValue) {
 
 		if (fieldValue != null && !fieldValue.equals("")) {
 
-			if (beanClass.equals(ImogRoleProxy.class)) {
-				return getImogRoleEnumDisplayValue(fieldName, fieldValue);
+			if (beanClass.equals(ProfileProxy.class)) {
+				return getProfileEnumDisplayValue(fieldName, fieldValue);
 			}
 
-			if (beanClass.equals(SynchronizableEntityProxy.class)) {
-				return getSynchronizableEntityEnumDisplayValue(fieldName,
-						fieldValue);
+			if (beanClass.equals(EntityProfileProxy.class)) {
+				return getEntityProfileEnumDisplayValue(fieldName, fieldValue);
+			}
+
+			if (beanClass.equals(FieldGroupProfileProxy.class)) {
+				return getFieldGroupProfileEnumDisplayValue(fieldName, fieldValue);
+			}
+
+			if (beanClass.equals(FieldGroupProxy.class)) {
+				return getFieldGroupEnumDisplayValue(fieldName, fieldValue);
+			}
+
+			if (beanClass.equals(CardEntityProxy.class)) {
+				return getCardEntityEnumDisplayValue(fieldName, fieldValue);
 			}
 
 			if (beanClass.equals(NotificationProxy.class)) {
@@ -118,12 +170,10 @@ public class AdminRenderer extends ImogBeanRenderer {
 		return "";
 	}
 
-
 	/**
 	 *
 	 */
-	private String getImogRoleEnumDisplayValue(String fieldName,
-			String fieldValue) {
+	private String getProfileEnumDisplayValue(String fieldName, String fieldValue) {
 		String value = BaseNLS.constants().enumeration_unknown();
 
 		return value.trim();
@@ -132,8 +182,7 @@ public class AdminRenderer extends ImogBeanRenderer {
 	/**
 	 *
 	 */
-	private String getSynchronizableEntityEnumDisplayValue(String fieldName,
-			String fieldValue) {
+	private String getEntityProfileEnumDisplayValue(String fieldName, String fieldValue) {
 		String value = BaseNLS.constants().enumeration_unknown();
 
 		return value.trim();
@@ -142,8 +191,34 @@ public class AdminRenderer extends ImogBeanRenderer {
 	/**
 	 *
 	 */
-	private String getNotificationEnumDisplayValue(String fieldName,
-			String fieldValue) {
+	private String getFieldGroupProfileEnumDisplayValue(String fieldName, String fieldValue) {
+		String value = BaseNLS.constants().enumeration_unknown();
+
+		return value.trim();
+	}
+
+	/**
+	 *
+	 */
+	private String getCardEntityEnumDisplayValue(String fieldName, String fieldValue) {
+		String value = BaseNLS.constants().enumeration_unknown();
+
+		return value.trim();
+	}
+
+	/**
+	 *
+	 */
+	private String getFieldGroupEnumDisplayValue(String fieldName, String fieldValue) {
+		String value = BaseNLS.constants().enumeration_unknown();
+
+		return value.trim();
+	}
+
+	/**
+	 *
+	 */
+	private String getNotificationEnumDisplayValue(String fieldName, String fieldValue) {
 		String value = BaseNLS.constants().enumeration_unknown();
 
 		if (fieldName.equals("method")) {
@@ -155,12 +230,12 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 		}
 
-		if (fieldName.equals("formType")) {	
-			if(formTypeUtil!=null) {
-				
+		if (fieldName.equals("formType")) {
+			if (formTypeUtil != null) {
+
 				List<FormType> formTypes = formTypeUtil.getFormTypes();
-				for(FormType type:formTypes) {				
-					if(fieldValue.equals(type.getValue()))
+				for (FormType type : formTypes) {
+					if (fieldValue.equals(type.getValue()))
 						value = type.getDisplayValue();
 				}
 			}
@@ -179,7 +254,7 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 		return value.trim();
 	}
-	
+
 	public FormTypeUtil getFormTypeUtil() {
 		return formTypeUtil;
 	}

@@ -6,12 +6,12 @@ import org.imogene.admin.server.locator.NotificationLocator;
 import org.imogene.lib.common.notification.Notification;
 import org.imogene.web.shared.proxy.ImogActorProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
-import org.imogene.web.shared.proxy.ImogRoleProxy;
 
 import com.google.web.bindery.requestfactory.shared.ProxyFor;
 
 /**
- * Notification proxy 
+ * Notification proxy
+ * 
  * @author Medes-IMPS
  */
 @ProxyFor(value = Notification.class, locator = NotificationLocator.class)
@@ -20,29 +20,33 @@ public interface NotificationProxy extends ImogBeanProxy {
 	/* Description section fields */
 
 	public String getName();
+
 	public void setName(String value);
 
 	public String getMethod();
+
 	public void setMethod(String value);
 
 	public String getTitle();
+
 	public void setTitle(String value);
 
 	public String getFormType();
+
 	public void setFormType(String value);
 
 	public String getOperation();
+
 	public void setOperation(String value);
 
 	public String getMessage();
+
 	public void setMessage(String value);
 
 	/* Recipients section fields */
 
 	public List<ImogActorProxy> getActorRecipients();
-	public void setActorRecipients(List<ImogActorProxy> value);
 
-	public List<ImogRoleProxy> getRoleRecipients();
-	public void setRoleRecipients(List<ImogRoleProxy> value);
+	public void setActorRecipients(List<ImogActorProxy> value);
 
 }

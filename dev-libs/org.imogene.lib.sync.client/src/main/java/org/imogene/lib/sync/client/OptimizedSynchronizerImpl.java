@@ -19,7 +19,7 @@ import org.imogene.encryption.EncryptionManager;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.entity.ImogBean;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.client.http.OptimizedSyncClientHttp;
 import org.imogene.lib.sync.client.parameter.SyncParameter;
@@ -430,12 +430,12 @@ public class OptimizedSynchronizerImpl implements OptimizedSynchronizer {
 
 		Date lastSynchro = computeLastDate();
 		SyncParameter param = syncParameterDao.load();
-		Set<SynchronizableEntity> synchronizables = param.getSynchronizables();
+		Set<CardEntity> synchronizables = param.getSynchronizables();
 		List<ImogBean> entities = new Vector<ImogBean>();
 
 		boolean allowBinaries = false;
 
-		for (SynchronizableEntity classEntity : synchronizables) {
+		for (CardEntity classEntity : synchronizables) {
 			if (BinaryFile.class.getName().equals(classEntity.getName())) {
 				allowBinaries = true;
 			} else {
