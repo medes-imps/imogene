@@ -445,12 +445,12 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 	«ENDIF -»
 «ENDDEFINE»
 «DEFINE defaultValue FOR IntegerField-»
-	«IF defaultValue!=null -»
+	«IF defaultValue!=null && defaultValue.length > 0-»
 		= new Integer(«defaultValue»)
 	«ENDIF -»
 «ENDDEFINE»
 «DEFINE defaultValue FOR FloatField-»
-	«IF defaultValue!=null -»
+	«IF defaultValue!=null && defaultValue.length > 0-»
 		= new Double(«defaultValue»)
 	«ENDIF -»
 «ENDDEFINE»
