@@ -88,7 +88,7 @@ public interface Thema extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Entities</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getThema_Entities()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	EList<CardEntity> getEntities();

@@ -16,8 +16,8 @@
         eType="#//Thema" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
         eType="#//Role" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="languages" upperBound="-1"
-        eType="#//Language" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="languages" lowerBound="1"
+        upperBound="-1" eType="#//Language" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CardEntity">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -283,8 +283,8 @@
         eType="#//Role"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="notificationInfos" upperBound="-1"
         eType="#//NotificationInfo" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="adminFields" upperBound="-1"
-        eType="#//FieldEntity">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="adminFields" lowerBound="1"
+        upperBound="-1" eType="#//FieldEntity">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="adminFields are all fields that can be used for user administration. It can refer for instance, name, firstname, etc... These fields are then added to the strutural and implicit administration fields such as login, password, roles, delegator..."/>
       </eAnnotations>
@@ -358,8 +358,8 @@
         iD="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="descriptions" upperBound="-1"
         eType="#//Description" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entities" upperBound="-1"
-        eType="#//CardEntity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entities" lowerBound="1"
+        upperBound="-1" eType="#//CardEntity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CardEntityUIFormat">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

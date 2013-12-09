@@ -213,7 +213,8 @@ public class SynchronizerImpl implements Synchronizer {
 			File outFile = new File(directory, sessionId + ".lmodif"); //$NON-NLS-1$
 			FileOutputStream fos = new FileOutputStream(outFile);
 			// we take the date just before to access the database and to serialize
-			Date tempDate = new Date(System.currentTimeMillis() + param.getOffset());
+			long offset = param.getOffset() != null ? param.getOffset() : 0;
+			Date tempDate = new Date(System.currentTimeMillis() + offset);
 			getDataToSynchronize(fos);
 			fos.close();
 			// update sync history
@@ -232,7 +233,8 @@ public class SynchronizerImpl implements Synchronizer {
 				history.setLevel(SyncHistory.LEVEL_RECEIVE);
 				historyDao.saveOrUpdate(history);
 			} else {
-				throw new SynchronizationException("Error sending data to the server.", SynchronizationException.ERROR_SEND); //$NON-NLS-1$
+				throw new SynchronizationException(
+						"Error sending data to the server.", SynchronizationException.ERROR_SEND); //$NON-NLS-1$
 			}
 			monitor.worked(1);
 
@@ -288,8 +290,9 @@ public class SynchronizerImpl implements Synchronizer {
 				FileInputStream fis = new FileInputStream(outFile);
 				long skipped = fis.skip(bytesReceived);
 				if (skipped != bytesReceived) {
-					throw new SynchronizationException("Error resuming the session: " + bytesReceived //$NON-NLS-1$
-							+ " bytes already received, " + skipped + " bytes skipped", SynchronizationException.ERROR_SEND); //$NON-NLS-1$ //$NON-NLS-2$
+					throw new SynchronizationException(
+							"Error resuming the session: " + bytesReceived //$NON-NLS-1$
+									+ " bytes already received, " + skipped + " bytes skipped", SynchronizationException.ERROR_SEND); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				logger.debug("Re-sending data from the file " + outFile.getAbsolutePath() + " skipping " + bytesReceived //$NON-NLS-1$ //$NON-NLS-2$
@@ -313,7 +316,8 @@ public class SynchronizerImpl implements Synchronizer {
 				syncClient.closeSession(error.getId());
 				monitor.worked(1);
 			} catch (Exception ex) {
-				SynchronizationException syx = new SynchronizationException("Error resuming a sent: " + ex.getLocalizedMessage(), //$NON-NLS-1$
+				SynchronizationException syx = new SynchronizationException(
+						"Error resuming a sent: " + ex.getLocalizedMessage(), //$NON-NLS-1$
 						ex, SynchronizationException.DEFAULT_ERROR);
 				if (ex instanceof SynchronizationException)
 					syx.setCode(((SynchronizationException) ex).getCode());
@@ -335,7 +339,8 @@ public class SynchronizerImpl implements Synchronizer {
 				File inFile = new File(directory, error.getId() + ".smodif"); //$NON-NLS-1$
 				String result = syncClient.resumeReceive(error.getId(), inFile.length());
 				if (result.equals("error")) { //$NON-NLS-1$
-					throw new SynchronizationException("The server return an error code", SynchronizationException.ERROR_RECEIVE); //$NON-NLS-1$
+					throw new SynchronizationException(
+							"The server return an error code", SynchronizationException.ERROR_RECEIVE); //$NON-NLS-1$
 				}
 				monitor.worked(1);
 
@@ -421,9 +426,11 @@ public class SynchronizerImpl implements Synchronizer {
 			serializer.serialize(entities, os);
 			os.close();
 		} catch (ImogSerializationException se) {
-			throw new SynchronizationException("Error preparing the data to synchronize: " + se.getLocalizedMessage(), se); //$NON-NLS-1$
+			throw new SynchronizationException(
+					"Error preparing the data to synchronize: " + se.getLocalizedMessage(), se); //$NON-NLS-1$
 		} catch (IOException ioe) {
-			throw new SynchronizationException("Error preparing the data to synchronize: " + ioe.getLocalizedMessage(), ioe); //$NON-NLS-1$
+			throw new SynchronizationException(
+					"Error preparing the data to synchronize: " + ioe.getLocalizedMessage(), ioe); //$NON-NLS-1$
 		}
 		return entities.size();
 	}

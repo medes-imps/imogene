@@ -102,7 +102,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Les main fields indiquent les champs à utiliser pour representer la fiche. Si on met Nom, Prenom, on aura des cartes présentées sous la forme :  Durand Marcel si on met Prenom,Nom, sous la forme : Marcel Durand.
+	 * Les main fields indiquent les champs Ã  utiliser pour representer la fiche. Si on met Nom, Prenom, on aura des cartes prÃ©sentÃ©es sous la forme :  Durand Marcel si on met Prenom,Nom, sous la forme : Marcel Durand.
 	 * 
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Main Fields</em>' reference list.
@@ -186,7 +186,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * notion de top level card  entity :  on indique au niveau des cards entity, que la carte est accessible dès le menu principal. Cela permet de 'cacher' certaines cartes pour ne les rendre accessibles que par l'édition de la carte parente. 
+	 * notion de top level card  entity :  on indique au niveau des cards entity, que la carte est accessible dÃ¨s le menu principal. Cela permet de 'cacher' certaines cartes pour ne les rendre accessibles que par l'Ã©dition de la carte parente. 
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Top Level</em>' attribute.
 	 * @see #setTopLevel(boolean)
@@ -212,7 +212,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Ajout de 'filterFields' permettant d'indiquer quels sont les champs qu'on utilise sur le filtre pour la récupération des fiches lors de la replication. Ces champs vont générer des écrans de preference pour chaque card entity dans l'application device. L'utilisateur pourra ainsi avoir que les fiches de son service, etc...  D'autres champs implicites seront aussi ajoutés dans ce preference dialog (nb max de cartes, date de creation, périodicité, etc...).
+	 * Ajout de 'filterFields' permettant d'indiquer quels sont les champs qu'on utilise sur le filtre pour la rÃ©cupÃ©ration des fiches lors de la replication. Ces champs vont gÃ©nÃ©rer des Ã©crans de preference pour chaque card entity dans l'application device. L'utilisateur pourra ainsi avoir que les fiches de son service, etc...  D'autres champs implicites seront aussi ajoutÃ©s dans ce preference dialog (nb max de cartes, date de creation, pÃ©riodicitÃ©, etc...).
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Client Filter Fields</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_ClientFilterFields()
@@ -245,7 +245,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Le champs sortField permet d'indiquer quels sont les champs à utiliser pour trier les données qui remontent de la base. Utiliser de préférence des champs simples, et non des references... sinon ca va trier sur les clés...
+	 * Le champs sortField permet d'indiquer quels sont les champs Ã  utiliser pour trier les donnÃ©es qui remontent de la base. Utiliser de prÃ©fÃ©rence des champs simples, et non des references... sinon ca va trier sur les clÃ©s...
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Sort Fields</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_SortFields()
@@ -346,7 +346,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Roles autorisés à créer la card (Pour ces rôles, topLevel=true, pour les autres, topLevel=false).
+	 * Roles autorisÃ©s Ã  crÃ©er la card (Pour ces rÃ´les, topLevel=true, pour les autres, topLevel=false).
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Creators</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_Creators()
@@ -388,7 +388,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Roles autorisés à voir l'entité en top level
+	 * Roles autorisÃ©s Ã  voir l'entitÃ© en top level
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Direct Access</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_DirectAccess()
@@ -497,7 +497,7 @@ public interface CardEntity extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * notion de top level card  entity :  on indique au niveau des cards entity, que la carte est accessible dès le menu principal. Cela permet de 'cacher' certaines cartes pour ne les rendre accessibles que par l'édition de la carte parente. 
+	 * notion de top level card  entity :  on indique au niveau des cards entity, que la carte est accessible dÃ¨s le menu principal. Cela permet de 'cacher' certaines cartes pour ne les rendre accessibles que par l'Ã©dition de la carte parente. 
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Has Dynamic Fields</em>' attribute.
 	 * @see #setHasDynamicFields(boolean)

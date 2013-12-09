@@ -157,7 +157,7 @@ public interface Project extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Languages</em>' containment reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getProject_Languages()
-	 * @model containment="true"
+	 * @model containment="true" required="true"
 	 * @generated
 	 */
 	EList<Language> getLanguages();
