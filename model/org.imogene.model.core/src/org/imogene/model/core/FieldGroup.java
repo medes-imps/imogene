@@ -134,7 +134,7 @@ public interface FieldGroup extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Roles autorisés à lire et consulter la carte.
+	 * Roles autorisÃ©s Ã  lire et consulter la carte.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Readers</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getFieldGroup_Readers()
@@ -149,7 +149,7 @@ public interface FieldGroup extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Roles autorisés à modifier, écrire ou effacer la carte.
+	 * Roles autorisÃ©s Ã  modifier, Ã©crire ou effacer la carte.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Writers</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getFieldGroup_Writers()

@@ -13,8 +13,8 @@ import org.eclipse.emf.common.util.EList;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * Un acteur est une cardEntity, mais a les possiblité d'avoir en plus un login, password, et d'être identifié en tant que propriétaire d'une carte. 
- * Un acteur a la possibilité également d'avoir uniquement certains roles assignables.
+ * Un acteur est une cardEntity, mais a les possiblitÃ© d'avoir en plus un login, password, et d'Ãªtre identifiÃ© en tant que propriÃ©taire d'une carte. 
+ * Un acteur a la possibilitÃ© Ã©galement d'avoir uniquement certains roles assignables.
  * 
  * <!-- end-model-doc -->
  *
@@ -82,7 +82,7 @@ public interface Actor extends CardEntity {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Admin Fields</em>' reference list.
 	 * @see org.imogene.model.core.ImogenePackage#getActor_AdminFields()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	EList<FieldEntity> getAdminFields();
