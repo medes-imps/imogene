@@ -44,30 +44,25 @@ public class DefaultValueFormatConstraint extends AbstractMedanyModelConstraint 
 					return ctx.createFailureStatus(new Object[] { this.formatMessage(DEFAULT_VALUE_INT,
 							((FieldEntity) ctx.getTarget()).getParentCard(), (FieldEntity) ctx.getTarget()) });
 			} else if (target instanceof FloatField) {
-
 				if (defaultValue != null && !defaultValue.equals("") && !Tools.isFloat(defaultValue))
 					return ctx.createFailureStatus(new Object[] { this.formatMessage(DEFAULT_VALUE_FLOAT,
 							((FieldEntity) ctx.getTarget()).getParentCard(), (FieldEntity) ctx.getTarget()) });
 			} else if (target instanceof DateField) {
-
 				if (defaultValue != null && !defaultValue.equals("") && !defaultValue.toLowerCase().equals("now")
 						&& !Tools.isDate(defaultValue))
 					return ctx.createFailureStatus(new Object[] { this.formatMessage(DEFAULT_VALUE_DATE,
 							((FieldEntity) ctx.getTarget()).getParentCard(), (FieldEntity) ctx.getTarget()) });
 			} else if (target instanceof DateTimeField) {
-
 				if (defaultValue != null && !defaultValue.equals("") && !defaultValue.toLowerCase().equals("now")
 						&& !Tools.isDateTime(defaultValue))
 					return ctx.createFailureStatus(new Object[] { this.formatMessage(DEFAULT_VALUE_DATETIME,
 							((FieldEntity) ctx.getTarget()).getParentCard(), (FieldEntity) ctx.getTarget()) });
 			} else if (target instanceof TimeField) {
-
 				if (defaultValue != null && !defaultValue.equals("") && !defaultValue.toLowerCase().equals("now")
 						&& !Tools.isTime(defaultValue))
 					return ctx.createFailureStatus(new Object[] { this.formatMessage(DEFAULT_VALUE_TIME,
 							((FieldEntity) ctx.getTarget()).getParentCard(), (FieldEntity) ctx.getTarget()) });
 			} else if (target instanceof BooleanField) {
-
 				if (defaultValue != null && !defaultValue.equals("") && !Tools.isBoolean(defaultValue))
 					return ctx.createFailureStatus(new Object[] { this.formatMessage(DEFAULT_VALUE_BOOL,
 							((FieldEntity) ctx.getTarget()).getParentCard(), (FieldEntity) ctx.getTarget()) });

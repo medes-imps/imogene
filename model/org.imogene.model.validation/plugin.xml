@@ -76,6 +76,9 @@
                      class="CardEntity">
                </target>
                <target
+                     class="FieldGroup">
+               </target>
+               <target
                      class="FieldEntity">
                </target>
                <target
