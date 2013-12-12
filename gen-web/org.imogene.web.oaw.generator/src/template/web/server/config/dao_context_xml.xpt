@@ -67,9 +67,6 @@
 		<property name="binaryPath" value="${binary.path}"/>
 	</bean>
 	
-	<!-- Role dao -->
-	<bean id="roleActorDao" class="org.imogene.lib.common.role.RoleActorDaoImpl" />
-	
 	<!-- Binary dao -->	
 	<bean id="binaryDao" class="org.imogene.lib.common.binary.file.BinaryFileDaoImpl" />
 	
@@ -85,9 +82,15 @@
 	
 	«IF applicationType.matches(adminType)-»
 	<bean id="imogActorDaoBase" class="org.imogene.lib.common.dao.ImogActorImplDaoImpl"/>
-	<bean id="synchronizableEntityDaoBase" class="org.imogene.lib.common.sync.entity.SynchronizableEntityDaoImpl"/>
 	<bean id="notificationDaoBase" class="org.imogene.lib.common.notification.NotificationDaoImpl"/>
 	«ENDIF-»
+	
+	<!-- Profile daos -->
+	<bean id="cardEntityDaoBase" class="org.imogene.lib.common.model.CardEntityDaoImpl"/>
+	<bean id="fieldGroupDaoBase" class="org.imogene.lib.common.model.FieldGroupDaoImpl"/>
+	<bean id="entityProfileDaoBase" class="org.imogene.lib.common.profile.EntityProfileDaoImpl"/>
+	<bean id="fieldGroupProfileDaoBase" class="org.imogene.lib.common.profile.FieldGroupProfileDaoImpl"/>
+	<bean id="profileDaoBase" class="org.imogene.lib.common.profile.ProfileDaoImpl"/>
 	
 	<!-- Entity Daos -->
 	«FOREACH entities AS e -»

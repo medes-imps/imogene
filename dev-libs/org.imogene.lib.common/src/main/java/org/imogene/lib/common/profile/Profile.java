@@ -63,7 +63,7 @@ public class Profile extends ImogEntityImpl {
 	/**
 	 * @param param the EntityProfile to add to the entityProfiles collection
 	 */
-	public void addToentityProfiles(EntityProfile param) {
+	public void addToEntityProfiles(EntityProfile param) {
 		param.setProfile(this);
 		entityProfiles.add(param);
 	}
@@ -71,7 +71,7 @@ public class Profile extends ImogEntityImpl {
 	/**
 	 * @param param the EntityProfile to remove from the entityProfiles collection
 	 */
-	public void removeFromentityProfiles(EntityProfile param) {
+	public void removeFromEntityProfiles(EntityProfile param) {
 		param.setProfile(null);
 		entityProfiles.remove(param);
 	}

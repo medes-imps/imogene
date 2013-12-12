@@ -42,8 +42,6 @@ import org.imogene.lib.common.entity.GeoField;
 import org.imogene.lib.common.entity.ImogActorImpl;
 import org.imogene.lib.common.entity.ImogEntityImpl;
 import org.imogene.lib.common.entity.IsGeoreferenced;
-import org.imogene.lib.common.role.ImogRole;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
 «REM»
 «IF applicationType.matches(webType) || applicationType.matches(adminType)-»
 import javax.validation.constraints.Max;
@@ -68,25 +66,6 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 
 	private static final long serialVersionUID = «generateSerialVersionUID()»L;
 
-	«IF Actor.isAssignableFrom(metaType)-»
-	private static final String[] AUTHORIZED_ROLES = new String[] {
-		«IF !((Actor)this).authorizedRoles.isEmpty-»
-			«FOREACH ((Actor) this).authorizedRoles AS role SEPARATOR ','-»"«role.name»"«ENDFOREACH-»   
-		«ELSE-»
-			«IF !((Project) this.eContainer).roles.isEmpty-»
-				«FOREACH ((Project) this.eContainer).roles  AS role SEPARATOR ','-»"«role.name»"«ENDFOREACH-»,
-				"administrator",
-				"delete",
-				"export"
-			«ELSE -»
-				"administrator",
-				"delete",
-				"export"			
-			«ENDIF -»
-		«ENDIF -»  
-	};
-	«ENDIF-»
-	
 	«FOREACH groups AS g»
 	/* «g.name.toFirstUpper()» group fields */
 	
@@ -151,30 +130,6 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 	«ENDIF»	
 	
 	«IF Actor.isAssignableFrom(this.metaType)-»
-	
-	private boolean isAuthorizedRole(String roleId) {
-		for (String role : AUTHORIZED_ROLES) {
-			if (role.equals(roleId)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	public void addRole(ImogRole role) {
-
-		if (!isAuthorizedRole(role.getId())) {
-			throw new IllegalArgumentException(
-					"The role "
-							+ role.getName()
-							+ " can not be assigned to this actor (not defined as an authorized role), for actor : «name.toFirstUpper()»");
-		}
-
-		if (!isAssignedRole(role.getId())) {
-			super.addRole(role);
-		}
-	}
 	
 	«EXPAND filterField FOREACH ((Actor) this).filters-»
 	
@@ -332,24 +287,6 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 «ENDIF-»
 «ENDDEFINE»
 
-
-«REM» Set the actor roles «ENDREM»
-«DEFINE setAuthorizedImogRoles FOR Role-»              
-        authorizedImogRoles.add("«name»");
-«ENDDEFINE»
-
-
-
-«REM» Set the project roles to the actor «ENDREM»
-«DEFINE setProjectImogRoles FOR emf::EObject-»«ENDDEFINE»
-«DEFINE setProjectImogRoles FOR Project-»              
-       	«FOREACH this.roles AS r-»         
-        authorizedImogRoles.add("«r.name»");
-		«ENDFOREACH -»
-		authorizedImogRoles.add("administrator");
-		authorizedImogRoles.add("delete");
-		authorizedImogRoles.add("export");
-«ENDDEFINE»
 
 «REM» Create variable, getter and setter for the filter fields «ENDREM»
 «DEFINE filterField FOR FilterField»

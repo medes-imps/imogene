@@ -1,7 +1,7 @@
 package org.imogene.lib.common.entity;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.profile.Profile;
@@ -32,19 +32,19 @@ public interface ImogActor extends ImogEntity {
 	public void setLastLoginDate(Date lastLoginDate);
 
 	/** Get the synchronizable entities associated to this user */
-	public Set<CardEntity> getSynchronizables();
+	public List<CardEntity> getSynchronizables();
 
 	/** Set the synchronizable entities associated to this user **/
-	public void setSynchronizables(Set<CardEntity> syncs);
+	public void setSynchronizables(List<CardEntity> syncs);
 
 	/**
 	 * Add an entity type to the list of entity types that the user can synchronize
 	 */
 	public void addSynchronizable(CardEntity synchronizable);
 
-	public Set<Profile> getProfiles();
+	public List<Profile> getProfiles();
 
-	public void setProfiles(Set<Profile> value);
+	public void setProfiles(List<Profile> value);
 
 	/**
 	 * @param param the Profile to add to the profiles collection

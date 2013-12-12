@@ -1,7 +1,6 @@
 package org.imogene.lib.common.dao;
 
 import java.util.List;
-import java.util.Set;
 
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.profile.Profile;
@@ -22,6 +21,6 @@ public interface ImogActorDao<T extends ImogActor> extends ImogBeanDao<T> {
 	 * @param parent the parent entity
 	 * @return the list of the associated entities
 	 */
-	public Set<Profile> loadProfiles(ImogActor parent);
+	public List<Profile> loadProfiles(ImogActor parent);
 
 }

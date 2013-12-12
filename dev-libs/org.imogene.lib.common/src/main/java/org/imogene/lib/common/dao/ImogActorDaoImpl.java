@@ -1,8 +1,7 @@
 package org.imogene.lib.common.dao;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -28,9 +27,9 @@ public abstract class ImogActorDaoImpl<T extends ImogActor> extends ImogBeanDaoI
 	}
 
 	@Override
-	public Set<Profile> loadProfiles(ImogActor parent) {
+	public List<Profile> loadProfiles(ImogActor parent) {
 		if (parent == null) {
-			return new HashSet<Profile>();
+			return new ArrayList<Profile>();
 		}
 		return parent.getProfiles();
 	}

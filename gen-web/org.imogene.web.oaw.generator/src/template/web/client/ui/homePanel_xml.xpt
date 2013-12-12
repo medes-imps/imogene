@@ -62,7 +62,19 @@
 								<imo2:EntityPanel ui:field="dynamicField_Template" />
 							</g:FlowPanel>			
 						</imo:FieldGroupPanel>	
-					</g:cell>	
+					</g:cell>
+					
+					<g:cell horizontalAlignment="center">
+						<imo:FieldGroupPanel ui:field="temaProfiles">
+							<g:FlowPanel>
+								<imo2:EntityPanel ui:field="entityProfile" />
+								<imo2:EntityPanel ui:field="fieldGroup" />
+								<imo2:EntityPanel ui:field="fieldGroupProfile" />
+								<imo2:EntityPanel ui:field="profile" />
+								<imo2:EntityPanel ui:field="cardEntity" />
+							</g:FlowPanel>
+						</imo:FieldGroupPanel>
+					</g:cell>
 		«ELSE-»				
 				«IF themas!=null && themas.size>0-»				    
 						«FOREACH themas AS t ITERATOR iter»

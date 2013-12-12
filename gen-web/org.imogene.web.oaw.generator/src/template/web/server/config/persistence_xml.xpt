@@ -12,16 +12,19 @@
 	<!-- A JPA Persistence Unit -->
 	<persistence-unit name="«projectName.toLowerCase()»" transaction-type="RESOURCE_LOCAL">
 	
+		<class>org.imogene.lib.common.binary.file.BinaryFile</class>
 		<class>org.imogene.lib.common.dynamicfields.DynamicFieldTemplate</class>
 		<class>org.imogene.lib.common.dynamicfields.DynamicFieldInstance</class>	    
-		<class>org.imogene.lib.common.binary.file.BinaryFile</class>
-		<class>org.imogene.lib.common.role.ImogRole</class>
-		<class>org.imogene.lib.common.sync.entity.SynchronizableEntity</class>
-		<class>org.imogene.lib.common.user.DefaultUser</class>
-		<class>org.imogene.lib.common.useraction.UserAction</class>
+		<class>org.imogene.lib.common.model.CardEntity</class>
+		<class>org.imogene.lib.common.model.FieldGroup</class>
 		«IF applicationType.matches(adminType)-»
 		<class>org.imogene.lib.common.notification.Notification</class>
 		«ENDIF-»
+		<class>org.imogene.lib.common.profile.EntityProfile</class>
+		<class>org.imogene.lib.common.profile.FieldGroupProfile</class>
+		<class>org.imogene.lib.common.profile.Profile</class>
+		<class>org.imogene.lib.common.user.DefaultUser</class>
+		<class>org.imogene.lib.common.useraction.UserAction</class>
 		«FOREACH entities AS e-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»</class>
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.backup.«e.name.toFirstUpper()»Bck</class>

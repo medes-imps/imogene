@@ -15,9 +15,9 @@ public class ListCardEntityEvent extends GwtEvent<ListCardEntityEvent.Handler> {
 	private String searchText = null;
 
 	public interface Handler extends EventHandler {
-		void listSynchronizableEntity();
+		void listCardEntity();
 
-		void listSynchronizableEntity(String searchText);
+		void listCardEntity(String searchText);
 	}
 
 	public ListCardEntityEvent() {
@@ -30,9 +30,9 @@ public class ListCardEntityEvent extends GwtEvent<ListCardEntityEvent.Handler> {
 	@Override
 	protected void dispatch(Handler handler) {
 		if (searchText == null)
-			handler.listSynchronizableEntity();
+			handler.listCardEntity();
 		else
-			handler.listSynchronizableEntity(searchText);
+			handler.listCardEntity(searchText);
 	}
 
 	@Override

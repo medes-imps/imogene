@@ -58,6 +58,11 @@ public class GenericDaoImpl implements GenericDao {
 	@Override
 	public <T> boolean contains(T object) {
 		return em.contains(object);
-	};
+	}
+
+	@Override
+	public <T> T merge(T o) {
+		return em.<T> merge(o);
+	}
 
 }

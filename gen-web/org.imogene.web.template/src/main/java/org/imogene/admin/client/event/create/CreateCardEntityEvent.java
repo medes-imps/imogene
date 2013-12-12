@@ -17,7 +17,7 @@ public class CreateCardEntityEvent extends GwtEvent<CreateCardEntityEvent.Handle
 	private final GwtEvent<?> closeEvent;
 
 	public interface Handler extends EventHandler {
-		void createNewSynchronizableEntity(GwtEvent<?> closeEvent);
+		void createNewCardEntity(GwtEvent<?> closeEvent);
 	}
 
 	public CreateCardEntityEvent() {
@@ -30,7 +30,7 @@ public class CreateCardEntityEvent extends GwtEvent<CreateCardEntityEvent.Handle
 
 	@Override
 	protected void dispatch(Handler handler) {
-		handler.createNewSynchronizableEntity(closeEvent);
+		handler.createNewCardEntity(closeEvent);
 	}
 
 	@Override

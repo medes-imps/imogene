@@ -16,7 +16,6 @@ import java.util.UUID;
 import javax.servlet.ServletContext;
 
 import org.imogene.encryption.EncryptionManager;
-import org.imogene.lib.common.role.ImogRole;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -75,6 +74,7 @@ public class IdentityHelper {
 
 	/**
 	 * Loads an identity from a file.
+	 * 
 	 * @param idFile the identity file
 	 * @return the identity describe by the file
 	 */
@@ -104,6 +104,7 @@ public class IdentityHelper {
 
 	/**
 	 * Check if the loaded file is a valid identity file.
+	 * 
 	 * @param idFile the identity file to check
 	 * @return true if the file is valid.
 	 */
@@ -129,6 +130,7 @@ public class IdentityHelper {
 
 	/**
 	 * Copy files.
+	 * 
 	 * @param f1 source file
 	 */
 	public static void copyfile(InputStream is, ServletContext context) {
@@ -149,14 +151,14 @@ public class IdentityHelper {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param ident
 	 * @param context
 	 */
 	public static void deleteIdentity(String identityId, ServletContext context) {
-		
+
 		File identity = new File(context.getRealPath(IdentityConstants.ID_REPOSITORY));
 		if (!identity.exists()) {
 			identity.mkdir();
@@ -166,20 +168,21 @@ public class IdentityHelper {
 			Identity current;
 			try {
 				current = IdentityHelper.loadFromFile(new FileInputStream(idFile), context);
-				if(current.getId().equals(identityId)) {
+				if (current.getId().equals(identityId)) {
 					idFile.delete();
 					return;
 				}
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	/**
 	 * Gets a set of role ids from a string concatenation of role ids
+	 * 
 	 * @param roleList a concatenated list of roles
 	 * @return a set of roles as string
 	 */
@@ -193,31 +196,6 @@ public class IdentityHelper {
 						return result;
 					else
 						result.add(role);
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Gets a set of roles from a set of role ids
-	 * @param roleList a set of roles as strings
-	 * @return a set of ImogRole
-	 */
-	public static Set<ImogRole> getRoles(Set<String> roleList) {
-		Set<ImogRole> result = new HashSet<ImogRole>();
-		if (roleList != null && roleList.size() > 0) {
-			for (String role : roleList) {
-				if (role.length() > 0) {
-					if (role.equals(IdentityConstants.ROLE_ERROR))
-						return result;
-					else {
-						ImogRole imogRole = new ImogRole();
-						imogRole.setId(role);
-						imogRole.setName(role);
-						imogRole.setVersion(0);
-						result.add(imogRole);
-					}
 				}
 			}
 		}

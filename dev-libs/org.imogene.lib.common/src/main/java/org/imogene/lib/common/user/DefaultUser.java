@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import org.imogene.lib.common.entity.ImogActorImpl;
 
 @Entity
-@Table(name="default_user")
+@Table(name = "default_user")
 public class DefaultUser extends ImogActorImpl {
 
 	private static final long serialVersionUID = 5928417593161219603L;

@@ -43,17 +43,27 @@ public interface ImogActorProxy extends ImogBeanProxy {
 	 * 
 	 * @return SynchronizableEntity
 	 */
-	public List<CardEntityProxy> getSynchronizableList();
+	public List<CardEntityProxy> getSynchronizables();
 
 	/**
 	 * Set the form types that this actor will be able to synchronize with remote applications
 	 * 
 	 * @param value
 	 */
-	public void setSynchronizableList(List<CardEntityProxy> value);
+	public void setSynchronizables(List<CardEntityProxy> value);
 
-	public List<ProfileProxy> getProfilesList();
+	/**
+	 * Get the profiles list of an actor
+	 * 
+	 * @return The profile list
+	 */
+	public List<ProfileProxy> getProfiles();
 
-	public void setProfilesList(List<ProfileProxy> value);
+	/**
+	 * Set the profiles list of an actor
+	 * 
+	 * @param value The new profile list
+	 */
+	public void setProfiles(List<ProfileProxy> value);
 
 }

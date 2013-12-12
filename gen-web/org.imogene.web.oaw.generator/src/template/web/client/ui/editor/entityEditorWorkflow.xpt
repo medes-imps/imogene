@@ -214,8 +214,8 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		fetchRequest.with("dynamicFieldValues.fieldTemplate.templateCreator.roles");
 		«ENDIF -»
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-			fetchRequest.with("roleList");
-			fetchRequest.with("synchronizableList");
+			fetchRequest.with("profiles");
+			fetchRequest.with("synchronizables");
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 			«FOREACH ((Actor)this).filters AS fil-»
 			fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR fil»List");			

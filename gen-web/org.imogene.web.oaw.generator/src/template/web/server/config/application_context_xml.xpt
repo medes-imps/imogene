@@ -79,11 +79,6 @@
 		<property name="dao" ref="binaryDao" />
 	</bean>
 
-	<!-- Role handler -->	
-	<bean id="imogRoleHandler" class="org.imogene.web.server.handler.ImogRoleHandler">
-		<property name="dao" ref="roleActorDao" />
-	</bean>	
-
 	<!-- Session handler -->	
 	<bean id="sessionHandler" class="org.imogene.web.server.handler.SessionHandler"/>
 	
@@ -97,15 +92,36 @@
 		<property name="fieldTemplateHandler" ref="dynamicFieldTemplateHandler" />
 	</bean>
 	
+	<!-- Profile handlers -->
+	<bean id="cardEntityHandler" class="org.imogene.web.server.handler.CardEntityHandler">
+		<property name="dao" ref="cardEntityDaoBase" />
+	</bean>
+	<bean id="entityProfileHandler" class="org.imogene.web.server.handler.EntityProfileHandler">
+		<property name="dao" ref="entityProfileDaoBase" />
+		<property name="profileHandler" ref="profileHandler" />
+		<property name="entityHandler" ref="cardEntityHandler" />
+	</bean>
+	<bean id="fieldGroupHandler" class="org.imogene.web.server.handler.FieldGroupHandler">
+		<property name="dao" ref="fieldGroupDaoBase" />
+		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
+	</bean>
+	<bean id="fieldGroupProfileHandler" class="org.imogene.web.server.handler.FieldGroupProfileHandler">
+		<property name="dao" ref="fieldGroupProfileDaoBase" />
+		<property name="profileHandler" ref="profileHandler" />
+		<property name="fieldGroupHandler" ref="fieldGroupHandler" />
+	</bean>
+	<bean id="profileHandler" class="org.imogene.web.server.handler.ProfileHandler">
+		<property name="dao" ref="profileDaoBase" />
+		<property name="entityProfileDao" ref="entityProfileDaoBase" />
+		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
+		<property name="entityProfileHandler" ref="entityProfileHandler" />
+		<property name="fieldGroupProfileHandler" ref="fieldGroupProfileHandler" />
+	</bean>
+	
 	«IF applicationType.matches(adminType)-»
 	<!-- ImogActor handler -->
 	<bean id="imogActorHandler" class="org.imogene.web.server.handler.ImogActorHandler">
 		<property name="dao" ref="imogActorDaoBase" />
-	</bean>
-	
-	<!-- SynchronizableEntity handler -->
-	<bean id="synchronizableEntityHandler" class="org.imogene.admin.server.handler.SynchronizableEntityHandler">
-		<property name="dao" ref="synchronizableEntityDaoBase" />
 	</bean>
 	
 	<!-- Notification handler -->

@@ -12,6 +12,53 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.imogene.admin.client.AdminRenderer;
+import org.imogene.admin.client.event.create.CreateCardEntityEvent;
+import org.imogene.admin.client.event.create.CreateEntityProfileEvent;
+import org.imogene.admin.client.event.create.CreateFieldGroupEvent;
+import org.imogene.admin.client.event.create.CreateFieldGroupProfileEvent;
+import org.imogene.admin.client.event.create.CreateNotificationEvent;
+import org.imogene.admin.client.event.create.CreateProfileEvent;
+import org.imogene.admin.client.event.list.ListCardEntityEvent;
+import org.imogene.admin.client.event.list.ListEntityProfileEvent;
+import org.imogene.admin.client.event.list.ListFieldGroupEvent;
+import org.imogene.admin.client.event.list.ListFieldGroupProfileEvent;
+import org.imogene.admin.client.event.list.ListNotificationEvent;
+import org.imogene.admin.client.event.list.ListProfileEvent;
+import org.imogene.admin.client.event.view.ViewCardEntityEvent;
+import org.imogene.admin.client.event.view.ViewEntityProfileEvent;
+import org.imogene.admin.client.event.view.ViewFieldGroupEvent;
+import org.imogene.admin.client.event.view.ViewFieldGroupProfileEvent;
+import org.imogene.admin.client.event.view.ViewNotificationEvent;
+import org.imogene.admin.client.event.view.ViewProfileEvent;
+import org.imogene.admin.client.ui.table.panel.CardEntityListPanel;
+import org.imogene.admin.client.ui.table.panel.DynamicFieldTemplateListPanel;
+import org.imogene.admin.client.ui.table.panel.EntityProfileListPanel;
+import org.imogene.admin.client.ui.table.panel.FieldGroupListPanel;
+import org.imogene.admin.client.ui.table.panel.FieldGroupProfileListPanel;
+import org.imogene.admin.client.ui.table.panel.NotificationListPanel;
+import org.imogene.admin.client.ui.table.panel.ProfileListPanel;
+import org.imogene.admin.client.ui.workflow.panel.CardEntityFormPanel;
+import org.imogene.admin.client.ui.workflow.panel.EntityProfileFormPanel;
+import org.imogene.admin.client.ui.workflow.panel.FieldGroupFormPanel;
+import org.imogene.admin.client.ui.workflow.panel.FieldGroupProfileFormPanel;
+import org.imogene.admin.client.ui.workflow.panel.NotificationFormPanel;
+import org.imogene.admin.client.ui.workflow.panel.ProfileFormPanel;
+import org.imogene.web.client.dynamicfields.ui.workflow.panel.DynamicFieldTemplateFormPanel;
+import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
+import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
+import org.imogene.web.client.event.LogoutEvent;
+import org.imogene.web.client.event.ViewDynamicFieldTemplateEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.panel.GlassPanel;
+import org.imogene.web.client.ui.panel.MainContentPanel;
+import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.client.util.TokenHelper;
+import org.imogene.web.client.util.TokenHelper.EntityToken;
+import org.imogene.web.shared.proxy.ImogActorProxy;
+import org.imogene.web.shared.proxy.SessionInfoProxy;
+import org.imogene.web.shared.request.SessionRequest;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».client.event.create.Create«e.name.toFirstUpper()»Event;
 import org.imogene.«projectName.toLowerCase()».client.event.list.List«e.name.toFirstUpper()»Event;
@@ -19,23 +66,9 @@ import org.imogene.«projectName.toLowerCase()».client.event.view.View«e.name.toF
 import org.imogene.«projectName.toLowerCase()».client.ui.workflow.panel.«e.name.toFirstUpper()»FormPanel;
 import org.imogene.«projectName.toLowerCase()».client.ui.table.panel.«e.name.toFirstUpper()»ListPanel;
 «ENDFOREACH -»
-
 import org.imogene.«projectName.toLowerCase()».client.ui.panel.TopBannerPanel;
 import org.imogene.«projectName.toLowerCase()».client.ui.panel.HomePanel;
 import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
-
-import org.imogene.web.client.event.GoHomeEvent;
-import org.imogene.web.client.event.LogoutEvent;
-import org.imogene.web.client.i18n.BaseNLS;
-import org.imogene.web.client.dynamicfields.ui.renderer.DynFieldsRenderer;
-import org.imogene.web.client.ui.panel.GlassPanel;
-import org.imogene.web.client.ui.panel.MainContentPanel;
-import org.imogene.web.client.util.LocalSession;
-import org.imogene.web.client.util.TokenHelper;
-import org.imogene.web.client.util.TokenHelper.EntityToken;
-import org.imogene.web.shared.proxy.ImogActorProxy;
-import org.imogene.web.shared.proxy.SessionInfoProxy;
-import org.imogene.web.shared.request.SessionRequest;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -43,8 +76,8 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -62,24 +95,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.ServerFailure;
-
-«IF applicationType.matches(adminType)-»
-import org.imogene.admin.client.AdminRenderer;
-import org.imogene.admin.client.event.create.CreateNotificationEvent;
-import org.imogene.admin.client.event.list.ListNotificationEvent;
-import org.imogene.admin.client.event.view.ViewNotificationEvent;
-import org.imogene.admin.client.ui.table.panel.DynamicFieldTemplateListPanel;
-import org.imogene.admin.client.ui.table.panel.NotificationListPanel;
-import org.imogene.admin.client.ui.workflow.panel.NotificationFormPanel;
-import org.imogene.web.shared.proxy.ImogActorProxy;
-import org.imogene.web.client.dynamicfields.ui.workflow.panel.DynamicFieldTemplateFormPanel;
-import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
-import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
-import org.imogene.web.client.event.ViewDynamicFieldTemplateEvent;
-import org.imogene.web.client.util.ImogRoleUtil;
-«ENDIF-»
-
-
 
 /**
  * Entry point of the application on the client side
@@ -138,7 +153,9 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		// get session info and set info in local session
 		SessionRequest request = requestFactory.sessionInfoRequest();
 		Request<SessionInfoProxy> sessionInfoRequest = request.getSessionInfo();		
-		sessionInfoRequest.with("actor.roleList");
+		sessionInfoRequest.with("actor.profiles");
+		sessionInfoRequest.with("actor.profiles.entityProfiles");
+		sessionInfoRequest.with("actor.profiles.fieldGroupProfiles");
 		sessionInfoRequest.to(new Receiver<SessionInfoProxy>() {
 				
 			@Override
@@ -448,7 +465,199 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 				if (ImogRoleUtil.isAdmin())
 					displayWrapperPanel(new DynamicFieldTemplateListPanel(requestFactory, searchText, «projectName.toFirstUpper()»FormTypes.get()));
 			}
-		}));	
+		}));
+		
+				/* Create Profile Handler */
+		registrations.add(eventBus.addHandler(CreateProfileEvent.TYPE, new CreateProfileEvent.Handler() {
+			public void createNewProfile(GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, null);
+					profileForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(profileForm);
+				}
+			}
+		}));
+
+		/* View Profile Handler */
+		registrations.add(eventBus.addHandler(ViewProfileEvent.TYPE, new ViewProfileEvent.Handler() {
+			public void viewProfile(String entityId, GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, entityId);
+					profileForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(profileForm);
+				}
+			}
+		}));
+
+		/* List Profile Handler */
+		registrations.add(eventBus.addHandler(ListProfileEvent.TYPE, new ListProfileEvent.Handler() {
+			public void listProfile() {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new ProfileListPanel(requestFactory));
+			}
+
+			public void listProfile(String searchText) {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new ProfileListPanel(requestFactory, searchText));
+			}
+		}));
+		/**
+		 * Handlers for entity EntityProfile
+		 * */
+
+		/* Create EntityProfile Handler */
+		registrations.add(eventBus.addHandler(CreateEntityProfileEvent.TYPE, new CreateEntityProfileEvent.Handler() {
+			public void createNewEntityProfile(GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					EntityProfileFormPanel entityprofileForm = new EntityProfileFormPanel(requestFactory, null);
+					entityprofileForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(entityprofileForm);
+				}
+			}
+		}));
+
+		/* View EntityProfile Handler */
+		registrations.add(eventBus.addHandler(ViewEntityProfileEvent.TYPE, new ViewEntityProfileEvent.Handler() {
+			public void viewEntityProfile(String entityId, GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					EntityProfileFormPanel entityprofileForm = new EntityProfileFormPanel(requestFactory, entityId);
+					entityprofileForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(entityprofileForm);
+				}
+			}
+		}));
+
+		/* List EntityProfile Handler */
+		registrations.add(eventBus.addHandler(ListEntityProfileEvent.TYPE, new ListEntityProfileEvent.Handler() {
+			public void listEntityProfile() {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new EntityProfileListPanel(requestFactory));
+			}
+
+			public void listEntityProfile(String searchText) {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new EntityProfileListPanel(requestFactory, searchText));
+			}
+		}));
+		/**
+		 * Handlers for entity FieldGroupProfile
+		 * */
+
+		/* Create FieldGroupProfile Handler */
+		registrations.add(eventBus.addHandler(CreateFieldGroupProfileEvent.TYPE,
+				new CreateFieldGroupProfileEvent.Handler() {
+					public void createNewFieldGroupProfile(GwtEvent<?> closeEvent) {
+						if (ImogRoleUtil.isAdmin()) {
+							FieldGroupProfileFormPanel fieldgroupprofileForm = new FieldGroupProfileFormPanel(
+									requestFactory, null);
+							fieldgroupprofileForm.setCloseEvent(closeEvent);
+							displayWrapperPanel(fieldgroupprofileForm);
+						}
+					}
+				}));
+
+		/* View FieldGroupProfile Handler */
+		registrations.add(eventBus.addHandler(ViewFieldGroupProfileEvent.TYPE,
+				new ViewFieldGroupProfileEvent.Handler() {
+					public void viewFieldGroupProfile(String entityId, GwtEvent<?> closeEvent) {
+						if (ImogRoleUtil.isAdmin()) {
+							FieldGroupProfileFormPanel fieldgroupprofileForm = new FieldGroupProfileFormPanel(
+									requestFactory, entityId);
+							fieldgroupprofileForm.setCloseEvent(closeEvent);
+							displayWrapperPanel(fieldgroupprofileForm);
+						}
+					}
+				}));
+
+		/* List FieldGroupProfile Handler */
+		registrations.add(eventBus.addHandler(ListFieldGroupProfileEvent.TYPE,
+				new ListFieldGroupProfileEvent.Handler() {
+					public void listFieldGroupProfile() {
+						if (ImogRoleUtil.isAdmin())
+							displayWrapperPanel(new FieldGroupProfileListPanel(requestFactory));
+					}
+
+					public void listFieldGroupProfile(String searchText) {
+						if (ImogRoleUtil.isAdmin())
+							displayWrapperPanel(new FieldGroupProfileListPanel(requestFactory, searchText));
+					}
+				}));
+		/**
+		 * Handlers for entity CardEntity
+		 * */
+
+		/* Create CardEntity Handler */
+		registrations.add(eventBus.addHandler(CreateCardEntityEvent.TYPE, new CreateCardEntityEvent.Handler() {
+			public void createNewCardEntity(GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, null);
+					cardEntityForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(cardEntityForm);
+				}
+			}
+		}));
+
+		/* View CardEntity Handler */
+		registrations.add(eventBus.addHandler(ViewCardEntityEvent.TYPE, new ViewCardEntityEvent.Handler() {
+			public void viewCardEntity(String entityId, GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, entityId);
+					cardEntityForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(cardEntityForm);
+				}
+			}
+		}));
+
+		/* List CardEntity Handler */
+		registrations.add(eventBus.addHandler(ListCardEntityEvent.TYPE, new ListCardEntityEvent.Handler() {
+			public void listCardEntity() {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new CardEntityListPanel(requestFactory));
+			}
+
+			public void listCardEntity(String searchText) {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new CardEntityListPanel(requestFactory, searchText));
+			}
+		}));
+		/**
+		 * Handlers for entity FieldGroup
+		 * */
+
+		/* Create FieldGroup Handler */
+		registrations.add(eventBus.addHandler(CreateFieldGroupEvent.TYPE, new CreateFieldGroupEvent.Handler() {
+			public void createNewFieldGroup(GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, null);
+					fieldgroupForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(fieldgroupForm);
+				}
+			}
+		}));
+
+		/* View FieldGroup Handler */
+		registrations.add(eventBus.addHandler(ViewFieldGroupEvent.TYPE, new ViewFieldGroupEvent.Handler() {
+			public void viewFieldGroup(String entityId, GwtEvent<?> closeEvent) {
+				if (ImogRoleUtil.isAdmin()) {
+					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, entityId);
+					fieldgroupForm.setCloseEvent(closeEvent);
+					displayWrapperPanel(fieldgroupForm);
+				}
+			}
+		}));
+
+		/* List FieldGroup Handler */
+		registrations.add(eventBus.addHandler(ListFieldGroupEvent.TYPE, new ListFieldGroupEvent.Handler() {
+			public void listFieldGroup() {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new FieldGroupListPanel(requestFactory));
+			}
+
+			public void listFieldGroup(String searchText) {
+				if (ImogRoleUtil.isAdmin())
+					displayWrapperPanel(new FieldGroupListPanel(requestFactory, searchText));
+			}
+		}));
 		«ENDIF-»		
 	}
 

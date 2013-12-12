@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.imogene.encryption.EncryptionManager;
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.role.ImogRole;
 import org.imogene.web.server.handler.GenericHandler;
 import org.imogene.web.server.identity.IdentityConstants;
 import org.imogene.web.server.util.FormUtil;
@@ -21,7 +20,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Servlet that enables to encrypt an identity file for download.
- * @author Medes-IMPS 
+ * 
+ * @author Medes-IMPS
  */
 public class EncryptionServlet extends HttpServlet {
 
@@ -35,13 +35,14 @@ public class EncryptionServlet extends HttpServlet {
 
 	/* encryptionManager for encrypting id file */
 	private EncryptionManager encryptionManager;
-	
+
 	private FormUtil formUtil;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(config
+				.getServletContext());
 		genericHandler = (GenericHandler) wac.getBean("genericHandler");
 		encryptionManager = (EncryptionManager) wac.getBean("encryptionManager");
 		formUtil = (FormUtil) wac.getBean("formUtil");
@@ -66,14 +67,6 @@ public class EncryptionServlet extends HttpServlet {
 					imogId.append(IdentityConstants.KEY_PASSWORD + "=").append(actor.getPassword());
 					imogId.append("\n");
 					imogId.append(IdentityConstants.KEY_ROLES + "=");
-					if (actor.getRoles() != null && actor.getRoles().size() > 0) {
-						StringBuffer roles = new StringBuffer();
-						for (ImogRole role : actor.getRoles()) {
-							roles.append(role.getId());
-							roles.append(IdentityConstants.ROLE_SEPARATOR);
-						}
-						imogId.append(roles.toString());
-					}
 					imogId.append("\n");
 					imogId.append("\n");
 					imogId.append("/*------- end of the id file -------*/");
@@ -94,6 +87,7 @@ public class EncryptionServlet extends HttpServlet {
 
 	/**
 	 * Get the actor class from the its short name
+	 * 
 	 * @param shortName the actor short name
 	 * @return the actor class or null if it doesn't exist
 	 */

@@ -12,7 +12,6 @@ import java.util.Vector;
 
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
-import org.imogene.lib.common.role.ImogRole;
 import org.imogene.web.server.security.ImogBeanFilter;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;

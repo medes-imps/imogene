@@ -60,19 +60,19 @@ import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
 «ENDIF-»
 «IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 import org.imogene.admin.client.AdminRenderer;
-import org.imogene.admin.client.dataprovider.ImogRoleDataProvider;
-import org.imogene.admin.client.dataprovider.SynchronizableEntityDataProvider;
+import org.imogene.admin.client.dataprovider.CardEntityDataProvider;
+import org.imogene.admin.client.dataprovider.ProfileDataProvider;
 import org.imogene.admin.client.i18n.AdminNLS;
-import org.imogene.admin.client.ui.filter.SynchronizableEntityFilterPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
-import org.imogene.web.shared.proxy.ImogRoleProxy;
-import org.imogene.web.shared.proxy.SynchronizableEntityProxy;
+import org.imogene.admin.client.ui.filter.CardEntityFilterPanel;
 import org.imogene.web.client.ui.field.ImogPasswordBox;
+import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.shared.proxy.CardEntityProxy;
+import org.imogene.web.shared.proxy.ProfileProxy;
 	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 		«FOREACH ((Actor)this).filters AS fil-»
 import org.imogene.«projectName.toLowerCase()».client.dataprovider.«fil.entity.name.toFirstUpper()»DataProvider;
 import org.imogene.«projectName.toLowerCase()».client.ui.filter.«fil.entity.name.toFirstUpper()»FilterPanel;
-import org.imogene.«projectName.toLowerCase()».shared.proxy.«fil.entity.name.toFirstUpper()»Proxy;	
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«fil.entity.name.toFirstUpper()»Proxy;
 		«ENDFOREACH-»
 	«ENDIF-»
 «ENDIF-»
@@ -138,7 +138,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	@Ignore
 	ImogPasswordBox passwordConfirm;
 	@UiField(provided = true)
-	ImogMultiRelationBox<ImogRoleProxy> roleList;
+	ImogMultiRelationBox<ProfileProxy> profiles;
 	@UiField
 	@Ignore
 	ImogLinkBox idLink;
@@ -148,7 +148,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	@Ignore
 	FieldGroupPanel synchronizationSection;
 	@UiField(provided = true)
-	ImogMultiRelationBox<SynchronizableEntityProxy> synchronizableList;
+	ImogMultiRelationBox<CardEntityProxy> synchronizables;
 	
 	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 		/* FilterFields section widgets */
@@ -229,14 +229,14 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		login.setLabel(AdminNLS.constants().imogActor_field_login());
 		password.setLabel(AdminNLS.constants().imogActor_field_password());
 		passwordConfirm.setLabel(AdminNLS.constants().imogActor_field_passwordConfirm());
-		roleList.setLabel(AdminNLS.constants().imogActor_field_roleList());
-		roleList.hideButtons(true);
+		profiles.setLabel(AdminNLS.constants().imogActor_field_roleList());
+		profiles.hideButtons(true);
 		idLink.setLabel(AdminNLS.constants().imogActor_field_idFile());
 
 		/* Synchronization section widgets */
 		synchronizationSection.setGroupTitle(AdminNLS.constants().imogActor_group_synchronization());
-		synchronizableList.setLabel(AdminNLS.constants().imogActor_field_synchronizableList());
-		synchronizableList.hideButtons(true);
+		synchronizables.setLabel(AdminNLS.constants().imogActor_field_synchronizableList());
+		synchronizables.hideButtons(true);
 		
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 			/* FilterFields section widgets */
@@ -271,21 +271,17 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 		/* field  roleList */
-		ImogRoleDataProvider roleListDataProvider;
-		roleListDataProvider = new ImogRoleDataProvider(requestFactory);		
-		«IF !((Actor)this).authorizedRoles.isEmpty-»
-		String[] authorizedRoles = new String[]{«FOREACH ((Actor) this).authorizedRoles AS role SEPARATOR ','-»"«role.name»"«ENDFOREACH-»};
-		roleListDataProvider.setAuthorizedRoles(authorizedRoles);		
-		«ENDIF-»	
-		roleList = new ImogMultiRelationBox<ImogRoleProxy>(roleListDataProvider, AdminRenderer.get(), true);
-		roleList.setPopUpTitle(AdminNLS.constants().imogRole_select_title());
+		ProfileDataProvider profilesDataProvider;
+		profilesDataProvider = new ProfileDataProvider(requestFactory);		
+		profiles = new ImogMultiRelationBox<ProfileProxy>(profilesDataProvider, AdminRenderer.get(), true);
+		profiles.setPopUpTitle(AdminNLS.constants().profile_select_title());
 
-		/* field  synchronizableList */
-		SynchronizableEntityDataProvider synchronizableListDataProvider;
-		synchronizableListDataProvider = new SynchronizableEntityDataProvider(requestFactory);	
-		synchronizableList = new ImogMultiRelationBox<SynchronizableEntityProxy>(synchronizableListDataProvider, AdminRenderer.get(), true);
-		synchronizableList.setPopUpTitle(AdminNLS.constants().synchronizableEntity_select_title());
-		synchronizableList.setFilterPanel(new SynchronizableEntityFilterPanel());
+		/* field  synchronizables */
+		CardEntityDataProvider synchronizablesDataProvider;
+		synchronizablesDataProvider = new CardEntityDataProvider(requestFactory);	
+		synchronizables = new ImogMultiRelationBox<CardEntityProxy>(synchronizablesDataProvider, AdminRenderer.get(), true);
+		synchronizables.setPopUpTitle(AdminNLS.constants().cardEntity_select_title());
+		synchronizables.setFilterPanel(new CardEntityFilterPanel());
 		
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 			«FOREACH ((Actor)this).filters AS fil-»
@@ -327,11 +323,11 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		login.setEdited(isEdited);
 		password.setEdited(isEdited);
 		passwordConfirm.setEdited(isEdited);
-		roleList.setEdited(isEdited);
+		profiles.setEdited(isEdited);
 		idLink.setVisible(!isEdited);
 
 		/* Synchronization section widgets */
-		synchronizableList.setEdited(isEdited);
+		synchronizables.setEdited(isEdited);
 		
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 			/* FilterFields section widgets */

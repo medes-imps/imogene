@@ -15,7 +15,7 @@ public class ViewCardEntityEvent extends GwtEvent<ViewCardEntityEvent.Handler> {
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
 	public interface Handler extends EventHandler {
-		void viewSynchronizableEntity(String entityId, GwtEvent<?> closeEvent);
+		void viewCardEntity(String entityId, GwtEvent<?> closeEvent);
 	}
 
 	private final String entityId;
@@ -33,7 +33,7 @@ public class ViewCardEntityEvent extends GwtEvent<ViewCardEntityEvent.Handler> {
 
 	@Override
 	protected void dispatch(Handler handler) {
-		handler.viewSynchronizableEntity(entityId, closeEvent);
+		handler.viewCardEntity(entityId, closeEvent);
 	}
 
 	@Override

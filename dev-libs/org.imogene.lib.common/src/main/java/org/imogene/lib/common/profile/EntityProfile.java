@@ -28,13 +28,13 @@ public class EntityProfile extends ImogEntityImpl {
 	@ManyToOne
 	private CardEntity entity;
 
-	private Boolean create;
+	private Boolean canCreate;
 
-	private Boolean directAccess;
+	private Boolean canDirectAccess;
 
-	private Boolean delete;
+	private Boolean canDelete;
 
-	private Boolean export;
+	private Boolean canExport;
 
 	/**
 	 * Constructor
@@ -61,35 +61,35 @@ public class EntityProfile extends ImogEntityImpl {
 	}
 
 	public Boolean getCreate() {
-		return create;
+		return canCreate;
 	}
 
 	public void setCreate(Boolean value) {
-		create = value;
+		canCreate = value;
 	}
 
 	public Boolean getDirectAccess() {
-		return directAccess;
+		return canDirectAccess;
 	}
 
 	public void setDirectAccess(Boolean value) {
-		directAccess = value;
+		canDirectAccess = value;
 	}
 
 	public Boolean getDelete() {
-		return delete;
+		return canDelete;
 	}
 
 	public void setDelete(Boolean value) {
-		delete = value;
+		canDelete = value;
 	}
 
 	public Boolean getExport() {
-		return export;
+		return canExport;
 	}
 
 	public void setExport(Boolean value) {
-		export = value;
+		canExport = value;
 	}
 
 }

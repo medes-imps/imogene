@@ -65,6 +65,6 @@ public class CardEntityLocator
 				.getWebApplicationContext(request.getSession()
 						.getServletContext());
 		handler = (CardEntityHandler) context
-				.getBean("synchronizableEntityHandler");
+				.getBean("cardEntityHandler");
 	}
 }

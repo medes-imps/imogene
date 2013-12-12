@@ -2,9 +2,7 @@ package org.imogene.lib.common.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,13 +33,13 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 	private String notificationLocale;
 	private Boolean beNotified;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "sync_entities", joinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "synchronizable_id", referencedColumnName = "id"))
-	protected Set<CardEntity> synchronizables;
+	protected List<CardEntity> synchronizables;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "imog_actor_profiles", joinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "profile_id", referencedColumnName = "id"))
-	private Set<Profile> profiles;
+	private List<Profile> profiles;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLoginDate;
@@ -127,67 +125,46 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 	}
 
 	@Override
-	public Set<CardEntity> getSynchronizables() {
+	public List<CardEntity> getSynchronizables() {
 		return synchronizables;
 	}
 
-	public List<CardEntity> getSynchronizableList() {
-		if (synchronizables != null)
-			return new ArrayList<CardEntity>(synchronizables);
-		else
-			return null;
-	}
-
 	@Override
-	public void setSynchronizables(Set<CardEntity> synchronizables) {
+	public void setSynchronizables(List<CardEntity> synchronizables) {
 		this.synchronizables = synchronizables;
-	}
-
-	public void setSynchronizableList(List<CardEntity> synchronizables) {
-		if (synchronizables != null)
-			this.synchronizables = new HashSet<CardEntity>(synchronizables);
-		else
-			this.synchronizables = null;
 	}
 
 	@Override
 	public void addSynchronizable(CardEntity synchronizable) {
-		this.synchronizables.add(synchronizable);
+		if (synchronizables == null) {
+			synchronizables = new ArrayList<CardEntity>();
+		}
+		synchronizables.add(synchronizable);
 	}
 
 	@Override
-	public Set<Profile> getProfiles() {
+	public List<Profile> getProfiles() {
 		return profiles;
 	}
 
-	public List<Profile> getProfilesList() {
-		if (profiles == null) {
-			return null;
-		}
-		return new ArrayList<Profile>(profiles);
-	}
-
 	@Override
-	public void setProfiles(Set<Profile> value) {
-		profiles = value;
-	}
-
-	public void setProfilesList(List<Profile> value) {
-		if (profiles == null) {
-			profiles = new HashSet<Profile>();
-		}
-		profiles.clear();
-		profiles.addAll(value);
+	public void setProfiles(List<Profile> value) {
+		this.profiles = value;
 	}
 
 	@Override
 	public void addToProfiles(Profile param) {
+		if (profiles == null) {
+			profiles = new ArrayList<Profile>();
+		}
 		profiles.add(param);
 	}
 
 	@Override
 	public void removeFromProfiles(Profile param) {
-		profiles.remove(param);
+		if (profiles != null) {
+			profiles.remove(param);
+		}
 	}
 
 	@Override

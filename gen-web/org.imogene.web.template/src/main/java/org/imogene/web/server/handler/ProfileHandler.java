@@ -34,13 +34,13 @@ public class ProfileHandler {
 	/* MyActorDao for Foreign Key Deletion */
 	private ImogActorDao actorProfilesDao;
 	/* EntityProfileDao for Foreign Key Deletion */
-	private EntityProfileDao entityProfileProfileDao;
+	private EntityProfileDao entityProfileDao;
 	/* FieldGroupProfileDao for Foreign Key Deletion */
-	private FieldGroupProfileDao fieldGroupProfileProfileDao;
+	private FieldGroupProfileDao fieldGroupProfileDao;
 
-	private EntityProfileHandler entityProfilesHandler;
+	private EntityProfileHandler entityProfileHandler;
 
-	private FieldGroupProfileHandler fieldGroupProfilesHandler;
+	private FieldGroupProfileHandler fieldGroupProfileHandler;
 
 	/**
 	 * Loads the entity with the specified id
@@ -399,13 +399,13 @@ public class ProfileHandler {
 		criteriaEntityProfileProfile.setField("profile.id");
 		searchCriterionsForEntityProfileProfile.add(criteriaEntityProfileProfile);
 
-		List<EntityProfile> resultForEntityProfileProfile = entityProfileProfileDao.load("modified", false,
+		List<EntityProfile> resultForEntityProfileProfile = entityProfileDao.load("modified", false,
 				searchCriterionsForEntityProfileProfile);
 		if (resultForEntityProfileProfile != null) {
 			for (EntityProfile foreignEntity : resultForEntityProfileProfile) {
 				foreignEntity.setModified(new Date());
 				foreignEntity.setProfile(null);
-				entityProfileProfileDao.saveOrUpdate(foreignEntity, false);
+				entityProfileDao.saveOrUpdate(foreignEntity, false);
 			}
 		}
 
@@ -418,13 +418,13 @@ public class ProfileHandler {
 		criteriaFieldGroupProfileProfile.setField("profile.id");
 		searchCriterionsForFieldGroupProfileProfile.add(criteriaFieldGroupProfileProfile);
 
-		List<FieldGroupProfile> resultForFieldGroupProfileProfile = fieldGroupProfileProfileDao.load("modified", false,
+		List<FieldGroupProfile> resultForFieldGroupProfileProfile = fieldGroupProfileDao.load("modified", false,
 				searchCriterionsForFieldGroupProfileProfile);
 		if (resultForFieldGroupProfileProfile != null) {
 			for (FieldGroupProfile foreignEntity : resultForFieldGroupProfileProfile) {
 				foreignEntity.setModified(new Date());
 				foreignEntity.setProfile(null);
-				fieldGroupProfileProfileDao.saveOrUpdate(foreignEntity, false);
+				fieldGroupProfileDao.saveOrUpdate(foreignEntity, false);
 			}
 		}
 
@@ -471,7 +471,7 @@ public class ProfileHandler {
 	 */
 	public void saveEntityProfiles(EntityProfile entity, boolean isNew) {
 
-		entityProfilesHandler.save(entity, isNew);
+		entityProfileHandler.save(entity, isNew);
 	}
 
 	/**
@@ -480,7 +480,7 @@ public class ProfileHandler {
 	 * @param toDelete the EntityProfile to be deleted
 	 */
 	public void deleteEntityProfiles(EntityProfile toDelete) {
-		entityProfilesHandler.delete(toDelete);
+		entityProfileHandler.delete(toDelete);
 	}
 
 	/**
@@ -491,7 +491,7 @@ public class ProfileHandler {
 	 */
 	public void saveFieldGroupProfiles(FieldGroupProfile entity, boolean isNew) {
 
-		fieldGroupProfilesHandler.save(entity, isNew);
+		fieldGroupProfileHandler.save(entity, isNew);
 	}
 
 	/**
@@ -500,7 +500,7 @@ public class ProfileHandler {
 	 * @param toDelete the FieldGroupProfile to be deleted
 	 */
 	public void deleteFieldGroupProfiles(FieldGroupProfile toDelete) {
-		fieldGroupProfilesHandler.delete(toDelete);
+		fieldGroupProfileHandler.delete(toDelete);
 	}
 
 	/**
@@ -526,8 +526,8 @@ public class ProfileHandler {
 	 * 
 	 * @param entityProfileProfileDao the EntityProfile Dao
 	 */
-	public void setEntityProfileProfileDao(EntityProfileDao entityProfileProfileDao) {
-		this.entityProfileProfileDao = entityProfileProfileDao;
+	public void setEntityProfileDao(EntityProfileDao entityProfileDao) {
+		this.entityProfileDao = entityProfileDao;
 	}
 
 	/**
@@ -535,8 +535,8 @@ public class ProfileHandler {
 	 * 
 	 * @param fieldGroupProfileProfileDao the FieldGroupProfile Dao
 	 */
-	public void setFieldGroupProfileProfileDao(FieldGroupProfileDao fieldGroupProfileProfileDao) {
-		this.fieldGroupProfileProfileDao = fieldGroupProfileProfileDao;
+	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
+		this.fieldGroupProfileDao = fieldGroupProfileDao;
 	}
 
 	/**
@@ -544,8 +544,8 @@ public class ProfileHandler {
 	 * 
 	 * @param entityProfilesHandler the EntityProfile Handler
 	 */
-	public void setEntityProfilesHandler(EntityProfileHandler entityProfilesHandler) {
-		this.entityProfilesHandler = entityProfilesHandler;
+	public void setEntityProfileHandler(EntityProfileHandler entityProfileHandler) {
+		this.entityProfileHandler = entityProfileHandler;
 	}
 
 	/**
@@ -553,7 +553,7 @@ public class ProfileHandler {
 	 * 
 	 * @param fieldGroupProfilesHandler the FieldGroupProfile Handler
 	 */
-	public void setFieldGroupProfilesHandler(FieldGroupProfileHandler fieldGroupProfilesHandler) {
-		this.fieldGroupProfilesHandler = fieldGroupProfilesHandler;
+	public void setFieldGroupProfileHandler(FieldGroupProfileHandler fieldGroupProfileHandler) {
+		this.fieldGroupProfileHandler = fieldGroupProfileHandler;
 	}
 }

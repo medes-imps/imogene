@@ -3,14 +3,12 @@
 «FILE projectName.toLowerCase()+"/client/AccessManager.java"»
 package org.imogene.«projectName.toLowerCase()».client;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.imogene.web.client.util.ImogRoleUtil;
 import org.imogene.web.client.util.LocalSession;
-import org.imogene.web.shared.proxy.ImogRoleProxy;
-import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»RoleConstants;
-
+import org.imogene.web.shared.proxy.EntityProfileProxy;
+import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
+import org.imogene.web.shared.proxy.ImogActorProxy;
+import org.imogene.web.shared.proxy.ProfileProxy;
 
 /**
  * Class to manage the access to the entity forms and 
@@ -19,218 +17,89 @@ import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toF
  */
 public class AccessManager {
 	
+	private static String current = null;
 	«FOREACH entities AS e-»
-		/* '«e.name»' entity */
-		public static Set<String> «e.name.toFirstLower()»Creator = new HashSet<String>();
-		static{
-			«FOREACH e.creators AS c-»
-				«e.name.toFirstLower()»Creator.add(«projectName.toFirstUpper()»RoleConstants.«c.name.toUpperCase()»_ROLE);
-			«ENDFOREACH-»
-		}
-		
-		public static Set<String> «e.name.toFirstLower()»DirectAccess = new HashSet<String>();
-		static{
-			«FOREACH e.directAccess AS da-»
-				«e.name.toFirstLower()»DirectAccess.add(«projectName.toFirstUpper()»RoleConstants.«da.name.toUpperCase()»_ROLE);
-			«ENDFOREACH-»
-		}
-			
-		«FOREACH e.groups AS g-»
-		/* '«e.name»' entity: '«g.name»' field group */
-		public static Set<String> «e.name.toFirstLower()»«g.name.toFirstUpper()»Reader = new HashSet<String>();
-		static{
-			«FOREACH g.readers AS r-»
-				«e.name.toFirstLower()»«g.name.toFirstUpper()»Reader.add(«projectName.toFirstUpper()»RoleConstants.«r.name.toUpperCase()»_ROLE);
-			«ENDFOREACH-»			
-		}
-		public static Set<String> «e.name.toFirstLower()»«g.name.toFirstUpper()»Writer = new HashSet<String>();
-		static{
-			«FOREACH g.writers AS w-»
-				«e.name.toFirstLower()»«g.name.toFirstUpper()»Writer.add(«projectName.toFirstUpper()»RoleConstants.«w.name.toUpperCase()»_ROLE);
-			«ENDFOREACH-»
-		}	
-		«ENDFOREACH»			
-	«ENDFOREACH -»	
-	
+	private static boolean canCreate«e.name.toFirstUpper()»;
+	private static boolean canDelete«e.name.toFirstUpper()»;
+	private static boolean canDirectAccess«e.name.toFirstUpper()»;
+	private static boolean canExport«e.name.toFirstUpper()»;
+	«FOREACH e.groups AS g-»
+	private static boolean canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	private static boolean canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	private static boolean canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	«ENDFOREACH-»
+	«ENDFOREACH-»
 
-	public static boolean canReadForm(String formName){
-		if(isAdmin() || isFormReadNotSecured(formName))
-			return true;
-		«FOREACH entities AS e-»
-		if("«e.name.toLowerCase()»".equals(formName)){
-			for(ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()){
-				«FOREACH e.groups AS g -»
-					if(«e.name.toFirstLower()»«g.name.toFirstUpper()»Reader.contains(role.getId()))
-						return true;					
-				«ENDFOREACH -»
-			}			
-			return false;
-		}			
-		«ENDFOREACH»
-		return false;
-	}
-	
-	public static boolean canEditForm(String formName){
-		if(isAdmin() || isFormEditNotSecured(formName))
-			return true;
-		«FOREACH entities AS e-»
-		if("«e.name.toLowerCase()»".equals(formName)){
-			for(ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()){
-				«FOREACH e.groups AS g -»
-					if(«e.name.toFirstLower()»«g.name.toFirstUpper()»Writer.contains(role.getId()))
-						return true;					
-				«ENDFOREACH -»
-			}			
-			return false;
-		}			
-		«ENDFOREACH»
-		return false;
-	}
-	
-	public static boolean canCreateForm(String formName){
-		if(isAdmin())
-			return true;
-		«FOREACH entities AS e-»
-		if("«e.name.toLowerCase()»".equals(formName)){
-			if(«e.name.toFirstLower()»Creator.size()==0)
+	public static boolean canReadForm(String formName) {
+		ensureLoaded();
+		«FOREACH entities AS e SEPARATOR " else "-»
+		if ("«e.name.toLowerCase()»".equals(formName)) {
+			«FOREACH e.groups AS g SEPARATOR " else "-»
+			if (canReadGroup("«e.name.toLowerCase()».«g.name.toLowerCase()»")) {
 				return true;
-			else {
-				for(ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()){
-					if(«e.name.toFirstLower()»Creator.contains(role.getId()))
-						return true;					
-				}				
 			}
+			«ENDFOREACH-»
 			return false;
-		}			
+		}
+		«ENDFOREACH-»
+		return false;
+	}
+	
+	public static boolean canEditForm(String formName) {
+		ensureLoaded();
+		«FOREACH entities AS e SEPARATOR " else "-»
+		if ("«e.name.toLowerCase()»".equals(formName)) {
+			«FOREACH e.groups AS g SEPARATOR " else "-»
+			if (canEditGroup("«e.name.toLowerCase()».«g.name.toLowerCase()»")) {
+				return true;
+			}
+			«ENDFOREACH-»
+			return false;
+		}
+		«ENDFOREACH-»
+		return false;
+	}
+	
+	public static boolean canCreateForm(String formName) {
+		ensureLoaded();
+		«FOREACH entities AS e SEPARATOR " else "-»
+		if("«e.name.toLowerCase()»".equals(formName)) {
+			return canCreate«e.name.toFirstUpper()»;
+		}
 		«ENDFOREACH»
 		return false;
 	}	
 	
-	public static boolean canDirectAccessForm(String formName){
-		if(isAdmin())
-			return true;
-		«FOREACH entities AS e-»
-		if("«e.name.toLowerCase()»".equals(formName)){
-			if(«e.name.toFirstLower()»DirectAccess.size()==0)
-				«IF e.topLevel-»
-				return true;
-				«ELSE-»
-				return false;
-				«ENDIF-»
-			else {
-				for(ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()){
-					if(«e.name.toFirstLower()»DirectAccess.contains(role.getId()))
-						return true;					
-				}				
-			}
-			return false;
-		}			
+	public static boolean canDirectAccessForm(String formName) {
+		ensureLoaded();
+		«FOREACH entities AS e SEPARATOR " else "-»
+		if("«e.name.toLowerCase()»".equals(formName)) {
+			return canDirectAccess«e.name.toFirstUpper()»;
+		}
 		«ENDFOREACH»
 		return false;
 	}
 	
-	public static boolean canReadGroup(String groupName){
-		if(isAdmin() || isGroupReadNotSecured(groupName))
-			return true;	
-		«FOREACH entities AS e -»	
-			«FOREACH e.groups AS g -»	
-			if("«e.name.toLowerCase()».«g.name.toLowerCase()»".equals(groupName)){
-				for(ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()){				
-					if(«e.name.toFirstLower()»«g.name.toFirstUpper()»Reader.contains(role.getId()))
-						return true;
-				}
-				return false;
-			}
-			«ENDFOREACH -»		
-		«ENDFOREACH -»		
+	public static boolean canReadGroup(String groupName) {
+		ensureLoaded();
+		«FOREACH entities.groups AS g SEPARATOR " else "-»	
+		if("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(groupName)) {
+			return canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+		}
+		«ENDFOREACH-»
 		return false;
 	}
 	
-	public static boolean canEditGroup(String groupName){
-		if(isAdmin() || isGroupEditNotSecured(groupName))
-			return true;
-		«FOREACH entities AS e -»
-			«FOREACH e.groups AS g -»
-			if("«e.name.toLowerCase()».«g.name.toLowerCase()»".equals(groupName)){
-				for(ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()){				
-					if(«e.name.toFirstLower()»«g.name.toFirstUpper()»Writer.contains(role.getId()))
-						return true;
-				}
-				return false;
-			}
-			«ENDFOREACH -»
-		«ENDFOREACH -»			
+	public static boolean canEditGroup(String groupName) {
+		ensureLoaded();
+		«FOREACH entities.groups AS g SEPARATOR " else "-»	
+		if("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(groupName)) {
+			return canWrite«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+		}
+		«ENDFOREACH-»
 		return false;
 	}
-	
-	/**
-	 *
-	 */
-	public static boolean isFormReadNotSecured(String formName){
-		«FOREACH entities AS e -»			
-			if("«e.name.toLowerCase()»".equals(formName)){
-				if(
-				«FOREACH e.groups AS g ITERATOR it -»
-					isGroupReadNotSecured("«e.name.toLowerCase()».«g.name.toLowerCase()»")
-					«IF it.counter1 != e.groups.size-»||«ENDIF -»
-				«ENDFOREACH -»
-				)
-				return true;
-			}						
-		«ENDFOREACH -»
-		return false;
-	}
-	
-	/**
-	 *
-	 */
-	public static boolean isFormEditNotSecured(String formName){
-		«FOREACH entities AS e -»			
-			if("«e.name.toLowerCase()»".equals(formName)){
-				if(
-				«FOREACH e.groups AS g ITERATOR it -»
-					isGroupEditNotSecured("«e.name.toLowerCase()».«g.name.toLowerCase()»")
-					«IF it.counter1 != e.groups.size-»||«ENDIF -»
-				«ENDFOREACH -»
-				)
-				return true;
-			}						
-		«ENDFOREACH -»
-		return false;
-	}
-	
-	/**
-	 *
-	 */
-	public static boolean isGroupReadNotSecured(String groupName){
-		«FOREACH entities AS e-»
-			«FOREACH e.groups AS g -»
-				if("«e.name.toLowerCase()».«g.name.toLowerCase()»".equals(groupName)){
-					if(«e.name.toFirstLower()»«g.name.toFirstUpper()»Reader.size()>0)
-						return false;
-					return true;
-				}
-			«ENDFOREACH -»
-		«ENDFOREACH -»
-		return false;
-	}
-	
-	/**
-	 *
-	 */
-	public static boolean isGroupEditNotSecured(String groupName){
-		«FOREACH entities AS e-»
-			«FOREACH e.groups AS g -»
-				if("«e.name.toLowerCase()».«g.name.toLowerCase()»".equals(groupName)){
-					if(«e.name.toFirstLower()»«g.name.toFirstUpper()»Writer.size()>0)
-						return false;
-					return true;
-				}
-			«ENDFOREACH -»
-		«ENDFOREACH -»
-		return false;
-	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -253,21 +122,68 @@ public class AccessManager {
 	 */
 	public static boolean canExport() {
 		return ImogRoleUtil.canExport();
-	}	
+	}
 	
-	/**
-	 * 
-	 * @param param
-	 * @return
-	 */
-	public static boolean hasRole(String param) {
-		for (ImogRoleProxy role : LocalSession.get().getCurrentUser().getRoleList()) {
-			if (role.getId().equals(param))
-				return true;
+	private static void ensureLoaded() {
+		ImogActorProxy actor = LocalSession.get().getCurrentUser();
+		if (actor.getId() != current) {
+			load(actor);
 		}
-		return false;
-	}	
-		
+	}
+	
+	private static void load(ImogActorProxy actor) {
+		current = actor.getId();
+		«FOREACH entities AS e-»
+		canCreate«e.name.toFirstUpper()» = true;
+		canDelete«e.name.toFirstUpper()» = true;
+		canDirectAccess«e.name.toFirstUpper()» = true;
+		canExport«e.name.toFirstUpper()» = true;
+		«FOREACH e.groups AS g-»
+		canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+		canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+		canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+		«ENDFOREACH-»
+		«ENDFOREACH-»
+		if (isAdmin()) {
+			return;
+		}
+		for (ProfileProxy profile : actor.getProfiles()) {
+			for (EntityProfileProxy entity : profile.getEntityProfiles()) {
+				«FOREACH entities AS e SEPARATOR " else "-»
+				if ("«e.name.toLowerCase()»".equals(entity.getId())) {
+					if (entity.getCreate() != null) {
+						canCreate«e.name.toFirstUpper()» &= entity.getCreate();
+					}
+					if (entity.getDelete() != null) {
+						canDelete«e.name.toFirstUpper()» &= entity.getDelete();
+					}
+					if (entity.getDirectAccess() != null) {
+						canDirectAccess«e.name.toFirstUpper()» &= entity.getDirectAccess();
+					}
+					if (entity.getExport() != null) {
+						canExport«e.name.toFirstUpper()» &= entity.getExport();
+					}
+				}
+				«ENDFOREACH-»
+			}
+			for (FieldGroupProfileProxy group : profile.getFieldGroupProfiles()) {
+				«FOREACH entities.groups AS g SEPARATOR " else "-»
+				if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(group.getId())) {
+					if (group.getRead()) {
+						canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getRead();
+					}
+					if (group.getWrite()) {
+						canWrite«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getWrite();
+					}
+					if (group.getExport()) {
+						canExport«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getExport();
+					}
+				}
+				«ENDFOREACH-»
+			}
+		}
+	}
+
 }
 «ENDFILE»
 «ENDDEFINE»

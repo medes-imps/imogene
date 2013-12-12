@@ -42,8 +42,6 @@ import org.imogene.lib.common.entity.GeoField;
 import org.imogene.lib.common.entity.ImogActorImpl;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.entity.IsGeoreferenced;
-import org.imogene.lib.common.role.ImogRole;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
 
 «FOREACH entities AS e -»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;

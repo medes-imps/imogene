@@ -29,7 +29,7 @@ public class FieldGroupHandler {
 
 	private FieldGroupDao dao;
 	/* FieldGroupProfileDao for Foreign Key Deletion */
-	private FieldGroupProfileDao fieldGroupProfileFieldGroupDao;
+	private FieldGroupProfileDao fieldGroupProfileDao;
 
 	/**
 	 * Loads the entity with the specified id
@@ -377,13 +377,13 @@ public class FieldGroupHandler {
 		criteriaFieldGroupProfileFieldGroup.setField("fieldGroup.id");
 		searchCriterionsForFieldGroupProfileFieldGroup.add(criteriaFieldGroupProfileFieldGroup);
 
-		List<FieldGroupProfile> resultForFieldGroupProfileFieldGroup = fieldGroupProfileFieldGroupDao.load("modified",
-				false, searchCriterionsForFieldGroupProfileFieldGroup);
+		List<FieldGroupProfile> resultForFieldGroupProfileFieldGroup = fieldGroupProfileDao.load("modified", false,
+				searchCriterionsForFieldGroupProfileFieldGroup);
 		if (resultForFieldGroupProfileFieldGroup != null) {
 			for (FieldGroupProfile foreignEntity : resultForFieldGroupProfileFieldGroup) {
 				foreignEntity.setModified(new Date());
 				foreignEntity.setFieldGroup(null);
-				fieldGroupProfileFieldGroupDao.saveOrUpdate(foreignEntity, false);
+				fieldGroupProfileDao.saveOrUpdate(foreignEntity, false);
 			}
 		}
 
@@ -437,8 +437,8 @@ public class FieldGroupHandler {
 	 * 
 	 * @param fieldGroupProfileFieldGroupDao the FieldGroupProfile Dao
 	 */
-	public void setFieldGroupProfileFieldGroupDao(FieldGroupProfileDao fieldGroupProfileFieldGroupDao) {
-		this.fieldGroupProfileFieldGroupDao = fieldGroupProfileFieldGroupDao;
+	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
+		this.fieldGroupProfileDao = fieldGroupProfileDao;
 	}
 
 }

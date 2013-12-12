@@ -90,7 +90,7 @@
 				<imo:ImogPasswordBox ui:field="passwordConfirm" />
 			</g:SimplePanel>
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
-				<imo2:ImogMultiRelationBox ui:field="roleList" />
+				<imo2:ImogMultiRelationBox ui:field="profiles" />
 			</g:SimplePanel>
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
 				<imo:ImogLinkBox ui:field="idLink" />
@@ -102,7 +102,7 @@
 		<imo3:FieldGroupPanel ui:field="synchronizationSection">
 	
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
-				<imo2:ImogMultiRelationBox ui:field="synchronizableList" />
+				<imo2:ImogMultiRelationBox ui:field="synchronizables" />
 			</g:SimplePanel>
 
 		</imo3:FieldGroupPanel>	

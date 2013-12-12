@@ -79,6 +79,14 @@ public interface AdminTranslations extends Constants {
 
 	String cardEntity_excel_title();
 
+	/* SynchronizableEntity field group texts */
+	String synchronizableEntity_group_identification();
+
+	/* SynchronizableEntity fields texts */
+	String synchronizableEntity_field_name();
+
+	String synchronizableEntity_field_s_name();
+
 	/* Profile texts */
 	String profile_name();
 
@@ -202,14 +210,6 @@ public interface AdminTranslations extends Constants {
 	String fieldGroup_field_name();
 
 	String fieldGroup_field_s_name();
-
-	/* SynchronizableEntity field group texts */
-	String synchronizableEntity_group_identification();
-
-	/* SynchronizableEntity fields texts */
-	String synchronizableEntity_field_name();
-
-	String synchronizableEntity_field_s_name();
 
 	/* Notification texts */
 	String notification_name();

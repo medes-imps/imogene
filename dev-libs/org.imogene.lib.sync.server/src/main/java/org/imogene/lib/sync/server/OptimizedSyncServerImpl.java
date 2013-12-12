@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -52,7 +51,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	private ImogSerializer serializer;
 
 	private EntityHelper entityHelper;
-	
+
 	@Override
 	public int applyClientModifications(String sessionId, InputStream data) throws ImogSerializationException {
 		if (checkSession(sessionId)) {
@@ -88,7 +87,8 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	}
 
 	@Override
-	public void searchEntity(ImogActor currentUser, String entityId, OutputStream out) throws ImogSerializationException {
+	public void searchEntity(ImogActor currentUser, String entityId, OutputStream out)
+			throws ImogSerializationException {
 		ImogBean bean = genericDao.load(ImogBeanImpl.class, entityId);
 		if (bean != null) {
 			List<ImogBean> entities = entityHelper.getAssociatedEntitiesIds(bean);
@@ -103,7 +103,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 			SyncSession session = sessionDao.load(sessionId);
 			ImogActor currentUser = genericDao.load(ImogActorImpl.class, session.getUserId());
 			List<ImogBean> allEntities = new Vector<ImogBean>();
-			Set<CardEntity> synchronizables = currentUser.getSynchronizables();
+			List<CardEntity> synchronizables = currentUser.getSynchronizables();
 			Date lastDate = computeLastDate(session.getTerminalId());
 
 			boolean allowBinaries = false;
@@ -116,7 +116,8 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 				} else if (DynamicFieldInstance.class.getName().equals(synchronizable.getName())) {
 					continue;
 				} else {
-					ImogBeanHandler<? extends ImogBean> handler = dataHandlerManager.getHandler(synchronizable.getName());
+					ImogBeanHandler<? extends ImogBean> handler = dataHandlerManager.getHandler(synchronizable
+							.getName());
 					if (handler != null) {
 						List<? extends ImogBean> modified = null;
 						if (lastDate == null) {
@@ -131,7 +132,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 					}
 				}
 			}
-			
+
 			logger.debug("SeMo: " + allEntities.size() + " entities loaded, before filtering with the terminal id");
 
 			// removes entities that have just been sent by the client terminal
@@ -143,7 +144,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 				}
 			}
 			allEntities.removeAll(toBeRemoved);
-			
+
 			// Add dynamic field instances
 			List<DynamicFieldInstance> instances = new Vector<DynamicFieldInstance>();
 			for (ImogBean bean : allEntities) {
@@ -168,7 +169,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 			if (!instances.isEmpty()) {
 				allEntities.addAll(instances);
 			}
-			
+
 			if (allowBinaries) {
 				List<Binary> binaries = null;
 				if (lastDate == null) {
@@ -180,15 +181,12 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 					allEntities.addAll(binaries);
 				}
 			}
-			
+
 			// TODO serialize current user
 			/*
-			 * if (! (user instanceof DefaultUser)) { Synchronizable
-			 * modifiedUser; EntityHandler handler =
-			 * dataHandlerManager.getHandler
-			 * (user.getClass().getSuperclass().getName()); if (lastDate!=null)
-			 * modifiedUser = handler.getDao().loadModified(lastDate,
-			 * user.getId()); else modifiedUser =
+			 * if (! (user instanceof DefaultUser)) { Synchronizable modifiedUser; EntityHandler handler =
+			 * dataHandlerManager.getHandler (user.getClass().getSuperclass().getName()); if (lastDate!=null)
+			 * modifiedUser = handler.getDao().loadModified(lastDate, user.getId()); else modifiedUser =
 			 * handler.getDao().loadEntity(user.getId());
 			 * 
 			 * if (modifiedUser!=null) allEntities.add(modifiedUser); }
@@ -269,7 +267,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	public void setSessionDao(SyncSessionDao pSessionDao) {
 		this.sessionDao = pSessionDao;
 	}
-	
+
 	/**
 	 * Setter for bean injection
 	 * 
@@ -305,5 +303,5 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	public void setEntityHelper(EntityHelper helper) {
 		this.entityHelper = helper;
 	}
-	
+
 }
