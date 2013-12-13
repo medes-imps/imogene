@@ -551,15 +551,6 @@
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
 	
-	<!-- ImogSecurityDetail Service -->
-	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::security::ImogSecurityDetailService::generate("${packageName}","${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>
-	
 	<!-- Bean Filter -->
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>

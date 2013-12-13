@@ -32,11 +32,8 @@
 	</bean>
 	
 	<!-- Spring-security users details provider -->
-	<bean class="org.imogene.«projectName.toLowerCase()».server.security.ImogSecurityDetailService" id="imogSecurityDetailService">
+	<bean id="imogSecurityDetailService" class="org.imogene.web.server.security.ImogSecurityDetailService" >
 		<property name="genericHandler" ref="genericHandler"/>
-		«FOREACH entities AS e -»
-  		  «EXPAND actorHandlder FOR e -»
-		«ENDFOREACH -»
   	</bean>
   	
 	<!-- Spring-security users details provider for web application in rcp container 

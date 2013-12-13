@@ -2,6 +2,8 @@ package org.imogene.lib.common.dao;
 
 import java.util.List;
 
+import org.imogene.lib.common.entity.ImogActor;
+
 /**
  * Generic dao
  * 
@@ -72,5 +74,13 @@ public interface GenericDao {
 	 * @return the instance that the state was merged to
 	 */
 	public <T> T merge(T o);
+
+	/**
+	 * Load an actor with the given login
+	 * 
+	 * @param login the login to search
+	 * @return the actor or {@code null} if not found
+	 */
+	public ImogActor loadFromLogin(String login);
 
 }

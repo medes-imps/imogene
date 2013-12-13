@@ -8,6 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.entity.ImogActorImpl;
+
 public class GenericDaoImpl implements GenericDao {
 
 	@PersistenceContext
@@ -63,6 +66,16 @@ public class GenericDaoImpl implements GenericDao {
 	@Override
 	public <T> T merge(T o) {
 		return em.<T> merge(o);
+	}
+
+	@Override
+	public ImogActor loadFromLogin(String login) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<ImogActorImpl> query = builder.createQuery(ImogActorImpl.class);
+		Root<ImogActorImpl> root = query.from(ImogActorImpl.class);
+		query.select(root);
+		query.where(builder.equal(root.<String> get("login"), login));
+		return em.createQuery(query).getSingleResult();
 	}
 
 }
