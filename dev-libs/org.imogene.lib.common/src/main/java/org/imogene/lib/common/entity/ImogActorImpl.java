@@ -153,7 +153,7 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 	}
 
 	@Override
-	public void addToProfiles(Profile param) {
+	public void addProfile(Profile param) {
 		if (profiles == null) {
 			profiles = new ArrayList<Profile>();
 		}

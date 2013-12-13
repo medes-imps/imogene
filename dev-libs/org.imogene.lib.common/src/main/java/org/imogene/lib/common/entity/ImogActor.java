@@ -49,7 +49,7 @@ public interface ImogActor extends ImogEntity {
 	/**
 	 * @param param the Profile to add to the profiles collection
 	 */
-	public void addToProfiles(Profile param);
+	public void addProfile(Profile param);
 
 	/**
 	 * @param param the Profile to remove from the profiles collection
