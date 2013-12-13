@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+        http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+
+	<!-- A JPA Persistence Unit -->
+	<persistence-unit name="initializer" transaction-type="RESOURCE_LOCAL">
+	
+		<class>org.imogene.lib.common.dynamicfields.DynamicFieldTemplate</class>
+		<class>org.imogene.lib.common.dynamicfields.DynamicFieldInstance</class>	    
+		<class>org.imogene.lib.common.model.CardEntity</class>
+		<class>org.imogene.lib.common.model.FieldGroup</class>
+		<class>org.imogene.lib.common.profile.EntityProfile</class>
+		<class>org.imogene.lib.common.profile.FieldGroupProfile</class>
+		<class>org.imogene.lib.common.profile.Profile</class>
+		<class>org.imogene.lib.common.user.DefaultUser</class>
+		<class>org.imogene.lib.common.useraction.UserAction</class>
+	</persistence-unit>
+</persistence>
