@@ -14,9 +14,12 @@ import com.google.web.bindery.requestfactory.shared.ProxyFor;
 public interface FieldGroupProxy extends ImogBeanProxy {
 
 	/* Description section fields */
-
 	public String getName();
 
 	public void setName(String value);
+
+	public CardEntityProxy getEntity();
+
+	public void setEntity(CardEntityProxy value);
 
 }

@@ -3,13 +3,20 @@ package org.imogene.admin.client.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.imogene.admin.client.AdminRenderer;
+import org.imogene.admin.client.dataprovider.CardEntityDataProvider;
+import org.imogene.admin.client.event.save.SaveCardEntityEvent;
 import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.admin.client.ui.workflow.panel.CardEntityFormPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
+import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -18,6 +25,8 @@ import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.editor.client.HasEditorDelegate;
 import com.google.gwt.editor.client.HasEditorErrors;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -50,6 +59,8 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 	FieldGroupPanel descriptionSection;
 	@UiField
 	ImogTextBox name;
+	@UiField(provided = true)
+	ImogSingleRelationBox<CardEntityProxy> entity;
 
 	/**
 	 * Constructor
@@ -61,6 +72,8 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 
 		this.requestFactory = factory;
 		this.hideButtons = hideButtons;
+
+		setRelationFields();
 
 		initWidget(BINDER.createAndBindUi(this));
 
@@ -84,6 +97,26 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 		/* Description section widgets */
 		descriptionSection.setGroupTitle(AdminNLS.constants().fieldGroup_group_description());
 		name.setLabel(AdminNLS.constants().fieldGroup_field_name());
+		entity.setLabel(AdminNLS.constants().fieldGroup_field_entity());
+
+	}
+
+	/**
+	 * Configures the widgets that manage relation fields
+	 */
+	private void setRelationFields() {
+
+		/* field entity */
+		CardEntityDataProvider entityDataProvider;
+		entityDataProvider = new CardEntityDataProvider(requestFactory);
+		if (hideButtons) // in popup, relation buttons hidden
+			entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get(), true);
+		else {// in wrapper panel, relation buttons enabled
+			if (ImogRoleUtil.isAdmin())
+				entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get());
+			else
+				entity = new ImogSingleRelationBox<CardEntityProxy>(false, entityDataProvider, AdminRenderer.get());
+		}
 
 	}
 
@@ -101,6 +134,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 
 		/* Description section widgets */
 		name.setEdited(isEdited);
+		entity.setEdited(isEdited);
 
 	}
 
@@ -151,6 +185,67 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 	}
 
 	/**
+	 * Setter to inject a CardEntity value
+	 * 
+	 * @param value the value to be injected into the editor
+	 * @param isLocked true if relation field shall be locked (non editable)
+	 */
+	public void setEntity(CardEntityProxy value, boolean isLocked) {
+		entity.setLocked(isLocked);
+		entity.setValue(value);
+
+	}
+
+	/**
+	 * Configures the handlers of the widgets that manage relation fields
+	 */
+	private void setRelationHandlers() {
+
+		/* 'Information' button for field Entity */
+		entity.setViewClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (entity.getValue() != null) {
+					RelationPopupPanel relationPopup = new RelationPopupPanel();
+					CardEntityFormPanel form = new CardEntityFormPanel(requestFactory, entity.getValue().getId(),
+							relationPopup, "entity");
+					relationPopup.addWidget(form);
+					relationPopup.show();
+				}
+			}
+		});
+
+		/* 'Add' button for field Entity */
+		entity.setAddClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				RelationPopupPanel relationPopup = new RelationPopupPanel();
+				CardEntityFormPanel form = new CardEntityFormPanel(requestFactory, null, relationPopup, "entity");
+				/* common fields */
+
+				relationPopup.addWidget(form);
+				relationPopup.show();
+			}
+		});
+
+		/* SaveEvent handler when a CardEntity is created or updated from the relation field Entity */
+		registrations.add(requestFactory.getEventBus().addHandler(SaveCardEntityEvent.TYPE,
+				new SaveCardEntityEvent.Handler() {
+					@Override
+					public void saveCardEntity(CardEntityProxy value) {
+						entity.setValue(value);
+					}
+
+					@Override
+					public void saveCardEntity(CardEntityProxy value, String initField) {
+						if (initField.equals("entity"))
+							entity.setValue(value, true);
+					}
+				}));
+
+	}
+
+	/**
 	 * Gets the FieldGroupProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
 	 * the proxy to related entities
 	 * 
@@ -183,6 +278,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 
 		/* Description field group */
 		name.setLabelWidth(width);
+		entity.setLabelWidth(width);
 
 	}
 
@@ -192,6 +288,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 
 		/* Description field group */
 		name.setBoxWidth(width);
+		entity.setBoxWidth(width);
 
 	}
 
@@ -224,6 +321,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 
 	@Override
 	protected void onLoad() {
+		setRelationHandlers();
 		setFieldValueChangeHandler();
 		super.onLoad();
 	}

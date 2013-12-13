@@ -83,7 +83,7 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 
 		/* Description section widgets */
 		descriptionSection.setGroupTitle(AdminNLS.constants().cardEntity_name());
-		name.setLabel(AdminNLS.constants().synchronizableEntity_field_name());
+		name.setLabel(AdminNLS.constants().cardEntity_field_name());
 
 	}
 

@@ -104,6 +104,7 @@
 	<bean id="fieldGroupHandler" class="org.imogene.web.server.handler.FieldGroupHandler">
 		<property name="dao" ref="fieldGroupDaoBase" />
 		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
+		<property name="entityHandler" ref="cardEntityHandler" />
 	</bean>
 	<bean id="fieldGroupProfileHandler" class="org.imogene.web.server.handler.FieldGroupProfileHandler">
 		<property name="dao" ref="fieldGroupProfileDaoBase" />

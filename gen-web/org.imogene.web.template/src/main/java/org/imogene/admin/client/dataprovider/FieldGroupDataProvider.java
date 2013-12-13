@@ -128,9 +128,11 @@ public class FieldGroupDataProvider extends ImogBeanDataProvider<FieldGroupProxy
 		}
 
 		if (isFiltered) {
+			result.with("entity");
 		}
 
 		else {
+			result.with("entity");
 		}
 
 		return result;
@@ -164,6 +166,8 @@ public class FieldGroupDataProvider extends ImogBeanDataProvider<FieldGroupProxy
 			else
 				result = request.listFieldGroup(start, numRows, property, asc);
 		}
+
+		result.with("entity");
 
 		return result;
 	}
@@ -240,6 +244,14 @@ public class FieldGroupDataProvider extends ImogBeanDataProvider<FieldGroupProxy
 
 			ImogJunctionProxy disJunction = request.create(ImogDisjunctionProxy.class);
 			List<ImogCriterionProxy> criterionList = new ArrayList<ImogCriterionProxy>();
+
+			// Search field Name
+			BasicCriteriaProxy entity_nameCrit = request.create(BasicCriteriaProxy.class);
+			entity_nameCrit.setField("entity.name");
+			entity_nameCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			entity_nameCrit.setValue(text);
+			buffer.append("(" + AdminNLS.constants().cardEntity_field_name() + ": " + text + ") " + SYMBOL_OR + " ");
+			criterionList.add(entity_nameCrit);
 
 			// Search field Name
 			BasicCriteriaProxy nameCrit = request.create(BasicCriteriaProxy.class);

@@ -39,7 +39,7 @@ public class CardEntityFilterPanel extends ImogFilterPanel {
 		nameBox = new TextBox();
 		nameFilterBox = new ImogFilterBox(nameBox);
 		nameFilterBox.setFilterLabel(AdminNLS.constants()
-				.synchronizableEntity_field_name());
+				.cardEntity_field_name());
 		addTableFilter(nameFilterBox);
 
 	}
@@ -52,7 +52,7 @@ public class CardEntityFilterPanel extends ImogFilterPanel {
 		FilterCriteria nameCrit = new FilterCriteria();
 		nameCrit.setField("name");
 		nameCrit.setFieldDisplayName(AdminNLS.constants()
-				.synchronizableEntity_field_name());
+				.cardEntity_field_name());
 		nameCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 		nameCrit.setValue(nameBox.getValue());
 		nameCrit.setValueDisplayName(nameBox.getValue());

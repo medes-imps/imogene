@@ -63,6 +63,11 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 	protected void setColumns() {
 
 		if (ImogRoleUtil.isAdmin()) {
+			Column<FieldGroupProxy, String> entityColumn = new EntityColumn();
+			entityColumn.setSortable(true);
+			table.addColumn(entityColumn, AdminNLS.constants().fieldGroup_field_s_entity());
+		}
+		if (ImogRoleUtil.isAdmin()) {
 			Column<FieldGroupProxy, String> nameColumn = new NameColumn();
 			nameColumn.setSortable(true);
 			table.addColumn(nameColumn, AdminNLS.constants().fieldGroup_field_s_name());
@@ -221,6 +226,36 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 	/**
 	 * --------------------- * Internal classes * ----------------------
 	 */
+
+	/**
+	 * Column for field Entity
+	 * 
+	 * @author MEDES-IMPS
+	 */
+	private class EntityColumn extends ImogColumn<FieldGroupProxy, String> {
+
+		private AdminRenderer renderer = AdminRenderer.get();
+
+		public EntityColumn() {
+			super(new TextCell());
+		}
+
+		@Override
+		public String getValue(FieldGroupProxy object) {
+			String value = null;
+			if (object != null) {
+				if (object.getEntity() == null)
+					value = "";
+				else
+					value = renderer.getDisplayValue(object.getEntity());
+			}
+			return value;
+		}
+
+		public String getPropertyName() {
+			return "entity";
+		}
+	}
 
 	/**
 	 * Column for field Name

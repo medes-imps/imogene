@@ -50,6 +50,9 @@
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
 				<imo:ImogTextBox ui:field="name" />
 			</g:SimplePanel>
+			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
+				<imo1:ImogSingleRelationBox ui:field="entity" />
+			</g:SimplePanel>
 
 		</imo3:FieldGroupPanel>	
 	

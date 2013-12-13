@@ -62,7 +62,7 @@ public class EntityProfileFilterPanel extends ImogFilterPanel {
 
 		entity_nameBox = new TextBox();
 		entity_nameFilterBox = new ImogFilterBox(entity_nameBox);
-		entity_nameFilterBox.setFilterLabel(AdminNLS.constants().synchronizableEntity_field_name());
+		entity_nameFilterBox.setFilterLabel(AdminNLS.constants().cardEntity_field_name());
 		addTableFilter(entity_nameFilterBox);
 
 		directAccessBox = new ImogBooleanAsList();
@@ -104,7 +104,7 @@ public class EntityProfileFilterPanel extends ImogFilterPanel {
 
 		FilterCriteria entity_nameCrit = new FilterCriteria();
 		entity_nameCrit.setField("entity.name");
-		entity_nameCrit.setFieldDisplayName(AdminNLS.constants().synchronizableEntity_field_name());
+		entity_nameCrit.setFieldDisplayName(AdminNLS.constants().cardEntity_field_name());
 		entity_nameCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 		entity_nameCrit.setValue(entity_nameBox.getValue());
 		entity_nameCrit.setValueDisplayName(entity_nameBox.getValue());

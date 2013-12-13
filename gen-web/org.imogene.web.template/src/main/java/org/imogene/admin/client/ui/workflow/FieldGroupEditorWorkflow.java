@@ -163,6 +163,7 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 		/* get the FieldGroup instance from database */
 		Request<FieldGroupProxy> fetchRequest = request.findById(entityId);
+		fetchRequest.with("entity");
 
 		fetchRequest.to(new Receiver<FieldGroupProxy>() {
 			@Override

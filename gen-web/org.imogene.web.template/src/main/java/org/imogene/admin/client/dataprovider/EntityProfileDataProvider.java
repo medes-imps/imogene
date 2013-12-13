@@ -262,7 +262,7 @@ public class EntityProfileDataProvider extends ImogBeanDataProvider<EntityProfil
 			entity_nameCrit.setField("entity.name");
 			entity_nameCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 			entity_nameCrit.setValue(text);
-			buffer.append("(" + AdminNLS.constants().synchronizableEntity_field_name() + ": " + text + ") " + SYMBOL_OR
+			buffer.append("(" + AdminNLS.constants().cardEntity_field_name() + ": " + text + ") " + SYMBOL_OR
 					+ " ");
 			criterionList.add(entity_nameCrit);
 

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.imogene.web.server.handler.FieldGroupHandler;
 import org.imogene.web.server.locator.SpringServiceLocator;
+import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
@@ -64,5 +65,9 @@ public interface FieldGroupRequest extends RequestContext {
 	Request<Void> delete(Set<FieldGroupProxy> entities);
 
 	Request<Void> delete(FieldGroupProxy entity);
+
+	Request<Void> saveEntity(CardEntityProxy entity, boolean isNew);
+
+	Request<Void> deleteEntity(CardEntityProxy entity);
 
 }

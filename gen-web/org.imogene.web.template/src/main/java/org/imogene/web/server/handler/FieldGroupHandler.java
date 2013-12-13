@@ -11,6 +11,7 @@ import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.model.FieldGroup;
 import org.imogene.lib.common.model.FieldGroupDao;
 import org.imogene.lib.common.profile.FieldGroupProfile;
@@ -30,6 +31,8 @@ public class FieldGroupHandler {
 	private FieldGroupDao dao;
 	/* FieldGroupProfileDao for Foreign Key Deletion */
 	private FieldGroupProfileDao fieldGroupProfileDao;
+
+	private CardEntityHandler entityHandler;
 
 	/**
 	 * Loads the entity with the specified id
@@ -424,6 +427,25 @@ public class FieldGroupHandler {
 	}
 
 	/**
+	 * Saves entity of type CardEntity
+	 * 
+	 * @param entity the CardEntity to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	public void saveEntity(CardEntity entity, boolean isNew) {
+		entityHandler.save(entity, isNew);
+	}
+
+	/**
+	 * Deletes entity of type CardEntity
+	 * 
+	 * @param toDelete the CardEntity to be deleted
+	 */
+	public void deleteEntity(CardEntity toDelete) {
+		entityHandler.delete(toDelete);
+	}
+
+	/**
 	 * Setter for bean injection
 	 * 
 	 * @param dao the FieldGroup Dao
@@ -439,6 +461,15 @@ public class FieldGroupHandler {
 	 */
 	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
 		this.fieldGroupProfileDao = fieldGroupProfileDao;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param entityHandler the CardEntity Handler
+	 */
+	public void setEntityHandler(CardEntityHandler entityHandler) {
+		this.entityHandler = entityHandler;
 	}
 
 }
