@@ -1,5 +1,6 @@
 package org.imogene.lib.common.profile;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,11 +22,11 @@ public class FieldGroupProfile extends ImogBeanImpl {
 
 	/* Description group fields */
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.DETACH)
 	@JoinColumn(name = "fieldGroupProfilesProfile_id")
 	private Profile profile;
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.DETACH)
 	private FieldGroup fieldGroup;
 
 	private Boolean read;

@@ -40,7 +40,7 @@ public class GenericDaoImpl implements GenericDao {
 	}
 
 	@Override
-	public void evict(Object o) {
+	public void detach(Object o) {
 		em.detach(o);
 	}
 

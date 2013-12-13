@@ -3,6 +3,7 @@ package org.imogene.lib.common.profile;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -26,11 +27,11 @@ public class Profile extends ImogBeanImpl {
 
 	private String name;
 
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade=CascadeType.DETACH)
 	@JoinColumn(name = "entityProfilesProfile_id")
 	private List<EntityProfile> entityProfiles;
 
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade=CascadeType.DETACH)
 	@JoinColumn(name = "fieldGroupProfilesProfile_id")
 	private List<FieldGroupProfile> fieldGroupProfiles;
 

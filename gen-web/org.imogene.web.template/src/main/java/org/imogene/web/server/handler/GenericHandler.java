@@ -61,12 +61,12 @@ public class GenericHandler {
 	}
 
 	/**
-	 * Evicts an entity instance from the persistence session
+	 * Detach an entity instance from the persistence session
 	 * 
 	 * @param o the entity instance to be evicted from persistence session
 	 */
-	public void evict(Object o) {
-		dao.evict(o);
+	public void detach(Object o) {
+		dao.detach(o);
 	}
 
 	/**

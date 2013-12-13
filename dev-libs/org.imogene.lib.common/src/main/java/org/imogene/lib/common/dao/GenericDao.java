@@ -61,11 +61,11 @@ public interface GenericDao {
 	public <T> boolean contains(T object);
 
 	/**
-	 * Evicts an entity instance from the persistence session
+	 * Detach an entity instance from the persistence session
 	 * 
 	 * @param o the entity instance to be evicted from persistence session
 	 */
-	public void evict(Object o);
+	public void detach(Object o);
 
 	/**
 	 * Merge the state of the given entity into the current persistence context.

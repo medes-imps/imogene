@@ -60,7 +60,7 @@ public class ImogSecurityDetailService implements UserDetailsService {
 				}
 			}
 		}
-		genericHandler.evict(actor);
+		genericHandler.detach(actor);
 		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_USER, actor);
 		return new ImogUserDetails(actor);
 	}
