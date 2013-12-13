@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.imogene.lib.common.entity.ImogEntityImpl;
+import org.imogene.lib.common.entity.ImogBeanImpl;
 
 /**
  * ImogBean implementation for the entity Profile
@@ -18,7 +18,7 @@ import org.imogene.lib.common.entity.ImogEntityImpl;
  */
 @Entity
 @Table(name = "imog_profile")
-public class Profile extends ImogEntityImpl {
+public class Profile extends ImogBeanImpl {
 
 	private static final long serialVersionUID = -1146782351391973857L;
 

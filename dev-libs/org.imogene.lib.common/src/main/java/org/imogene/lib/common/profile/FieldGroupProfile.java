@@ -5,7 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.imogene.lib.common.entity.ImogEntityImpl;
+import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.model.FieldGroup;
 
 /**
@@ -15,7 +15,7 @@ import org.imogene.lib.common.model.FieldGroup;
  */
 @Entity
 @Table(name = "imog_fieldgroupprofile")
-public class FieldGroupProfile extends ImogEntityImpl {
+public class FieldGroupProfile extends ImogBeanImpl {
 
 	private static final long serialVersionUID = 6409432097510291085L;
 

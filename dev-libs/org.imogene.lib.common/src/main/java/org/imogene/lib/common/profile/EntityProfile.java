@@ -5,7 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.imogene.lib.common.entity.ImogEntityImpl;
+import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.model.CardEntity;
 
 /**
@@ -15,7 +15,7 @@ import org.imogene.lib.common.model.CardEntity;
  */
 @Entity
 @Table(name = "imog_entityprofile")
-public class EntityProfile extends ImogEntityImpl {
+public class EntityProfile extends ImogBeanImpl {
 
 	private static final long serialVersionUID = 7405736400479451159L;
 
