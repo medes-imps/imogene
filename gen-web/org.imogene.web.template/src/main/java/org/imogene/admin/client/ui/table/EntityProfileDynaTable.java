@@ -19,7 +19,7 @@ import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
 
 import com.google.gwt.cell.client.TextCell;
@@ -63,32 +63,32 @@ public class EntityProfileDynaTable extends ImogDynaTable<EntityProfileProxy> {
 	@Override
 	protected void setColumns() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<EntityProfileProxy, String> profileColumn = new ProfileColumn();
 			profileColumn.setSortable(true);
 			table.addColumn(profileColumn, AdminNLS.constants().entityProfile_field_s_profile());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<EntityProfileProxy, String> entityColumn = new EntityColumn();
 			entityColumn.setSortable(true);
 			table.addColumn(entityColumn, AdminNLS.constants().entityProfile_field_s_entity());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<EntityProfileProxy, String> directAccessColumn = new DirectAccessColumn();
 			directAccessColumn.setSortable(true);
 			table.addColumn(directAccessColumn, AdminNLS.constants().entityProfile_field_s_directAccess());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<EntityProfileProxy, String> createColumn = new CreateColumn();
 			createColumn.setSortable(true);
 			table.addColumn(createColumn, AdminNLS.constants().entityProfile_field_s_create());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<EntityProfileProxy, String> deleteColumn = new DeleteColumn();
 			deleteColumn.setSortable(true);
 			table.addColumn(deleteColumn, AdminNLS.constants().entityProfile_field_s_delete());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<EntityProfileProxy, String> exportColumn = new ExportColumn();
 			exportColumn.setSortable(true);
 			table.addColumn(exportColumn, AdminNLS.constants().entityProfile_field_s_export());
@@ -118,7 +118,7 @@ public class EntityProfileDynaTable extends ImogDynaTable<EntityProfileProxy> {
 	 */
 	public Command getCreateCommand() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
 					requestFactory.getEventBus().fireEvent(new CreateEntityProfileEvent());
@@ -136,7 +136,7 @@ public class EntityProfileDynaTable extends ImogDynaTable<EntityProfileProxy> {
 	 */
 	public PushButton getDeleteButton() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -152,7 +152,7 @@ public class EntityProfileDynaTable extends ImogDynaTable<EntityProfileProxy> {
 	 */
 	private void setDeleteButtonHandlers() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {

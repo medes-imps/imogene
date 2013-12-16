@@ -95,7 +95,7 @@ public class «name.toFirstUpper()»ListPanel extends Composite {
 			wrapperPanel.setMessageLabel(filteringMessage);
 
 		/* dynatable */		
-		if (AccessManager.canDelete() && AccessManager.canEdit«name.toFirstUpper()»())		
+		if (AccessManager.canDelete«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»())		
 			listComposite = new «name.toFirstUpper()»DynaTable(requestFactory, provider, true);
 		else
 			listComposite = new «name.toFirstUpper()»DynaTable(requestFactory, provider, false);		

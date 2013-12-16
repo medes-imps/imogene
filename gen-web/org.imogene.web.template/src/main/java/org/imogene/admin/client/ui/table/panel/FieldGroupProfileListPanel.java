@@ -16,7 +16,7 @@ import org.imogene.web.client.ui.panel.WrapperPanelForTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
@@ -82,7 +82,7 @@ public class FieldGroupProfileListPanel extends Composite {
 			wrapperPanel.setMessageLabel(filteringMessage);
 
 		/* dynatable */
-		if (ImogRoleUtil.isAdmin())
+		if (ProfileUtil.isAdmin())
 			listComposite = new FieldGroupProfileDynaTable(requestFactory, provider, true);
 		else
 			listComposite = new FieldGroupProfileDynaTable(requestFactory, provider, false);

@@ -17,7 +17,7 @@ import org.imogene.web.client.ui.field.error.ImogConstraintViolation;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
 import org.imogene.web.client.util.ImogKeyGenerator;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
@@ -200,7 +200,7 @@ public class FieldGroupProfileEditorWorkflow extends EditorWorkflowComposite {
 		editor.computeVisibility(null, true);
 
 		/* display edit button */
-		if (ImogRoleUtil.isAdmin())
+		if (ProfileUtil.isAdmin())
 			setModifiable(true);
 	}
 

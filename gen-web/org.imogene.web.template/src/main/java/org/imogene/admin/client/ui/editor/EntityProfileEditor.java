@@ -19,7 +19,7 @@ import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
@@ -128,7 +128,7 @@ public class EntityProfileEditor extends Composite implements Editor<EntityProfi
 		if (hideButtons) // in popup, relation buttons hidden
 			profile = new ImogSingleRelationBox<ProfileProxy>(profileDataProvider, AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin()) {
+			if (ProfileUtil.isAdmin()) {
 				profile = new ImogSingleRelationBox<ProfileProxy>(profileDataProvider, AdminRenderer.get());
 			} else {
 				profile = new ImogSingleRelationBox<ProfileProxy>(false, profileDataProvider, AdminRenderer.get());
@@ -141,7 +141,7 @@ public class EntityProfileEditor extends Composite implements Editor<EntityProfi
 		if (hideButtons) // in popup, relation buttons hidden
 			entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin()) {
+			if (ProfileUtil.isAdmin()) {
 				entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get());
 			} else {
 				entity = new ImogSingleRelationBox<CardEntityProxy>(false, entityDataProvider, AdminRenderer.get());
@@ -173,7 +173,7 @@ public class EntityProfileEditor extends Composite implements Editor<EntityProfi
 	}
 
 	private void setFieldReadAccess() {
-		if (!ImogRoleUtil.isAdmin()) {
+		if (!ProfileUtil.isAdmin()) {
 			descriptionSection.setVisible(false);
 		}
 	}
@@ -182,7 +182,7 @@ public class EntityProfileEditor extends Composite implements Editor<EntityProfi
 	 * Configures the visibility of the fields in edit mode depending on the user privileges
 	 */
 	private void setFieldEditAccess() {
-		if (!ImogRoleUtil.isAdmin()) {
+		if (!ProfileUtil.isAdmin()) {
 			descriptionSection.setVisible(false);
 		}
 	}

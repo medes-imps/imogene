@@ -21,7 +21,7 @@ import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
 import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.ImogKeyGenerator;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -124,7 +124,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 		} else
 			editor = new NotificationEditor(factory, formTypeUtil, renderer);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			this.setModifiable(false);
 		isNew = false;
 		setEditable(false);

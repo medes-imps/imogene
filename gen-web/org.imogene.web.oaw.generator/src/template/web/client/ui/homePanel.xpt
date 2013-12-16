@@ -29,7 +29,7 @@ import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.panel.EntityPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.«projectName.toLowerCase()».client.AccessManager;
 import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»IconConstants;
@@ -233,7 +233,7 @@ public class HomePanel extends Composite {
 
 		/* Notification Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			notification.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -243,7 +243,7 @@ public class HomePanel extends Composite {
 		} else
 			notification.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			notification.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -266,7 +266,7 @@ public class HomePanel extends Composite {
 		
 		/* DynamicFieldTemplate Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			dynamicField_Template.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -276,7 +276,7 @@ public class HomePanel extends Composite {
 		} else
 			dynamicField_Template.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			dynamicField_Template.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -299,7 +299,7 @@ public class HomePanel extends Composite {
 		
 		/* EntityProfile Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			entityProfile.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -309,7 +309,7 @@ public class HomePanel extends Composite {
 		} else
 			entityProfile.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			entityProfile.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -332,7 +332,7 @@ public class HomePanel extends Composite {
 
 		/* FieldGroup Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			fieldGroup.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -342,7 +342,7 @@ public class HomePanel extends Composite {
 		} else
 			fieldGroup.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			fieldGroup.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -365,7 +365,7 @@ public class HomePanel extends Composite {
 
 		/* FieldGroupProfile Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			fieldGroupProfile.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -375,7 +375,7 @@ public class HomePanel extends Composite {
 		} else
 			fieldGroupProfile.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			fieldGroupProfile.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -398,7 +398,7 @@ public class HomePanel extends Composite {
 
 		/* Profile Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			profile.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -408,7 +408,7 @@ public class HomePanel extends Composite {
 		} else
 			profile.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			profile.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -431,7 +431,7 @@ public class HomePanel extends Composite {
 
 		/* CardEntity Menu */
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			cardEntity.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -441,7 +441,7 @@ public class HomePanel extends Composite {
 		} else
 			cardEntity.setCreateClickHandler(null);
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			cardEntity.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -496,7 +496,7 @@ public class HomePanel extends Composite {
 		boolean showAdministrationTema = false;
 		
 		«IF hasNotifications(entities)-»
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			notification.setVisible(false);
 		else
 			showAdministrationTema = true;
@@ -506,7 +506,7 @@ public class HomePanel extends Composite {
 		«ENDIF-»
 			
 		«IF hasDynamicFields(entities)-»
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			dynamicField_Template.setVisible(false);
 		else
 			showAdministrationTema = true;	

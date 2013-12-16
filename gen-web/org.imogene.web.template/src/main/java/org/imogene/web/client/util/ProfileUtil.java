@@ -2,7 +2,7 @@ package org.imogene.web.client.util;
 
 import java.util.List;
 
-import org.imogene.web.shared.constants.ImogRoleConstants;
+import org.imogene.web.shared.constants.ProfileConstants;
 import org.imogene.web.shared.proxy.ImogActorProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
 
@@ -10,7 +10,7 @@ import org.imogene.web.shared.proxy.ProfileProxy;
  * 
  * @author MEDES-IMPS
  */
-public class ImogRoleUtil {
+public class ProfileUtil {
 
 	/**
 	 * 
@@ -18,30 +18,8 @@ public class ImogRoleUtil {
 	 */
 	public static boolean isAdmin() {
 		for (ProfileProxy profile : LocalSession.get().getCurrentUser().getProfiles()) {
-			if (profile.getId().equals(ImogRoleConstants.ADMINISTRATOR))
+			if (profile.getId().equals(ProfileConstants.ADMINISTRATOR))
 				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static boolean canDelete() {
-		if (isAdmin()) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static boolean canExport() {
-		if (isAdmin()) {
-			return true;
 		}
 		return false;
 	}

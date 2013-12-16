@@ -20,7 +20,7 @@ import org.imogene.web.client.ui.table.ImogBeanDataProvider;
 import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -63,7 +63,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 	@Override
 	protected void setColumns() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			
 			Column<NotificationProxy, String> formTypeColumn = new FormTypeColumn();
 			formTypeColumn.setSortable(true);
@@ -108,7 +108,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 	 */
 	public Command getCreateCommand() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
 					requestFactory.getEventBus().fireEvent(
@@ -126,7 +126,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 	 */
 	public PushButton getDeleteButton() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -142,7 +142,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 	 */
 	private void setDeleteButtonHandlers() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {

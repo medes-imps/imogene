@@ -19,7 +19,7 @@ import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
 
 import com.google.gwt.cell.client.TextCell;
@@ -63,27 +63,27 @@ public class FieldGroupProfileDynaTable extends ImogDynaTable<FieldGroupProfileP
 	@Override
 	protected void setColumns() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProfileProxy, String> profileColumn = new ProfileColumn();
 			profileColumn.setSortable(true);
 			table.addColumn(profileColumn, AdminNLS.constants().fieldGroupProfile_field_s_profile());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProfileProxy, String> fieldGroupColumn = new FieldGroupColumn();
 			fieldGroupColumn.setSortable(true);
 			table.addColumn(fieldGroupColumn, AdminNLS.constants().fieldGroupProfile_field_s_fieldGroup());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProfileProxy, String> readColumn = new ReadColumn();
 			readColumn.setSortable(true);
 			table.addColumn(readColumn, AdminNLS.constants().fieldGroupProfile_field_s_read());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProfileProxy, String> writeColumn = new WriteColumn();
 			writeColumn.setSortable(true);
 			table.addColumn(writeColumn, AdminNLS.constants().fieldGroupProfile_field_s_write());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProfileProxy, String> exportColumn = new ExportColumn();
 			exportColumn.setSortable(true);
 			table.addColumn(exportColumn, AdminNLS.constants().fieldGroupProfile_field_s_export());
@@ -113,7 +113,7 @@ public class FieldGroupProfileDynaTable extends ImogDynaTable<FieldGroupProfileP
 	 */
 	public Command getCreateCommand() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
 					requestFactory.getEventBus().fireEvent(new CreateFieldGroupProfileEvent());
@@ -131,7 +131,7 @@ public class FieldGroupProfileDynaTable extends ImogDynaTable<FieldGroupProfileP
 	 */
 	public PushButton getDeleteButton() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -147,7 +147,7 @@ public class FieldGroupProfileDynaTable extends ImogDynaTable<FieldGroupProfileP
 	 */
 	private void setDeleteButtonHandlers() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {

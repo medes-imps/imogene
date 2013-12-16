@@ -20,7 +20,7 @@ import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.multi.ImogMultiRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
@@ -122,7 +122,7 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 			entityProfiles = new ImogMultiRelationBox<EntityProfileProxy>(entityProfilesDataProvider,
 					AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin())
+			if (ProfileUtil.isAdmin())
 				entityProfiles = new ImogMultiRelationBox<EntityProfileProxy>(entityProfilesDataProvider,
 						AdminRenderer.get(), null);
 			else
@@ -139,7 +139,7 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 			fieldGroupProfiles = new ImogMultiRelationBox<FieldGroupProfileProxy>(fieldGroupProfilesDataProvider,
 					AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin())
+			if (ProfileUtil.isAdmin())
 				fieldGroupProfiles = new ImogMultiRelationBox<FieldGroupProfileProxy>(fieldGroupProfilesDataProvider,
 						AdminRenderer.get(), null);
 			else
@@ -176,7 +176,7 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	private void setFieldReadAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}
@@ -187,7 +187,7 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	private void setFieldEditAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}

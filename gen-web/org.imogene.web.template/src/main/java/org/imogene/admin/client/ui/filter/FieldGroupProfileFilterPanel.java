@@ -10,7 +10,7 @@ import org.imogene.web.client.ui.table.filter.ImogFilterBox;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.FilterCriteria;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -143,19 +143,19 @@ public class FieldGroupProfileFilterPanel extends ImogFilterPanel {
 	 */
 	public void setFieldReadAccess() {
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			profile_nameFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			fieldgroup_nameFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			readFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			writeFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			exportFilterBox.setVisible(false);
 
 	}

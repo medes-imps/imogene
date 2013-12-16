@@ -48,7 +48,7 @@ import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.ServerFailure;
 «IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 import org.imogene.admin.client.i18n.AdminNLS;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 «ENDIF-»
 
 
@@ -90,7 +90,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 		«ENDFOREACH -»
 		
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<«name.toFirstUpper()»Proxy, String> loginColumn = new LoginColumn();
 			loginColumn.setSortable(true);
 			table.addColumn(loginColumn, AdminNLS.constants().imogActor_field_s_login());
@@ -136,7 +136,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	 */
 	public PushButton getDeleteButton() {
 
-		if (AccessManager.canDelete() && AccessManager.canEdit«name.toFirstUpper()»()) {
+		if (AccessManager.canDelete«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -152,7 +152,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	 */
 	private void setDeleteButtonHandlers () {
 		
-		if (AccessManager.canDelete() && AccessManager.canEdit«name.toFirstUpper()»()) {
+		if (AccessManager.canDelete«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()) {
 			
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {
@@ -222,7 +222,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	 */
 	public Command getCsvExportButton() {
 			
-		if (AccessManager.canExport()) {
+		if (AccessManager.canExport«name.toFirstUpper()»()) {
 			
 			Command command = new Command() {
 				public void execute() {

@@ -52,7 +52,7 @@ import org.imogene.web.client.event.ViewDynamicFieldTemplateEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.panel.GlassPanel;
 import org.imogene.web.client.ui.panel.MainContentPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.client.util.TokenHelper.EntityToken;
@@ -393,7 +393,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(CreateNotificationEvent.TYPE,
 				new CreateNotificationEvent.Handler() {
 					public void createNewNotification(GwtEvent<?> closeEvent) {
-						if (ImogRoleUtil.isAdmin()) {						
+						if (ProfileUtil.isAdmin()) {						
 							NotificationFormPanel notificationFormPanel = new NotificationFormPanel(requestFactory, null, «projectName.toFirstUpper()»FormTypes.get(), «projectName.toFirstUpper()»Renderer.get());
 							notificationFormPanel.setCloseEvent(closeEvent);
 							displayWrapperPanel(notificationFormPanel);
@@ -405,7 +405,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ViewNotificationEvent.TYPE,
 				new ViewNotificationEvent.Handler() {
 					public void viewNotification(String entityId, GwtEvent<?> closeEvent) {
-						if (ImogRoleUtil.isAdmin()) {							
+						if (ProfileUtil.isAdmin()) {							
 							NotificationFormPanel notificationFormPanel = new NotificationFormPanel(requestFactory, entityId, «projectName.toFirstUpper()»FormTypes.get(), «projectName.toFirstUpper()»Renderer.get());
 							notificationFormPanel.setCloseEvent(closeEvent);
 							displayWrapperPanel(notificationFormPanel);
@@ -416,12 +416,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List Notification Handler */
 		registrations.add(eventBus.addHandler(ListNotificationEvent.TYPE, new ListNotificationEvent.Handler() {
 			public void listNotification() {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new NotificationListPanel(requestFactory, «projectName.toFirstUpper()»FormTypes.get()));
 			}
 
 			public void listNotification(String searchText) {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new NotificationListPanel(requestFactory, searchText, «projectName.toFirstUpper()»FormTypes.get()));
 			}
 		}));
@@ -435,7 +435,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 				CreateDynamicFieldTemplateEvent.TYPE,
 				new CreateDynamicFieldTemplateEvent.Handler() {
 					public void createNewDynamicFieldTemplate(GwtEvent<?> closeEvent) {
-						if (ImogRoleUtil.isAdmin()) {						
+						if (ProfileUtil.isAdmin()) {						
 							DynamicFieldTemplateFormPanel dynamicField_TemplateFormPanel = new DynamicFieldTemplateFormPanel(requestFactory, null, «projectName.toFirstUpper()»FormTypes.get());
 							dynamicField_TemplateFormPanel.setCloseEvent(closeEvent);
 							displayWrapperPanel(dynamicField_TemplateFormPanel);
@@ -448,7 +448,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 				ViewDynamicFieldTemplateEvent.TYPE,
 				new ViewDynamicFieldTemplateEvent.Handler() {
 					public void viewDynamicFieldTemplate(String entityId, GwtEvent<?> closeEvent) {
-						if (ImogRoleUtil.isAdmin()) {
+						if (ProfileUtil.isAdmin()) {
 							DynamicFieldTemplateFormPanel dynamicField_TemplateFormPanel = new DynamicFieldTemplateFormPanel(requestFactory, entityId, «projectName.toFirstUpper()»FormTypes.get());
 							dynamicField_TemplateFormPanel.setCloseEvent(closeEvent);							
 							displayWrapperPanel(dynamicField_TemplateFormPanel);
@@ -459,12 +459,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List DynamicFieldTemplate Handler */
 		registrations.add(eventBus.addHandler(ListDynamicFieldTemplateEvent.TYPE, new ListDynamicFieldTemplateEvent.Handler() {
 			public void listDynamicFieldTemplate() {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new DynamicFieldTemplateListPanel(requestFactory, «projectName.toFirstUpper()»FormTypes.get()));
 			}
 
 			public void listDynamicFieldTemplate(String searchText) {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new DynamicFieldTemplateListPanel(requestFactory, searchText, «projectName.toFirstUpper()»FormTypes.get()));
 			}
 		}));
@@ -472,7 +472,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 				/* Create Profile Handler */
 		registrations.add(eventBus.addHandler(CreateProfileEvent.TYPE, new CreateProfileEvent.Handler() {
 			public void createNewProfile(GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, null);
 					profileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(profileForm);
@@ -483,7 +483,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* View Profile Handler */
 		registrations.add(eventBus.addHandler(ViewProfileEvent.TYPE, new ViewProfileEvent.Handler() {
 			public void viewProfile(String entityId, GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, entityId);
 					profileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(profileForm);
@@ -494,12 +494,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List Profile Handler */
 		registrations.add(eventBus.addHandler(ListProfileEvent.TYPE, new ListProfileEvent.Handler() {
 			public void listProfile() {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new ProfileListPanel(requestFactory));
 			}
 
 			public void listProfile(String searchText) {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new ProfileListPanel(requestFactory, searchText));
 			}
 		}));
@@ -510,7 +510,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* Create EntityProfile Handler */
 		registrations.add(eventBus.addHandler(CreateEntityProfileEvent.TYPE, new CreateEntityProfileEvent.Handler() {
 			public void createNewEntityProfile(GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					EntityProfileFormPanel entityprofileForm = new EntityProfileFormPanel(requestFactory, null);
 					entityprofileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(entityprofileForm);
@@ -521,7 +521,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* View EntityProfile Handler */
 		registrations.add(eventBus.addHandler(ViewEntityProfileEvent.TYPE, new ViewEntityProfileEvent.Handler() {
 			public void viewEntityProfile(String entityId, GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					EntityProfileFormPanel entityprofileForm = new EntityProfileFormPanel(requestFactory, entityId);
 					entityprofileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(entityprofileForm);
@@ -532,12 +532,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List EntityProfile Handler */
 		registrations.add(eventBus.addHandler(ListEntityProfileEvent.TYPE, new ListEntityProfileEvent.Handler() {
 			public void listEntityProfile() {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new EntityProfileListPanel(requestFactory));
 			}
 
 			public void listEntityProfile(String searchText) {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new EntityProfileListPanel(requestFactory, searchText));
 			}
 		}));
@@ -549,7 +549,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(CreateFieldGroupProfileEvent.TYPE,
 				new CreateFieldGroupProfileEvent.Handler() {
 					public void createNewFieldGroupProfile(GwtEvent<?> closeEvent) {
-						if (ImogRoleUtil.isAdmin()) {
+						if (ProfileUtil.isAdmin()) {
 							FieldGroupProfileFormPanel fieldgroupprofileForm = new FieldGroupProfileFormPanel(
 									requestFactory, null);
 							fieldgroupprofileForm.setCloseEvent(closeEvent);
@@ -562,7 +562,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ViewFieldGroupProfileEvent.TYPE,
 				new ViewFieldGroupProfileEvent.Handler() {
 					public void viewFieldGroupProfile(String entityId, GwtEvent<?> closeEvent) {
-						if (ImogRoleUtil.isAdmin()) {
+						if (ProfileUtil.isAdmin()) {
 							FieldGroupProfileFormPanel fieldgroupprofileForm = new FieldGroupProfileFormPanel(
 									requestFactory, entityId);
 							fieldgroupprofileForm.setCloseEvent(closeEvent);
@@ -575,12 +575,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ListFieldGroupProfileEvent.TYPE,
 				new ListFieldGroupProfileEvent.Handler() {
 					public void listFieldGroupProfile() {
-						if (ImogRoleUtil.isAdmin())
+						if (ProfileUtil.isAdmin())
 							displayWrapperPanel(new FieldGroupProfileListPanel(requestFactory));
 					}
 
 					public void listFieldGroupProfile(String searchText) {
-						if (ImogRoleUtil.isAdmin())
+						if (ProfileUtil.isAdmin())
 							displayWrapperPanel(new FieldGroupProfileListPanel(requestFactory, searchText));
 					}
 				}));
@@ -591,7 +591,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* Create CardEntity Handler */
 		registrations.add(eventBus.addHandler(CreateCardEntityEvent.TYPE, new CreateCardEntityEvent.Handler() {
 			public void createNewCardEntity(GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, null);
 					cardEntityForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(cardEntityForm);
@@ -602,7 +602,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* View CardEntity Handler */
 		registrations.add(eventBus.addHandler(ViewCardEntityEvent.TYPE, new ViewCardEntityEvent.Handler() {
 			public void viewCardEntity(String entityId, GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, entityId);
 					cardEntityForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(cardEntityForm);
@@ -613,12 +613,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List CardEntity Handler */
 		registrations.add(eventBus.addHandler(ListCardEntityEvent.TYPE, new ListCardEntityEvent.Handler() {
 			public void listCardEntity() {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new CardEntityListPanel(requestFactory));
 			}
 
 			public void listCardEntity(String searchText) {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new CardEntityListPanel(requestFactory, searchText));
 			}
 		}));
@@ -629,7 +629,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* Create FieldGroup Handler */
 		registrations.add(eventBus.addHandler(CreateFieldGroupEvent.TYPE, new CreateFieldGroupEvent.Handler() {
 			public void createNewFieldGroup(GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, null);
 					fieldgroupForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(fieldgroupForm);
@@ -640,7 +640,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* View FieldGroup Handler */
 		registrations.add(eventBus.addHandler(ViewFieldGroupEvent.TYPE, new ViewFieldGroupEvent.Handler() {
 			public void viewFieldGroup(String entityId, GwtEvent<?> closeEvent) {
-				if (ImogRoleUtil.isAdmin()) {
+				if (ProfileUtil.isAdmin()) {
 					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, entityId);
 					fieldgroupForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(fieldgroupForm);
@@ -651,12 +651,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List FieldGroup Handler */
 		registrations.add(eventBus.addHandler(ListFieldGroupEvent.TYPE, new ListFieldGroupEvent.Handler() {
 			public void listFieldGroup() {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new FieldGroupListPanel(requestFactory));
 			}
 
 			public void listFieldGroup(String searchText) {
-				if (ImogRoleUtil.isAdmin())
+				if (ProfileUtil.isAdmin())
 					displayWrapperPanel(new FieldGroupListPanel(requestFactory, searchText));
 			}
 		}));

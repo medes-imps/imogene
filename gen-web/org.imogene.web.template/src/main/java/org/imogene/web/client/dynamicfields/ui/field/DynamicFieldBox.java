@@ -9,7 +9,7 @@ import org.imogene.web.client.event.SaveDynamicFieldTemplateEvent;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.util.ImogKeyGenerator;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.shared.ImogRequestFactory;
 import org.imogene.web.shared.proxy.DynamicFieldInstanceProxy;
@@ -481,8 +481,8 @@ public class DynamicFieldBox extends Composite implements
 	 */
 	private boolean canManageTemplate(ImogActorProxy actor) {
 		ImogActorProxy currentUser = LocalSession.get().getCurrentUser();
-		if (ImogRoleUtil.isAdmin() || actor.getId().equals(currentUser.getId())
-				|| ImogRoleUtil.hasProfile(currentUser, actor.getProfiles()))
+		if (ProfileUtil.isAdmin() || actor.getId().equals(currentUser.getId())
+				|| ProfileUtil.hasProfile(currentUser, actor.getProfiles()))
 			return true;
 		return false;
 	}

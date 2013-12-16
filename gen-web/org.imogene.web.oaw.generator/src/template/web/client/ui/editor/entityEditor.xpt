@@ -65,7 +65,7 @@ import org.imogene.admin.client.dataprovider.ProfileDataProvider;
 import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.filter.CardEntityFilterPanel;
 import org.imogene.web.client.ui.field.ImogPasswordBox;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
 	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
@@ -356,7 +356,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 		/* Administration && Synchronization && FilterFields sections visibility */
-		if (!ImogRoleUtil.isAdmin()) {
+		if (!ProfileUtil.isAdmin()) {
 			administrationSection.setVisible(false);
 			synchronizationSection.setVisible(false);
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
@@ -384,7 +384,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 		/* Administration && Synchronization && FilterFields sections visibility */
-		if (!ImogRoleUtil.isAdmin()) {
+		if (!ProfileUtil.isAdmin()) {
 			administrationSection.setVisible(false);
 			synchronizationSection.setVisible(false);
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»

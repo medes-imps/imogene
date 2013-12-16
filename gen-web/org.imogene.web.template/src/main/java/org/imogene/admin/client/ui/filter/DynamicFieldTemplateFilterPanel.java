@@ -15,7 +15,7 @@ import org.imogene.web.client.ui.table.filter.ImogFilterBox;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.FilterCriteria;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
 
 import com.google.gwt.user.client.ui.IntegerBox;
@@ -286,7 +286,7 @@ public class DynamicFieldTemplateFilterPanel extends ImogFilterPanel {
 	 */
 	public void setFieldReadAccess() {
 
-		if (!ImogRoleUtil.isAdmin()) {
+		if (!ProfileUtil.isAdmin()) {
 			allUsersFilterBox.setVisible(false);
 			isActivatedFilterBox.setVisible(false);
 		}

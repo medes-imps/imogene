@@ -10,7 +10,7 @@ import org.imogene.web.client.ui.table.filter.ImogFilterBox;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.FilterCriteria;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -162,22 +162,22 @@ public class EntityProfileFilterPanel extends ImogFilterPanel {
 	 */
 	public void setFieldReadAccess() {
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			profile_nameFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			entity_nameFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			directAccessFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			createFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			deleteFilterBox.setVisible(false);
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			exportFilterBox.setVisible(false);
 
 	}

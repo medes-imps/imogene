@@ -19,7 +19,7 @@ import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.single.ImogBeanEditorWithoutUi;
 import org.imogene.web.client.util.DateUtil;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.NumericUtil;
 import org.imogene.web.shared.ImogRequestFactory;
 import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
@@ -242,7 +242,7 @@ public class DynamicFieldTemplateEditor extends Composite
 	 */
 	public void setEdited(boolean isEdited) {
 
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			administrationSection.setVisible(false);
 
 		/* Identification section widgets */

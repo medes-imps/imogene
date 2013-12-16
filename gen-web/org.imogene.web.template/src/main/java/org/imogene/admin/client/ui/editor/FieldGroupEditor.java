@@ -15,7 +15,7 @@ import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 
@@ -112,7 +112,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 		if (hideButtons) // in popup, relation buttons hidden
 			entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin())
+			if (ProfileUtil.isAdmin())
 				entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get());
 			else
 				entity = new ImogSingleRelationBox<CardEntityProxy>(false, entityDataProvider, AdminRenderer.get());
@@ -144,7 +144,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 	private void setFieldReadAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}
@@ -155,7 +155,7 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 	private void setFieldEditAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}

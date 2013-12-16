@@ -18,7 +18,7 @@ import org.imogene.web.client.ui.table.ImogBeanDataProvider;
 import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 
 import com.google.gwt.cell.client.TextCell;
@@ -62,12 +62,12 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 	@Override
 	protected void setColumns() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProxy, String> entityColumn = new EntityColumn();
 			entityColumn.setSortable(true);
 			table.addColumn(entityColumn, AdminNLS.constants().fieldGroup_field_s_entity());
 		}
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Column<FieldGroupProxy, String> nameColumn = new NameColumn();
 			nameColumn.setSortable(true);
 			table.addColumn(nameColumn, AdminNLS.constants().fieldGroup_field_s_name());
@@ -97,7 +97,7 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 	 */
 	public Command getCreateCommand() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
 					requestFactory.getEventBus().fireEvent(new CreateFieldGroupEvent());
@@ -115,7 +115,7 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 	 */
 	public PushButton getDeleteButton() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -131,7 +131,7 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 	 */
 	private void setDeleteButtonHandlers() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {

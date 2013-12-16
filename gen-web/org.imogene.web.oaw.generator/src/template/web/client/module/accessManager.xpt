@@ -3,7 +3,7 @@
 «FILE projectName.toLowerCase()+"/client/AccessManager.java"»
 package org.imogene.«projectName.toLowerCase()».client;
 
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
@@ -84,25 +84,9 @@ public class AccessManager {
 	 * @return
 	 */
 	public static boolean isAdmin() {
-		return ImogRoleUtil.isAdmin();
+		return ProfileUtil.isAdmin();
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static boolean canDelete() {
-		return ImogRoleUtil.canDelete();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static boolean canExport() {
-		return ImogRoleUtil.canExport();
-	}
-	
 	private static void ensureLoaded() {
 		if (!loaded) {
 			ImogActorProxy actor = LocalSession.get().getCurrentUser();

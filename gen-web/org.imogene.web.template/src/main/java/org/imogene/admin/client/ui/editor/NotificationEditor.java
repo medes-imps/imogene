@@ -18,7 +18,7 @@ import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.multi.ImogMultiRelationBox;
 import org.imogene.web.client.ui.table.ImogActorDataProvider;
 import org.imogene.web.client.util.ImogBeanRenderer;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.ImogActorProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -186,11 +186,11 @@ public class NotificationEditor extends Composite implements Editor<Notification
 	public void setFieldReadAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 		/* Recipients section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			recipientsSection.setVisible(false);
 
 	}
@@ -201,11 +201,11 @@ public class NotificationEditor extends Composite implements Editor<Notification
 	public void setFieldEditAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 		/* Recipients section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			recipientsSection.setVisible(false);
 
 	}

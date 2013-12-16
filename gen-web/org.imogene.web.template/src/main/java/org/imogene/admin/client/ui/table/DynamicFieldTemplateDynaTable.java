@@ -19,7 +19,7 @@ import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
 import org.imogene.web.shared.request.DynamicFieldTemplateRequest;
 
@@ -67,7 +67,7 @@ public class DynamicFieldTemplateDynaTable
 	@Override
 	protected void setColumns() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			
 			Column<DynamicFieldTemplateProxy, String> formTypeColumn = new FormTypeColumn();
 			formTypeColumn.setSortable(true);
@@ -138,7 +138,7 @@ public class DynamicFieldTemplateDynaTable
 	 */
 	public Command getCreateCommand() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
 					requestFactory.getEventBus().fireEvent(
@@ -156,7 +156,7 @@ public class DynamicFieldTemplateDynaTable
 	 */
 	public PushButton getDeleteButton() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -172,7 +172,7 @@ public class DynamicFieldTemplateDynaTable
 	 */
 	private void setDeleteButtonHandlers() {
 
-		if (ImogRoleUtil.isAdmin()) {
+		if (ProfileUtil.isAdmin()) {
 
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {

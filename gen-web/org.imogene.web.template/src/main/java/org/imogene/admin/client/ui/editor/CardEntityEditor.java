@@ -9,7 +9,7 @@ import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -110,7 +110,7 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	private void setFieldReadAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}
@@ -121,7 +121,7 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	private void setFieldEditAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}

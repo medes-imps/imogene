@@ -18,7 +18,7 @@ import org.imogene.web.client.ui.panel.WrapperPanel;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
@@ -78,7 +78,7 @@ public class NotificationListPanel extends Composite {
 		wrapperPanel = new WrapperPanel();
 
 		NotificationDynaTable listComposite;
-		if (ImogRoleUtil.isAdmin())
+		if (ProfileUtil.isAdmin())
 			listComposite = new NotificationDynaTable(requestFactory, provider,
 					true);
 		else

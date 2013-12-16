@@ -19,7 +19,7 @@ import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
-import org.imogene.web.client.util.ImogRoleUtil;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
@@ -126,7 +126,7 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 		if (hideButtons) // in popup, relation buttons hidden
 			profile = new ImogSingleRelationBox<ProfileProxy>(profileDataProvider, AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin())
+			if (ProfileUtil.isAdmin())
 				profile = new ImogSingleRelationBox<ProfileProxy>(profileDataProvider, AdminRenderer.get());
 			else
 				profile = new ImogSingleRelationBox<ProfileProxy>(false, profileDataProvider, AdminRenderer.get());
@@ -138,7 +138,7 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 		if (hideButtons) // in popup, relation buttons hidden
 			fieldGroup = new ImogSingleRelationBox<FieldGroupProxy>(fieldGroupDataProvider, AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (ImogRoleUtil.isAdmin())
+			if (ProfileUtil.isAdmin())
 				fieldGroup = new ImogSingleRelationBox<FieldGroupProxy>(fieldGroupDataProvider, AdminRenderer.get());
 			else
 				fieldGroup = new ImogSingleRelationBox<FieldGroupProxy>(false, fieldGroupDataProvider,
@@ -174,7 +174,7 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	private void setFieldReadAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}
@@ -185,7 +185,7 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	private void setFieldEditAccess() {
 
 		/* Description section widgets visibility */
-		if (!ImogRoleUtil.isAdmin())
+		if (!ProfileUtil.isAdmin())
 			descriptionSection.setVisible(false);
 
 	}
