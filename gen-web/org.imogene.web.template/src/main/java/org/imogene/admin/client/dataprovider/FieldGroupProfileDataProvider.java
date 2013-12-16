@@ -55,7 +55,7 @@ public class FieldGroupProfileDataProvider extends ImogBeanDataProvider<FieldGro
 	 * 
 	 * @param pProperty the property for which non affected values are searched
 	 * @param searchInReverse true for 1:1 relations, if the property for which non affected values are searched shall
-	 *            be looked in reverse relation
+	 *        be looked in reverse relation
 	 */
 	public FieldGroupProfileDataProvider(AdminRequestFactory requestFactory, String pProperty, boolean searchInReverse) {
 		this.requestFactory = requestFactory;
@@ -131,11 +131,13 @@ public class FieldGroupProfileDataProvider extends ImogBeanDataProvider<FieldGro
 		if (isFiltered) {
 			result.with("profile");
 			result.with("fieldGroup");
+			result.with("fieldGroup.entity");
 		}
 
 		else {
 			result.with("profile");
 			result.with("fieldGroup");
+			result.with("fieldGroup.entity");
 		}
 
 		return result;
@@ -172,6 +174,7 @@ public class FieldGroupProfileDataProvider extends ImogBeanDataProvider<FieldGro
 
 		result.with("profile");
 		result.with("fieldGroup");
+		result.with("fieldGroup.entity");
 
 		return result;
 	}
@@ -257,6 +260,13 @@ public class FieldGroupProfileDataProvider extends ImogBeanDataProvider<FieldGro
 			buffer.append("(" + AdminNLS.constants().profile_field_name() + ": " + text + ") " + SYMBOL_OR + " ");
 			criterionList.add(profile_nameCrit);
 
+			// Search field Name
+			BasicCriteriaProxy fieldGroup_entity_nameCrit = request.create(BasicCriteriaProxy.class);
+			fieldGroup_entity_nameCrit.setField("fieldGroup.entity.name");
+			fieldGroup_entity_nameCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			fieldGroup_entity_nameCrit.setValue(text);
+			buffer.append("(" + AdminNLS.constants().cardEntity_field_name() + ": " + text + ") " + SYMBOL_OR + " ");
+			criterionList.add(fieldGroup_entity_nameCrit);
 			// Search field Name
 			BasicCriteriaProxy fieldGroup_nameCrit = request.create(BasicCriteriaProxy.class);
 			fieldGroup_nameCrit.setField("fieldGroup.name");

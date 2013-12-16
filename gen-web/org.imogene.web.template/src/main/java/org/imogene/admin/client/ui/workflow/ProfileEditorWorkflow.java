@@ -169,6 +169,7 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		fetchRequest.with("fieldGroupProfiles");
 		fetchRequest.with("fieldGroupProfiles.profile");
 		fetchRequest.with("fieldGroupProfiles.fieldGroup");
+		fetchRequest.with("fieldGroupProfiles.fieldGroup.entity");
 
 		fetchRequest.to(new Receiver<ProfileProxy>() {
 			@Override

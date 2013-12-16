@@ -67,11 +67,17 @@
 					<g:cell horizontalAlignment="center">
 						<imo:FieldGroupPanel ui:field="temaProfiles">
 							<g:FlowPanel>
-								<imo2:EntityPanel ui:field="entityProfile" />
-								<imo2:EntityPanel ui:field="fieldGroup" />
-								<imo2:EntityPanel ui:field="fieldGroupProfile" />
 								<imo2:EntityPanel ui:field="profile" />
+								<imo2:EntityPanel ui:field="entityProfile" />
+								<imo2:EntityPanel ui:field="fieldGroupProfile" />
+							</g:FlowPanel>
+						</imo:FieldGroupPanel>
+					</g:cell>
+					<g:cell horizontalAlignment="center">
+						<imo:FieldGroupPanel ui:field="temaModel">
+							<g:FlowPanel>
 								<imo2:EntityPanel ui:field="cardEntity" />
+								<imo2:EntityPanel ui:field="fieldGroup" />
 							</g:FlowPanel>
 						</imo:FieldGroupPanel>
 					</g:cell>

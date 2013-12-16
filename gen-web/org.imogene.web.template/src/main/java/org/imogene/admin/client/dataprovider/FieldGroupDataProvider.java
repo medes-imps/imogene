@@ -55,7 +55,7 @@ public class FieldGroupDataProvider extends ImogBeanDataProvider<FieldGroupProxy
 	 * 
 	 * @param pProperty the property for which non affected values are searched
 	 * @param searchInReverse true for 1:1 relations, if the property for which non affected values are searched shall
-	 *            be looked in reverse relation
+	 *        be looked in reverse relation
 	 */
 	public FieldGroupDataProvider(AdminRequestFactory requestFactory, String pProperty, boolean searchInReverse) {
 		this.requestFactory = requestFactory;

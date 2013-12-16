@@ -35,7 +35,7 @@ public class InitializerImpl implements Initializer {
 		«FOREACH e.groups AS g»
 		FieldGroup «e.name.toFirstLower()»«g.name.toFirstUpper()» = new FieldGroup();
 		«e.name.toFirstLower()»«g.name.toFirstUpper()».setId("«e.name.toLowerCase()».«g.name.toLowerCase()»");
-		«e.name.toFirstLower()»«g.name.toFirstUpper()».setName("«e.name» «g.name»");
+		«e.name.toFirstLower()»«g.name.toFirstUpper()».setName("«g.name»");
 		«e.name.toFirstLower()»«g.name.toFirstUpper()».setEntity(«e.name.toFirstLower()»);
 		save(«e.name.toFirstLower()»«g.name.toFirstUpper()»);
 		«ENDFOREACH»

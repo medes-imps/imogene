@@ -98,15 +98,19 @@ public class HomePanel extends Composite {
 	@UiField(provided = true)
 	FieldGroupPanel temaProfiles;
 	@UiField(provided = true)
-	EntityPanel entityProfile;
-	@UiField(provided = true)
-	EntityPanel fieldGroup;
-	@UiField(provided = true)
-	EntityPanel fieldGroupProfile;
-	@UiField(provided = true)
 	EntityPanel profile;
 	@UiField(provided = true)
+	EntityPanel entityProfile;
+	@UiField(provided = true)
+	EntityPanel fieldGroupProfile;
+
+	/* thema Model */
+	@UiField(provided = true)
+	FieldGroupPanel temaModel;
+	@UiField(provided = true)
 	EntityPanel cardEntity;
+	@UiField(provided = true)
+	EntityPanel fieldGroup;
 «ELSE-»
 	«IF themas!=null && themas.size>0-»	
 		«FOREACH themas AS t»
@@ -166,11 +170,15 @@ public class HomePanel extends Composite {
 		/* thema Profiles */
 		temaProfiles = new FieldGroupPanel();
 		temaProfiles.setGroupTitle("Profiles");
-		entityProfile = new EntityPanel(AdminNLS.constants().entityProfile_name());
-		fieldGroup = new EntityPanel(AdminNLS.constants().fieldGroup_name());
-		fieldGroupProfile = new EntityPanel(AdminNLS.constants().fieldGroupProfile_name());
 		profile = new EntityPanel(AdminNLS.constants().profile_name());
+		entityProfile = new EntityPanel(AdminNLS.constants().entityProfile_name());
+		fieldGroupProfile = new EntityPanel(AdminNLS.constants().fieldGroupProfile_name());
+
+		/* thema Model */
+		temaModel = new FieldGroupPanel();
+		temaModel.setGroupTitle("Model");
 		cardEntity = new EntityPanel(AdminNLS.constants().cardEntity_name());
+		fieldGroup = new EntityPanel(AdminNLS.constants().fieldGroup_name());
 «ELSE-»
 	«IF themas!=null && themas.size>0-»		
 			«FOREACH themas AS t»
@@ -511,12 +519,15 @@ public class HomePanel extends Composite {
 			temaAdministration.setVisible(false);
 		
 		/* thema Profiles */
-		entityProfile.setVisible(true);
-		fieldGroup.setVisible(true);
-		fieldGroupProfile.setVisible(true);
 		profile.setVisible(true);
-		cardEntity.setVisible(true);
+		entityProfile.setVisible(true);
+		fieldGroupProfile.setVisible(true);
 		temaProfiles.setVisible(true);
+
+		/* thema Model */
+		cardEntity.setVisible(true);
+		fieldGroup.setVisible(true);
+		temaModel.setVisible(true);
 «ELSE-»
 	«IF themas!=null && themas.size>0-»
 		«FOREACH themas AS t»

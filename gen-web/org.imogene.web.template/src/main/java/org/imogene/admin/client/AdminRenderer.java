@@ -113,6 +113,9 @@ public class AdminRenderer extends ImogBeanRenderer {
 	/**	 */
 	private String getDisplayValue(FieldGroupProxy bean) {
 		String value = new String();
+		if (bean.getEntity() != null) {
+			value = value + getDisplayValue(bean.getEntity()) + " ";
+		}
 		if (bean.getName() != null) {
 			value = value + bean.getName() + " ";
 		}
