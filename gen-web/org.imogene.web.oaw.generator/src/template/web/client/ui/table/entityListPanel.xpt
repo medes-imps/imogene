@@ -95,7 +95,7 @@ public class «name.toFirstUpper()»ListPanel extends Composite {
 			wrapperPanel.setMessageLabel(filteringMessage);
 
 		/* dynatable */		
-		if (AccessManager.canDelete() && AccessManager.canEditForm("«name.toLowerCase()»"))		
+		if (AccessManager.canDelete() && AccessManager.canEdit«name.toFirstUpper()»())		
 			listComposite = new «name.toFirstUpper()»DynaTable(requestFactory, provider, true);
 		else
 			listComposite = new «name.toFirstUpper()»DynaTable(requestFactory, provider, false);		
@@ -321,7 +321,7 @@ public class «name.toFirstUpper()»ListPanel extends Composite {
 	«FOREACH themas AS t»
 		«FOREACH t.entities AS e-»
 		«IF (e.name!=cardEntity.name) && (e.topLevel || !e.directAccess.isEmpty)-»		
-		if (AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")) {		
+		if (AccessManager.canDirectAccess«e.name.toFirstUpper()»() && AccessManager.canRead«e.name.toFirstUpper()»()) {		
 			
 			Command command = new Command() {
 				public void execute() {

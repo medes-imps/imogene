@@ -82,7 +82,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	protected void setColumns() {
 	
 		«FOREACH columnFields.union(mainFields) AS c-»
-		if (AccessManager.canReadGroup("«name.toLowerCase()».«c.parentGroup.name.toLowerCase()»")) {		
+		if (AccessManager.canRead«name.toFirstUpper()»«c.parentGroup.name.toFirstUpper()»()) {		
 			Column<«name.toFirstUpper()»Proxy, String> «c.name.toFirstLower()»Column = new «c.name.toFirstUpper()»Column();
 			«c.name.toFirstLower()»Column.setSortable(true);
 			table.addColumn(«c.name.toFirstLower()»Column, NLS.constants().«name.toFirstLower()»_field_s_«c.name.toFirstLower()»());			
@@ -119,7 +119,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	 */
 	public Command getCreateCommand() {
 	
-		if (AccessManager.canCreateForm("«name.toLowerCase()»") && AccessManager.canEditForm("«name.toLowerCase()»")) {
+		if (AccessManager.canCreate«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()) {
 			Command command = new Command() {
 				public void execute() {
 					requestFactory.getEventBus().fireEvent(new Create«name.toFirstUpper()»Event());
@@ -136,7 +136,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	 */
 	public PushButton getDeleteButton() {
 
-		if (AccessManager.canDelete() && AccessManager.canEditForm("«name.toLowerCase()»")) {
+		if (AccessManager.canDelete() && AccessManager.canEdit«name.toFirstUpper()»()) {
 			deleteButton = new PushButton(BaseNLS.constants().button_delete());
 			deleteButton.setStyleName(imogResources.imogStyle().imogButton());
 			deleteButton.addStyleName("Dynatable-Button");
@@ -152,7 +152,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	 */
 	private void setDeleteButtonHandlers () {
 		
-		if (AccessManager.canDelete() && AccessManager.canEditForm("«name.toLowerCase()»")) {
+		if (AccessManager.canDelete() && AccessManager.canEdit«name.toFirstUpper()»()) {
 			
 			// Click handler
 			registrations.add(deleteButton.addClickHandler(new ClickHandler() {

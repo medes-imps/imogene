@@ -1,17 +1,13 @@
-«IMPORT core»
-«EXTENSION template::CommonEntityUtilExt» 
-«DEFINE generate(String projectName) FOR Project»
-«FILE projectName.toLowerCase() + "/server/ImogRequestFactoryServlet.java"»
-package org.imogene.«projectName.toLowerCase()».server;
+package org.imogene.web.server;
 
 import com.google.web.bindery.requestfactory.server.DefaultExceptionHandler;
 import com.google.web.bindery.requestfactory.server.ExceptionHandler;
 import com.google.web.bindery.requestfactory.server.RequestFactoryServlet;
 import com.google.web.bindery.requestfactory.server.ServiceLayerDecorator;
 
-
 /**
  * Custom RequestFactory Servlet to take into account the Access Service Decorator
+ * 
  * @author Medes-IMPS
  */
 public class ImogRequestFactoryServlet extends RequestFactoryServlet {
@@ -27,6 +23,3 @@ public class ImogRequestFactoryServlet extends RequestFactoryServlet {
 	}
 
 }
-«ENDFILE»
-«ENDDEFINE»
-«REM» ---------------------------------------------------------- «ENDREM»

@@ -174,7 +174,7 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 	public void setFieldReadAccess() {
 	
 		«FOREACH nestedFields AS f»
-		if (!AccessManager.canReadGroup("«name.toLowerCase()».«f.parentGroup.name.toLowerCase()»"))		
+		if (!AccessManager.canRead«name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»())		
 			«EXPAND template::CommonFieldUtil::propertyName FOR f».setVisible(false);
 		«ENDFOREACH»		
 	}
@@ -186,7 +186,7 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 	public void setFieldEditAccess() {
 	
 		«FOREACH nestedFields AS f»
-		if (!AccessManager.canEditGroup("«name.toLowerCase()».«f.parentGroup.name.toLowerCase()»"))	
+		if (!AccessManager.canEdit«name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»())	
 			«EXPAND template::CommonFieldUtil::propertyName FOR f».setVisible(false);
 		«ENDFOREACH»	
 	}	

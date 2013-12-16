@@ -1,43 +1,61 @@
 «IMPORT core»
 «EXTENSION template::CommonEntityUtilExt» 
 «DEFINE generate(String projectName) FOR Project»
-«FILE projectName.toLowerCase()+"/server/security/Imog" + projectName.toFirstUpper() + "Policy.java"»
+«FILE projectName.toLowerCase()+"/server/security/SecurityPolicyImpl.java"»
 package org.imogene.«projectName.toLowerCase()».server.security;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.http.HttpSession;
-
-
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.notification.Notification;
-import org.imogene.lib.common.role.ImogRole;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
-import org.imogene.lib.common.user.DefaultUser;
+import org.imogene.lib.common.profile.FieldGroupProfile;
+import org.imogene.lib.common.profile.Profile;
+import org.imogene.web.server.security.SecurityPolicy;
+import org.imogene.web.shared.constants.ImogRoleConstants;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
 «ENDFOREACH-»
-import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»RoleConstants;
-import org.imogene.web.server.security.ImogSecurityPolicy;
-import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
-
-
 
 /**
  * This class tells if the current user can access the properties of the model
  * objects in read and in update mode 
  * @author MEDES-IMPS
  */
-public class Imog«projectName.toFirstUpper()»Policy implements ImogSecurityPolicy {	
-		
+public class SecurityPolicyImpl implements SecurityPolicy {
+
+	private boolean isAdmin = false;
+	«FOREACH entities.groups AS g-»
+	private boolean canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	private boolean canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	«ENDFOREACH-»
+	
 	/**
 	 * Constructor
 	 */
-	public Imog«projectName.toFirstUpper()»Policy() {
+	public SecurityPolicyImpl(ImogActor actor) {
+		if (actor.getProfiles() == null) {
+			return;
+		}
+		isAdmin = isAdmin(actor);
+		if (isAdmin) {
+			return;
+		}
+		for (Profile profile : actor.getProfiles()) {
+			if (profile.getFieldGroupProfiles() == null) {
+				continue;
+			}
+			for (FieldGroupProfile group : profile.getFieldGroupProfiles()) {
+				String fieldGroupId = group.getFieldGroup().getId();
+				«FOREACH entities.groups AS g SEPARATOR " else "-»
+				if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(fieldGroupId)) {
+					if (group.getRead() != null) {
+						canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getRead();
+					}
+					if (group.getWrite() != null) {
+						canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getWrite();
+					}
+				}
+				«ENDFOREACH-»
+			}
+		}
 	}
-	
 
 	/**
 	 * Tells if the current user can access a domain object property
@@ -46,23 +64,19 @@ public class Imog«projectName.toFirstUpper()»Policy implements ImogSecurityPolic
 	 * @return true if the current user can access an Object property
 	 */
 	public boolean canAccessProperty(Object bean, String property) {
-		if(!property.equals("password") && hasRole(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR))
+		if (property.equals("password")) {
+			return false;
+		}
+		if (isAdmin) {
 			return true;
-			
-		«FOREACH entities AS e»
-		if (bean instanceof «e.name.toFirstUpper()»)
+		}
+		«FOREACH entities AS e-»
+		if (bean instanceof «e.name.toFirstUpper()») {
 			return canAccess«e.name.toFirstUpper()»Property(property);
-		«ENDFOREACH»
-
-		if (bean instanceof Notification)
-			return canAccessNotificationProperty(property);
-		
-		if (bean instanceof DefaultUser)
-			return canAccessDefaultUserProperty(property);			
-		
+		}
+		«ENDFOREACH-»
 		return true;
 	}
-	
 	
 	/**
 	 * Tells if the current user can update a domain object property
@@ -71,31 +85,27 @@ public class Imog«projectName.toFirstUpper()»Policy implements ImogSecurityPolic
 	 * @return true if the current user can update an Object property
 	 */
 	public boolean canUpdateProperty(Object bean, String property) {
-		if(hasRole(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR))
+		if (isAdmin) {
 			return true;
-
-		«FOREACH entities AS e»
-		if (bean instanceof «e.name.toFirstUpper()»)
-			return canUpdate«e.name.toFirstUpper()»Property(property);	
-		«ENDFOREACH»		
-		
-		if (bean instanceof ImogRole)
-			return false;
-
-		if (bean instanceof SynchronizableEntity)
-			return false;
-
-		if (bean instanceof Notification)
-			return canUpdateNotificationProperty(property);
-		
-		if (bean instanceof DefaultUser)
-			return canUpdateDefaultUserProperty(property);
-	
+		}
+		«FOREACH entities AS e-»
+		if (bean instanceof «e.name.toFirstUpper()») {
+			return canUpdate«e.name.toFirstUpper()»Property(property);
+		}
+		«ENDFOREACH-»
 		return true;
 	}
 	
-	
-	«FOREACH entities AS e»
+	«FOREACH entities.groups AS g-»
+	public boolean canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	public boolean canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	«ENDFOREACH-»
+
+	«FOREACH entities AS e-»
 	/* Privileges check for entity «e.name.toFirstUpper()» */
 	
 	/**
@@ -104,58 +114,13 @@ public class Imog«projectName.toFirstUpper()»Policy implements ImogSecurityPolic
 	 * @return true if the current user can access a «e.name.toFirstUpper()» property
 	 */
 	private boolean canAccess«e.name.toFirstUpper()»Property(String property) {
-	
-		«FOREACH e.groups AS g»
-		/* «g.name.toFirstUpper()» field group */
-		
-		Set<String> «g.name.toFirstLower()»GroupReader = new HashSet<String>();
-		«FOREACH g.readers AS r-»
-		«g.name.toFirstLower()»GroupReader.add(«projectName.toFirstUpper()»RoleConstants.«r.name.toUpperCase()»_ROLE);
-		«ENDFOREACH-»
-		
-		«FOREACH g.fields AS f-»
-		if(property.equals("«EXPAND template::CommonFieldUtil::propertyName FOR f»")) {
-			if («g.name.toFirstLower()»GroupReader.isEmpty())
-				return true;
-			else
-				return hasRole(«g.name.toFirstLower()»GroupReader);
+		«FOREACH e.groups.fields AS f-»
+		if("«EXPAND template::CommonFieldUtil::propertyName FOR f»".equals(property)) {
+			return canRead«e.name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»;
 		}
-		«ENDFOREACH-»			
-		«ENDFOREACH»
-		
-		«IF Actor.isAssignableFrom(e.metaType)-»
-		/* Administration field group */
-
-		if (property.equals("login"))
-			return true;
-		if (property.equals("password"))
-			return false;
-		if (property.equals("roleList"))
-			return true;
-
-		/* Synchronization field group */
-
-		Set<String> synchronizationGroupReader = new HashSet<String>();
-		synchronizationGroupReader.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("synchronizableList"))
-				return hasRole(synchronizationGroupReader);
-		
-		«IF ((Actor)e).filters!=null && ((Actor)e).filters.size>0-»
-		/* FilterFields field group */
-
-		Set<String> filterFieldsGroupReader = new HashSet<String>();
-		filterFieldsGroupReader.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-			«FOREACH ((Actor)e).filters AS fil-»
-		if (property.equals("«EXPAND template::CommonFieldUtil::propertyName FOR fil»List"))
-				return hasRole(filterFieldsGroupReader);					
-			«ENDFOREACH-»
-		«ENDIF-»
-		«ENDIF-»
-
+		«ENDFOREACH-»
 		return true;
-	}	
-	
+	}
 	
 	/**
 	 * Tells if the current user can update a «e.name.toFirstUpper()» property
@@ -163,215 +128,24 @@ public class Imog«projectName.toFirstUpper()»Policy implements ImogSecurityPolic
 	 * @return true if the current user can update a «e.name.toFirstUpper()» property
 	 */
 	private boolean canUpdate«e.name.toFirstUpper()»Property(String property) {
-	
-		«FOREACH e.groups AS g»
-		/* «g.name.toFirstUpper()» field group */
-		
-		Set<String> «g.name.toFirstLower()»GroupWriter = new HashSet<String>();
-		«FOREACH g.writers AS r-»
-		«g.name.toFirstLower()»GroupWriter.add(«projectName.toFirstUpper()»RoleConstants.«r.name.toUpperCase()»_ROLE);
-		«ENDFOREACH-»
-		
-		«FOREACH g.fields AS f-»
-		if(property.equals("«EXPAND template::CommonFieldUtil::propertyName FOR f»")) {
-			if («g.name.toFirstLower()»GroupWriter.isEmpty())
-				return true;
-			else
-				return hasRole(«g.name.toFirstLower()»GroupWriter);
+		«FOREACH e.groups.fields AS f-»
+		if("«EXPAND template::CommonFieldUtil::propertyName FOR f»".equals(property)) {
+			return canEdit«e.name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»;
 		}
-		«ENDFOREACH-»			
-		«ENDFOREACH»
-		
-		«IF Actor.isAssignableFrom(e.metaType)-»
-		/* Administration field group */
-
-		Set<String> administrationGroupWriter = new HashSet<String>();
-		administrationGroupWriter.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("login"))
-				return hasRole(administrationGroupWriter);
-		if (property.equals("password"))
-				return hasRole(administrationGroupWriter);
-		if (property.equals("roleList"))
-				return hasRole(administrationGroupWriter);
-
-		/* Synchronization field group */
-
-		Set<String> synchronizationGroupWriter = new HashSet<String>();
-		synchronizationGroupWriter.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("synchronizableList"))
-				return hasRole(synchronizationGroupWriter);
-		
-		«IF ((Actor)e).filters!=null && ((Actor)e).filters.size>0-»
-		/* FilterFields field group */
-
-		Set<String> filterFieldsGroupWriter = new HashSet<String>();
-		filterFieldsGroupWriter.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-			«FOREACH ((Actor)e).filters AS fil-»
-		if (property.equals("«EXPAND template::CommonFieldUtil::propertyName FOR fil»List"))
-				return hasRole(filterFieldsGroupWriter);					
-			«ENDFOREACH-»
-		«ENDIF-»
-		«ENDIF-»
-
+		«ENDFOREACH-»
 		return true;
 	}	
-	«ENDFOREACH»
-
-	/* Privileges check for entity Notification */
-
-	/**
-	 * Tells if the current user can access a Notification property
-	 * @param property the property whose access has to be checked
-	 * @return true if the current user can access a Notification property
-	 */
-	private boolean canAccessNotificationProperty(String property) {
-
-		/* Description field group */
-
-		Set<String> descriptionGroupReader = new HashSet<String>();
-		descriptionGroupReader.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("name"))
-				return hasRole(descriptionGroupReader);
-		if (property.equals("method"))
-				return hasRole(descriptionGroupReader);
-		if (property.equals("title"))
-				return hasRole(descriptionGroupReader);
-		if (property.equals("formType"))
-				return hasRole(descriptionGroupReader);
-		if (property.equals("operation"))
-				return hasRole(descriptionGroupReader);
-		if (property.equals("message"))
-				return hasRole(descriptionGroupReader);
-
-		/* Recipients field group */
-
-		Set<String> recipientsGroupReader = new HashSet<String>();
-		recipientsGroupReader.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("actorRecipients"))
-				return hasRole(recipientsGroupReader);
-		if (property.equals("roleRecipients"))
-				return hasRole(recipientsGroupReader);
-
-		return true;
-	}
-
-	/**
-	 * Tells if the current user can update a Notification property
-	 * @param property the property whose update privilege has to be checked
-	 * @return true if the current user can update a Notification property
-	 */
-	private boolean canUpdateNotificationProperty(String property) {
-
-		/* Description field group */
-
-		Set<String> descriptionGroupWriter = new HashSet<String>();
-		descriptionGroupWriter.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("name"))
-				return hasRole(descriptionGroupWriter);
-		if (property.equals("method"))
-				return hasRole(descriptionGroupWriter);
-		if (property.equals("title"))
-				return hasRole(descriptionGroupWriter);
-		if (property.equals("formType"))
-				return hasRole(descriptionGroupWriter);
-		if (property.equals("operation"))
-				return hasRole(descriptionGroupWriter);
-		if (property.equals("message"))
-				return hasRole(descriptionGroupWriter);
-
-		/* Recipients field group */
-
-		Set<String> recipientsGroupWriter = new HashSet<String>();
-		recipientsGroupWriter.add(«projectName.toFirstUpper()»RoleConstants.ADMINISTRATOR);
-
-		if (property.equals("actorRecipients"))
-				return hasRole(recipientsGroupWriter);
-		if (property.equals("roleRecipients"))
-				return hasRole(recipientsGroupWriter);
-
-		return true;
-	}
+	«ENDFOREACH-»
 	
-	/* Privileges check for entity DefaultUser */
-
-	/**
-	 * Tells if the current user can access a DefaultUser property
-	 * @param property the property whose access has to be checked
-	 * @return true if the current user can access a DefaultUser property
-	 */
-	private boolean canAccessDefaultUserProperty(String property) {
-
-		if (property.equals("login"))
-			return true;
-		if (property.equals("password"))
-			return false;
-		if (property.equals("roleList"))
-			return true;
-
-		if (property.equals("synchronizableList"))
-			return false;
-
-		return true;
-	}
-
-	/**
-	 * Tells if the current user can update a DefaultUser property
-	 * @param property the property whose update privilege has to be checked
-	 * @return true if the current user can update a DefaultUser property
-	 */
-	private boolean canUpdateDefaultUserProperty(String property) {
-		return false;
-	}
-	
-	
-	/**
-	 * Checks if the current user has a given role
-	 * @param roleId the role to be checked
-	 * @return true if the current user has a given role
-	 */
-	private boolean hasRole(String roleId) {
-		
-		Set<ImogRole> roles = getCurrentActorRoles();
-		if (roles != null) {
-			for (ImogRole role : roles) {
-				if (role.getId().equals(roleId))
-					return true;
+	private boolean isAdmin(ImogActor actor) {
+		for (Profile profile : actor.getProfiles()) {
+			if (profile.getId().equals(ImogRoleConstants.ADMINISTRATOR)) {
+				return true;
 			}
 		}
 		return false;
 	}
 
-	/**
-	 * Checks if the current user has one of a set of roles
-	 * @param roleIds the set of roles to be checked
-	 * @return true if the current user has one of a set of roles
-	 */
-	private boolean hasRole(Set<String> roleIds) {
-
-		for (String role : roleIds) {
-			if (hasRole(role))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Gets the current actor roles
-	 */
-	private Set<ImogRole> getCurrentActorRoles() {
-
-		HttpSession session = HttpSessionUtil.getHttpSession();
-		if (session != null) {
-			ImogActor actor = (ImogActor) session.getAttribute(ServerConstants.SESSION_USER);
-			return actor.getRoles();
-		}
-		return null;
-	}
 }
 «ENDFILE»
 «ENDDEFINE»

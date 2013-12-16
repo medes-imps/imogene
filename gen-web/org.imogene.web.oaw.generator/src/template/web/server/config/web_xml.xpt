@@ -73,7 +73,7 @@
 	<!-- GWT RequestFactory servlet -->
 	<servlet>
 		<servlet-name>requestFactoryServlet</servlet-name>
-		<servlet-class>org.imogene.«modelName.toLowerCase()».server.ImogRequestFactoryServlet</servlet-class>
+		<servlet-class>org.imogene.web.server.ImogRequestFactoryServlet</servlet-class>
 		<init-param>
 			<param-name>symbolMapsDirectory</param-name>
 			<!-- You'll need to compile with -extras and move the symbolMaps directory 

@@ -31,9 +31,13 @@
 		</property>
 	</bean>
 	
+	<!-- Spring security policy -->
+	<bean id="securityPolicyFactory" class="org.imogene.«projectName.toLowerCase()».server.security.SecurityPolicyFactoryImpl" />
+	
 	<!-- Spring-security users details provider -->
-	<bean id="imogSecurityDetailService" class="org.imogene.web.server.security.ImogSecurityDetailService" >
+	<bean id="imogSecurityDetailService" class="org.imogene.web.server.security.SecurityDetailService" >
 		<property name="genericHandler" ref="genericHandler"/>
+		<property name="securityPolicyFactory" ref="securityPolicyFactory" />
   	</bean>
   	
 	<!-- Spring-security users details provider for web application in rcp container 

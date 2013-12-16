@@ -474,7 +474,7 @@ public class HomePanel extends Composite {
 		«FOREACH entities AS e-»
 		«IF Actor.isAssignableFrom(e.metaType)-»
 			«IF e.topLevel || !e.directAccess.isEmpty-»
-			if(!(AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")))
+			if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
 				«e.name.toFirstLower()».setVisible(false);
 			else
 				showUsersTema = true;
@@ -524,7 +524,7 @@ public class HomePanel extends Composite {
 		boolean show«t.name.toFirstUpper()»Tema = false;
 		«FOREACH t.entities AS e-»
 		«IF e.topLevel || !e.directAccess.isEmpty-»
-		if(!(AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")))
+		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
 			«e.name.toFirstLower()».setVisible(false);
 		else
 			show«t.name.toFirstUpper()»Tema = true;
@@ -536,7 +536,7 @@ public class HomePanel extends Composite {
 	«ELSE-»
 		«FOREACH entities AS e-»
 		«IF e.topLevel || !e.directAccess.isEmpty-»
-		if(!(AccessManager.canDirectAccessForm("«e.name.toLowerCase()»") && AccessManager.canReadForm("«e.name.toLowerCase()»")))
+		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»))
 			«e.name.toFirstLower()».setVisible(false);
 		«ENDIF-»
 		«ENDFOREACH -»
@@ -591,7 +591,7 @@ public class HomePanel extends Composite {
 		«IF topLevel || !directAccess.isEmpty-»
 		/* «name.toFirstUpper()» Menu */
 		
-		if (AccessManager.canCreateForm("«name.toLowerCase()»") && AccessManager.canEditForm("«name.toLowerCase()»")) {		
+		if (AccessManager.canCreate«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()) {		
 			«name.toFirstLower()».setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -602,7 +602,7 @@ public class HomePanel extends Composite {
 		else
 			«name.toFirstLower()».setCreateClickHandler(null);
 						
-		if (AccessManager.canDirectAccessForm("«name.toLowerCase()»")	&& AccessManager.canReadForm("«name.toLowerCase()»")) {						
+		if (AccessManager.canDirectAccess«name.toFirstUpper()»() && AccessManager.canRead«name.toFirstUpper()»()) {						
 			«name.toFirstLower()».setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

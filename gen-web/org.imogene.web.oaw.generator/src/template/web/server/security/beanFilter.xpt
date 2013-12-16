@@ -5,9 +5,7 @@
 «FILE projectName.toLowerCase() + "/server/security/" + projectName.toFirstUpper() + "BeanFilter.java"»
 package org.imogene.«projectName.toLowerCase()».server.security;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import org.imogene.lib.common.entity.ImogActor;
@@ -16,7 +14,6 @@ import org.imogene.web.server.security.ImogBeanFilter;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
 «ENDFOREACH-»
-import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»RoleConstants;
 
 /**
  * Class to filter beans so that only 
@@ -29,18 +26,20 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ImogBean> T toSecure(T bean, ImogActor actor) {
+		SecurityPolicyImpl policy = new SecurityPolicyImpl(actor);
 		«FOREACH entities AS e»
 		if (bean instanceof «e.name»)
-			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean, getRoleNames(actor));			
+			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean, policy);			
 		«ENDFOREACH»
 		return bean;
 	}
 
 	@Override
 	public <T extends ImogBean> List<T> toSecure(List<T> beans, ImogActor actor) {
+		SecurityPolicyImpl policy = new SecurityPolicyImpl(actor);
 		List<T> securedList = new Vector<T>();
 		for (T bean : beans) {
-			T isSecured = toSecure(bean, actor);
+			T isSecured = toSecure(bean, policy);
 			if (isSecured != null) {
 				securedList.add(isSecured);
 			}
@@ -48,14 +47,23 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 		return securedList;
 	}
 	
+	@SuppressWarnings("unchecked")
+	private <T extends ImogBean> T toSecure(T bean, SecurityPolicyImpl policy) {
+		«FOREACH entities AS e»
+		if (bean instanceof «e.name»)
+			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean, policy);			
+		«ENDFOREACH»
+		return bean;
+	}
+	
 	«FOREACH entities AS e»
 	/**
 	 * Secure a «e.name» bean.
 	 * @param bean The «e.name» bean to secure
-	 * @param roleNames set of role ids for the user 
+	 * @param policy security policy 
 	 * @return A secured «e.name» bean
 	 */
-	private «e.name.toFirstUpper()» toSecure«e.name.toFirstUpper()»(«e.name.toFirstUpper()» bean, Set<String> roleNames) {
+	private «e.name.toFirstUpper()» toSecure«e.name.toFirstUpper()»(«e.name.toFirstUpper()» bean, SecurityPolicyImpl policy) {
 		boolean isSecured = false;
 		«e.name» transformedBean = new «e.name»();
 
@@ -75,40 +83,22 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 		«EXPAND filterField FOREACH ((Actor)e).filters-»		
 		«ENDIF-»«ENDREM»			
 		
-		«FOREACH e.groups AS g»
-			«IF g.readers.size == 0»
-		if (!isSecured) isSecured = true;
-				«EXPAND setField FOREACH g.fields-»
-			«ELSE»
-				if(«FOREACH g.readers AS r ITERATOR i» roleNames.contains(«projectName.toFirstUpper()»RoleConstants.«r.name.toUpperCase()»_ROLE) «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»«IF g.writers.size>0»||«ENDIF»«FOREACH g.writers AS w ITERATOR i» roleNames.contains(«projectName.toFirstUpper()»RoleConstants.«w.name.toUpperCase()»_ROLE) «IF !i.lastIteration»||«ENDIF»«ENDFOREACH»){
-					if (!isSecured) isSecured = true;
-					«EXPAND setField FOREACH g.fields-»
-				} else {
-					«EXPAND setEmptyField FOREACH g.fields-»
-				}
-			«ENDIF»
-		«ENDFOREACH»
+		«FOREACH e.groups AS g-»
+		if (policy.canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»()) {
+			isSecured = true;
+			«EXPAND setField FOREACH g.fields-»
+		} else {
+			«EXPAND setEmptyField FOREACH g.fields-»
+		}
+		«ENDFOREACH-»
 		
-		if (isSecured)
+		if (isSecured) {
 			return transformedBean;
-		else
+		} else {
 			return null;
+		}
 	}	
 	«ENDFOREACH»	
-	
-	/**
-	 * @param actor the actor for which roles are looked for
-	 * @return list of role ids
-	 */
-	private Set<String> getRoleNames(ImogActor actor) {
-		Set<String> names = new HashSet<String>();
-		if (actor != null) {
-			for (ImogRole role : actor.getRoles()) {
-				names.add(role.getId());
-			}
-		}
-		return names;
-	}
 	
 }
 

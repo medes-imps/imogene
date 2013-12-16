@@ -444,35 +444,35 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «REM» set access the corresponding field «ENDREM»
 «DEFINE setAccess(String prefix) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR TextField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»())		
 			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR DateField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»")) {		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»()) {		
 			«prefix + name.toFirstLower()»BeforeFilterBox.setVisible(false);
 			«prefix + name.toFirstLower()»AfterFilterBox.setVisible(false);
 		}
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR DateTimeField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»")) {		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»()) {		
 			«prefix + name.toFirstLower()»BeforeFilterBox.setVisible(false);
 			«prefix + name.toFirstLower()»AfterFilterBox.setVisible(false);
 		}
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR IntegerField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»())		
 			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR FloatField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»())		
 			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR BooleanField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»())		
 			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR EnumField-»
-		if (!AccessManager.canReadGroup("«parentGroup.parentCard.name.toLowerCase()».«parentGroup.name.toLowerCase()»"))		
+		if (!AccessManager.canRead«parentGroup.parentCard.name.toFirstUpper()»«parentGroup.name.toFirstUpper()»())		
 			«prefix + name.toFirstLower()»FilterBox.setVisible(false);
 «ENDDEFINE»
 «DEFINE setAccess(String prefix) FOR RelationFieldEntity-»

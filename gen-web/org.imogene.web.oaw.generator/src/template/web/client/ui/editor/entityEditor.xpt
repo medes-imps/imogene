@@ -347,9 +347,9 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«FOREACH groups AS g»
 		/* «g.name.toFirstUpper()» section widgets visibility */
 			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-		if (!AccessManager.canReadGroup("«name.toLowerCase()».«g.name.toLowerCase()»") || !show«g.name.toFirstUpper()»Section)				
+		if (!AccessManager.canRead«name.toFirstUpper()»«g.name.toFirstUpper()»() || !show«g.name.toFirstUpper()»Section)				
 			«ELSE-»
-		if (!AccessManager.canReadGroup("«name.toLowerCase()».«g.name.toLowerCase()»"))				
+		if (!AccessManager.canRead«name.toFirstUpper()»«g.name.toFirstUpper()»())				
 			«ENDIF-»
 			«g.name.toFirstLower()»Section.setVisible(false);
 		«ENDFOREACH»
@@ -375,9 +375,9 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«FOREACH groups AS g»
 		/* «g.name.toFirstUpper()» section widgets visibility */
 			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-		if (!AccessManager.canEditGroup("«name.toLowerCase()».«g.name.toLowerCase()»") || !show«g.name.toFirstUpper()»Section)				
+		if (!AccessManager.canEdit«name.toFirstUpper()»«g.name.toFirstUpper()»() || !show«g.name.toFirstUpper()»Section)				
 			«ELSE-»
-		if (!AccessManager.canEditGroup("«name.toLowerCase()».«g.name.toLowerCase()»"))				
+		if (!AccessManager.canEdit«name.toFirstUpper()»«g.name.toFirstUpper()»())				
 			«ENDIF-»		
 			«g.name.toFirstLower()»Section.setVisible(false);
 		«ENDFOREACH»
@@ -1052,7 +1052,7 @@ import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.paren
 		if(hideButtons)	// in popup, relation buttons hidden
 			«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);		
 		else {// in wrapper panel, relation buttons enabled												
-			if (AccessManager.canCreateForm("«entity.name.toLowerCase()»") && AccessManager.canEditForm("«entity.name.toLowerCase()»"))		
+			if (AccessManager.canCreate«entity.name.toFirstUpper()»() && AccessManager.canEdit«entity.name.toFirstUpper()»())		
 				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get());
 			else
 				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(false, «name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get());					
@@ -1066,7 +1066,7 @@ import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.paren
 		if(hideButtons) // in popup, relation buttons hidden		
 			«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
-			if (AccessManager.canCreateForm("«entity.name.toLowerCase()»") && AccessManager.canEditForm("«entity.name.toLowerCase()»"))				
+			if (AccessManager.canCreate«entity.name.toFirstUpper()»() && AccessManager.canEdit«entity.name.toFirstUpper()»())				
 				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(«name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), null);
 			else
 				«EXPAND template::CommonFieldUtil::propertyName FOR this» = new «EXPAND template::web::WebFieldUtil::formFieldType FOR this»(false, «name.toFirstLower()»DataProvider, «projectName.toFirstUpper()»Renderer.get(), null);					

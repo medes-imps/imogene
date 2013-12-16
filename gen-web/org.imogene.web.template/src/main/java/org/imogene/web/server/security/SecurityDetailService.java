@@ -21,11 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author MEDES-IMPS
  */
-public class ImogSecurityDetailService implements UserDetailsService {
+public class SecurityDetailService implements UserDetailsService {
 
-	private Logger logger = Logger.getLogger(ImogSecurityDetailService.class);
+	private Logger logger = Logger.getLogger(SecurityDetailService.class);
 
 	private GenericHandler genericHandler;
+
+	private SecurityPolicyFactory securityPolicyFactory;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -48,20 +50,24 @@ public class ImogSecurityDetailService implements UserDetailsService {
 		List<Profile> profiles = actor.getProfiles();
 		if (profiles != null) {
 			for (Profile profile : profiles) {
-				List<EntityProfile> ep = profile.getEntityProfiles();
-				if (ep != null) {
-					logger.info("Entity profiles: " + ep.toString());
+				List<EntityProfile> entities = profile.getEntityProfiles();
+				if (entities != null) {
+					for (EntityProfile entity : entities) {
+						logger.info("has profile : " + entity.getId());
+					}
 				}
-			}
-			for (Profile profile : profiles) {
-				List<FieldGroupProfile> fgp = profile.getFieldGroupProfiles();
-				if (fgp != null) {
-					logger.info("Field group profiles: " + fgp.toString());
+				List<FieldGroupProfile> fieldGroups = profile.getFieldGroupProfiles();
+				if (fieldGroups != null) {
+					for (FieldGroupProfile fieldGroup : fieldGroups) {
+						logger.info("has profile : " + fieldGroup.getId());
+					}
 				}
 			}
 		}
+		SecurityPolicy securityPolicy = securityPolicyFactory.createSecurityPolicy(actor);
 		genericHandler.detach(actor);
 		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_USER, actor);
+		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_SECURITY_POLICY, securityPolicy);
 		return new ImogUserDetails(actor);
 	}
 
@@ -72,6 +78,15 @@ public class ImogSecurityDetailService implements UserDetailsService {
 	 */
 	public void setGenericHandler(GenericHandler genericHandler) {
 		this.genericHandler = genericHandler;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param securityPolicyFactory
+	 */
+	public void setSecurityPolicyFactory(SecurityPolicyFactory securityPolicyFactory) {
+		this.securityPolicyFactory = securityPolicyFactory;
 	}
 
 }

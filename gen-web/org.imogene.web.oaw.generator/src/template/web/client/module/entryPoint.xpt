@@ -155,7 +155,9 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		Request<SessionInfoProxy> sessionInfoRequest = request.getSessionInfo();		
 		sessionInfoRequest.with("actor.profiles");
 		sessionInfoRequest.with("actor.profiles.entityProfiles");
+		sessionInfoRequest.with("actor.profiles.entityProfiles.entity");
 		sessionInfoRequest.with("actor.profiles.fieldGroupProfiles");
+		sessionInfoRequest.with("actor.profiles.fieldGroupProfiles.fieldGroup");
 		sessionInfoRequest.to(new Receiver<SessionInfoProxy>() {
 				
 			@Override
@@ -699,7 +701,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* Create «name.toFirstUpper()» Handler */
 		registrations.add(eventBus.addHandler(Create«name.toFirstUpper()»Event.TYPE, new Create«name.toFirstUpper()»Event.Handler() {
 					public void createNew«name.toFirstUpper()»(GwtEvent<?> closeEvent) {
-						if (AccessManager.canCreateForm("«name.toLowerCase()»") && AccessManager.canEditForm("«name.toLowerCase()»")){
+						if (AccessManager.canCreate«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()){
 							«name.toFirstUpper()»FormPanel «name.toLowerCase()»Form = new «name.toFirstUpper()»FormPanel(requestFactory, null);	
 							«name.toLowerCase()»Form.setCloseEvent(closeEvent);												
 							displayWrapperPanel(«name.toLowerCase()»Form);
@@ -710,7 +712,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* View «name.toFirstUpper()» Handler */
 		registrations.add(eventBus.addHandler(View«name.toFirstUpper()»Event.TYPE, new View«name.toFirstUpper()»Event.Handler() {
 					public void view«name.toFirstUpper()»(String entityId, GwtEvent<?> closeEvent) {
-						if (AccessManager.canReadForm("«name.toLowerCase()»")){
+						if (AccessManager.canRead«name.toFirstUpper()»()){
 							«name.toFirstUpper()»FormPanel «name.toLowerCase()»Form = new «name.toFirstUpper()»FormPanel(requestFactory, entityId);	
 							«name.toLowerCase()»Form.setCloseEvent(closeEvent);
 							displayWrapperPanel(«name.toLowerCase()»Form);
@@ -721,11 +723,11 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		/* List «name.toFirstUpper()» Handler	 */
 		registrations.add(eventBus.addHandler(List«name.toFirstUpper()»Event.TYPE, new List«name.toFirstUpper()»Event.Handler() {
 					public void list«name.toFirstUpper()»() {
-						if (AccessManager.canDirectAccessForm("«name.toLowerCase()»") && AccessManager.canReadForm("«name.toLowerCase()»"))
+						if (AccessManager.canDirectAccess«name.toFirstUpper()»() && AccessManager.canRead«name.toFirstUpper()»())
 							displayWrapperPanel(new «name.toFirstUpper()»ListPanel(requestFactory));							
 					}
 					public void list«name.toFirstUpper()»(String searchText) {
-						if (AccessManager.canDirectAccessForm("«name.toLowerCase()»") && AccessManager.canReadForm("«name.toLowerCase()»"))
+						if (AccessManager.canDirectAccess«name.toFirstUpper()»() && AccessManager.canRead«name.toFirstUpper()»())
 							displayWrapperPanel(new «name.toFirstUpper()»ListPanel(requestFactory, searchText));												
 					}
 				}));
@@ -735,21 +737,21 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 «DEFINE setOnValueChange FOR CardEntity-»
 			/** actions for «name.toFirstUpper()» */
 			if (entityToken.getType().equals("«name.toLowerCase()»")) {				
-				if (AccessManager.canReadForm("«name.toLowerCase()»")) {													
+				if (AccessManager.canRead«name.toFirstUpper()»()) {													
 					/* view for «name.toFirstUpper()» */
 					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
 						eventBus.fireEvent(new View«name.toFirstUpper()»Event(entityToken.getId()));	
 					
 					/* list for «name.toFirstUpper()» */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessForm("«name.toLowerCase()»"))			
+						if (AccessManager.canDirectAccess«name.toFirstUpper()»())			
 							eventBus.fireEvent(new List«name.toFirstUpper()»Event());
 					}	
 				}							
-				if (AccessManager.canEditForm("«name.toLowerCase()»")) {
+				if (AccessManager.canEdit«name.toFirstUpper()»()) {
 					/* new «name.toFirstUpper()» */
 					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateForm("«name.toLowerCase()»"))
+						if (AccessManager.canCreate«name.toFirstUpper()»())
 							eventBus.fireEvent(new Create«name.toFirstUpper()»Event());
 					}
 				}						

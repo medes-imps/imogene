@@ -10,4 +10,7 @@ public class ServerConstants {
 	
 	/** */
 	public static String SESSION_USER_ID = "session_user_id";
+	
+	/** */
+	public static String SESSION_SECURITY_POLICY = "session_security_policy";
 }

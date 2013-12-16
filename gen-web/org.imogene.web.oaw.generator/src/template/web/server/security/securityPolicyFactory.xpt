@@ -1,0 +1,19 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/server/security/SecurityPolicyFactoryImpl.java"»
+package org.imogene.«projectName.toLowerCase()».server.security;
+
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.web.server.security.SecurityPolicy;
+import org.imogene.web.server.security.SecurityPolicyFactory;
+
+public class SecurityPolicyFactoryImpl implements SecurityPolicyFactory {
+
+	@Override
+	public SecurityPolicy createSecurityPolicy(ImogActor actor) {
+		return new SecurityPolicyImpl(actor);
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

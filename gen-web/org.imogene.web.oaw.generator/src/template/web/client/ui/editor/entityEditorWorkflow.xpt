@@ -267,7 +267,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«ENDIF -»
 		
 		/* display edit button */
-		if (AccessManager.canEditForm("«name.toLowerCase()»"))
+		if (AccessManager.canEdit«name.toFirstUpper()»())
 			setModifiable(true);
 			
 		showGlassPanel=false;

@@ -409,15 +409,6 @@
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
 	
-	<!-- Role Constants -->
-	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::shared::roleConstants::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>
-	
 	<!-- Enumeration Constants -->
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
@@ -519,34 +510,25 @@
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::client::module::accessManagerNew::generate("${packageName}","${modelName}") FOR project' />
+		<expand value='template::web::client::module::accessManager::generate("${packageName}","${modelName}") FOR project' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>		
-	
-	<!-- Access Service Decorator -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::accessServiceDecorator::generate("${modelName}","${applicationType}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>
-	
-	<!-- Request Factory Servlet -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::requestFactoryServlet::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>
 	
 	<!-- Security policy -->
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::security::securityPolicy::generate("${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
+
+	<!-- Security policy factory -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::server::security::securityPolicyFactory::generate("${modelName}") FOR project' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
