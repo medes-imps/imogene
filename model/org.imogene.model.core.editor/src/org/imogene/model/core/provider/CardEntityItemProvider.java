@@ -81,9 +81,7 @@ public class CardEntityItemProvider
 			addActorFilterFieldsPropertyDescriptor(object);
 			addColorPropertyDescriptor(object);
 			addDisplayQRCodePropertyDescriptor(object);
-			addCreatorsPropertyDescriptor(object);
 			addClientPeriodFilterablePropertyDescriptor(object);
-			addDirectAccessPropertyDescriptor(object);
 			addGeoreferencedPropertyDescriptor(object);
 			addRdfSubjectPropertyDescriptor(object);
 			addRdfPredicatePropertyDescriptor(object);
@@ -358,28 +356,6 @@ public class CardEntityItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Creators feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addCreatorsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CardEntity_creators_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CardEntity_creators_feature", "_UI_CardEntity_type"),
-				 ImogenePackage.Literals.CARD_ENTITY__CREATORS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This adds a property descriptor for the Client Period Filterable feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -397,28 +373,6 @@ public class CardEntityItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Direct Access feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDirectAccessPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CardEntity_directAccess_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CardEntity_directAccess_feature", "_UI_CardEntity_type"),
-				 ImogenePackage.Literals.CARD_ENTITY__DIRECT_ACCESS,
-				 true,
-				 false,
-				 true,
-				 null,
 				 null,
 				 null));
 	}

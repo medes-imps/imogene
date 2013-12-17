@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.imogene.model.core.Project#getEntities <em>Entities</em>}</li>
  *   <li>{@link org.imogene.model.core.Project#getEntityUIFormats <em>Entity UI Formats</em>}</li>
  *   <li>{@link org.imogene.model.core.Project#getThemas <em>Themas</em>}</li>
- *   <li>{@link org.imogene.model.core.Project#getRoles <em>Roles</em>}</li>
  *   <li>{@link org.imogene.model.core.Project#getLanguages <em>Languages</em>}</li>
  * </ul>
  * </p>
@@ -129,22 +128,6 @@ public interface Project extends EObject {
 	 * @generated
 	 */
 	EList<Thema> getThemas();
-
-	/**
-	 * Returns the value of the '<em><b>Roles</b></em>' containment reference list.
-	 * The list contents are of type {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Roles</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Roles</em>' containment reference list.
-	 * @see org.imogene.model.core.ImogenePackage#getProject_Roles()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Role> getRoles();
 
 	/**
 	 * Returns the value of the '<em><b>Languages</b></em>' containment reference list.

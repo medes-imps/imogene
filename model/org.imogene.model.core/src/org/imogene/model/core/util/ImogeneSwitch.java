@@ -322,12 +322,6 @@ public class ImogeneSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ImogenePackage.ROLE: {
-				Role role = (Role)theEObject;
-				T result = caseRole(role);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case ImogenePackage.FILTER_FIELD: {
 				FilterField filterField = (FilterField)theEObject;
 				T result = caseFilterField(filterField);
@@ -784,21 +778,6 @@ public class ImogeneSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTextAreaField(TextAreaField object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Role</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Role</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseRole(Role object) {
 		return null;
 	}
 

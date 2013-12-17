@@ -32,37 +32,35 @@ context Project ERROR "two card entities have the same name " :
 context EnumField ERROR "two enumvalues have the same name in enumfield "+ parentGroup.parentCard.name + "::"+parentGroup.name+"::"+ name :
 	enumValues.forAll(v1|enumValues.notExists(v2| v1!=v2 && v1.name==v2.name));
 
-context Project ERROR "two roles have the same name " :
-	roles.forAll(r1|roles.notExists(r2| r1!=r2 && r1.name==r2.name));
 
 	
 	
 	
 	
 	
-context FieldEntity ERROR "caractère interdit dans le field  " + parentGroup.parentCard.name + "::"+parentGroup.name+"::"+ name :
+context FieldEntity ERROR "caractÃ¨re interdit dans le field  " + parentGroup.parentCard.name + "::"+parentGroup.name+"::"+ name :
 	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
 	
-context FieldGroup ERROR "caractère interdit dans le groupe  " + parentCard.name + "::" + name :
+context FieldGroup ERROR "caractÃ¨re interdit dans le groupe  " + parentCard.name + "::" + name :
 	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
 		
-context CardEntity ERROR "caractère interdit dans l'entity " + name :
+context CardEntity ERROR "caractÃ¨re interdit dans l'entity " + name :
 	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
 		
-context EnumValue ERROR "caractère interdit dans l'enum value " + name :
+context EnumValue ERROR "caractÃ¨re interdit dans l'enum value " + name :
 	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
 
 
 
 
 
-context CardEntity ERROR "main field doit appartenir à l'entité " + name :
+context CardEntity ERROR "main field doit appartenir Ã  l'entitÃ© " + name :
 	mainFields.forAll(f1|this == f1.parentGroup.parentCard); 
 
-context CardEntity ERROR "sort field doit appartenir à l'entité " + name :
+context CardEntity ERROR "sort field doit appartenir Ã  l'entitÃ© " + name :
 	sortFields.forAll(f1|this == f1.parentGroup.parentCard); 
 
-context CardEntity ERROR "column field doit appartenir à l'entité " + name :
+context CardEntity ERROR "column field doit appartenir Ã  l'entitÃ© " + name :
 	columnFields.forAll(f1|this == f1.parentGroup.parentCard); 
 
 context CardEntity ERROR "Name doit commencer par une majuscule " + name :

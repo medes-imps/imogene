@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -29,7 +28,6 @@ import org.imogene.model.core.Description;
 import org.imogene.model.core.FieldEntity;
 import org.imogene.model.core.FieldGroup;
 import org.imogene.model.core.ImogenePackage;
-import org.imogene.model.core.Role;
 
 /**
  * <!-- begin-user-doc -->
@@ -42,8 +40,6 @@ import org.imogene.model.core.Role;
  *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getFields <em>Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getParentCard <em>Parent Card</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getReaders <em>Readers</em>}</li>
- *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getWriters <em>Writers</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getShortName <em>Short Name</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.FieldGroupImpl#getIcon <em>Icon</em>}</li>
  * </ul>
@@ -98,26 +94,6 @@ public class FieldGroupImpl extends EObjectImpl implements FieldGroup {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getReaders() <em>Readers</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getReaders()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Role> readers;
-
-	/**
-	 * The cached value of the '{@link #getWriters() <em>Writers</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getWriters()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Role> writers;
 
 	/**
 	 * The default value of the '{@link #getShortName() <em>Short Name</em>}' attribute.
@@ -269,30 +245,6 @@ public class FieldGroupImpl extends EObjectImpl implements FieldGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Role> getReaders() {
-		if (readers == null) {
-			readers = new EObjectResolvingEList<Role>(Role.class, this, ImogenePackage.FIELD_GROUP__READERS);
-		}
-		return readers;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Role> getWriters() {
-		if (writers == null) {
-			writers = new EObjectResolvingEList<Role>(Role.class, this, ImogenePackage.FIELD_GROUP__WRITERS);
-		}
-		return writers;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public String getShortName() {
 		return shortName;
 	}
@@ -408,10 +360,6 @@ public class FieldGroupImpl extends EObjectImpl implements FieldGroup {
 				return getParentCard();
 			case ImogenePackage.FIELD_GROUP__NAME:
 				return getName();
-			case ImogenePackage.FIELD_GROUP__READERS:
-				return getReaders();
-			case ImogenePackage.FIELD_GROUP__WRITERS:
-				return getWriters();
 			case ImogenePackage.FIELD_GROUP__SHORT_NAME:
 				return getShortName();
 			case ImogenePackage.FIELD_GROUP__ICON:
@@ -443,14 +391,6 @@ public class FieldGroupImpl extends EObjectImpl implements FieldGroup {
 			case ImogenePackage.FIELD_GROUP__NAME:
 				setName((String)newValue);
 				return;
-			case ImogenePackage.FIELD_GROUP__READERS:
-				getReaders().clear();
-				getReaders().addAll((Collection<? extends Role>)newValue);
-				return;
-			case ImogenePackage.FIELD_GROUP__WRITERS:
-				getWriters().clear();
-				getWriters().addAll((Collection<? extends Role>)newValue);
-				return;
 			case ImogenePackage.FIELD_GROUP__SHORT_NAME:
 				setShortName((String)newValue);
 				return;
@@ -481,12 +421,6 @@ public class FieldGroupImpl extends EObjectImpl implements FieldGroup {
 			case ImogenePackage.FIELD_GROUP__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case ImogenePackage.FIELD_GROUP__READERS:
-				getReaders().clear();
-				return;
-			case ImogenePackage.FIELD_GROUP__WRITERS:
-				getWriters().clear();
-				return;
 			case ImogenePackage.FIELD_GROUP__SHORT_NAME:
 				setShortName(SHORT_NAME_EDEFAULT);
 				return;
@@ -513,10 +447,6 @@ public class FieldGroupImpl extends EObjectImpl implements FieldGroup {
 				return getParentCard() != null;
 			case ImogenePackage.FIELD_GROUP__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case ImogenePackage.FIELD_GROUP__READERS:
-				return readers != null && !readers.isEmpty();
-			case ImogenePackage.FIELD_GROUP__WRITERS:
-				return writers != null && !writers.isEmpty();
 			case ImogenePackage.FIELD_GROUP__SHORT_NAME:
 				return SHORT_NAME_EDEFAULT == null ? shortName != null : !SHORT_NAME_EDEFAULT.equals(shortName);
 			case ImogenePackage.FIELD_GROUP__ICON:

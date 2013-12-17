@@ -31,9 +31,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.imogene.model.core.CardEntity#getActorFilterFields <em>Actor Filter Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getColor <em>Color</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#isDisplayQRCode <em>Display QR Code</em>}</li>
- *   <li>{@link org.imogene.model.core.CardEntity#getCreators <em>Creators</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#isClientPeriodFilterable <em>Client Period Filterable</em>}</li>
- *   <li>{@link org.imogene.model.core.CardEntity#getDirectAccess <em>Direct Access</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getGeoreferenced <em>Georeferenced</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getRdfSubject <em>Rdf Subject</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getRdfPredicate <em>Rdf Predicate</em>}</li>
@@ -341,21 +339,6 @@ public interface CardEntity extends EObject {
 	void setDisplayQRCode(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Creators</b></em>' reference list.
-	 * The list contents are of type {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Roles autorisés à créer la card (Pour ces rôles, topLevel=true, pour les autres, topLevel=false).
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Creators</em>' reference list.
-	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_Creators()
-	 * @model
-	 * @generated
-	 */
-	EList<Role> getCreators();
-
-	/**
 	 * Returns the value of the '<em><b>Client Period Filterable</b></em>' attribute.
 	 * The default value is <code>"false"</code>.
 	 * <!-- begin-user-doc -->
@@ -381,21 +364,6 @@ public interface CardEntity extends EObject {
 	 * @generated
 	 */
 	void setClientPeriodFilterable(boolean value);
-
-	/**
-	 * Returns the value of the '<em><b>Direct Access</b></em>' reference list.
-	 * The list contents are of type {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Roles autorisés à voir l'entité en top level
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Direct Access</em>' reference list.
-	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_DirectAccess()
-	 * @model
-	 * @generated
-	 */
-	EList<Role> getDirectAccess();
 
 	/**
 	 * Returns the value of the '<em><b>Georeferenced</b></em>' reference.

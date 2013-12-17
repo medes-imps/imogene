@@ -221,15 +221,6 @@ public interface ImogeneFactory extends EFactory {
 	TextAreaField createTextAreaField();
 
 	/**
-	 * Returns a new object of class '<em>Role</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Role</em>'.
-	 * @generated
-	 */
-	Role createRole();
-
-	/**
 	 * Returns a new object of class '<em>Field Group</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

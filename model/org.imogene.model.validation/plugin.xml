@@ -245,21 +245,6 @@
                </target>
             </constraint>
             <constraint
-                  class="org.imogene.model.validation.constraints.DuplicateRoleName"
-                  id="org.imogene.model.validation.constraints.DuplicateRoleName"
-                  lang="Java"
-                  mode="Batch"
-                  name="Duplicate Role name validation"
-                  severity="ERROR"
-                  statusCode="201">
-               <message>
-                  {0}
-               </message>
-               <target
-                     class="Role">
-               </target>
-            </constraint>
-            <constraint
                   class="org.imogene.model.validation.constraints.BadCompositionConstraint"
                   id="org.imogene.model.validation.constraints.BadCompositionConstraint"
                   lang="Java"

@@ -21,7 +21,6 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.imogene.model.core.Actor#getAuthorizedRoles <em>Authorized Roles</em>}</li>
  *   <li>{@link org.imogene.model.core.Actor#getNotificationInfos <em>Notification Infos</em>}</li>
  *   <li>{@link org.imogene.model.core.Actor#getAdminFields <em>Admin Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.Actor#getFilters <em>Filters</em>}</li>
@@ -39,22 +38,6 @@ public interface Actor extends CardEntity {
 	 * @generated
 	 */
 	String copyright = "Medes-IMPS 2011";
-
-	/**
-	 * Returns the value of the '<em><b>Authorized Roles</b></em>' reference list.
-	 * The list contents are of type {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Authorized Roles</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Authorized Roles</em>' reference list.
-	 * @see org.imogene.model.core.ImogenePackage#getActor_AuthorizedRoles()
-	 * @model
-	 * @generated
-	 */
-	EList<Role> getAuthorizedRoles();
 
 	/**
 	 * Returns the value of the '<em><b>Notification Infos</b></em>' containment reference list.

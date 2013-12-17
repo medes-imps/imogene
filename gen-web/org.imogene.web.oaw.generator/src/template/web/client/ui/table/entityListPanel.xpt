@@ -320,7 +320,7 @@ public class «name.toFirstUpper()»ListPanel extends Composite {
 «DEFINE setListActions(CardEntity cardEntity) FOR Project-»		
 	«FOREACH themas AS t»
 		«FOREACH t.entities AS e-»
-		«IF (e.name!=cardEntity.name) && (e.topLevel || !e.directAccess.isEmpty)-»		
+		«IF (e.name!=cardEntity.name) && e.topLevel-»		
 		if (AccessManager.canDirectAccess«e.name.toFirstUpper()»() && AccessManager.canRead«e.name.toFirstUpper()»()) {		
 			
 			Command command = new Command() {

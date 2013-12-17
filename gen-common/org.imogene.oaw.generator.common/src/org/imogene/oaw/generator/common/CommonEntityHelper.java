@@ -16,7 +16,6 @@ import org.imogene.model.core.NotificationInfo;
 import org.imogene.model.core.Project;
 import org.imogene.model.core.RelationFieldEntity;
 import org.imogene.model.core.RelationType;
-import org.imogene.model.core.Role;
 import org.imogene.model.core.TextField;
 import org.imogene.model.core.Thema;
 
@@ -466,35 +465,6 @@ public class CommonEntityHelper
 			}
 		}									
 		return false;
-	}
-	
-
-	
-	/**
-	 * @param groups Entity groups
-	 * @return list of roles that can access the entity which owns the groups
-	 */
-	public static List<String> getEntityAccessibilityRoles(List<FieldGroup> groups) {
-		List<String> entityAccessibilityRoles = new Vector<String>();
-		
-		for (Iterator<FieldGroup> it = groups.iterator(); it.hasNext();) {
-			FieldGroup currentGroup = (FieldGroup)it.next();
-			List<Role> readerRoles = currentGroup.getReaders();
-			for (Iterator<Role> it2 = readerRoles.iterator(); it2.hasNext();) {
-				Role currentRole = (Role)it2.next();
-				if (!entityAccessibilityRoles.contains(currentRole.getName())) {
-					entityAccessibilityRoles.add(currentRole.getName());					
-				}			
-			}
-			List<Role> writerRoles = currentGroup.getWriters();
-			for (Iterator<Role> it3 = writerRoles.iterator(); it3.hasNext();) {
-				Role currentRole = (Role)it3.next();
-				if (!entityAccessibilityRoles.contains(currentRole.getName())) {
-					entityAccessibilityRoles.add(currentRole.getName());					
-				}			
-			}				
-		}
-		return entityAccessibilityRoles;
 	}
 	
 	/**

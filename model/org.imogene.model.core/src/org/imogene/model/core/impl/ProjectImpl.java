@@ -27,7 +27,6 @@ import org.imogene.model.core.Description;
 import org.imogene.model.core.ImogenePackage;
 import org.imogene.model.core.Language;
 import org.imogene.model.core.Project;
-import org.imogene.model.core.Role;
 import org.imogene.model.core.Thema;
 
 /**
@@ -42,7 +41,6 @@ import org.imogene.model.core.Thema;
  *   <li>{@link org.imogene.model.core.impl.ProjectImpl#getEntities <em>Entities</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.ProjectImpl#getEntityUIFormats <em>Entity UI Formats</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.ProjectImpl#getThemas <em>Themas</em>}</li>
- *   <li>{@link org.imogene.model.core.impl.ProjectImpl#getRoles <em>Roles</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.ProjectImpl#getLanguages <em>Languages</em>}</li>
  * </ul>
  * </p>
@@ -116,16 +114,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 	 * @ordered
 	 */
 	protected EList<Thema> themas;
-
-	/**
-	 * The cached value of the '{@link #getRoles() <em>Roles</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getRoles()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Role> roles;
 
 	/**
 	 * The cached value of the '{@link #getLanguages() <em>Languages</em>}' containment reference list.
@@ -230,18 +218,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Role> getRoles() {
-		if (roles == null) {
-			roles = new EObjectContainmentEList<Role>(Role.class, this, ImogenePackage.PROJECT__ROLES);
-		}
-		return roles;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EList<Language> getLanguages() {
 		if (languages == null) {
 			languages = new EObjectContainmentEList<Language>(Language.class, this, ImogenePackage.PROJECT__LANGUAGES);
@@ -265,8 +241,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 				return ((InternalEList<?>)getEntityUIFormats()).basicRemove(otherEnd, msgs);
 			case ImogenePackage.PROJECT__THEMAS:
 				return ((InternalEList<?>)getThemas()).basicRemove(otherEnd, msgs);
-			case ImogenePackage.PROJECT__ROLES:
-				return ((InternalEList<?>)getRoles()).basicRemove(otherEnd, msgs);
 			case ImogenePackage.PROJECT__LANGUAGES:
 				return ((InternalEList<?>)getLanguages()).basicRemove(otherEnd, msgs);
 		}
@@ -291,8 +265,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 				return getEntityUIFormats();
 			case ImogenePackage.PROJECT__THEMAS:
 				return getThemas();
-			case ImogenePackage.PROJECT__ROLES:
-				return getRoles();
 			case ImogenePackage.PROJECT__LANGUAGES:
 				return getLanguages();
 		}
@@ -327,10 +299,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 				getThemas().clear();
 				getThemas().addAll((Collection<? extends Thema>)newValue);
 				return;
-			case ImogenePackage.PROJECT__ROLES:
-				getRoles().clear();
-				getRoles().addAll((Collection<? extends Role>)newValue);
-				return;
 			case ImogenePackage.PROJECT__LANGUAGES:
 				getLanguages().clear();
 				getLanguages().addAll((Collection<? extends Language>)newValue);
@@ -362,9 +330,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 			case ImogenePackage.PROJECT__THEMAS:
 				getThemas().clear();
 				return;
-			case ImogenePackage.PROJECT__ROLES:
-				getRoles().clear();
-				return;
 			case ImogenePackage.PROJECT__LANGUAGES:
 				getLanguages().clear();
 				return;
@@ -390,8 +355,6 @@ public class ProjectImpl extends EObjectImpl implements Project {
 				return entityUIFormats != null && !entityUIFormats.isEmpty();
 			case ImogenePackage.PROJECT__THEMAS:
 				return themas != null && !themas.isEmpty();
-			case ImogenePackage.PROJECT__ROLES:
-				return roles != null && !roles.isEmpty();
 			case ImogenePackage.PROJECT__LANGUAGES:
 				return languages != null && !languages.isEmpty();
 		}

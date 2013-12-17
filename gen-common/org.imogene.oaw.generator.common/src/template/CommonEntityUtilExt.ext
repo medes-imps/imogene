@@ -62,10 +62,6 @@ boolean isEntityVisibilityParameter(FieldEntity field, List cardFields) :
 boolean isFieldVisibilityParameter(FieldEntity field, List fieldConditions) :
 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.isFieldVisibilityParameter(org.imogene.model.core.FieldEntity,java.util.List);
   
-      	// An extension that lists the roles that can access the entity which owns the groups
-List getEntityAccessibilityRoles(List groups) :
-	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getEntityAccessibilityRoles(java.util.List);
-   
       	// An extension that gets the CardEntityUIFormat object for a given CardEntity
 CardEntityUIFormat getCardEntityUIFormat(CardEntity searchedCardEntity, Project project) :
 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getCardEntityUIFormat(org.imogene.model.core.CardEntity, org.imogene.model.core.Project);   

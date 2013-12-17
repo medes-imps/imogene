@@ -14,8 +14,6 @@
         eType="#//CardEntityUIFormat" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="themas" upperBound="-1"
         eType="#//Thema" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
-        eType="#//Role" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="languages" lowerBound="1"
         upperBound="-1" eType="#//Language" containment="true"/>
   </eClassifiers>
@@ -63,20 +61,8 @@
         defaultValueLiteral=""/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="DisplayQRCode" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="creators" upperBound="-1"
-        eType="#//Role">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Roles autorisés à créer la card (Pour ces rôles, topLevel=true, pour les autres, topLevel=false)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="clientPeriodFilterable"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="directAccess" upperBound="-1"
-        eType="#//Role">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Roles autorisés à voir l'entité en top level"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="georeferenced" eType="#//GeoField"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rdfSubject" eType="#//RelationFieldEntity"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="rdfPredicate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -98,18 +84,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentCard" lowerBound="1"
         eType="#//CardEntity" eOpposite="#//CardEntity/groups"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="readers" upperBound="-1"
-        eType="#//Role">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Roles autorisés à lire et consulter la carte."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="writers" upperBound="-1"
-        eType="#//Role">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Roles autorisés à modifier, écrire ou effacer la carte."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="shortName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="icon" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
@@ -279,8 +253,6 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Un acteur est une cardEntity, mais a les possiblité d'avoir en plus un login, password, et d'être identifié en tant que propriétaire d'une carte. &#xA;Un acteur a la possibilité également d'avoir uniquement certains roles assignables.&#xA;"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="authorizedRoles" upperBound="-1"
-        eType="#//Role"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="notificationInfos" upperBound="-1"
         eType="#//NotificationInfo" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="adminFields" lowerBound="1"
@@ -291,12 +263,6 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="filters" upperBound="-1"
         eType="#//FilterField" containment="true" eOpposite="#//FilterField/parentActor"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Role">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Un role permet d'identifier un groupe de personne "/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FilterField" eSuperTypes="#//RelationFieldEntity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parentActor" eType="#//Actor"

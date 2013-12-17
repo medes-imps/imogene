@@ -64,32 +64,9 @@ public class ActorItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addAuthorizedRolesPropertyDescriptor(object);
 			addAdminFieldsPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * This adds a property descriptor for the Authorized Roles feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addAuthorizedRolesPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Actor_authorizedRoles_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Actor_authorizedRoles_feature", "_UI_Actor_type"),
-				 ImogenePackage.Literals.ACTOR__AUTHORIZED_ROLES,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
 	}
 
 	/**

@@ -93,7 +93,6 @@ public class ImogeneFactoryImpl extends EFactoryImpl implements ImogeneFactory {
 			case ImogenePackage.DATE_TIME_FIELD: return createDateTimeField();
 			case ImogenePackage.TIME_FIELD: return createTimeField();
 			case ImogenePackage.ACTOR: return createActor();
-			case ImogenePackage.ROLE: return createRole();
 			case ImogenePackage.FILTER_FIELD: return createFilterField();
 			case ImogenePackage.NOTIFICATION_INFO: return createNotificationInfo();
 			case ImogenePackage.DESCRIPTION: return createDescription();
@@ -357,16 +356,6 @@ public class ImogeneFactoryImpl extends EFactoryImpl implements ImogeneFactory {
 	public TextAreaField createTextAreaField() {
 		TextAreaFieldImpl textAreaField = new TextAreaFieldImpl();
 		return textAreaField;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Role createRole() {
-		RoleImpl role = new RoleImpl();
-		return role;
 	}
 
 	/**

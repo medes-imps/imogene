@@ -206,10 +206,6 @@ public class ImogeneAdapterFactory extends AdapterFactoryImpl {
 				return createActorAdapter();
 			}
 			@Override
-			public Adapter caseRole(Role object) {
-				return createRoleAdapter();
-			}
-			@Override
 			public Adapter caseFilterField(FilterField object) {
 				return createFilterFieldAdapter();
 			}
@@ -636,20 +632,6 @@ public class ImogeneAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createTextAreaFieldAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.imogene.model.core.Role <em>Role</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see org.imogene.model.core.Role
-	 * @generated
-	 */
-	public Adapter createRoleAdapter() {
 		return null;
 	}
 

@@ -21,8 +21,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.imogene.model.core.FieldGroup#getFields <em>Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.FieldGroup#getParentCard <em>Parent Card</em>}</li>
  *   <li>{@link org.imogene.model.core.FieldGroup#getName <em>Name</em>}</li>
- *   <li>{@link org.imogene.model.core.FieldGroup#getReaders <em>Readers</em>}</li>
- *   <li>{@link org.imogene.model.core.FieldGroup#getWriters <em>Writers</em>}</li>
  *   <li>{@link org.imogene.model.core.FieldGroup#getShortName <em>Short Name</em>}</li>
  *   <li>{@link org.imogene.model.core.FieldGroup#getIcon <em>Icon</em>}</li>
  * </ul>
@@ -127,36 +125,6 @@ public interface FieldGroup extends EObject {
 	 * @generated
 	 */
 	void setName(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Readers</b></em>' reference list.
-	 * The list contents are of type {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Roles autorisés à lire et consulter la carte.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Readers</em>' reference list.
-	 * @see org.imogene.model.core.ImogenePackage#getFieldGroup_Readers()
-	 * @model
-	 * @generated
-	 */
-	EList<Role> getReaders();
-
-	/**
-	 * Returns the value of the '<em><b>Writers</b></em>' reference list.
-	 * The list contents are of type {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Roles autorisés à modifier, écrire ou effacer la carte.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Writers</em>' reference list.
-	 * @see org.imogene.model.core.ImogenePackage#getFieldGroup_Writers()
-	 * @model
-	 * @generated
-	 */
-	EList<Role> getWriters();
 
 	/**
 	 * Returns the value of the '<em><b>Short Name</b></em>' attribute.

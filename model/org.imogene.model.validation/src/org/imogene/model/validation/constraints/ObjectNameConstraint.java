@@ -11,7 +11,6 @@ import org.imogene.model.core.EnumValue;
 import org.imogene.model.core.FieldEntity;
 import org.imogene.model.core.FieldGroup;
 import org.imogene.model.core.Project;
-import org.imogene.model.core.Role;
 
 /**
  * Check that object name match a regular expression
@@ -95,11 +94,6 @@ public class ObjectNameConstraint extends AbstractMedanyModelConstraint {
 				if (enumValue.getName() != null)
 					if (!enumValue.getName().matches(reg_ex))
 						return ctx.createFailureStatus(new Object[] { getErrorMessageEnumValue(enumValue.getName()) });
-			} else if (ctx.getTarget() instanceof Role) {
-				Role role = (Role) ctx.getTarget();
-				if (role.getName() != null)
-					if (!role.getName().matches(reg_ex))
-						return ctx.createFailureStatus(new Object[] { getErrorMessageRole(role.getName()) });
 			}
 			return ctx.createSuccessStatus();
 		} catch (Exception e) {
@@ -113,8 +107,4 @@ public class ObjectNameConstraint extends AbstractMedanyModelConstraint {
 		return new String("The name of the name enum value \"" + enumName + "\" should contains only " + reg_ex + ".");
 	}
 
-	/** get error message for role */
-	private String getErrorMessageRole(String roleName) {
-		return new String("the name of the role \"" + roleName + "\" should contains only " + reg_ex + ".");
-	}
 }

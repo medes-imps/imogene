@@ -51,7 +51,6 @@ import org.imogene.model.core.Project;
 import org.imogene.model.core.RelationFieldEntity;
 import org.imogene.model.core.RelationType;
 import org.imogene.model.core.ReverseRelationFieldEntity;
-import org.imogene.model.core.Role;
 import org.imogene.model.core.SoundField;
 import org.imogene.model.core.StringField;
 import org.imogene.model.core.TextAreaField;
@@ -263,13 +262,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	private EClass textAreaFieldEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass roleEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -591,26 +583,8 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getCardEntity_Creators() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(14);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getCardEntity_ClientPeriodFilterable() {
-		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(15);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getCardEntity_DirectAccess() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(16);
+		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(14);
 	}
 
 	/**
@@ -619,7 +593,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EReference getCardEntity_Georeferenced() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(17);
+		return (EReference)cardEntityEClass.getEStructuralFeatures().get(15);
 	}
 
 	/**
@@ -628,7 +602,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EReference getCardEntity_RdfSubject() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(18);
+		return (EReference)cardEntityEClass.getEStructuralFeatures().get(16);
 	}
 
 	/**
@@ -637,7 +611,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EAttribute getCardEntity_RdfPredicate() {
-		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(19);
+		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(17);
 	}
 
 	/**
@@ -646,7 +620,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EReference getCardEntity_NestedFields() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(20);
+		return (EReference)cardEntityEClass.getEStructuralFeatures().get(18);
 	}
 
 	/**
@@ -655,7 +629,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EAttribute getCardEntity_HasDynamicFields() {
-		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(21);
+		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(19);
 	}
 
 	/**
@@ -1140,17 +1114,8 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getProject_Roles() {
-		return (EReference)projectEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getProject_Languages() {
-		return (EReference)projectEClass.getEStructuralFeatures().get(6);
+		return (EReference)projectEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -1293,24 +1258,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getRole() {
-		return roleEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getRole_Name() {
-		return (EAttribute)roleEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getFieldGroup() {
 		return fieldGroupEClass;
 	}
@@ -1356,26 +1303,8 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFieldGroup_Readers() {
-		return (EReference)fieldGroupEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getFieldGroup_Writers() {
-		return (EReference)fieldGroupEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EAttribute getFieldGroup_ShortName() {
-		return (EAttribute)fieldGroupEClass.getEStructuralFeatures().get(6);
+		return (EAttribute)fieldGroupEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1384,7 +1313,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EAttribute getFieldGroup_Icon() {
-		return (EAttribute)fieldGroupEClass.getEStructuralFeatures().get(7);
+		return (EAttribute)fieldGroupEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -1401,7 +1330,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getActor_AuthorizedRoles() {
+	public EReference getActor_NotificationInfos() {
 		return (EReference)actorEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1410,7 +1339,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getActor_NotificationInfos() {
+	public EReference getActor_AdminFields() {
 		return (EReference)actorEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -1419,17 +1348,8 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getActor_AdminFields() {
-		return (EReference)actorEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getActor_Filters() {
-		return (EReference)actorEClass.getEStructuralFeatures().get(3);
+		return (EReference)actorEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1808,7 +1728,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		createEReference(projectEClass, PROJECT__ENTITIES);
 		createEReference(projectEClass, PROJECT__ENTITY_UI_FORMATS);
 		createEReference(projectEClass, PROJECT__THEMAS);
-		createEReference(projectEClass, PROJECT__ROLES);
 		createEReference(projectEClass, PROJECT__LANGUAGES);
 
 		cardEntityEClass = createEClass(CARD_ENTITY);
@@ -1826,9 +1745,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		createEReference(cardEntityEClass, CARD_ENTITY__ACTOR_FILTER_FIELDS);
 		createEAttribute(cardEntityEClass, CARD_ENTITY__COLOR);
 		createEAttribute(cardEntityEClass, CARD_ENTITY__DISPLAY_QR_CODE);
-		createEReference(cardEntityEClass, CARD_ENTITY__CREATORS);
 		createEAttribute(cardEntityEClass, CARD_ENTITY__CLIENT_PERIOD_FILTERABLE);
-		createEReference(cardEntityEClass, CARD_ENTITY__DIRECT_ACCESS);
 		createEReference(cardEntityEClass, CARD_ENTITY__GEOREFERENCED);
 		createEReference(cardEntityEClass, CARD_ENTITY__RDF_SUBJECT);
 		createEAttribute(cardEntityEClass, CARD_ENTITY__RDF_PREDICATE);
@@ -1840,8 +1757,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		createEReference(fieldGroupEClass, FIELD_GROUP__FIELDS);
 		createEReference(fieldGroupEClass, FIELD_GROUP__PARENT_CARD);
 		createEAttribute(fieldGroupEClass, FIELD_GROUP__NAME);
-		createEReference(fieldGroupEClass, FIELD_GROUP__READERS);
-		createEReference(fieldGroupEClass, FIELD_GROUP__WRITERS);
 		createEAttribute(fieldGroupEClass, FIELD_GROUP__SHORT_NAME);
 		createEAttribute(fieldGroupEClass, FIELD_GROUP__ICON);
 
@@ -1939,13 +1854,9 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		timeFieldEClass = createEClass(TIME_FIELD);
 
 		actorEClass = createEClass(ACTOR);
-		createEReference(actorEClass, ACTOR__AUTHORIZED_ROLES);
 		createEReference(actorEClass, ACTOR__NOTIFICATION_INFOS);
 		createEReference(actorEClass, ACTOR__ADMIN_FIELDS);
 		createEReference(actorEClass, ACTOR__FILTERS);
-
-		roleEClass = createEClass(ROLE);
-		createEAttribute(roleEClass, ROLE__NAME);
 
 		filterFieldEClass = createEClass(FILTER_FIELD);
 		createEReference(filterFieldEClass, FILTER_FIELD__PARENT_ACTOR);
@@ -2056,7 +1967,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		initEReference(getProject_Entities(), this.getCardEntity(), null, "entities", null, 1, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProject_EntityUIFormats(), this.getCardEntityUIFormat(), null, "entityUIFormats", null, 0, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProject_Themas(), this.getThema(), null, "themas", null, 0, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getProject_Roles(), this.getRole(), null, "roles", null, 0, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProject_Languages(), this.getLanguage(), null, "languages", null, 1, -1, Project.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(cardEntityEClass, CardEntity.class, "CardEntity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2074,9 +1984,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		initEReference(getCardEntity_ActorFilterFields(), this.getActorFilter(), null, "actorFilterFields", null, 0, -1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCardEntity_Color(), ecorePackage.getEString(), "color", "", 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCardEntity_DisplayQRCode(), ecorePackage.getEBoolean(), "DisplayQRCode", "false", 1, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCardEntity_Creators(), this.getRole(), null, "creators", null, 0, -1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCardEntity_ClientPeriodFilterable(), ecorePackage.getEBoolean(), "clientPeriodFilterable", "false", 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCardEntity_DirectAccess(), this.getRole(), null, "directAccess", null, 0, -1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCardEntity_Georeferenced(), this.getGeoField(), null, "georeferenced", null, 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCardEntity_RdfSubject(), this.getRelationFieldEntity(), null, "rdfSubject", null, 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCardEntity_RdfPredicate(), ecorePackage.getEString(), "rdfPredicate", null, 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2088,8 +1996,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		initEReference(getFieldGroup_Fields(), this.getFieldEntity(), this.getFieldEntity_ParentGroup(), "fields", null, 1, -1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFieldGroup_ParentCard(), this.getCardEntity(), this.getCardEntity_Groups(), "parentCard", null, 1, 1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFieldGroup_Name(), ecorePackage.getEString(), "name", null, 1, 1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFieldGroup_Readers(), this.getRole(), null, "readers", null, 0, -1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFieldGroup_Writers(), this.getRole(), null, "writers", null, 0, -1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFieldGroup_ShortName(), ecorePackage.getEString(), "shortName", null, 0, 1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFieldGroup_Icon(), ecorePackage.getEString(), "icon", null, 0, 1, FieldGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -2191,13 +2097,9 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		initEClass(timeFieldEClass, TimeField.class, "TimeField", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(actorEClass, Actor.class, "Actor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getActor_AuthorizedRoles(), this.getRole(), null, "authorizedRoles", null, 0, -1, Actor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getActor_NotificationInfos(), this.getNotificationInfo(), null, "notificationInfos", null, 0, -1, Actor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getActor_AdminFields(), this.getFieldEntity(), null, "adminFields", null, 1, -1, Actor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getActor_Filters(), this.getFilterField(), this.getFilterField_ParentActor(), "filters", null, 0, -1, Actor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(roleEClass, Role.class, "Role", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRole_Name(), ecorePackage.getEString(), "name", null, 1, 1, Role.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(filterFieldEClass, FilterField.class, "FilterField", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFilterField_ParentActor(), this.getActor(), this.getActor_Filters(), "parentActor", null, 0, 1, FilterField.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2278,7 +2180,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	protected void createExtendedMetaDataAnnotations() {
-		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";																							
+		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";																		
 		addAnnotation
 		  (getNotificationInfo_DataField(), 
 		   source, 

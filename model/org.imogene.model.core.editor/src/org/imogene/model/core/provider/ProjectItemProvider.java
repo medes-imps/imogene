@@ -111,7 +111,6 @@ public class ProjectItemProvider
 			childrenFeatures.add(ImogenePackage.Literals.PROJECT__ENTITIES);
 			childrenFeatures.add(ImogenePackage.Literals.PROJECT__ENTITY_UI_FORMATS);
 			childrenFeatures.add(ImogenePackage.Literals.PROJECT__THEMAS);
-			childrenFeatures.add(ImogenePackage.Literals.PROJECT__ROLES);
 			childrenFeatures.add(ImogenePackage.Literals.PROJECT__LANGUAGES);
 		}
 		return childrenFeatures;
@@ -174,7 +173,6 @@ public class ProjectItemProvider
 			case ImogenePackage.PROJECT__ENTITIES:
 			case ImogenePackage.PROJECT__ENTITY_UI_FORMATS:
 			case ImogenePackage.PROJECT__THEMAS:
-			case ImogenePackage.PROJECT__ROLES:
 			case ImogenePackage.PROJECT__LANGUAGES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
@@ -217,11 +215,6 @@ public class ProjectItemProvider
 			(createChildParameter
 				(ImogenePackage.Literals.PROJECT__THEMAS,
 				 ImogeneFactory.eINSTANCE.createThema()));
-
-		newChildDescriptors.add
-			(createChildParameter
-				(ImogenePackage.Literals.PROJECT__ROLES,
-				 ImogeneFactory.eINSTANCE.createRole()));
 
 		newChildDescriptors.add
 			(createChildParameter

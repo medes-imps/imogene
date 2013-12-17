@@ -84,7 +84,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getDescription()
 	 * @generated
 	 */
-	int DESCRIPTION = 35;
+	int DESCRIPTION = 34;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.FieldEntityImpl <em>Field Entity</em>}' class.
@@ -312,22 +312,13 @@ public interface ImogenePackage extends EPackage {
 	int PROJECT__THEMAS = 4;
 
 	/**
-	 * The feature id for the '<em><b>Roles</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROJECT__ROLES = 5;
-
-	/**
 	 * The feature id for the '<em><b>Languages</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROJECT__LANGUAGES = 6;
+	int PROJECT__LANGUAGES = 5;
 
 	/**
 	 * The number of structural features of the '<em>Project</em>' class.
@@ -336,7 +327,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROJECT_FEATURE_COUNT = 7;
+	int PROJECT_FEATURE_COUNT = 6;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -465,31 +456,13 @@ public interface ImogenePackage extends EPackage {
 	int CARD_ENTITY__DISPLAY_QR_CODE = 13;
 
 	/**
-	 * The feature id for the '<em><b>Creators</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CARD_ENTITY__CREATORS = 14;
-
-	/**
 	 * The feature id for the '<em><b>Client Period Filterable</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__CLIENT_PERIOD_FILTERABLE = 15;
-
-	/**
-	 * The feature id for the '<em><b>Direct Access</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CARD_ENTITY__DIRECT_ACCESS = 16;
+	int CARD_ENTITY__CLIENT_PERIOD_FILTERABLE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Georeferenced</b></em>' reference.
@@ -498,7 +471,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__GEOREFERENCED = 17;
+	int CARD_ENTITY__GEOREFERENCED = 15;
 
 	/**
 	 * The feature id for the '<em><b>Rdf Subject</b></em>' reference.
@@ -507,7 +480,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__RDF_SUBJECT = 18;
+	int CARD_ENTITY__RDF_SUBJECT = 16;
 
 	/**
 	 * The feature id for the '<em><b>Rdf Predicate</b></em>' attribute.
@@ -516,7 +489,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__RDF_PREDICATE = 19;
+	int CARD_ENTITY__RDF_PREDICATE = 17;
 
 	/**
 	 * The feature id for the '<em><b>Nested Fields</b></em>' reference list.
@@ -525,7 +498,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__NESTED_FIELDS = 20;
+	int CARD_ENTITY__NESTED_FIELDS = 18;
 
 	/**
 	 * The feature id for the '<em><b>Has Dynamic Fields</b></em>' attribute.
@@ -534,7 +507,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__HAS_DYNAMIC_FIELDS = 21;
+	int CARD_ENTITY__HAS_DYNAMIC_FIELDS = 19;
 
 	/**
 	 * The number of structural features of the '<em>Card Entity</em>' class.
@@ -543,7 +516,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY_FEATURE_COUNT = 22;
+	int CARD_ENTITY_FEATURE_COUNT = 20;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.PhoneFieldImpl <em>Phone Field</em>}' class.
@@ -616,16 +589,6 @@ public interface ImogenePackage extends EPackage {
 	int TEXT_AREA_FIELD = 14;
 
 	/**
-	 * The meta object id for the '{@link org.imogene.model.core.impl.RoleImpl <em>Role</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.imogene.model.core.impl.RoleImpl
-	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getRole()
-	 * @generated
-	 */
-	int ROLE = 32;
-
-	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.FieldGroupImpl <em>Field Group</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -672,31 +635,13 @@ public interface ImogenePackage extends EPackage {
 	int FIELD_GROUP__NAME = 3;
 
 	/**
-	 * The feature id for the '<em><b>Readers</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FIELD_GROUP__READERS = 4;
-
-	/**
-	 * The feature id for the '<em><b>Writers</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FIELD_GROUP__WRITERS = 5;
-
-	/**
 	 * The feature id for the '<em><b>Short Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FIELD_GROUP__SHORT_NAME = 6;
+	int FIELD_GROUP__SHORT_NAME = 4;
 
 	/**
 	 * The feature id for the '<em><b>Icon</b></em>' attribute.
@@ -705,7 +650,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FIELD_GROUP__ICON = 7;
+	int FIELD_GROUP__ICON = 5;
 
 	/**
 	 * The number of structural features of the '<em>Field Group</em>' class.
@@ -714,7 +659,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FIELD_GROUP_FEATURE_COUNT = 8;
+	int FIELD_GROUP_FEATURE_COUNT = 6;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1481,7 +1426,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getNotificationInfo()
 	 * @generated
 	 */
-	int NOTIFICATION_INFO = 34;
+	int NOTIFICATION_INFO = 33;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.LanguageImpl <em>Language</em>}' class.
@@ -1491,7 +1436,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getLanguage()
 	 * @generated
 	 */
-	int LANGUAGE = 36;
+	int LANGUAGE = 35;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.FieldDependentVisibilityImpl <em>Field Dependent Visibility</em>}' class.
@@ -1501,7 +1446,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getFieldDependentVisibility()
 	 * @generated
 	 */
-	int FIELD_DEPENDENT_VISIBILITY = 37;
+	int FIELD_DEPENDENT_VISIBILITY = 36;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.ValidationRuleImpl <em>Validation Rule</em>}' class.
@@ -1548,7 +1493,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getActorFilter()
 	 * @generated
 	 */
-	int ACTOR_FILTER = 38;
+	int ACTOR_FILTER = 37;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.FilterFieldImpl <em>Filter Field</em>}' class.
@@ -1558,7 +1503,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getFilterField()
 	 * @generated
 	 */
-	int FILTER_FIELD = 33;
+	int FILTER_FIELD = 32;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.AddressFieldImpl <em>Address Field</em>}' class.
@@ -4372,15 +4317,6 @@ public interface ImogenePackage extends EPackage {
 	int ACTOR__DISPLAY_QR_CODE = CARD_ENTITY__DISPLAY_QR_CODE;
 
 	/**
-	 * The feature id for the '<em><b>Creators</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ACTOR__CREATORS = CARD_ENTITY__CREATORS;
-
-	/**
 	 * The feature id for the '<em><b>Client Period Filterable</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4388,15 +4324,6 @@ public interface ImogenePackage extends EPackage {
 	 * @ordered
 	 */
 	int ACTOR__CLIENT_PERIOD_FILTERABLE = CARD_ENTITY__CLIENT_PERIOD_FILTERABLE;
-
-	/**
-	 * The feature id for the '<em><b>Direct Access</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ACTOR__DIRECT_ACCESS = CARD_ENTITY__DIRECT_ACCESS;
 
 	/**
 	 * The feature id for the '<em><b>Georeferenced</b></em>' reference.
@@ -4444,22 +4371,13 @@ public interface ImogenePackage extends EPackage {
 	int ACTOR__HAS_DYNAMIC_FIELDS = CARD_ENTITY__HAS_DYNAMIC_FIELDS;
 
 	/**
-	 * The feature id for the '<em><b>Authorized Roles</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ACTOR__AUTHORIZED_ROLES = CARD_ENTITY_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Notification Infos</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ACTOR__NOTIFICATION_INFOS = CARD_ENTITY_FEATURE_COUNT + 1;
+	int ACTOR__NOTIFICATION_INFOS = CARD_ENTITY_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Admin Fields</b></em>' reference list.
@@ -4468,7 +4386,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ACTOR__ADMIN_FIELDS = CARD_ENTITY_FEATURE_COUNT + 2;
+	int ACTOR__ADMIN_FIELDS = CARD_ENTITY_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Filters</b></em>' containment reference list.
@@ -4477,7 +4395,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ACTOR__FILTERS = CARD_ENTITY_FEATURE_COUNT + 3;
+	int ACTOR__FILTERS = CARD_ENTITY_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Actor</em>' class.
@@ -4486,25 +4404,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ACTOR_FEATURE_COUNT = CARD_ENTITY_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ROLE__NAME = 0;
-
-	/**
-	 * The number of structural features of the '<em>Role</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ROLE_FEATURE_COUNT = 1;
+	int ACTOR_FEATURE_COUNT = CARD_ENTITY_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -4892,7 +4792,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getThema()
 	 * @generated
 	 */
-	int THEMA = 39;
+	int THEMA = 38;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -4938,7 +4838,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getCardEntityUIFormat()
 	 * @generated
 	 */
-	int CARD_ENTITY_UI_FORMAT = 40;
+	int CARD_ENTITY_UI_FORMAT = 39;
 
 	/**
 	 * The feature id for the '<em><b>Entity</b></em>' reference.
@@ -4975,7 +4875,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getPhoneType()
 	 * @generated
 	 */
-	int PHONE_TYPE = 42;
+	int PHONE_TYPE = 41;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.RelationType <em>Relation Type</em>}' enum.
@@ -4985,7 +4885,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getRelationType()
 	 * @generated
 	 */
-	int RELATION_TYPE = 43;
+	int RELATION_TYPE = 42;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.NotificationMethod <em>Notification Method</em>}' enum.
@@ -4995,7 +4895,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getNotificationMethod()
 	 * @generated
 	 */
-	int NOTIFICATION_METHOD = 44;
+	int NOTIFICATION_METHOD = 43;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.GeoType <em>Geo Type</em>}' enum.
@@ -5005,7 +4905,7 @@ public interface ImogenePackage extends EPackage {
 	 * @see org.imogene.model.core.impl.ImogenePackageImpl#getGeoType()
 	 * @generated
 	 */
-	int GEO_TYPE = 41;
+	int GEO_TYPE = 40;
 
 
 	/**
@@ -5173,17 +5073,6 @@ public interface ImogenePackage extends EPackage {
 	EAttribute getCardEntity_DisplayQRCode();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.imogene.model.core.CardEntity#getCreators <em>Creators</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Creators</em>'.
-	 * @see org.imogene.model.core.CardEntity#getCreators()
-	 * @see #getCardEntity()
-	 * @generated
-	 */
-	EReference getCardEntity_Creators();
-
-	/**
 	 * Returns the meta object for the attribute '{@link org.imogene.model.core.CardEntity#isClientPeriodFilterable <em>Client Period Filterable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5193,17 +5082,6 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCardEntity_ClientPeriodFilterable();
-
-	/**
-	 * Returns the meta object for the reference list '{@link org.imogene.model.core.CardEntity#getDirectAccess <em>Direct Access</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Direct Access</em>'.
-	 * @see org.imogene.model.core.CardEntity#getDirectAccess()
-	 * @see #getCardEntity()
-	 * @generated
-	 */
-	EReference getCardEntity_DirectAccess();
 
 	/**
 	 * Returns the meta object for the reference '{@link org.imogene.model.core.CardEntity#getGeoreferenced <em>Georeferenced</em>}'.
@@ -5826,17 +5704,6 @@ public interface ImogenePackage extends EPackage {
 	EReference getProject_Themas();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.imogene.model.core.Project#getRoles <em>Roles</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Roles</em>'.
-	 * @see org.imogene.model.core.Project#getRoles()
-	 * @see #getProject()
-	 * @generated
-	 */
-	EReference getProject_Roles();
-
-	/**
 	 * Returns the meta object for the containment reference list '{@link org.imogene.model.core.Project#getLanguages <em>Languages</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6005,27 +5872,6 @@ public interface ImogenePackage extends EPackage {
 	EClass getTextAreaField();
 
 	/**
-	 * Returns the meta object for class '{@link org.imogene.model.core.Role <em>Role</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Role</em>'.
-	 * @see org.imogene.model.core.Role
-	 * @generated
-	 */
-	EClass getRole();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.imogene.model.core.Role#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.imogene.model.core.Role#getName()
-	 * @see #getRole()
-	 * @generated
-	 */
-	EAttribute getRole_Name();
-
-	/**
 	 * Returns the meta object for class '{@link org.imogene.model.core.FieldGroup <em>Field Group</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6080,28 +5926,6 @@ public interface ImogenePackage extends EPackage {
 	EAttribute getFieldGroup_Name();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.imogene.model.core.FieldGroup#getReaders <em>Readers</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Readers</em>'.
-	 * @see org.imogene.model.core.FieldGroup#getReaders()
-	 * @see #getFieldGroup()
-	 * @generated
-	 */
-	EReference getFieldGroup_Readers();
-
-	/**
-	 * Returns the meta object for the reference list '{@link org.imogene.model.core.FieldGroup#getWriters <em>Writers</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Writers</em>'.
-	 * @see org.imogene.model.core.FieldGroup#getWriters()
-	 * @see #getFieldGroup()
-	 * @generated
-	 */
-	EReference getFieldGroup_Writers();
-
-	/**
 	 * Returns the meta object for the attribute '{@link org.imogene.model.core.FieldGroup#getShortName <em>Short Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -6132,17 +5956,6 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 */
 	EClass getActor();
-
-	/**
-	 * Returns the meta object for the reference list '{@link org.imogene.model.core.Actor#getAuthorizedRoles <em>Authorized Roles</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Authorized Roles</em>'.
-	 * @see org.imogene.model.core.Actor#getAuthorizedRoles()
-	 * @see #getActor()
-	 * @generated
-	 */
-	EReference getActor_AuthorizedRoles();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link org.imogene.model.core.Actor#getNotificationInfos <em>Notification Infos</em>}'.
@@ -6725,28 +6538,12 @@ public interface ImogenePackage extends EPackage {
 		EAttribute CARD_ENTITY__DISPLAY_QR_CODE = eINSTANCE.getCardEntity_DisplayQRCode();
 
 		/**
-		 * The meta object literal for the '<em><b>Creators</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CARD_ENTITY__CREATORS = eINSTANCE.getCardEntity_Creators();
-
-		/**
 		 * The meta object literal for the '<em><b>Client Period Filterable</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EAttribute CARD_ENTITY__CLIENT_PERIOD_FILTERABLE = eINSTANCE.getCardEntity_ClientPeriodFilterable();
-
-		/**
-		 * The meta object literal for the '<em><b>Direct Access</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CARD_ENTITY__DIRECT_ACCESS = eINSTANCE.getCardEntity_DirectAccess();
 
 		/**
 		 * The meta object literal for the '<em><b>Georeferenced</b></em>' reference feature.
@@ -7249,14 +7046,6 @@ public interface ImogenePackage extends EPackage {
 		EReference PROJECT__THEMAS = eINSTANCE.getProject_Themas();
 
 		/**
-		 * The meta object literal for the '<em><b>Roles</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PROJECT__ROLES = eINSTANCE.getProject_Roles();
-
-		/**
 		 * The meta object literal for the '<em><b>Languages</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7401,24 +7190,6 @@ public interface ImogenePackage extends EPackage {
 		EClass TEXT_AREA_FIELD = eINSTANCE.getTextAreaField();
 
 		/**
-		 * The meta object literal for the '{@link org.imogene.model.core.impl.RoleImpl <em>Role</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.imogene.model.core.impl.RoleImpl
-		 * @see org.imogene.model.core.impl.ImogenePackageImpl#getRole()
-		 * @generated
-		 */
-		EClass ROLE = eINSTANCE.getRole();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ROLE__NAME = eINSTANCE.getRole_Name();
-
-		/**
 		 * The meta object literal for the '{@link org.imogene.model.core.impl.FieldGroupImpl <em>Field Group</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7461,22 +7232,6 @@ public interface ImogenePackage extends EPackage {
 		EAttribute FIELD_GROUP__NAME = eINSTANCE.getFieldGroup_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Readers</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FIELD_GROUP__READERS = eINSTANCE.getFieldGroup_Readers();
-
-		/**
-		 * The meta object literal for the '<em><b>Writers</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FIELD_GROUP__WRITERS = eINSTANCE.getFieldGroup_Writers();
-
-		/**
 		 * The meta object literal for the '<em><b>Short Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -7501,14 +7256,6 @@ public interface ImogenePackage extends EPackage {
 		 * @generated
 		 */
 		EClass ACTOR = eINSTANCE.getActor();
-
-		/**
-		 * The meta object literal for the '<em><b>Authorized Roles</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ACTOR__AUTHORIZED_ROLES = eINSTANCE.getActor_AuthorizedRoles();
 
 		/**
 		 * The meta object literal for the '<em><b>Notification Infos</b></em>' containment reference list feature.

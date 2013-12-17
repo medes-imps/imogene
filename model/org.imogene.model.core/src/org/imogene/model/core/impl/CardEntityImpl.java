@@ -31,7 +31,6 @@ import org.imogene.model.core.FieldGroup;
 import org.imogene.model.core.GeoField;
 import org.imogene.model.core.ImogenePackage;
 import org.imogene.model.core.RelationFieldEntity;
-import org.imogene.model.core.Role;
 
 /**
  * <!-- begin-user-doc -->
@@ -54,9 +53,7 @@ import org.imogene.model.core.Role;
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getActorFilterFields <em>Actor Filter Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getColor <em>Color</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#isDisplayQRCode <em>Display QR Code</em>}</li>
- *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getCreators <em>Creators</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#isClientPeriodFilterable <em>Client Period Filterable</em>}</li>
- *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getDirectAccess <em>Direct Access</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getGeoreferenced <em>Georeferenced</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getRdfSubject <em>Rdf Subject</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getRdfPredicate <em>Rdf Predicate</em>}</li>
@@ -276,16 +273,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 	protected boolean displayQRCode = DISPLAY_QR_CODE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getCreators() <em>Creators</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCreators()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Role> creators;
-
-	/**
 	 * The default value of the '{@link #isClientPeriodFilterable() <em>Client Period Filterable</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -304,16 +291,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 	 * @ordered
 	 */
 	protected boolean clientPeriodFilterable = CLIENT_PERIOD_FILTERABLE_EDEFAULT;
-
-	/**
-	 * The cached value of the '{@link #getDirectAccess() <em>Direct Access</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDirectAccess()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Role> directAccess;
 
 	/**
 	 * The cached value of the '{@link #getGeoreferenced() <em>Georeferenced</em>}' reference.
@@ -631,18 +608,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Role> getCreators() {
-		if (creators == null) {
-			creators = new EObjectResolvingEList<Role>(Role.class, this, ImogenePackage.CARD_ENTITY__CREATORS);
-		}
-		return creators;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public boolean isClientPeriodFilterable() {
 		return clientPeriodFilterable;
 	}
@@ -657,18 +622,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 		clientPeriodFilterable = newClientPeriodFilterable;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE, oldClientPeriodFilterable, clientPeriodFilterable));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Role> getDirectAccess() {
-		if (directAccess == null) {
-			directAccess = new EObjectResolvingEList<Role>(Role.class, this, ImogenePackage.CARD_ENTITY__DIRECT_ACCESS);
-		}
-		return directAccess;
 	}
 
 	/**
@@ -868,12 +821,8 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 				return getColor();
 			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
 				return isDisplayQRCode();
-			case ImogenePackage.CARD_ENTITY__CREATORS:
-				return getCreators();
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				return isClientPeriodFilterable();
-			case ImogenePackage.CARD_ENTITY__DIRECT_ACCESS:
-				return getDirectAccess();
 			case ImogenePackage.CARD_ENTITY__GEOREFERENCED:
 				if (resolve) return getGeoreferenced();
 				return basicGetGeoreferenced();
@@ -949,16 +898,8 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
 				setDisplayQRCode((Boolean)newValue);
 				return;
-			case ImogenePackage.CARD_ENTITY__CREATORS:
-				getCreators().clear();
-				getCreators().addAll((Collection<? extends Role>)newValue);
-				return;
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				setClientPeriodFilterable((Boolean)newValue);
-				return;
-			case ImogenePackage.CARD_ENTITY__DIRECT_ACCESS:
-				getDirectAccess().clear();
-				getDirectAccess().addAll((Collection<? extends Role>)newValue);
 				return;
 			case ImogenePackage.CARD_ENTITY__GEOREFERENCED:
 				setGeoreferenced((GeoField)newValue);
@@ -1030,14 +971,8 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
 				setDisplayQRCode(DISPLAY_QR_CODE_EDEFAULT);
 				return;
-			case ImogenePackage.CARD_ENTITY__CREATORS:
-				getCreators().clear();
-				return;
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				setClientPeriodFilterable(CLIENT_PERIOD_FILTERABLE_EDEFAULT);
-				return;
-			case ImogenePackage.CARD_ENTITY__DIRECT_ACCESS:
-				getDirectAccess().clear();
 				return;
 			case ImogenePackage.CARD_ENTITY__GEOREFERENCED:
 				setGeoreferenced((GeoField)null);
@@ -1094,12 +1029,8 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 				return COLOR_EDEFAULT == null ? color != null : !COLOR_EDEFAULT.equals(color);
 			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
 				return displayQRCode != DISPLAY_QR_CODE_EDEFAULT;
-			case ImogenePackage.CARD_ENTITY__CREATORS:
-				return creators != null && !creators.isEmpty();
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				return clientPeriodFilterable != CLIENT_PERIOD_FILTERABLE_EDEFAULT;
-			case ImogenePackage.CARD_ENTITY__DIRECT_ACCESS:
-				return directAccess != null && !directAccess.isEmpty();
 			case ImogenePackage.CARD_ENTITY__GEOREFERENCED:
 				return georeferenced != null;
 			case ImogenePackage.CARD_ENTITY__RDF_SUBJECT:

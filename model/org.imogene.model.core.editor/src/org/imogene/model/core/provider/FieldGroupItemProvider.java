@@ -32,7 +32,6 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.imogene.model.core.FieldGroup;
 import org.imogene.model.core.ImogeneFactory;
 import org.imogene.model.core.ImogenePackage;
-import org.imogene.model.core.Role;
 import org.imogene.model.core.editor.ImogeneModelEditPlugin;
 
 /**
@@ -74,8 +73,6 @@ public class FieldGroupItemProvider
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
-			addReadersPropertyDescriptor(object);
-			addWritersPropertyDescriptor(object);
 			addShortNamePropertyDescriptor(object);
 			addIconPropertyDescriptor(object);
 		}
@@ -100,50 +97,6 @@ public class FieldGroupItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Readers feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addReadersPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_FieldGroup_readers_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_FieldGroup_readers_feature", "_UI_FieldGroup_type"),
-				 ImogenePackage.Literals.FIELD_GROUP__READERS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Writers feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addWritersPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_FieldGroup_writers_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_FieldGroup_writers_feature", "_UI_FieldGroup_type"),
-				 ImogenePackage.Literals.FIELD_GROUP__WRITERS,
-				 true,
-				 false,
-				 true,
-				 null,
 				 null,
 				 null));
 	}
@@ -231,41 +184,20 @@ public class FieldGroupItemProvider
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/custom16/FieldGroup.png"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/FieldGroup"));
 	}
 
     /**
      * This returns the label text for the adapted class.
-     * <!-- begin-user-doc
-     * --> <!-- end-user-doc -->
-     * @generated NOT
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
      */
-    public String getText(Object object)
-    {
-        FieldGroup fg = (FieldGroup) object;   
-        String label = fg.getName();
-        // Create a set of readers and writers to write access property.
-        Set<Role> roles = new HashSet<Role>(fg.getReaders());
-        roles.addAll(fg.getWriters());
-        
-        StringBuffer buf = new StringBuffer("   Access : ");
-        if (roles.size() == 0)
-            buf.append(" NOT DEFINED");
-        for (Iterator<Role> it = roles.iterator(); it.hasNext(); )
-        {
-            Role r = (Role) it.next();
-            buf.append(r.getName());
-            buf.append(" (");
-            if (fg.getReaders().contains(r)) buf.append("R");
-            if (fg.getWriters().contains(r)) buf.append("W");
-            buf.append(")");
-            if (it.hasNext())
-                buf.append(", ");
-        }
-        
+    public String getText(Object object) {
+        String label = ((FieldGroup) object).getName();   
         return label == null || label.length() == 0 ?
-            getString("_UI_FieldGroup_type") + " " + buf.toString() :
-            label + " " + buf.toString();
+            getString("_UI_FieldGroup_type") :
+            getString("_UI_FieldGroup_type") + " " + label;
     }
 
 	/**

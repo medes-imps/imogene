@@ -567,29 +567,6 @@ public class ImogeneItemProviderAdapterFactory extends ImogeneAdapterFactory imp
 	}
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.imogene.model.core.Role} instances.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected RoleItemProvider roleItemProvider;
-
-	/**
-	 * This creates an adapter for a {@link org.imogene.model.core.Role}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Adapter createRoleAdapter() {
-		if (roleItemProvider == null) {
-			roleItemProvider = new RoleItemProvider(this);
-		}
-
-		return roleItemProvider;
-	}
-
-	/**
 	 * This keeps track of the one adapter used for all {@link org.imogene.model.core.FieldGroup} instances.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1013,7 +990,6 @@ public class ImogeneItemProviderAdapterFactory extends ImogeneAdapterFactory imp
 		if (dateTimeFieldItemProvider != null) dateTimeFieldItemProvider.dispose();
 		if (timeFieldItemProvider != null) timeFieldItemProvider.dispose();
 		if (actorItemProvider != null) actorItemProvider.dispose();
-		if (roleItemProvider != null) roleItemProvider.dispose();
 		if (filterFieldItemProvider != null) filterFieldItemProvider.dispose();
 		if (notificationInfoItemProvider != null) notificationInfoItemProvider.dispose();
 		if (descriptionItemProvider != null) descriptionItemProvider.dispose();

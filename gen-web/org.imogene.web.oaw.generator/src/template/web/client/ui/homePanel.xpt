@@ -35,7 +35,7 @@ import org.imogene.«projectName.toLowerCase()».client.AccessManager;
 import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»IconConstants;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 «FOREACH this.entities AS e-»
-«IF e.topLevel || !e.directAccess.isEmpty-»
+«IF e.topLevel-»
 import org.imogene.«projectName.toLowerCase()».client.event.create.Create«e.name.toFirstUpper()»Event;
 import org.imogene.«projectName.toLowerCase()».client.event.list.List«e.name.toFirstUpper()»Event;
 «ENDIF-»
@@ -118,7 +118,7 @@ public class HomePanel extends Composite {
 		@UiField(provided = true)	
 		FieldGroupPanel tema«t.name.toFirstUpper()»;	
 		«FOREACH t.entities AS e-»
-		«IF e.topLevel || !e.directAccess.isEmpty-»
+		«IF e.topLevel-»
 		@UiField(provided = true)
 		EntityPanel «e.name.toFirstLower()»;
 		«ENDIF-»
@@ -129,7 +129,7 @@ public class HomePanel extends Composite {
 		@UiField(provided = true)	
 		FieldGroupPanel defaultTema;	
 		«FOREACH entities AS e-»
-		«IF e.topLevel || !e.directAccess.isEmpty-»
+		«IF e.topLevel-»
 		@UiField(provided = true)
 		EntityPanel «e.name.toFirstLower()»;
 		«ENDIF-»
@@ -186,7 +186,7 @@ public class HomePanel extends Composite {
 			tema«t.name.toFirstUpper()» = new FieldGroupPanel();
 			tema«t.name.toFirstUpper()».setGroupTitle(NLS.constants().thema_«t.name.toFirstLower()»());
 			«FOREACH t.entities AS e-»
-			«IF e.topLevel || !e.directAccess.isEmpty-»
+			«IF e.topLevel-»
 			if(«projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON!=null)		
 				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
 			else
@@ -198,7 +198,7 @@ public class HomePanel extends Composite {
 			defaultTema = new FieldGroupPanel();
 			defaultTema.setGroupTitle(BaseNLS.constants().thema_default());
 			«FOREACH entities AS e-»
-			«IF e.topLevel || !e.directAccess.isEmpty-»
+			«IF e.topLevel-»
 			if(«projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON!=null)		
 				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
 			else
@@ -481,7 +481,7 @@ public class HomePanel extends Composite {
 		boolean showUsersTema = false;
 		«FOREACH entities AS e-»
 		«IF Actor.isAssignableFrom(e.metaType)-»
-			«IF e.topLevel || !e.directAccess.isEmpty-»
+			«IF e.topLevel-»
 			if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
 				«e.name.toFirstLower()».setVisible(false);
 			else
@@ -534,7 +534,7 @@ public class HomePanel extends Composite {
 		/* thema  «t.name» */
 		boolean show«t.name.toFirstUpper()»Tema = false;
 		«FOREACH t.entities AS e-»
-		«IF e.topLevel || !e.directAccess.isEmpty-»
+		«IF e.topLevel-»
 		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
 			«e.name.toFirstLower()».setVisible(false);
 		else
@@ -546,7 +546,7 @@ public class HomePanel extends Composite {
 		«ENDFOREACH -»	
 	«ELSE-»
 		«FOREACH entities AS e-»
-		«IF e.topLevel || !e.directAccess.isEmpty-»
+		«IF e.topLevel-»
 		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»))
 			«e.name.toFirstLower()».setVisible(false);
 		«ENDIF-»
@@ -599,7 +599,7 @@ public class HomePanel extends Composite {
 
 
 «DEFINE setActions FOR CardEntity-»
-		«IF topLevel || !directAccess.isEmpty-»
+		«IF topLevel-»
 		/* «name.toFirstUpper()» Menu */
 		
 		if (AccessManager.canCreate«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()) {		

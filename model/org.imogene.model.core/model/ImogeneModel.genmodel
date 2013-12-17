@@ -42,7 +42,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/entityUIFormats"/>
       <genFeatures property="None" children="true" createChild="true" propertySortChoices="true"
           ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/themas"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/roles"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/languages"/>
     </genClasses>
     <genClasses ecoreClass="ImogeneModel.ecore#//CardEntity">
@@ -60,18 +59,18 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/actorFilterFields"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/color"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/DisplayQRCode"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/creators"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/clientPeriodFilterable"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/directAccess"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/georeferenced"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/rdfSubject"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/rdfPredicate"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/nestedFields"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/hasDynamicFields"/>
     </genClasses>
     <genClasses ecoreClass="ImogeneModel.ecore#//FieldGroup">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/descriptions"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/fields"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/parentCard"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldGroup/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/readers"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/writers"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldGroup/shortName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldGroup/icon"/>
       <genOperations ecoreOperation="ImogeneModel.ecore#//FieldGroup/containsOnlyHiddenFields"/>
@@ -87,6 +86,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldEntity/parentGroup"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/calculationFunctionName"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldEntity/fieldDependentVisibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/rdfPredicate"/>
       <genOperations ecoreOperation="ImogeneModel.ecore#//FieldEntity/validate"/>
     </genClasses>
     <genClasses ecoreClass="ImogeneModel.ecore#//BooleanField"/>
@@ -127,6 +127,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/commonFields"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/oppositeRelationField"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/relationHierarchicalFilter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//RelationFieldEntity/nestedForm"/>
     </genClasses>
     <genClasses ecoreClass="ImogeneModel.ecore#//MainRelationFieldEntity">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//MainRelationFieldEntity/InverseCardinality"/>
@@ -155,13 +156,9 @@
     <genClasses ecoreClass="ImogeneModel.ecore#//DateTimeField"/>
     <genClasses ecoreClass="ImogeneModel.ecore#//TimeField"/>
     <genClasses ecoreClass="ImogeneModel.ecore#//Actor">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/authorizedRoles"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/notificationInfos"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/adminFields"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/filters"/>
-    </genClasses>
-    <genClasses ecoreClass="ImogeneModel.ecore#//Role">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Role/name"/>
     </genClasses>
     <genClasses ecoreClass="ImogeneModel.ecore#//FilterField">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FilterField/parentActor"/>

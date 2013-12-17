@@ -92,7 +92,7 @@
 						«ENDIF-»							
 							<g:FlowPanel>
 							«FOREACH t.entities AS e -»
-									«IF e.topLevel || !e.directAccess.isEmpty-»
+									«IF e.topLevel-»
 								<imo2:EntityPanel ui:field="«e.name.toFirstLower()»" />
 									«ENDIF-»
 								«ENDFOREACH -»	
@@ -105,7 +105,7 @@
 						<imo:FieldGroupPanel ui:field="defaultTema">							
 							<g:HorizontalPanel>
 							«FOREACH entities AS e -»
-									«IF e.topLevel || !e.directAccess.isEmpty-»
+									«IF e.topLevel-»
 								<imo2:EntityPanel ui:field="«e.name.toFirstLower()»" />
 									«ENDIF-»
 								«ENDFOREACH -»	

@@ -24,7 +24,6 @@ import org.imogene.model.core.FieldEntity;
 import org.imogene.model.core.FilterField;
 import org.imogene.model.core.ImogenePackage;
 import org.imogene.model.core.NotificationInfo;
-import org.imogene.model.core.Role;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,7 +32,6 @@ import org.imogene.model.core.Role;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.imogene.model.core.impl.ActorImpl#getAuthorizedRoles <em>Authorized Roles</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.ActorImpl#getNotificationInfos <em>Notification Infos</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.ActorImpl#getAdminFields <em>Admin Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.ActorImpl#getFilters <em>Filters</em>}</li>
@@ -49,16 +47,6 @@ public class ActorImpl extends CardEntityImpl implements Actor {
 	 * @generated
 	 */
 	public static final String copyright = "Medes-IMPS 2011";
-
-	/**
-	 * The cached value of the '{@link #getAuthorizedRoles() <em>Authorized Roles</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getAuthorizedRoles()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Role> authorizedRoles;
 
 	/**
 	 * The cached value of the '{@link #getNotificationInfos() <em>Notification Infos</em>}' containment reference list.
@@ -107,18 +95,6 @@ public class ActorImpl extends CardEntityImpl implements Actor {
 	@Override
 	protected EClass eStaticClass() {
 		return ImogenePackage.Literals.ACTOR;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Role> getAuthorizedRoles() {
-		if (authorizedRoles == null) {
-			authorizedRoles = new EObjectResolvingEList<Role>(Role.class, this, ImogenePackage.ACTOR__AUTHORIZED_ROLES);
-		}
-		return authorizedRoles;
 	}
 
 	/**
@@ -196,8 +172,6 @@ public class ActorImpl extends CardEntityImpl implements Actor {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ImogenePackage.ACTOR__AUTHORIZED_ROLES:
-				return getAuthorizedRoles();
 			case ImogenePackage.ACTOR__NOTIFICATION_INFOS:
 				return getNotificationInfos();
 			case ImogenePackage.ACTOR__ADMIN_FIELDS:
@@ -217,10 +191,6 @@ public class ActorImpl extends CardEntityImpl implements Actor {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ImogenePackage.ACTOR__AUTHORIZED_ROLES:
-				getAuthorizedRoles().clear();
-				getAuthorizedRoles().addAll((Collection<? extends Role>)newValue);
-				return;
 			case ImogenePackage.ACTOR__NOTIFICATION_INFOS:
 				getNotificationInfos().clear();
 				getNotificationInfos().addAll((Collection<? extends NotificationInfo>)newValue);
@@ -245,9 +215,6 @@ public class ActorImpl extends CardEntityImpl implements Actor {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ImogenePackage.ACTOR__AUTHORIZED_ROLES:
-				getAuthorizedRoles().clear();
-				return;
 			case ImogenePackage.ACTOR__NOTIFICATION_INFOS:
 				getNotificationInfos().clear();
 				return;
@@ -269,8 +236,6 @@ public class ActorImpl extends CardEntityImpl implements Actor {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ImogenePackage.ACTOR__AUTHORIZED_ROLES:
-				return authorizedRoles != null && !authorizedRoles.isEmpty();
 			case ImogenePackage.ACTOR__NOTIFICATION_INFOS:
 				return notificationInfos != null && !notificationInfos.isEmpty();
 			case ImogenePackage.ACTOR__ADMIN_FIELDS:
