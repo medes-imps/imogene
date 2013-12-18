@@ -2,15 +2,19 @@
 «EXTENSION template::CommonEntityUtilExt» 
 
 «DEFINE generate(String projectName) FOR Project»
-«FILE projectName.toLowerCase() + "/server/security/" + projectName.toFirstUpper() + "BeanFilter.java"»
+«FILE projectName.toLowerCase() + "/server/security/ImogBeanFilterImpl.java"»
 package org.imogene.«projectName.toLowerCase()».server.security;
 
 import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.http.HttpSession;
+
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
-import org.imogene.web.server.security.ImogBeanFilter;
+import org.imogene.lib.common.security.ImogBeanFilter;
+import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.ServerConstants;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
 «ENDFOREACH-»
@@ -20,26 +24,23 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUppe
  * allowed bean data is accessible in read mode
  * @author Medes-IMPS
  */
-public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
-	
+public class ImogBeanFilterImpl implements ImogBeanFilter {
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ImogBean> T toSecure(T bean, ImogActor actor) {
-		SecurityPolicyImpl policy = new SecurityPolicyImpl(actor);
 		«FOREACH entities AS e»
 		if (bean instanceof «e.name»)
-			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean, policy);			
+			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean);			
 		«ENDFOREACH»
 		return bean;
 	}
 
 	@Override
 	public <T extends ImogBean> List<T> toSecure(List<T> beans, ImogActor actor) {
-		SecurityPolicyImpl policy = new SecurityPolicyImpl(actor);
 		List<T> securedList = new Vector<T>();
 		for (T bean : beans) {
-			T isSecured = toSecure(bean, policy);
+			T isSecured = toSecure(bean, actor);
 			if (isSecured != null) {
 				securedList.add(isSecured);
 			}
@@ -47,13 +48,14 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 		return securedList;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private <T extends ImogBean> T toSecure(T bean, SecurityPolicyImpl policy) {
-		«FOREACH entities AS e»
-		if (bean instanceof «e.name»)
-			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean, policy);			
-		«ENDFOREACH»
-		return bean;
+	@Override
+	public <T extends ImogBean> T toHibernate(T bean, ImogActor actor) {
+		return null;
+	}
+
+	@Override
+	public <T extends ImogBean> List<T> toHibernate(List<T> list, ImogActor actor) {
+		return null;
 	}
 	
 	«FOREACH entities AS e»
@@ -63,7 +65,7 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 	 * @param policy security policy 
 	 * @return A secured «e.name» bean
 	 */
-	private «e.name.toFirstUpper()» toSecure«e.name.toFirstUpper()»(«e.name.toFirstUpper()» bean, SecurityPolicyImpl policy) {
+	private «e.name.toFirstUpper()» toSecure«e.name.toFirstUpper()»(«e.name.toFirstUpper()» bean) {
 		boolean isSecured = false;
 		«e.name» transformedBean = new «e.name»();
 
@@ -84,7 +86,7 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 		«ENDIF-»«ENDREM»			
 		
 		«FOREACH e.groups AS g-»
-		if (policy.canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»()) {
+		if (getPolicy().canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»()) {
 			isSecured = true;
 			«EXPAND setField FOREACH g.fields-»
 		} else {
@@ -98,7 +100,16 @@ public class «projectName.toFirstUpper()»BeanFilter implements ImogBeanFilter {
 			return null;
 		}
 	}	
-	«ENDFOREACH»	
+	«ENDFOREACH»
+	
+	private AccessPolicyImpl getPolicy() {
+		HttpSession session = HttpSessionUtil.getHttpSession();
+		if (session != null) {
+			AccessPolicyImpl policy = (AccessPolicyImpl) session.getAttribute(ServerConstants.SESSION_SECURITY_POLICY);
+			return policy;
+		}
+		return null;
+	}
 	
 }
 

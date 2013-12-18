@@ -22,7 +22,7 @@ import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogDisjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.web.server.security.ImogBeanFilterHandler;
+import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.ServerConstants;
@@ -65,6 +65,7 @@ public class «name.toFirstUpper()»Handler {
 	private DynamicFieldTemplateHandler dynamicFieldTemplateHandler;
 	«ENDIF-»
 	
+	private ImogBeanFilter filter;
 	
 	/**
 	 * Loads the entity with the specified id
@@ -449,7 +450,7 @@ public class «name.toFirstUpper()»Handler {
 		«ENDFOREACH -»
 		
 		List<«name.toFirstUpper()»> beans = dao.load(sortProperty, sortOrder, junction);
-		List<«name.toFirstUpper()»> securedBeans = ImogBeanFilterHandler.getInstance().getFilter().<«name.toFirstUpper()»> toSecure(beans, actor);
+		List<«name.toFirstUpper()»> securedBeans = filter.<«name.toFirstUpper()»> toSecure(beans, actor);
 		return securedBeans;				
 	}		
 			
@@ -513,6 +514,15 @@ public class «name.toFirstUpper()»Handler {
 	 */
 	public void setDao(«name.toFirstUpper()»Dao dao) {
 		this.dao = dao;
+	}
+	
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param imogBeanFilter
+	 */
+	public void setFilter(ImogBeanFilter filter) {
+		this.filter = filter;
 	}
 	
 	«IF isBinaryFieldPresent(this.groups.fields) -»

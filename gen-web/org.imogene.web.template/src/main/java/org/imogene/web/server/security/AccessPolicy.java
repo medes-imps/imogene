@@ -5,7 +5,7 @@ package org.imogene.web.server.security;
  * 
  * @author MEDES-IMPS
  */
-public interface SecurityPolicy {
+public interface AccessPolicy {
 
 	/**
 	 * Tells if the current user can access an Object property

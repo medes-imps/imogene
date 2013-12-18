@@ -32,18 +32,13 @@
 	</bean>
 	
 	<!-- Spring security policy -->
-	<bean id="securityPolicyFactory" class="org.imogene.«projectName.toLowerCase()».server.security.SecurityPolicyFactoryImpl" />
+	<bean id="accessPolicyFactory" class="org.imogene.«projectName.toLowerCase()».server.security.AccessPolicyFactoryImpl" />
 	
 	<!-- Spring-security users details provider -->
 	<bean id="imogSecurityDetailService" class="org.imogene.web.server.security.SecurityDetailService" >
 		<property name="genericHandler" ref="genericHandler"/>
-		<property name="securityPolicyFactory" ref="securityPolicyFactory" />
+		<property name="accessPolicyFactory" ref="accessPolicyFactory" />
   	</bean>
-  	
-	<!-- Spring-security users details provider for web application in rcp container 
-	<bean class="org.imogene.«projectName.toLowerCase()».server.security.ImogSecurityDetailServiceForRcp" id="imogSecurityDetailService"> 
-	    <property name="dao" ref="genericDao"/>
-  	</bean> -->
   	
 	<!-- Spring-security access denied handler -->
 	<bean class="org.imogene.web.server.security.ImogAccessDeniedHandler" id="imogAccessDeniedUrl">
@@ -101,16 +96,19 @@
 		<property name="dao" ref="entityProfileDaoBase" />
 		<property name="profileHandler" ref="profileHandler" />
 		<property name="entityHandler" ref="cardEntityHandler" />
+		<property name="filter" ref="filter" />
 	</bean>
 	<bean id="fieldGroupHandler" class="org.imogene.web.server.handler.FieldGroupHandler">
 		<property name="dao" ref="fieldGroupDaoBase" />
 		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
 		<property name="entityHandler" ref="cardEntityHandler" />
+		<property name="filter" ref="filter" />
 	</bean>
 	<bean id="fieldGroupProfileHandler" class="org.imogene.web.server.handler.FieldGroupProfileHandler">
 		<property name="dao" ref="fieldGroupProfileDaoBase" />
 		<property name="profileHandler" ref="profileHandler" />
 		<property name="fieldGroupHandler" ref="fieldGroupHandler" />
+		<property name="filter" ref="filter" />
 	</bean>
 	<bean id="profileHandler" class="org.imogene.web.server.handler.ProfileHandler">
 		<property name="dao" ref="profileDaoBase" />
@@ -118,6 +116,7 @@
 		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
 		<property name="entityProfileHandler" ref="entityProfileHandler" />
 		<property name="fieldGroupProfileHandler" ref="fieldGroupProfileHandler" />
+		<property name="filter" ref="filter" />
 	</bean>
 	
 	«IF applicationType.matches(adminType)-»
@@ -136,6 +135,7 @@
 	«FOREACH entities AS e -»
 	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».server.handler.«e.name.toFirstUpper()»Handler">
 		<property name="dao" ref="«e.name.toFirstLower()»Dao" />
+		<property name="filter" ref="filter" />
 		«IF isBinaryFieldPresent(e.groups.fields) -»
 		<property name="binaryDao" ref="binaryDao" />
 		«ENDIF-»
@@ -157,11 +157,7 @@
 	<bean id="formUtil" class="org.imogene.«projectName.toLowerCase()».server.util.«projectName.toFirstUpper()»FormUtil"/>	
 	
 	<!-- Bean filter handler for Birt --> 
-	<bean id="filter" class="org.imogene.«projectName.toLowerCase()».server.security.«projectName.toFirstUpper()»BeanFilter" />
-	
-  	<bean id="imogSecurityHandler" class="org.imogene.web.server.security.ImogBeanFilterHandler" factory-method="getInstance">
-  		<property name="filter" ref="filter"/>
-  	</bean>  
+	<bean id="filter" class="org.imogene.«projectName.toLowerCase()».server.security.ImogBeanFilterImpl" />
 	
 </beans>
 «ENDLET-»

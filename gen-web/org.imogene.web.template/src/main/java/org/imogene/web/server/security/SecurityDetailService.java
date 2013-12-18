@@ -27,7 +27,7 @@ public class SecurityDetailService implements UserDetailsService {
 
 	private GenericHandler genericHandler;
 
-	private SecurityPolicyFactory securityPolicyFactory;
+	private AccessPolicyFactory accessPolicyFactory;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -64,7 +64,7 @@ public class SecurityDetailService implements UserDetailsService {
 				}
 			}
 		}
-		SecurityPolicy securityPolicy = securityPolicyFactory.createSecurityPolicy(actor);
+		AccessPolicy securityPolicy = accessPolicyFactory.create(actor);
 		genericHandler.detach(actor);
 		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_USER, actor);
 		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_SECURITY_POLICY, securityPolicy);
@@ -85,8 +85,8 @@ public class SecurityDetailService implements UserDetailsService {
 	 * 
 	 * @param securityPolicyFactory
 	 */
-	public void setSecurityPolicyFactory(SecurityPolicyFactory securityPolicyFactory) {
-		this.securityPolicyFactory = securityPolicyFactory;
+	public void setAccessPolicyFactory(AccessPolicyFactory accessPolicyFactory) {
+		this.accessPolicyFactory = accessPolicyFactory;
 	}
 
 }

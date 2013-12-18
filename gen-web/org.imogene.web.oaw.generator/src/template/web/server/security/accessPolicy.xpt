@@ -1,13 +1,13 @@
 «IMPORT core»
 «EXTENSION template::CommonEntityUtilExt» 
 «DEFINE generate(String projectName) FOR Project»
-«FILE projectName.toLowerCase()+"/server/security/SecurityPolicyImpl.java"»
+«FILE projectName.toLowerCase()+"/server/security/AccessPolicyImpl.java"»
 package org.imogene.«projectName.toLowerCase()».server.security;
 
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
-import org.imogene.web.server.security.SecurityPolicy;
+import org.imogene.web.server.security.AccessPolicy;
 import org.imogene.web.shared.constants.ProfileConstants;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
@@ -18,7 +18,7 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUppe
  * objects in read and in update mode 
  * @author MEDES-IMPS
  */
-public class SecurityPolicyImpl implements SecurityPolicy {
+public class AccessPolicyImpl implements AccessPolicy {
 
 	private boolean isAdmin = false;
 	«FOREACH entities.groups AS g-»
@@ -29,7 +29,7 @@ public class SecurityPolicyImpl implements SecurityPolicy {
 	/**
 	 * Constructor
 	 */
-	public SecurityPolicyImpl(ImogActor actor) {
+	public AccessPolicyImpl(ImogActor actor) {
 		if (actor.getProfiles() == null) {
 			return;
 		}

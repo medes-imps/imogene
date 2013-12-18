@@ -15,7 +15,7 @@ import org.imogene.lib.common.model.FieldGroup;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.FieldGroupProfileDao;
 import org.imogene.lib.common.profile.Profile;
-import org.imogene.web.server.security.ImogBeanFilterHandler;
+import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +32,8 @@ public class FieldGroupProfileHandler {
 	private ProfileHandler profileHandler;
 
 	private FieldGroupHandler fieldGroupHandler;
+
+	private ImogBeanFilter filter;
 
 	/**
 	 * Loads the entity with the specified id
@@ -421,8 +423,7 @@ public class FieldGroupProfileHandler {
 		}
 
 		List<FieldGroupProfile> beans = dao.load(sortProperty, sortOrder, junction);
-		List<FieldGroupProfile> securedBeans = ImogBeanFilterHandler.getInstance().getFilter()
-				.<FieldGroupProfile> toSecure(beans, actor);
+		List<FieldGroupProfile> securedBeans = filter.<FieldGroupProfile> toSecure(beans, actor);
 		return securedBeans;
 	}
 
@@ -501,5 +502,14 @@ public class FieldGroupProfileHandler {
 	 */
 	public void setFieldGroupHandler(FieldGroupHandler fieldGroupHandler) {
 		this.fieldGroupHandler = fieldGroupHandler;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param imogBeanFilter
+	 */
+	public void setFilter(ImogBeanFilter filter) {
+		this.filter = filter;
 	}
 }

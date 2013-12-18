@@ -15,7 +15,7 @@ import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.EntityProfileDao;
 import org.imogene.lib.common.profile.Profile;
-import org.imogene.web.server.security.ImogBeanFilterHandler;
+import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +32,8 @@ public class EntityProfileHandler {
 	private ProfileHandler profileHandler;
 
 	private CardEntityHandler entityHandler;
+
+	private ImogBeanFilter filter;
 
 	/**
 	 * Loads the entity with the specified id
@@ -428,8 +430,7 @@ public class EntityProfileHandler {
 		}
 
 		List<EntityProfile> beans = dao.load(sortProperty, sortOrder, junction);
-		List<EntityProfile> securedBeans = ImogBeanFilterHandler.getInstance().getFilter()
-				.<EntityProfile> toSecure(beans, actor);
+		List<EntityProfile> securedBeans = filter.<EntityProfile> toSecure(beans, actor);
 		return securedBeans;
 	}
 
@@ -508,5 +509,14 @@ public class EntityProfileHandler {
 	 */
 	public void setEntityHandler(CardEntityHandler entityHandler) {
 		this.entityHandler = entityHandler;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param imogBeanFilter
+	 */
+	public void setFilter(ImogBeanFilter filter) {
+		this.filter = filter;
 	}
 }
