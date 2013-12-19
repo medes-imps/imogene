@@ -12,7 +12,6 @@
 	<bean id="notifyAfterSave" class="org.imogene.notif.aop.NotificationSaveInterceptor">
 		<property name="notifierUrl" value="${notifier.server}" />
 		<property name="dao" ref="genericDao" />
-		<property name="genericImogActorDaoImpl" ref="genericImogActorDao" />
 		<property name="cloneFactory" ref="cloneFactory" />		
 	</bean>
 	

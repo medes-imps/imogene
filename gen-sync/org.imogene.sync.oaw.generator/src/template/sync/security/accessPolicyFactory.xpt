@@ -1,8 +1,8 @@
 «IMPORT core»
 «EXTENSION template::CommonEntityUtilExt» 
 «DEFINE generate(String projectName) FOR Project»
-«FILE projectName.toLowerCase()+"/server/security/AccessPolicyFactoryImpl.java"»
-package org.imogene.«projectName.toLowerCase()».server.security;
+«FILE projectName.toLowerCase()+"/security/AccessPolicyFactoryImpl.java"»
+package org.imogene.«projectName.toLowerCase()».security;
 
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.security.AccessPolicy;

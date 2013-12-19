@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.sync.security.UserAccessControl;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.server.OptimizedSyncServer;
 import org.imogene.lib.sync.server.http.command.AuthenticationCommand;
@@ -21,7 +22,6 @@ import org.imogene.lib.sync.server.http.command.InitializeCommand;
 import org.imogene.lib.sync.server.http.command.SearchCommand;
 import org.imogene.lib.sync.server.http.command.SessionCommand;
 import org.imogene.lib.sync.server.http.command.StatusCommand;
-import org.imogene.lib.sync.uao.UserAccessControl;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;

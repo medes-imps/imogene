@@ -17,7 +17,6 @@ import org.imogene.lib.common.profile.EntityProfileDao;
 import org.imogene.lib.common.profile.Profile;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -65,8 +64,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional
 	public void save(EntityProfile entity, boolean isNew) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 
 		if (entity != null) {
 
@@ -92,8 +90,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(String sortProperty, boolean sortOrder) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		List<EntityProfile> beans = dao.load(sortProperty, sortOrder, junction);
@@ -112,8 +109,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(int i, int j, String sortProperty, boolean sortOrder) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		List<EntityProfile> beans = dao.load(i, j, sortProperty, sortOrder, junction);
@@ -134,8 +130,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -158,8 +153,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(int i, int j, String sortProperty, boolean sortOrder,
 			List<BasicCriteria> criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		ImogJunction junctionForCrit = new ImogConjunction();
@@ -188,8 +182,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listNonAffectedEntityProfile(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions, String property) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -230,8 +223,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listNonAffectedEntityProfileReverse(int i, int j, String sortProperty,
 			boolean sortOrder, ImogJunction criterions, String property) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -285,8 +277,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countEntityProfile(ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -303,8 +294,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countNonAffectedEntityProfile(String property, ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -333,7 +323,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public Long countNonAffectedEntityProfileReverse(String property, ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -382,8 +372,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listForCsv(String sortProperty, boolean sortOrder, String profile_name,
 			String entity_name, String directAccess, String create, String delete, String export) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		if (profile_name != null && !profile_name.isEmpty()) {
@@ -430,7 +419,7 @@ public class EntityProfileHandler {
 		}
 
 		List<EntityProfile> beans = dao.load(sortProperty, sortOrder, junction);
-		List<EntityProfile> securedBeans = filter.<EntityProfile> toSecure(beans, actor);
+		List<EntityProfile> securedBeans = filter.<EntityProfile> toSecure(beans);
 		return securedBeans;
 	}
 

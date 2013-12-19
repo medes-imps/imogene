@@ -26,10 +26,59 @@ public class InitializerImpl implements Initializer {
 	@Override
 	@Transactional
 	public void initialize() {
+		CardEntity dynamicFieldInstance = new CardEntity();
+		dynamicFieldInstance.setId("dynamicFieldInstance");
+		dynamicFieldInstance.setName("Dynamic Field Instance");
+		dynamicFieldInstance.setClassName("org.imogene.lib.common.dynamicfields.DynamicFieldInstance");
+		save(dynamicFieldInstance);
+
+		CardEntity dynamicFieldTemplate = new CardEntity();
+		dynamicFieldTemplate.setId("dynamicFieldTemplate");
+		dynamicFieldTemplate.setName("Dynamic Field Template");
+		dynamicFieldTemplate.setClassName("org.imogene.lib.common.dynamicfields.DynamicFieldTemplate");
+		save(dynamicFieldTemplate);
+
+		CardEntity cardEntity = new CardEntity();
+		cardEntity.setId("cardEntity");
+		cardEntity.setName("Card Entity");
+		cardEntity.setClassName("org.imogene.lib.common.model.CardEntity");
+		save(cardEntity);
+
+		CardEntity fieldGroup = new CardEntity();
+		fieldGroup.setId("fieldGroup");
+		fieldGroup.setName("Field Group");
+		fieldGroup.setClassName("org.imogene.lib.common.model.FieldGroup");
+		save(fieldGroup);
+
+		CardEntity entityProfile = new CardEntity();
+		entityProfile.setId("entityProfile");
+		entityProfile.setName("Entity Profile");
+		entityProfile.setClassName("org.imogene.lib.common.profile.EntityProfile");
+		save(entityProfile);
+
+		CardEntity fieldGroupProfile = new CardEntity();
+		fieldGroupProfile.setId("fieldGroupProfile");
+		fieldGroupProfile.setName("Field Group Profile");
+		fieldGroupProfile.setClassName("org.imogene.lib.common.profile.FieldGroupProfile");
+		save(fieldGroupProfile);
+
+		CardEntity profile = new CardEntity();
+		profile.setId("profile");
+		profile.setName("Profile");
+		profile.setClassName("org.imogene.lib.common.profile.Profile");
+		save(profile);
+		
+		CardEntity binary = new CardEntity();
+		binary.setId("binary");
+		binary.setName("Binary File");
+		binary.setClassName("org.imogene.lib.common.binary.file.BinaryFile");
+		save(binary);
+
 		«FOREACH entities AS e»
 		CardEntity «e.name.toFirstLower()» = new CardEntity();
 		«e.name.toFirstLower()».setId("«e.name.toLowerCase()»");
 		«e.name.toFirstLower()».setName("«e.name»");
+		«e.name.toFirstLower()».setClassName("org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»");
 		save(«e.name.toFirstLower()»);
 		
 		«FOREACH e.groups AS g»
@@ -51,6 +100,17 @@ public class InitializerImpl implements Initializer {
 		defaultUser.setLogin("admin");
 		defaultUser.setPassword(passwordHashAsBase64("«password»", "admin"));
 		defaultUser.addProfile(administrator);
+		defaultUser.addSynchronizable(dynamicFieldInstance);
+		defaultUser.addSynchronizable(dynamicFieldTemplate);
+		defaultUser.addSynchronizable(cardEntity);
+		defaultUser.addSynchronizable(fieldGroup);
+		defaultUser.addSynchronizable(entityProfile);
+		defaultUser.addSynchronizable(fieldGroupProfile);
+		defaultUser.addSynchronizable(profile);
+		defaultUser.addSynchronizable(binary);
+		«FOREACH entities AS e-»
+		defaultUser.addSynchronizable(«e.name.toFirstLower()»);
+		«ENDFOREACH-»
 		save(defaultUser);
 	}
 	

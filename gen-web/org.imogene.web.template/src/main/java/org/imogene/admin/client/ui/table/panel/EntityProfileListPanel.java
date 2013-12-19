@@ -16,8 +16,8 @@ import org.imogene.web.client.ui.panel.WrapperPanelForTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
-import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
 import com.google.gwt.core.client.GWT;

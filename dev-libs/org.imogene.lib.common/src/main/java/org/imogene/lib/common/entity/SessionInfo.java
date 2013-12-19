@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Session information for the current user
+ * 
  * @author Medes-IMPS
  */
 public class SessionInfo implements Serializable {
@@ -11,7 +12,7 @@ public class SessionInfo implements Serializable {
 	private static final long serialVersionUID = -453939375643784554L;
 
 	private String sessionId;
-	private ImogActorImpl actor;
+	private ImogActor actor;
 
 	public SessionInfo() {
 	}
@@ -30,10 +31,10 @@ public class SessionInfo implements Serializable {
 	}
 
 	public ImogActorImpl getActor() {
-		return actor;
+		return (ImogActorImpl) actor;
 	}
 
-	public void setActor(ImogActorImpl actor) {
+	public void setActor(ImogActor actor) {
 		this.actor = actor;
 	}
 }

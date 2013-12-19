@@ -1,8 +1,8 @@
 «IMPORT core»
 
 «DEFINE generate(String projectName) FOR Project»
-«FILE "org/imogene/" + projectName.toLowerCase() + "/uao/UserAccessControlImpl.java"»
-package org.imogene.«projectName.toLowerCase()».uao;
+«FILE projectName.toLowerCase() + "/security/UserAccessControlImpl.java"»
+package org.imogene.«projectName.toLowerCase()».security;
 
 import java.util.List;
 
@@ -10,20 +10,20 @@ import org.apache.log4j.Logger;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.user.DefaultUser;
 import org.imogene.lib.sync.handler.DefaultUserHandler;
-import org.imogene.lib.sync.uao.UserAccessControl;
+import org.imogene.lib.sync.security.UserAccessControl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 «EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»Handler;
 «ENDFOREACH-»
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 
 /**
  * Class to manage the application user access
  * @author Medes-IMPS
  */
-public class UserAccessControlImpl implements UserAccessControl{
+public class UserAccessControlImpl implements UserAccessControl {
 	
 	private Logger logger = Logger.getLogger("org.imogene.«projectName.toLowerCase()».uao");
 	

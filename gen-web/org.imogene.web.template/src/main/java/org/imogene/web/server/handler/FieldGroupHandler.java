@@ -18,7 +18,6 @@ import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.FieldGroupProfileDao;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -66,9 +65,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional
 	public void save(FieldGroup entity, boolean isNew) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
-
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		if (entity != null) {
 
 			if (isNew) {
@@ -93,8 +90,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(String sortProperty, boolean sortOrder) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		List<FieldGroup> beans = dao.load(sortProperty, sortOrder, junction);
@@ -113,8 +109,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(int i, int j, String sortProperty, boolean sortOrder) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		List<FieldGroup> beans = dao.load(i, j, sortProperty, sortOrder, junction);
@@ -134,8 +129,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -158,8 +152,7 @@ public class FieldGroupHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(int i, int j, String sortProperty, boolean sortOrder,
 			List<BasicCriteria> criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		ImogJunction junctionForCrit = new ImogConjunction();
@@ -188,8 +181,7 @@ public class FieldGroupHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listNonAffectedFieldGroup(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions, String property) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -230,8 +222,7 @@ public class FieldGroupHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listNonAffectedFieldGroupReverse(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions, String property) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -285,8 +276,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countFieldGroup(ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -303,8 +293,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countNonAffectedFieldGroup(String property, ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -332,8 +321,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countNonAffectedFieldGroupReverse(String property, ImogJunction criterions) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -372,9 +360,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional
 	public void delete(FieldGroup entity) {
-
 		// Delete foreign key reference for field FieldGroup of entity FieldGroupProfile
-
 		ImogJunction searchCriterionsForFieldGroupProfileFieldGroup = new ImogConjunction();
 		BasicCriteria criteriaFieldGroupProfileFieldGroup = new BasicCriteria();
 		criteriaFieldGroupProfileFieldGroup.setOperation(CriteriaConstants.RELATIONFIELD_OPERATOR_EQUAL);
@@ -400,8 +386,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listForCsv(String sortProperty, boolean sortOrder, String name) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		if (name != null && !name.isEmpty()) {
@@ -413,7 +398,7 @@ public class FieldGroupHandler {
 		}
 
 		List<FieldGroup> beans = dao.load(sortProperty, sortOrder, junction);
-		List<FieldGroup> securedBeans = filter.<FieldGroup> toSecure(beans, actor);
+		List<FieldGroup> securedBeans = filter.<FieldGroup> toSecure(beans);
 		return securedBeans;
 	}
 

@@ -10,11 +10,9 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpSession;
 
-import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
 «ENDFOREACH-»
@@ -28,7 +26,7 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ImogBean> T toSecure(T bean, ImogActor actor) {
+	public <T extends ImogBean> T toSecure(T bean) {
 		«FOREACH entities AS e»
 		if (bean instanceof «e.name»)
 			return (T) toSecure«e.name.toFirstUpper()»((«e.name.toFirstUpper()») bean);			
@@ -37,10 +35,10 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 	}
 
 	@Override
-	public <T extends ImogBean> List<T> toSecure(List<T> beans, ImogActor actor) {
+	public <T extends ImogBean> List<T> toSecure(List<T> beans) {
 		List<T> securedList = new Vector<T>();
 		for (T bean : beans) {
-			T isSecured = toSecure(bean, actor);
+			T isSecured = toSecure(bean);
 			if (isSecured != null) {
 				securedList.add(isSecured);
 			}
@@ -49,12 +47,12 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 	}
 	
 	@Override
-	public <T extends ImogBean> T toHibernate(T bean, ImogActor actor) {
+	public <T extends ImogBean> T toHibernate(T bean) {
 		return null;
 	}
 
 	@Override
-	public <T extends ImogBean> List<T> toHibernate(List<T> list, ImogActor actor) {
+	public <T extends ImogBean> List<T> toHibernate(List<T> list) {
 		return null;
 	}
 	
@@ -85,8 +83,9 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 		«EXPAND filterField FOREACH ((Actor)e).filters-»		
 		«ENDIF-»«ENDREM»			
 		
+		AccessPolicyImpl policy = (AccessPolicyImpl) HttpSessionUtil.getAccessPolicy();
 		«FOREACH e.groups AS g-»
-		if (getPolicy().canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»()) {
+		if (policy.canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»()) {
 			isSecured = true;
 			«EXPAND setField FOREACH g.fields-»
 		} else {
@@ -101,15 +100,6 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 		}
 	}	
 	«ENDFOREACH»
-	
-	private AccessPolicyImpl getPolicy() {
-		HttpSession session = HttpSessionUtil.getHttpSession();
-		if (session != null) {
-			AccessPolicyImpl policy = (AccessPolicyImpl) session.getAttribute(ServerConstants.SESSION_SECURITY_POLICY);
-			return policy;
-		}
-		return null;
-	}
 	
 }
 

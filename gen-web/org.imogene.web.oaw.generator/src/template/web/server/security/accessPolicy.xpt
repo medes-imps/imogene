@@ -7,8 +7,7 @@ package org.imogene.«projectName.toLowerCase()».server.security;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
-import org.imogene.web.server.security.AccessPolicy;
-import org.imogene.web.shared.constants.ProfileConstants;
+import org.imogene.lib.common.security.AccessPolicy;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
 «ENDFOREACH-»
@@ -139,7 +138,7 @@ public class AccessPolicyImpl implements AccessPolicy {
 	
 	private boolean isAdmin(ImogActor actor) {
 		for (Profile profile : actor.getProfiles()) {
-			if (profile.getId().equals(ProfileConstants.ADMINISTRATOR)) {
+			if (profile.getId().equals(Profile.ADMINISTRATOR)) {
 				return true;
 			}
 		}

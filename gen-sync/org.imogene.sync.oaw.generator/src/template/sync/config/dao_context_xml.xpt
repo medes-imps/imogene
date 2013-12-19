@@ -71,9 +71,6 @@
 	<!-- DAO layer configuration -->
 	<!--						 -->
 	
-	<!-- Role dao -->
-	<bean id="roleActorDao" class="org.imogene.lib.common.role.RoleActorDaoImpl" />
-  	
   	<!-- Generic DAO -->
   	<bean id="genericDao" class="org.imogene.lib.common.dao.GenericDaoImpl" />
 	
@@ -98,9 +95,17 @@
 	<!-- DynamicField_Template DAO -->
 	<bean id="dynamicFieldTemplateDao" class="org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDaoImpl" />
 	
-	<!-- GenericImogActor dao -->
-	<bean id="genericImogActorDao" class="org.imogene.lib.common.dao.GenericImogActorDaoImpl" />
-
+	<!-- Profiles Dao-->
+  	<bean id="profileDao" class="org.imogene.lib.common.profile.ProfileDaoImpl" />
+	
+  	<bean id="entityProfileDao" class="org.imogene.lib.common.profile.EntityProfileDaoImpl" />
+	
+  	<bean id="fieldGroupProfileDao" class="org.imogene.lib.common.profile.FieldGroupProfileDaoImpl" />
+	
+  	<bean id="cardEntityDao" class="org.imogene.lib.common.model.CardEntityDaoImpl" />
+	
+  	<bean id="fieldGroupDao" class="org.imogene.lib.common.model.FieldGroupDaoImpl" />
+	
 	<!-- Entities DAO -->
 	«FOREACH entities AS e»
   	<bean id="«e.name.toFirstLower()»DaoBase" class="org.imogene.«projectName.toLowerCase()».domain.dao.«e.name»DaoImpl" />

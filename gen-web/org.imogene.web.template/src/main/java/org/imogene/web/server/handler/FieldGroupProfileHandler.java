@@ -17,7 +17,6 @@ import org.imogene.lib.common.profile.FieldGroupProfileDao;
 import org.imogene.lib.common.profile.Profile;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -66,7 +65,7 @@ public class FieldGroupProfileHandler {
 	@Transactional
 	public void save(FieldGroupProfile entity, boolean isNew) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 
 		if (entity != null) {
 
@@ -93,7 +92,7 @@ public class FieldGroupProfileHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroupProfile> listFieldGroupProfile(String sortProperty, boolean sortOrder) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		List<FieldGroupProfile> beans = dao.load(sortProperty, sortOrder, junction);
@@ -113,7 +112,7 @@ public class FieldGroupProfileHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroupProfile> listFieldGroupProfile(int i, int j, String sortProperty, boolean sortOrder) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		List<FieldGroupProfile> beans = dao.load(i, j, sortProperty, sortOrder, junction);
@@ -135,7 +134,7 @@ public class FieldGroupProfileHandler {
 	public List<FieldGroupProfile> listFieldGroupProfile(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -159,7 +158,7 @@ public class FieldGroupProfileHandler {
 	public List<FieldGroupProfile> listFieldGroupProfile(int i, int j, String sortProperty, boolean sortOrder,
 			List<BasicCriteria> criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		ImogJunction junctionForCrit = new ImogConjunction();
@@ -189,7 +188,7 @@ public class FieldGroupProfileHandler {
 	public List<FieldGroupProfile> listNonAffectedFieldGroupProfile(int i, int j, String sortProperty,
 			boolean sortOrder, ImogJunction criterions, String property) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -231,7 +230,7 @@ public class FieldGroupProfileHandler {
 	public List<FieldGroupProfile> listNonAffectedFieldGroupProfileReverse(int i, int j, String sortProperty,
 			boolean sortOrder, ImogJunction criterions, String property) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -286,7 +285,7 @@ public class FieldGroupProfileHandler {
 	@Transactional(readOnly = true)
 	public Long countFieldGroupProfile(ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -304,7 +303,7 @@ public class FieldGroupProfileHandler {
 	@Transactional(readOnly = true)
 	public Long countNonAffectedFieldGroupProfile(String property, ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -333,7 +332,7 @@ public class FieldGroupProfileHandler {
 	@Transactional(readOnly = true)
 	public Long countNonAffectedFieldGroupProfileReverse(String property, ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
 			junction.add(criterions);
@@ -383,7 +382,7 @@ public class FieldGroupProfileHandler {
 	public List<FieldGroupProfile> listForCsv(String sortProperty, boolean sortOrder, String profile_name,
 			String fieldGroup_name, String read, String write, String export) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
 		if (profile_name != null && !profile_name.isEmpty()) {
@@ -423,7 +422,7 @@ public class FieldGroupProfileHandler {
 		}
 
 		List<FieldGroupProfile> beans = dao.load(sortProperty, sortOrder, junction);
-		List<FieldGroupProfile> securedBeans = filter.<FieldGroupProfile> toSecure(beans, actor);
+		List<FieldGroupProfile> securedBeans = filter.<FieldGroupProfile> toSecure(beans);
 		return securedBeans;
 	}
 

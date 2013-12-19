@@ -1,7 +1,7 @@
 package org.imogene.lib.sync.serializer.xml;
 
+import org.apache.commons.codec.binary.Base64;
 import org.imogene.encryption.EncryptionManager;
-import org.imogene.lib.sync.serializer.xml.base64.Base64Coder;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -26,15 +26,14 @@ public class PasswordConverter implements Converter {
 	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
 		String password = (String) value;
 		byte[] encodedResult = encryptionManager.encrypt(password.getBytes());
-		char[] base64Result = Base64Coder.encode(encodedResult);
-		String result = new String(base64Result);
-		writer.setValue(result);
+		byte[] base64result = Base64.encodeBase64(encodedResult);
+		writer.setValue(new String(base64result));
 	}
 
 	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		String encrypted = (String) reader.getValue();
-		byte[] base64Result = Base64Coder.decode(encrypted);
+		byte[] base64Result = Base64.decodeBase64(encrypted.getBytes());
 		byte[] decodedResult = encryptionManager.decrypt(base64Result);
 		return new String(decodedResult);
 	}

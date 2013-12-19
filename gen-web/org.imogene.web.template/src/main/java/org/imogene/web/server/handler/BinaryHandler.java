@@ -11,14 +11,14 @@ import org.imogene.lib.common.constants.CommonConstants;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.web.server.util.BinaryDesc;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Binary Handler
+ * 
  * @author Medes-IMPS
  */
-public class BinaryHandler  {
+public class BinaryHandler {
 
 	private BinaryDao<Binary> dao;
 
@@ -27,24 +27,23 @@ public class BinaryHandler  {
 	 * @param bean
 	 */
 	@Transactional
-    public void saveOrUpdateBinary(Binary bean) { 
-		
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
-    	
+	public void saveOrUpdateBinary(Binary bean) {
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
+
 		bean.setCreated(new Date(System.currentTimeMillis()));
 		bean.setCreatedBy(actor.getLogin());
 		bean.setModified(new Date(System.currentTimeMillis()));
 		bean.setModifiedBy(actor.getLogin());
 		bean.setModifiedFrom(CommonConstants.IS_WEB);
-		
-    	dao.saveOrUpdate(bean, true);
-    }
-	
-    /**
-     * 
-     * @param binaryId
-     * @return
-     */
+
+		dao.saveOrUpdate(bean, true);
+	}
+
+	/**
+	 * 
+	 * @param binaryId
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	public BinaryDesc getBinaryDesc(String binaryId) {
 
@@ -58,7 +57,7 @@ public class BinaryHandler  {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * @param id
@@ -66,36 +65,36 @@ public class BinaryHandler  {
 	 */
 	@Transactional(readOnly = true)
 	public BinaryFile getBinary(String id) {
-		return (BinaryFile)dao.load(id);
+		return (BinaryFile) dao.load(id);
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param bean
 	 */
 	@Transactional
 	public void deleteBinary(Binary bean) {
-    	// Delete attached file
-    	BinaryFile binary = (BinaryFile)bean;
-    	File attachedFile = new File(BinaryFileManager.getInstance().buildFilePath(binary.getId(), binary.getFileName()));
-    	attachedFile.delete();
-    	
-    	File attachedThumbFile = new File(BinaryFileManager.getInstance().buildFilePath("thumb_" + binary.getId(), binary.getFileName()));
-    	attachedThumbFile.delete();
-    	
-    	// Delete binary bean
-    	dao.delete(bean);
+		// Delete attached file
+		BinaryFile binary = (BinaryFile) bean;
+		File attachedFile = new File(BinaryFileManager.getInstance()
+				.buildFilePath(binary.getId(), binary.getFileName()));
+		attachedFile.delete();
+
+		File attachedThumbFile = new File(BinaryFileManager.getInstance().buildFilePath("thumb_" + binary.getId(),
+				binary.getFileName()));
+		attachedThumbFile.delete();
+
+		// Delete binary bean
+		dao.delete(bean);
 	}
 
 	/**
 	 * Setter for bean injection
+	 * 
 	 * @param binaryDao
 	 */
 	public void setDao(BinaryDao<Binary> binaryDao) {
 		this.dao = binaryDao;
 	}
-	
-	
 
 }

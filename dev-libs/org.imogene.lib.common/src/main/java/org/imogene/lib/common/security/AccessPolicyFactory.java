@@ -1,4 +1,4 @@
-package org.imogene.web.server.security;
+package org.imogene.lib.common.security;
 
 import org.imogene.lib.common.entity.ImogActor;
 

@@ -7,9 +7,9 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.security.AccessPolicyFactory;
 import org.imogene.web.server.handler.GenericHandler;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,10 +64,9 @@ public class SecurityDetailService implements UserDetailsService {
 				}
 			}
 		}
-		AccessPolicy securityPolicy = accessPolicyFactory.create(actor);
 		genericHandler.detach(actor);
-		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_USER, actor);
-		HttpSessionUtil.getHttpSession().setAttribute(ServerConstants.SESSION_SECURITY_POLICY, securityPolicy);
+		HttpSessionUtil.setCurrentUser(actor);
+		HttpSessionUtil.setAccessPolicy(accessPolicyFactory, actor);
 		return new ImogUserDetails(actor);
 	}
 

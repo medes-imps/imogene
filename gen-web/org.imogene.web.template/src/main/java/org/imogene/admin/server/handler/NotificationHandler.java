@@ -13,11 +13,11 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.notification.Notification;
 import org.imogene.lib.common.notification.NotificationDao;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A data handler for the Notification beans
+ * 
  * @author Medes-IMPS
  */
 public class NotificationHandler {
@@ -26,6 +26,7 @@ public class NotificationHandler {
 
 	/**
 	 * Loads the entity (secured) with the specified id
+	 * 
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
@@ -36,13 +37,13 @@ public class NotificationHandler {
 
 	/**
 	 * Saves or updates the entity
+	 * 
 	 * @param entity the entity to be saved or updated
 	 * @param isNew true if it is a new entity added for the first time.
 	 */
 	@Transactional
 	public void save(Notification entity, boolean isNew) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 
 		if (entity != null) {
 
@@ -61,6 +62,7 @@ public class NotificationHandler {
 
 	/**
 	 * Lists the entities of type Notification
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -74,6 +76,7 @@ public class NotificationHandler {
 
 	/**
 	 * Lists the entities of type Notification
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -82,12 +85,14 @@ public class NotificationHandler {
 	 * @return list of notification
 	 */
 	@Transactional(readOnly = true)
-	public List<Notification> listNotification(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions) {
+	public List<Notification> listNotification(int i, int j, String sortProperty, boolean sortOrder,
+			ImogJunction criterions) {
 		return dao.load(i, j, sortProperty, sortOrder, criterions);
 	}
 
 	/**
 	 * Lists the entities of type Notification
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -96,7 +101,8 @@ public class NotificationHandler {
 	 * @return list of notification
 	 */
 	@Transactional(readOnly = true)
-	public List<Notification> listNotification(int i, int j, String sortProperty, boolean sortOrder, List<BasicCriteria> criterions) {
+	public List<Notification> listNotification(int i, int j, String sortProperty, boolean sortOrder,
+			List<BasicCriteria> criterions) {
 		ImogJunction junctionForCrit = new ImogConjunction();
 		if (criterions != null) {
 			for (BasicCriteria crit : criterions)
@@ -108,6 +114,7 @@ public class NotificationHandler {
 
 	/**
 	 * Lists the non affected entities of type Notification
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -117,13 +124,14 @@ public class NotificationHandler {
 	 * @return list of notification
 	 */
 	@Transactional(readOnly = true)
-	public List<Notification> listNonAffectedNotification(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions,
-			String property) {
+	public List<Notification> listNonAffectedNotification(int i, int j, String sortProperty, boolean sortOrder,
+			ImogJunction criterions, String property) {
 		return dao.loadNonAffected(i, j, sortProperty, sortOrder, property, criterions);
 	}
 
 	/**
 	 * Lists the non affected entities of type Notification
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -132,15 +140,15 @@ public class NotificationHandler {
 	 * @return list of notification
 	 */
 	@Transactional(readOnly = true)
-	public List<Notification> listNonAffectedNotification(int i, int j, String sortProperty, boolean sortOrder, String property) {
+	public List<Notification> listNonAffectedNotification(int i, int j, String sortProperty, boolean sortOrder,
+			String property) {
 		return listNonAffectedNotification(i, j, sortProperty, sortOrder, null, property);
 	}
 
 	/**
-	 * Used when Notification is involved in a Relation 1 <-> 1
-	 * Association and is the ReverseRelationField of the Relation
-	 * Return all instance of Notification non affected
-	 * regarding specified property.
+	 * Used when Notification is involved in a Relation 1 <-> 1 Association and is the ReverseRelationField of the
+	 * Relation Return all instance of Notification non affected regarding specified property.
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -150,16 +158,15 @@ public class NotificationHandler {
 	 * @return list of notification
 	 */
 	@Transactional(readOnly = true)
-	public List<Notification> listNonAffectedNotificationReverse(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions,
-			String property) {
+	public List<Notification> listNonAffectedNotificationReverse(int i, int j, String sortProperty, boolean sortOrder,
+			ImogJunction criterions, String property) {
 		return dao.loadNonAffectedReverse(i, j, sortProperty, sortOrder, property, criterions);
 	}
 
 	/**
-	 * Used when Notification is involved in a Relation 1 <-> 1
-	 * Association and is the ReverseRelationField of the Relation
-	 * Return all instance of Notification non affected
-	 * regarding specified property.
+	 * Used when Notification is involved in a Relation 1 <-> 1 Association and is the ReverseRelationField of the
+	 * Relation Return all instance of Notification non affected regarding specified property.
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -168,12 +175,14 @@ public class NotificationHandler {
 	 * @return list of notification
 	 */
 	@Transactional(readOnly = true)
-	public List<Notification> listNonAffectedNotificationReverse(int i, int j, String sortProperty, boolean sortOrder, String property) {
+	public List<Notification> listNonAffectedNotificationReverse(int i, int j, String sortProperty, boolean sortOrder,
+			String property) {
 		return listNonAffectedNotificationReverse(i, j, sortProperty, sortOrder, null, property);
 	}
 
 	/**
 	 * Gets an empty list of Notification
+	 * 
 	 * @return an empty list of Notification
 	 */
 	@Transactional(readOnly = true)
@@ -183,6 +192,7 @@ public class NotificationHandler {
 
 	/**
 	 * Counts the number of notification in the database
+	 * 
 	 * @return the count
 	 */
 	@Transactional(readOnly = true)
@@ -191,8 +201,8 @@ public class NotificationHandler {
 	}
 
 	/**
-	 * Counts the number of notification in the database,
-	 * that match the criteria
+	 * Counts the number of notification in the database, that match the criteria
+	 * 
 	 * @return the count
 	 */
 	@Transactional(readOnly = true)
@@ -202,6 +212,7 @@ public class NotificationHandler {
 
 	/**
 	 * Counts the number of non affected notification entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @param criterion request criteria
 	 * @return the count
@@ -213,6 +224,7 @@ public class NotificationHandler {
 
 	/**
 	 * Counts the number of non affected notification entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @return the count
 	 */
@@ -223,6 +235,7 @@ public class NotificationHandler {
 
 	/**
 	 * Counts the number of non affected notification entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @param criterion request criteria
 	 * @return the count
@@ -234,6 +247,7 @@ public class NotificationHandler {
 
 	/**
 	 * Counts the number of non affected notification entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @return the count
 	 */
@@ -244,6 +258,7 @@ public class NotificationHandler {
 
 	/**
 	 * Deletes a group of entities identified by their IDs
+	 * 
 	 * @param ids Entities to delete IDs
 	 * @return The list of deleted entities IDs
 	 */
@@ -257,6 +272,7 @@ public class NotificationHandler {
 
 	/**
 	 * Removes the specified entity from the database
+	 * 
 	 * @param entity The entity to be deleted
 	 */
 	@Transactional
@@ -266,6 +282,7 @@ public class NotificationHandler {
 
 	/**
 	 * Setter for bean injection
+	 * 
 	 * @param dao the Notification Dao
 	 */
 	public void setDao(NotificationDao dao) {

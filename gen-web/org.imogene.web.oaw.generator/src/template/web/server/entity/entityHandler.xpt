@@ -25,7 +25,6 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 «IF isBinaryFieldPresent(this.groups.fields) -»
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.BinaryDao;
@@ -105,7 +104,7 @@ public class «name.toFirstUpper()»Handler {
 	    «ENDIF-»
 	    «ENDFOREACH-»
 	    
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		
 		if (entity != null) {
 		
@@ -157,7 +156,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(String sortProperty, boolean sortOrder) {
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);	
 		
 		List<«name.toFirstUpper()»> beans = dao.load(sortProperty, sortOrder, junction);
@@ -176,7 +175,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder) {
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);	
 		
 		List<«name.toFirstUpper()»> beans = dao.load(i, j, sortProperty, sortOrder, junction);
@@ -196,7 +195,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions) {
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if(criterions!=null)
 			junction.add(criterions);		
@@ -219,7 +218,7 @@ public class «name.toFirstUpper()»Handler {
 	public List<«name.toFirstUpper()»> list«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, List<BasicCriteria> criterions) {
 	
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		
 		ImogJunction junctionForCrit = new ImogConjunction();
@@ -247,7 +246,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public List<«name.toFirstUpper()»> listNonAffected«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions, String property) {
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if(criterions!=null)
 			junction.add(criterions);
@@ -287,7 +286,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public List<«name.toFirstUpper()»> listNonAffected«name.toFirstUpper()»Reverse(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions, String property) {
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if(criterions!=null)
 			junction.add(criterions);
@@ -340,7 +339,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public Long count«name.toFirstUpper()»(ImogJunction criterions) {
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);		
+		ImogActor actor = HttpSessionUtil.getCurrentUser();		
 		ImogJunction junction = createFilterJuntion(actor);
 		if(criterions!=null)
 			junction.add(criterions);
@@ -357,7 +356,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public Long countNonAffected«name.toFirstUpper()»(String property, ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);	
+		ImogActor actor = HttpSessionUtil.getCurrentUser();	
 		ImogJunction junction = createFilterJuntion(actor);
 		if(criterions!=null)
 			junction.add(criterions);
@@ -384,7 +383,7 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional(readOnly=true)
 	public Long countNonAffected«name.toFirstUpper()»Reverse(String property, ImogJunction criterions) {
 
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions!=null)
 			junction.add(criterions);
@@ -442,7 +441,7 @@ public class «name.toFirstUpper()»Handler {
 		«ENDFOREACH -»	
 		) {	
 	
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		
 		«FOREACH columnFields AS c ITERATOR iter -»
@@ -450,7 +449,7 @@ public class «name.toFirstUpper()»Handler {
 		«ENDFOREACH -»
 		
 		List<«name.toFirstUpper()»> beans = dao.load(sortProperty, sortOrder, junction);
-		List<«name.toFirstUpper()»> securedBeans = filter.<«name.toFirstUpper()»> toSecure(beans, actor);
+		List<«name.toFirstUpper()»> securedBeans = filter.<«name.toFirstUpper()»> toSecure(beans);
 		return securedBeans;				
 	}		
 			

@@ -13,11 +13,11 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.model.CardEntityDao;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.ServerConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A data handler for the CardEntity beans
+ * 
  * @author Medes-IMPS
  */
 public class CardEntityHandler {
@@ -26,6 +26,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Loads the entity (secured) with the specified id
+	 * 
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
@@ -36,13 +37,13 @@ public class CardEntityHandler {
 
 	/**
 	 * Saves or updates the entity
+	 * 
 	 * @param entity the entity to be saved or updated
 	 * @param isNew true if it is a new entity added for the first time.
 	 */
 	@Transactional
 	public void save(CardEntity entity, boolean isNew) {
-
-		ImogActor actor = (ImogActor) HttpSessionUtil.getHttpSession().getAttribute(ServerConstants.SESSION_USER);
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
 
 		if (entity != null) {
 
@@ -61,6 +62,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Lists the entities of type CardEntity
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -74,6 +76,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Lists the entities of type CardEntity
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -88,6 +91,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Lists the entities of type CardEntity
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -96,7 +100,8 @@ public class CardEntityHandler {
 	 * @return list of CardEntity
 	 */
 	@Transactional(readOnly = true)
-	public List<CardEntity> listCardEntity(int i, int j, String sortProperty, boolean sortOrder, List<BasicCriteria> criterions) {
+	public List<CardEntity> listCardEntity(int i, int j, String sortProperty, boolean sortOrder,
+			List<BasicCriteria> criterions) {
 		ImogJunction junctionForCrit = new ImogConjunction();
 		if (criterions != null) {
 			for (BasicCriteria crit : criterions)
@@ -108,6 +113,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Lists the non affected entities of type CardEntity
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -124,6 +130,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Lists the non affected entities of type CardEntity
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -132,15 +139,15 @@ public class CardEntityHandler {
 	 * @return list of CardEntity
 	 */
 	@Transactional(readOnly = true)
-	public List<CardEntity> listNonAffectedCardEntity(int i, int j, String sortProperty, boolean sortOrder, String property) {
+	public List<CardEntity> listNonAffectedCardEntity(int i, int j, String sortProperty, boolean sortOrder,
+			String property) {
 		return listNonAffectedCardEntity(i, j, sortProperty, sortOrder, null, property);
 	}
 
 	/**
-	 * Used when CardEntity is involved in a Relation 1 <-> 1
-	 * Association and is the ReverseRelationField of the Relation
-	 * Return all instance of CardEntity non affected
-	 * regarding specified property.
+	 * Used when CardEntity is involved in a Relation 1 <-> 1 Association and is the ReverseRelationField of the
+	 * Relation Return all instance of CardEntity non affected regarding specified property.
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -156,10 +163,9 @@ public class CardEntityHandler {
 	}
 
 	/**
-	 * Used when CardEntity is involved in a Relation 1 <-> 1
-	 * Association and is the ReverseRelationField of the Relation
-	 * Return all instance of CardEntity non affected
-	 * regarding specified property.
+	 * Used when CardEntity is involved in a Relation 1 <-> 1 Association and is the ReverseRelationField of the
+	 * Relation Return all instance of CardEntity non affected regarding specified property.
+	 * 
 	 * @param i first index to retrieve
 	 * @param j nb of items to retrieve
 	 * @param sortProperty the property used to sort the collection
@@ -168,12 +174,14 @@ public class CardEntityHandler {
 	 * @return list of CardEntity
 	 */
 	@Transactional(readOnly = true)
-	public List<CardEntity> listNonAffectedCardEntityReverse(int i, int j, String sortProperty, boolean sortOrder, String property) {
+	public List<CardEntity> listNonAffectedCardEntityReverse(int i, int j, String sortProperty, boolean sortOrder,
+			String property) {
 		return listNonAffectedCardEntityReverse(i, j, sortProperty, sortOrder, null, property);
 	}
 
 	/**
 	 * Gets an empty list of CardEntity
+	 * 
 	 * @return an empty list of CardEntity
 	 */
 	@Transactional(readOnly = true)
@@ -183,6 +191,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Counts the number of CardEntity in the database
+	 * 
 	 * @return the count
 	 */
 	@Transactional(readOnly = true)
@@ -191,8 +200,8 @@ public class CardEntityHandler {
 	}
 
 	/**
-	 * Counts the number of CardEntity in the database,
-	 * that match the criteria
+	 * Counts the number of CardEntity in the database, that match the criteria
+	 * 
 	 * @return the count
 	 */
 	@Transactional(readOnly = true)
@@ -202,6 +211,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Counts the number of non affected CardEntity entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @param criterion request criteria
 	 * @return the count
@@ -213,6 +223,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Counts the number of non affected CardEntity entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @return the count
 	 */
@@ -223,6 +234,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Counts the number of non affected CardEntity entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @param criterion request criteria
 	 * @return the count
@@ -234,6 +246,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Counts the number of non affected CardEntity entities in the database
+	 * 
 	 * @param property the property which is not affected
 	 * @return the count
 	 */
@@ -244,6 +257,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Deletes a group of entities identified by their IDs
+	 * 
 	 * @param ids Entities to delete IDs
 	 * @return The list of deleted entities IDs
 	 */
@@ -257,6 +271,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Removes the specified entity from the database
+	 * 
 	 * @param entity The entity to be deleted
 	 */
 	@Transactional
@@ -266,6 +281,7 @@ public class CardEntityHandler {
 
 	/**
 	 * Setter for bean injection
+	 * 
 	 * @param dao the CardEntity Dao
 	 */
 	public void setDao(CardEntityDao dao) {

@@ -14,7 +14,7 @@ import org.imogene.lib.push.domain.Connection;
 import org.imogene.lib.push.domain.Message;
 import org.imogene.lib.push.status.ConnectionStatus;
 import org.imogene.lib.push.status.MessageStatus;
-import org.imogene.lib.sync.uao.UserAccessControl;
+import org.imogene.lib.sync.security.UserAccessControl;
 
 public class ConnectionController {
 

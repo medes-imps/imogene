@@ -1,4 +1,4 @@
-package org.imogene.lib.sync.uao;
+package org.imogene.lib.sync.security;
 
 import java.util.List;
 

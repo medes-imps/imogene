@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -17,7 +18,6 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.log4j.Logger;
 import org.imogene.lib.sync.client.OptimizedSyncClient;
 import org.imogene.lib.sync.client.SynchronizationException;
-import org.imogene.lib.sync.serializer.xml.base64.Base64Coder;
 
 public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
@@ -34,9 +34,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	private String type;
 
 	/**
-	 * By using this constructor, you specify that you want to use the HTTP
-	 * authentication based on the specified login and password. This
-	 * authentication will be set in all requests.
+	 * By using this constructor, you specify that you want to use the HTTP authentication based on the specified login
+	 * and password. This authentication will be set in all requests.
 	 * 
 	 * @param url the synchronization server
 	 * @param login the user login
@@ -52,7 +51,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 		this.terminalId = terminalId;
 		this.type = type;
 	}
-	
+
 	@Override
 	public void setUrl(String url) {
 		this.url = url.endsWith("html") ? url : (url.endsWith("/") ? url + "sync.html" : url + "/sync.html");
@@ -75,8 +74,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			if (method.getResponseBodyAsString().startsWith("ACK"))
 				return true;
 		} catch (Exception ex) {
-			throw new SynchronizationException("Closing session -> ", ex,
-					SynchronizationException.ERROR_CLOSING);
+			throw new SynchronizationException("Closing session -> ", ex, SynchronizationException.ERROR_CLOSING);
 		}
 		return false;
 	}
@@ -90,8 +88,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
 			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
 			NameValuePair typeParam = new NameValuePair(TYPE_PARAM, type);
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam,
-					terminalParam, typeParam };
+			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
+					typeParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
@@ -122,8 +120,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			NameValuePair typeParam = new NameValuePair(TYPE_PARAM, type);
 			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
 			NameValuePair lengthParam = new NameValuePair(LENGTH_PARAM, String.valueOf(bytesReceived));
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam,
-					terminalParam, typeParam, sessionParam, lengthParam };
+			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
+					typeParam, sessionParam, lengthParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
@@ -136,8 +134,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 						SynchronizationException.ERROR_RECEIVE);
 			}
 		} catch (Exception ex) {
-			throw new SynchronizationException("Resume 'receive' session init : " + ex.getLocalizedMessage(),
-					ex, SynchronizationException.ERROR_RECEIVE);
+			throw new SynchronizationException("Resume 'receive' session init : " + ex.getLocalizedMessage(), ex,
+					SynchronizationException.ERROR_RECEIVE);
 		}
 	}
 
@@ -182,8 +180,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
 			NameValuePair typeParam = new NameValuePair(TYPE_PARAM, type);
 			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam,
-					terminalParam, typeParam, sessionParam };
+			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
+					typeParam, sessionParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
@@ -207,8 +205,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public void requestServerModifications(String sessionId, OutputStream out)
-			throws SynchronizationException {
+	public void requestServerModifications(String sessionId, OutputStream out) throws SynchronizationException {
 		try {
 			/* request construction */
 			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
@@ -247,8 +244,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	/**
-	 * Write the request result data incoming in the input stream into the
-	 * output stream
+	 * Write the request result data incoming in the input stream into the output stream
 	 * 
 	 * @param is the request result input stream
 	 * @param out the outputStream
@@ -264,11 +260,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			/* while there is data to read, we read it */
 			byte[] buffer;
 			/*
-			 * while (is.available() > 0) { if (is.available() < 1024) buffer =
-			 * new byte[is.available()]; else buffer = new byte[1024];
+			 * while (is.available() > 0) { if (is.available() < 1024) buffer = new byte[is.available()]; else buffer =
+			 * new byte[1024];
 			 * 
-			 * bytesRead = bytesRead + is.read(buffer); out.write(buffer);
-			 * nbAttemps=0; }
+			 * bytesRead = bytesRead + is.read(buffer); out.write(buffer); nbAttemps=0; }
 			 */
 			buffer = new byte[1024];
 			int i = 0;
@@ -362,7 +357,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	/** */
 	private void setBasicAuthentication(HttpMethodBase method) {
 		String strAuth = login + ":" + password;
-		String encoding = new String(Base64Coder.encode(strAuth.getBytes()));
+		String encoding = new String(Base64.encodeBase64(strAuth.getBytes()));
 		method.setRequestHeader("Authorization", "Basic " + encoding);
 	}
 

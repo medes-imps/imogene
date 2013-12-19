@@ -22,6 +22,8 @@ import org.imogene.lib.common.entity.ImogBeanImpl;
 public class Profile extends ImogBeanImpl {
 
 	private static final long serialVersionUID = -1146782351391973857L;
+	
+	public static final String ADMINISTRATOR = "administrator";
 
 	/* Description group fields */
 

@@ -14,7 +14,7 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.web.server.handler.GenericHandler;
 import org.imogene.web.server.identity.IdentityConstants;
 import org.imogene.web.server.util.FormUtil;
-import org.imogene.web.server.util.ServerConstants;
+import org.imogene.web.server.util.HttpSessionUtil;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -50,7 +50,7 @@ public class EncryptionServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (req.getSession().getAttribute(ServerConstants.SESSION_USER) != null) {
+		if (HttpSessionUtil.getCurrentUser() != null) {
 			String actorShortName = req.getParameter(PARAM_TYPE);
 			String actorId = req.getParameter(PARAM_ID);
 			Class<?> actorClass = getActorClass(actorShortName);

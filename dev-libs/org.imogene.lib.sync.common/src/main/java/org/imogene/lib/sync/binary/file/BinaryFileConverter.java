@@ -1,23 +1,22 @@
 package org.imogene.lib.sync.binary.file;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.binary.file.BinaryFileManager;
-import org.imogene.lib.sync.serializer.xml.base64.Base64FileDecoder;
-import org.imogene.lib.sync.serializer.xml.base64.Base64FileEncoder;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -104,15 +103,22 @@ public class BinaryFileConverter implements Converter {
 
 				// write content from binary to temp file
 				OutputStream out = new FileOutputStream(tempFile);
-				OutputStreamWriter outW = new OutputStreamWriter(out);
-				BufferedWriter bw = new BufferedWriter(outW);
-				Base64FileEncoder.encodeStream(binary.createInputStream(), bw);
-				bw.flush();
-				outW.flush();
+				InputStream is = binary.createInputStream();
+
+				byte[] bytes = new byte[4096];
+				int read = 0;
+				while ((read = is.read(bytes)) != -1) {
+					if (read != 4096) {
+						byte[] newBytes = Arrays.copyOf(bytes, read);
+						out.write(Base64.encodeBase64(newBytes));
+					} else {
+						out.write(Base64.encodeBase64(bytes));
+					}
+				}
 				out.flush();
-				bw.close();
-				outW.close();
 				out.close();
+				is.close();
+
 				// write content from temp file to xml
 				FileReader fr = new FileReader(tempFile);
 				BufferedReader bf = new BufferedReader(fr);
@@ -222,13 +228,16 @@ public class BinaryFileConverter implements Converter {
 					String content = reader.getValue();
 					StringReader strReader = new StringReader(content);
 					BufferedReader br = new BufferedReader(strReader);
-					try {
-						Base64FileDecoder.decodeStream(br, out);
-						out.flush();
-						br.close();
-					} catch (IOException e) {
-						logger.error(e.getMessage());
+					while (true) {
+						String line = br.readLine();
+						if (line == null) {
+							break;
+						}
+						byte[] bytes = Base64.decodeBase64(line.getBytes());
+						out.write(bytes);
 					}
+					out.flush();
+					out.close();
 					strReader.close();
 					reader.moveUp();
 				}

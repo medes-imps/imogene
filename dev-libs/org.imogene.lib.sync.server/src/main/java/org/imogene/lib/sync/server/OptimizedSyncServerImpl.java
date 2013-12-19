@@ -19,6 +19,7 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.entity.ImogEntity;
 import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.security.AccessPolicyFactory;
 import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.BeanKeyGenerator;
@@ -28,6 +29,7 @@ import org.imogene.lib.sync.history.SyncHistory;
 import org.imogene.lib.sync.history.SyncHistoryDao;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.serializer.ImogSerializer;
+import org.imogene.lib.sync.server.util.HttpSessionUtil;
 import org.imogene.lib.sync.session.SyncSession;
 import org.imogene.lib.sync.session.SyncSessionDao;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,11 +54,15 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 
 	private EntityHelper entityHelper;
 
+	private AccessPolicyFactory factory;
+
 	@Override
 	public int applyClientModifications(String sessionId, InputStream data) throws ImogSerializationException {
 		if (checkSession(sessionId)) {
 			SyncSession session = sessionDao.load(sessionId);
 			ImogActor currentUser = genericDao.load(ImogActorImpl.class, session.getUserId());
+			HttpSessionUtil.setCurrentUser(currentUser);
+			HttpSessionUtil.setAccessPolicy(factory, currentUser);
 			return serializer.processMulti(data, currentUser);
 		}
 		return -1;
@@ -102,6 +108,9 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 		if (checkSession(sessionId)) {
 			SyncSession session = sessionDao.load(sessionId);
 			ImogActor currentUser = genericDao.load(ImogActorImpl.class, session.getUserId());
+			HttpSessionUtil.setCurrentUser(currentUser);
+			HttpSessionUtil.setAccessPolicy(factory, currentUser);
+
 			List<ImogBean> allEntities = new Vector<ImogBean>();
 			List<CardEntity> synchronizables = currentUser.getSynchronizables();
 			Date lastDate = computeLastDate(session.getTerminalId());
@@ -110,14 +119,14 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 
 			// serialize entities
 			for (CardEntity synchronizable : synchronizables) {
-				if (BinaryFile.class.getName().equals(synchronizable.getName())) {
+				if (BinaryFile.class.getName().equals(synchronizable.getClassName())) {
 					allowBinaries = true;
 					continue;
-				} else if (DynamicFieldInstance.class.getName().equals(synchronizable.getName())) {
+				} else if (DynamicFieldInstance.class.getName().equals(synchronizable.getClassName())) {
 					continue;
 				} else {
 					ImogBeanHandler<? extends ImogBean> handler = dataHandlerManager.getHandler(synchronizable
-							.getName());
+							.getClassName());
 					if (handler != null) {
 						List<? extends ImogBean> modified = null;
 						if (lastDate == null) {
@@ -302,6 +311,15 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	 */
 	public void setEntityHelper(EntityHelper helper) {
 		this.entityHelper = helper;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param factory
+	 */
+	public void setAccessPolicyFactory(AccessPolicyFactory factory) {
+		this.factory = factory;
 	}
 
 }

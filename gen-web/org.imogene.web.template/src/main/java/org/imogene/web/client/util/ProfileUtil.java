@@ -2,7 +2,7 @@ package org.imogene.web.client.util;
 
 import java.util.List;
 
-import org.imogene.web.shared.constants.ProfileConstants;
+import org.imogene.lib.common.profile.Profile;
 import org.imogene.web.shared.proxy.ImogActorProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
 
@@ -18,7 +18,7 @@ public class ProfileUtil {
 	 */
 	public static boolean isAdmin() {
 		for (ProfileProxy profile : LocalSession.get().getCurrentUser().getProfiles()) {
-			if (profile.getId().equals(ProfileConstants.ADMINISTRATOR))
+			if (profile.getId().equals(Profile.ADMINISTRATOR))
 				return true;
 		}
 		return false;

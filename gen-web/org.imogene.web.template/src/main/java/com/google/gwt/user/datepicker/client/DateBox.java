@@ -16,6 +16,8 @@
 
 package com.google.gwt.user.datepicker.client;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -42,8 +44,6 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
-
-import java.util.Date;
 
 /**
  * A text box that shows a {@link DatePicker} when the user focuses on it.

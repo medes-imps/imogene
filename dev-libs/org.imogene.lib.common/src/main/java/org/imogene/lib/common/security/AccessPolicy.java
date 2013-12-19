@@ -1,4 +1,4 @@
-package org.imogene.web.server.security;
+package org.imogene.lib.common.security;
 
 /**
  * Interfaces that defines an ImogSecurityPolicy

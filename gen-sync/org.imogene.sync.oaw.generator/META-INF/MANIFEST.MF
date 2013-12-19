@@ -19,7 +19,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.imogene.sync.oaw.generator,
  template.sync.config,
  template.sync.entity,
- template.sync.uao,
+ template.sync.security,
  workflow
 Bundle-ClassPath: .,
  src/

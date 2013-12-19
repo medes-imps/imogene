@@ -19,9 +19,6 @@
 	<!-- Annotations Scan -->
     <context:annotation-config/>
 
-	<!-- User Access control -->
-	<bean id="userAccessControl" class="org.imogene.«projectName.toLowerCase()».uao.UserAccessControlImpl" />
-	
 	<!-- Entity helper -->
 	<bean id="entityHelper" class="org.imogene.«projectName.toLowerCase()».domain.entity.EntityHelperImpl"/>
 
@@ -31,26 +28,58 @@
 	<!-- Entity Handlers -->
 	<bean id="defaultUserHandler" class="org.imogene.lib.sync.handler.DefaultUserHandlerImpl" >
 		<property name="dao" ref="defaultUserDao"/>
+		<property name="filter" ref="beanFilter" />
 	</bean>
 	
 	<bean id="binaryHandler" class="org.imogene.lib.sync.binary.file.BinaryFileHandlerImpl" >
 		<property name="binaryFileDao" ref="binaryDao"/>
+		<property name="filter" ref="beanFilter" />
 	</bean>
 	
 	<bean id="clientFilterHandler" class="org.imogene.lib.sync.clientfilter.ClientFilterHandlerImpl">
 		<property name="dao" ref="clientFilterDao"/>
+		<property name="filter" ref="beanFilter" />
 	</bean>
 	
 	<bean id="dynamicFieldInstanceHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandlerImpl">
 		<property name="dao" ref="dynamicFieldInstanceDao"/>
+		<property name="filter" ref="beanFilter" />
 	</bean>
 	
 	<bean id="dynamicFieldTemplateHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandlerImpl">
 		<property name="dao" ref="dynamicFieldTemplateDao"/>
+		<property name="filter" ref="beanFilter" />
 	</bean>
 
+	<bean id="profileHandler" class="org.imogene.lib.sync.handler.ProfileHandlerImpl" >
+		<property name="dao" ref="profileDao"/>
+		<property name="filter" ref="beanFilter" />
+	</bean>
+	
+	<bean id="entityProfileHandler" class="org.imogene.lib.sync.handler.EntityProfileHandlerImpl" >
+		<property name="dao" ref="entityProfileDao"/>
+		<property name="filter" ref="beanFilter" />
+	</bean>
+
+	<bean id="fieldGroupProfileHandler" class="org.imogene.lib.sync.handler.FieldGroupProfileHandlerImpl" >
+		<property name="dao" ref="fieldGroupProfileDao"/>
+		<property name="filter" ref="beanFilter" />
+	</bean>
+	
+	<bean id="cardEntityHandler" class="org.imogene.lib.sync.handler.CardEntityHandlerImpl" >
+		<property name="dao" ref="cardEntityDao"/>
+		<property name="filter" ref="beanFilter" />
+	</bean>
+	
+	<bean id="fieldGroupHandler" class="org.imogene.lib.sync.handler.FieldGroupHandlerImpl" >
+		<property name="dao" ref="fieldGroupDao"/>
+		<property name="filter" ref="beanFilter" />
+	</bean>
+    
     «FOREACH entities AS e»
-	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" />
+	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" >
+		<property name="filter" ref="beanFilter" />
+	</bean>
 	«ENDFOREACH»	
 	
 	<!-- Synchronization server -->
@@ -61,6 +90,7 @@
 		<property name="historyDao" ref="syncHistoryDao"/>
 		<property name="sessionDao" ref="syncSessionDao"/>
 		<property name="entityHelper" ref="entityHelper"/>
+		<property name="accessPolicyFactory" ref="accessPolicyFactory"/>
 	</bean>
 	
 	<!--  the synchronization controller -->
@@ -80,13 +110,6 @@
 		<property name="keyProvider" ref="encryptionKeyProvider"/>
 	</bean>
 	
-	<!-- Security handler --> 
-	<bean id="imogPolicy" class="org.imogene.«projectName.toLowerCase()».uao.security.ImogDefaultPolicy" />
-	
-  	<bean id="imogSecurityHandler" class="org.imogene.lib.sync.uao.security.ImogSecurityHandler" factory-method="getInstance">
-  		<property name="imogPolicy" ref="imogPolicy"/>
-  	</bean>  	
-  	
   	<!-- Binary post operations catcher -->
   	<!-- video conversion -->
   	<bean id="videoConverter" class="org.imogene.sync.video.VideoConverter">
@@ -115,8 +138,17 @@
   		</property>
   	</bean>	
   	
-  	<!--  Spring-security user access control -->	
-	<bean id="imogSecurityDetailService" class="org.imogene.«projectName.toLowerCase()».uao.security.MedooSecurityDetailService" />
+  	<!--  Spring-security -->	
+	<bean id="imogSecurityDetailService" class="org.imogene.sync.security.SecurityDetailService" />
+	
+	<!-- Access policy factory -->
+	<bean id="accessPolicyFactory" class="org.imogene.«projectName.toLowerCase()».security.AccessPolicyFactoryImpl" />
+	
+	<!-- User Access control -->
+	<bean id="userAccessControl" class="org.imogene.«projectName.toLowerCase()».security.UserAccessControlImpl" />
+
+	<!-- Imog Bean Filter -->
+	<bean id="beanFilter" class="org.imogene.«projectName.toLowerCase()».security.ImogBeanFilterImpl" />
 
 </beans>
 «ENDFILE»

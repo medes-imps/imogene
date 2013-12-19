@@ -9,9 +9,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.imogene.lib.common.constants.UserActionConstants;
 import org.imogene.lib.common.dao.GenericDao;
-import org.imogene.lib.common.dao.GenericImogActorDaoImpl;
 import org.imogene.lib.common.entity.CloneFactory;
-import org.imogene.lib.common.entity.ImogActorImpl;
+import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.useraction.UserAction;
 import org.imogene.lib.sync.SyncConstants;
@@ -28,13 +27,8 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	private String notifierHost = "http://localhost:8080/DiabsatNotif";
 
 	private GenericDao genericDao;
-	
-	private GenericImogActorDaoImpl genericImogActorDao;
-	
+
 	private CloneFactory cloneFactory;
-
-
-
 
 	/**
 	 * Notify about the entity modification/creation
@@ -43,7 +37,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	public void afterReturning(Object result, Method method, Object[] args, Object target) throws Throwable {
 		handleAction(method, args, result);
 	}
-	
+
 	/**
 	 * 
 	 * @param method
@@ -55,98 +49,98 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 		if (method.getName().equals("saveOrUpdate") || method.getName().equals("merge")) {
 			handleSaveAction(args);
-		}
-		else if(method.getName().equals("load") && args!=null && args.length==1 && args[0] instanceof String) {
+		} else if (method.getName().equals("load") && args != null && args.length == 1 && args[0] instanceof String) {
 			handleViewAction(result);
-		}
-		else if(method.getName().equals("delete")) {
+		} else if (method.getName().equals("delete")) {
 			handleDeleteAction(args);
 		}
 	}
 
 	/**
 	 * Handle the saveOrUpdate method
+	 * 
 	 * @param args arguments of the method
 	 */
 	private void handleSaveAction(Object[] args) {
-		
+
 		ImogBean bean = (ImogBean) args[0];
 		boolean isNew = (Boolean) args[1];
-		
-		String idFormulaire = bean.getId();	
+
+		String idFormulaire = bean.getId();
 		String className = bean.getClass().getName();
-		String typeFormulaire = bean.getClass().getSimpleName();	
-		
-		String typeAction = null;	
-		if(isNew)
+		String typeFormulaire = bean.getClass().getSimpleName();
+
+		String typeAction = null;
+		if (isNew)
 			typeAction = UserActionConstants.USERACTION_TYPE_CREATE;
 		else
 			typeAction = UserActionConstants.USERACTION_TYPE_UPDATE;
-		
-		if(!bean.getCreatedBy().equals(SyncConstants.SYNC_ID_SYS))
+
+		if (!bean.getCreatedBy().equals(SyncConstants.SYNC_ID_SYS))
 			saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
-		
-		try{
+
+		try {
 			cloneEntity(bean);
-		}catch(Exception e){
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		
+
 		sendToNotifier(className, typeAction, idFormulaire);
 	}
-	
+
 	/**
 	 * 
 	 * @param args
 	 * @param result
 	 */
 	private void handleViewAction(Object result) {
-				
-		if(result!=null) {
-			ImogBean bean = (ImogBean) result;			
-			String idFormulaire = bean.getId();	
-			String typeFormulaire = bean.getClass().getSimpleName();			
+
+		if (result != null) {
+			ImogBean bean = (ImogBean) result;
+			String idFormulaire = bean.getId();
+			String typeFormulaire = bean.getClass().getSimpleName();
 			String typeAction = UserActionConstants.USERACTION_TYPE_READ;
-			
-			saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));			
+
+			saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param args
 	 */
 	private void handleDeleteAction(Object[] args) {
-		
-		ImogBean bean = (ImogBean) args[0];		
-		String idFormulaire = bean.getId();	
-		String typeFormulaire = bean.getClass().getSimpleName();		
-		String typeAction = UserActionConstants.USERACTION_TYPE_DELETE;	
-		
+
+		ImogBean bean = (ImogBean) args[0];
+		String idFormulaire = bean.getId();
+		String typeFormulaire = bean.getClass().getSimpleName();
+		String typeAction = UserActionConstants.USERACTION_TYPE_DELETE;
+
 		saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
 	}
-	
-	private void cloneEntity(Object source){
-		if(source!=null){
+
+	private void cloneEntity(Object source) {
+		if (source != null) {
 			Object clone = cloneFactory.clone(source);
-			if(clone != null)
+			if (clone != null)
 				genericDao.saveOrUpdate(clone);
 		}
 	}
-	
+
 	/**
 	 * Notify the notifier by http.
+	 * 
 	 * @param type the card type
 	 * @param operation the operation on the card
 	 * @param id the card id
 	 */
 	private void sendToNotifier(final String type, final String operation, final String id) {
-	
+
 		/* thread the notification process */
 		new Thread() {
 			@Override
 			public void run() {
-				
+
 				HttpClient client = new HttpClient();
 				String uri = notifierHost + "?" + "type=" + type + "&op=" + operation + "&id=" + id;
 				logger.debug("Notifier URI : " + uri);
@@ -156,64 +150,61 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 				} catch (Exception ex) {
 					logger.error(ex.getMessage());
 				}
-				
+
 			}
-		}.start();	
+		}.start();
 	}
-	
+
 	/**
 	 * 
 	 * @param typeAction
 	 * @param typeFormulaire
 	 * @param idFormulaire
 	 */
-	private void saveAction(String actionType, String form, String formId, ImogActorImpl actor) {
-		
+	private void saveAction(String actionType, String form, String formId, ImogActor actor) {
+
 		UserAction action = new UserAction();
 		action.setId(UUID.randomUUID().toString());
 		action.setActionDate(new Date(System.currentTimeMillis()));
-		if(actor!=null)
+		if (actor != null)
 			action.setUserId(actor.getId());
 		action.setActionType(actionType);
 		action.setFormType(form);
 		action.setFormId(formId);
-		
+
 		genericDao.saveOrUpdate(action);
 	}
-	
+
 	/**
 	 * 
 	 * @param login
 	 * @return
 	 */
-	private ImogActorImpl getActor(String login) {
-		return genericImogActorDao.loadFromLogin(login);
+	private ImogActor getActor(String login) {
+		return genericDao.loadFromLogin(login);
 	}
-	
+
 	/**
 	 * For bean injection
+	 * 
 	 * @param notifier the notifier URL
 	 */
 	public void setNotifierUrl(String notifier) {
 		notifierHost = notifier;
 	}
-	
+
 	/**
 	 * For bean injection
+	 * 
 	 * @param dao
 	 */
-	public void setDao(GenericDao dao){
+	public void setDao(GenericDao dao) {
 		genericDao = dao;
-	}
-	
-	
-
-	public void setGenericImogActorDaoImpl(GenericImogActorDaoImpl genericImogActorDao) {
-		this.genericImogActorDao = genericImogActorDao;
 	}
 
 	/**
 	 * For bean injection
+	 * 
 	 * @param cloneFactory
 	 */
 	public void setCloneFactory(CloneFactory cloneFactory) {
