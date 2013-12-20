@@ -22,20 +22,8 @@
 		<property name="dataHandlerManager" ref="dataHandlerManager"/>
 	</bean>
 	
-	<!-- Initialize the Password Converter -->
-	<bean  id="passwordConverter" class="org.imogene.lib.sync.serializer.xml.PasswordConverter" >
-		<property name="encryptionManager" ref="encryptionManager"/>
-	</bean>
-	
 	<!-- Initialize the Binary Converter -->
 	<bean id="binaryConverter" class="org.imogene.lib.sync.binary.file.BinaryFileConverter"/> 	
-	
-	<!-- Initialize the password converter for the actors -->
-    <bean id="passwordPropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
-		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
-		<property name="propertyName" value="password"/>
-		<property name="converter" ref="passwordConverter"/>
-	</bean>
 	
 	<!-- Initialize the DynamicFieldtemplate convertor for the DynamicFieldInstance -->
 	<bean id="dynFieldInstanceTemplateConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
@@ -150,7 +138,6 @@
 		<property name="dataHandlerManager" ref="dataHandlerManager"/>
 		<property name="propertyConverters">
 			<set>
-				<ref bean="passwordPropertyConverter"/>
 				<ref bean="dynFieldInstanceTemplateConverter"/>
 				<ref bean="dynFieldTemplateActorConverter"/>
 				<ref bean="dynamicFieldInstancePropertyConverter"/>

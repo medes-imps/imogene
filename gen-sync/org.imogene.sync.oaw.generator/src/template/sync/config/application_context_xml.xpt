@@ -104,12 +104,6 @@
 		<property name="userAccessControl" ref="userAccessControl"/>	
 	</bean>
 	
-	<!--  Encryption system initialization -->
-	<bean id="encryptionKeyProvider" class="org.imogene.lib.sync.server.encryption.DefaultSecretKeyProvider"/>	
-	<bean id="encryptionManager" class="org.imogene.encryption.EncryptionManager" init-method="getInstance">
-		<property name="keyProvider" ref="encryptionKeyProvider"/>
-	</bean>
-	
   	<!-- Binary post operations catcher -->
   	<!-- video conversion -->
   	<bean id="videoConverter" class="org.imogene.sync.video.VideoConverter">
