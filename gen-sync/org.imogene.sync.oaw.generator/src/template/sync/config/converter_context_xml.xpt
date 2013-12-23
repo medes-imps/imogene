@@ -46,6 +46,13 @@
 		<property name="converter" ref="collectionConverter"/>
 	</bean>
 
+	<!-- Initialize Synchronizables converters -->
+	<bean id="synchronizablesActorConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
+		<property name="propertyName" value="synchronizables"/>
+		<property name="converter" ref="collectionConverter"/>
+	</bean>	  
+
 	<!-- Initialize Profiles converters -->
 	<bean id="profilesActorConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
 		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>

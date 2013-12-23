@@ -13,9 +13,6 @@
      http://www.springframework.org/schema/context
      http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<!-- Instantiate the session manager (singleton) 
-	<bean id="sessionManager" class="org.imogene.lib.sync.server.session.SyncSessionManager" factory-method="getInstance"/> -->
-	
 	<!-- Annotations Scan -->
     <context:annotation-config/>
 
