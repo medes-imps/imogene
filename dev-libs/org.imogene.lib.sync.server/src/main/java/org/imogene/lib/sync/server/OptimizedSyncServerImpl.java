@@ -206,11 +206,10 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	}
 
 	@Override
-	public String initSession(String termId, String type, ImogActor user) {
+	public String initSession(String termId, ImogActor user) {
 		SyncSession session = new SyncSession();
 		session.setId(UUID.randomUUID().toString());
 		session.setTerminalId(termId);
-		session.setType(type);
 		session.setUserId(user.getId());
 		session.setInitDate(new Date(System.currentTimeMillis()));
 		session.setSendDate(new Date(System.currentTimeMillis()));

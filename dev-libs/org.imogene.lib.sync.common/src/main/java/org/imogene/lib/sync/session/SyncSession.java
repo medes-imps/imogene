@@ -35,8 +35,6 @@ public class SyncSession implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date sendDate;
 
-	private String type;
-
 	private String userId;
 
 	@Column(name = "imogversion")
@@ -112,24 +110,6 @@ public class SyncSession implements Serializable {
 	 */
 	public void setSendDate(Date sendDate) {
 		this.sendDate = sendDate;
-	}
-
-	/**
-	 * get the client type (ie: binstream, xml ...)
-	 * 
-	 * @return The client type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * Set the client type
-	 * 
-	 * @param sessionType the client type
-	 */
-	public void setType(String sessionType) {
-		type = sessionType;
 	}
 
 	/**

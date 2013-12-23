@@ -4,52 +4,51 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Interface that describes an optimized synchronization server client. This
- * client should be able to recover from an unexpectedly interrupted
- * synchronization and resume the sending or the receiving respectively at the
- * last sent or received byte.
+ * Interface that describes an optimized synchronization server client. This client should be able to recover from an
+ * unexpectedly interrupted synchronization and resume the sending or the receiving respectively at the last sent or
+ * received byte.
  * 
  * @author MEDES-IMPS
  */
 public interface OptimizedSyncClient {
 
 	/* misc */
-	public static String ERROR_PREFIX = "-error-";
+	public static final String ERROR_PREFIX = "-error-";
 
 	/* parameters constants */
-	public static String LOGIN_PARAM = "login";
+	public static final String LOGIN_PARAM = "login";
 
-	public static String PASSWD_PARAM = "password";
+	public static final String PASSWD_PARAM = "password";
 
-	public static String TERMINALID_PARAM = "terminal";
+	public static final String TERMINALID_PARAM = "terminal";
 
-	public static String TYPE_PARAM = "type";
+	public static final String CMD_PARAM = "cmd";
 
-	public static String CMD_PARAM = "cmd";
+	public static final String LENGTH_PARAM = "len";
 
-	public static String LENGTH_PARAM = "len";
-
-	public static String SESSION_PARAM = "session";
+	public static final String SESSION_PARAM = "session";
 
 	/* command constants */
 
-	public static String CMD_INIT = "init";
+	public static final String CMD_AUTH = "auth";
 
-	public static String CMD_RESUME_SEND_INIT = "initresumesend";
+	public static final String CMD_INIT = "init";
 
-	public static String CMD_RESUME_RECEIVE_INIT = "initresumereceive";
+	public static final String CMD_RESUME_SEND_INIT = "initresumesend";
 
-	public static String CMD_RESUME_SEND = "resumesend";
+	public static final String CMD_RESUME_RECEIVE_INIT = "initresumereceive";
 
-	public static String CMD_RESUME_RECEIVE = "resumereceive";
+	public static final String CMD_RESUME_SEND = "resumesend";
 
-	public static String CMD_CLOSE = "ackservmodif";
+	public static final String CMD_RESUME_RECEIVE = "resumereceive";
 
-	public static String CMD_SENDMODIF = "clmodif";
+	public static final String CMD_CLOSE = "ackservmodif";
 
-	public static String CMD_SERVERMODIF = "reqservmodif";
+	public static final String CMD_SENDMODIF = "clmodif";
 
-	public static String CDM_DIRECTSEND = "directsend";
+	public static final String CMD_SERVERMODIF = "reqservmodif";
+
+	public static final String CDM_DIRECTSEND = "directsend";
 
 	/**
 	 * Set the url of the synchronization server.
@@ -57,6 +56,14 @@ public interface OptimizedSyncClient {
 	 * @param url The url of the server.
 	 */
 	public void setUrl(String url);
+
+	/**
+	 * Authenticate a user
+	 * 
+	 * @return {@code true} if the user has been correctly authenticated, {@code false} otherwise.
+	 * @throws SynchronizationException
+	 */
+	public boolean authenticate() throws SynchronizationException;
 
 	/**
 	 * Initialize the session
@@ -89,7 +96,8 @@ public interface OptimizedSyncClient {
 	 * @param data the modified entity, serialized
 	 * @return the number of entity processed by the server
 	 */
-	public int resumeRequestModification(String sessionId, OutputStream out, long bytesReceived) throws SynchronizationException;
+	public int resumeRequestModification(String sessionId, OutputStream out, long bytesReceived)
+			throws SynchronizationException;
 
 	/**
 	 * Send the client modifications to the server
@@ -126,8 +134,7 @@ public interface OptimizedSyncClient {
 	public boolean closeSession(String sessionId) throws SynchronizationException;
 
 	/**
-	 * Method that permits to send data outside a global synchronization
-	 * process.
+	 * Method that permits to send data outside a global synchronization process.
 	 * 
 	 * @param sessionId the sessionId;
 	 * @param data the data to send

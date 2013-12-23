@@ -48,8 +48,6 @@ public class SyncParameter implements Serializable {
 
 	private int period;
 
-	private String type;
-
 	private Long offset;
 
 	@OneToMany(fetch = FetchType.EAGER)
@@ -143,24 +141,6 @@ public class SyncParameter implements Serializable {
 	 */
 	public void setSynchronizables(Set<CardEntity> synchronizables) {
 		this.synchronizables = synchronizables;
-	}
-
-	/**
-	 * Get the synchronization type
-	 * 
-	 * @return the synchronization type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * Set the synchronization type
-	 * 
-	 * @param type the synchronization type
-	 */
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	/**

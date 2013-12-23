@@ -1,14 +1,12 @@
 package org.imogene.lib.sync.server.http.command;
 
 public class InitializeCommand {
-	
+
 	private String terminal;
-	
+
 	private String login;
-	
+
 	private String password;
-	
-	private String type;
 
 	public String getTerminal() {
 		return terminal;
@@ -33,16 +31,5 @@ public class InitializeCommand {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	
-	
 
 }

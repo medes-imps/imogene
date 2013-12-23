@@ -31,7 +31,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	private String login;
 	private String password;
 	private String terminalId;
-	private String type;
 
 	/**
 	 * By using this constructor, you specify that you want to use the HTTP authentication based on the specified login
@@ -41,20 +40,43 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	 * @param login the user login
 	 * @param password the user password
 	 * @param terminalId the terminal identifier
-	 * @param type the type of synchronization
 	 */
-	public OptimizedSyncClientHttp(String url, String login, String password, String terminalId, String type) {
+	public OptimizedSyncClientHttp(String url, String login, String password, String terminalId) {
 		setUrl(url);
 		this.httpAuthentication = true;
 		this.login = login;
 		this.password = password;
 		this.terminalId = terminalId;
-		this.type = type;
 	}
 
 	@Override
 	public void setUrl(String url) {
 		this.url = url.endsWith("html") ? url : (url.endsWith("/") ? url + "sync.html" : url + "/sync.html");
+	}
+
+	@Override
+	public boolean authenticate() throws SynchronizationException {
+		try {
+			/* request construction */
+			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_AUTH);
+			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
+			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
+			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam };
+			GetMethod method = httpGetMethod(url);
+			method.setQueryString(params);
+
+			HttpClient client = new HttpClient();
+			int code = client.executeMethod(method);
+			if (code == HttpStatus.SC_OK) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new SynchronizationException("Session init : " + ex.getLocalizedMessage(), ex,
+					SynchronizationException.ERROR_INIT);
+		}
 	}
 
 	@Override
@@ -87,9 +109,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
 			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
 			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
-			NameValuePair typeParam = new NameValuePair(TYPE_PARAM, type);
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
-					typeParam };
+			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
@@ -117,11 +137,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
 			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
 			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
-			NameValuePair typeParam = new NameValuePair(TYPE_PARAM, type);
 			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
 			NameValuePair lengthParam = new NameValuePair(LENGTH_PARAM, String.valueOf(bytesReceived));
 			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
-					typeParam, sessionParam, lengthParam };
+					sessionParam, lengthParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
@@ -178,10 +197,9 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
 			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
 			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
-			NameValuePair typeParam = new NameValuePair(TYPE_PARAM, type);
 			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
 			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
-					typeParam, sessionParam };
+					sessionParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 

@@ -136,7 +136,7 @@ public class OptimizedSyncController extends MultiActionController {
 
 		/* Initialize the session */
 		if (currentUser != null) {
-			String sessionId = syncServer.initSession(command.getTerminal(), command.getType(), currentUser);
+			String sessionId = syncServer.initSession(command.getTerminal(), currentUser);
 			try {
 				resp.setContentLength(sessionId.getBytes().length);
 				OutputStream out = resp.getOutputStream();

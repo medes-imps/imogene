@@ -172,8 +172,7 @@ public class OptimizedSynchronizerImpl implements OptimizedSynchronizer {
 				byte[] encpwd = Base64.decodeBase64(param.getPassword().getBytes());
 				byte[] pwd = encryptionManager.decrypt(encpwd);
 				String password = new String(pwd);
-				syncClient = new OptimizedSyncClientHttp(param.getUrl(), param.getLogin(), password, param.getTerminalId(),
-						param.getType());
+				syncClient = new OptimizedSyncClientHttp(param.getUrl(), param.getLogin(), password, param.getTerminalId());
 			}
 			syncClient.setUrl(param.getUrl());
 
