@@ -12,6 +12,7 @@ import javax.persistence.TemporalType;
 
 /**
  * Implementation of the ImogBean interface
+ * 
  * @author Medes-IMPS
  */
 @Entity
@@ -22,7 +23,7 @@ public abstract class ImogBeanBck implements ImogBean {
 
 	@Id
 	private String traceId;
-	
+
 	private String id;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -40,10 +41,12 @@ public abstract class ImogBeanBck implements ImogBean {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date uploadDate;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deleted;
+
 	@Column(name = "imogversion")
 	private int version;
-	
-	
+
 	public String getTraceId() {
 		return traceId;
 	}
@@ -123,6 +126,16 @@ public abstract class ImogBeanBck implements ImogBean {
 	}
 
 	@Override
+	public Date getDeleted() {
+		return deleted;
+	}
+
+	@Override
+	public void setDeleted(Date deleted) {
+		this.deleted = deleted;
+	}
+
+	@Override
 	public int getVersion() {
 		return version;
 	}
@@ -132,6 +145,4 @@ public abstract class ImogBeanBck implements ImogBean {
 		this.version = version;
 	}
 
-
 }
-

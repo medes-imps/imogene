@@ -67,6 +67,7 @@ public class «name.toFirstUpper()»Cloner {
 		bck.setModifiedBy(entity.getModifiedBy());
 		bck.setModifiedFrom(entity.getModifiedFrom());
 		bck.setUploadDate(entity.getUploadDate());
+		bck.setDeleted(entity.getDeleted());
 		bck.setVersion(entity.getVersion());
 		«FOREACH groups AS g -»
 			«FOREACH g.fields AS f -»

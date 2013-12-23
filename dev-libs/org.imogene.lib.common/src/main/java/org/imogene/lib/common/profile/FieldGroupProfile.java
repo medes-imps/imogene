@@ -29,11 +29,11 @@ public class FieldGroupProfile extends ImogBeanImpl {
 	@ManyToOne(cascade=CascadeType.DETACH)
 	private FieldGroup fieldGroup;
 
-	private Boolean read;
+	private Boolean canRead;
 
-	private Boolean write;
+	private Boolean canWrite;
 
-	private Boolean export;
+	private Boolean canExport;
 
 	/**
 	 * Constructor
@@ -60,27 +60,27 @@ public class FieldGroupProfile extends ImogBeanImpl {
 	}
 
 	public Boolean getRead() {
-		return read;
+		return canRead;
 	}
 
 	public void setRead(Boolean value) {
-		read = value;
+		canRead = value;
 	}
 
 	public Boolean getWrite() {
-		return write;
+		return canWrite;
 	}
 
 	public void setWrite(Boolean value) {
-		write = value;
+		canWrite = value;
 	}
 
 	public Boolean getExport() {
-		return export;
+		return canExport;
 	}
 
 	public void setExport(Boolean value) {
-		export = value;
+		canExport = value;
 	}
 
 }
