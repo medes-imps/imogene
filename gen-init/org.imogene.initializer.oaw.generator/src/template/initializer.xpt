@@ -1,15 +1,20 @@
 «IMPORT core»
 
-«DEFINE generate(String projectName, String password, String packageName) FOR Project»
+«DEFINE generate(String projectName, String password, String packagetName) FOR Project»
 «FILE "InitializerImpl.java"»
 package org.imogene.initializer;
 
 import java.util.Date;
 
+import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.model.FieldGroup;
+import org.imogene.lib.common.profile.EntityProfile;
+import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
 import org.imogene.lib.common.user.DefaultUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,49 +34,49 @@ public class InitializerImpl implements Initializer {
 		CardEntity dynamicFieldInstance = new CardEntity();
 		dynamicFieldInstance.setId("dynamicFieldInstance");
 		dynamicFieldInstance.setName("Dynamic Field Instance");
-		dynamicFieldInstance.setClassName("org.imogene.lib.common.dynamicfields.DynamicFieldInstance");
+		dynamicFieldInstance.setClassName(DynamicFieldInstance.class.getName());
 		save(dynamicFieldInstance);
 
 		CardEntity dynamicFieldTemplate = new CardEntity();
 		dynamicFieldTemplate.setId("dynamicFieldTemplate");
 		dynamicFieldTemplate.setName("Dynamic Field Template");
-		dynamicFieldTemplate.setClassName("org.imogene.lib.common.dynamicfields.DynamicFieldTemplate");
+		dynamicFieldTemplate.setClassName(DynamicFieldTemplate.class.getName());
 		save(dynamicFieldTemplate);
 
 		CardEntity cardEntity = new CardEntity();
 		cardEntity.setId("cardEntity");
 		cardEntity.setName("Card Entity");
-		cardEntity.setClassName("org.imogene.lib.common.model.CardEntity");
+		cardEntity.setClassName(CardEntity.class.getName());
 		save(cardEntity);
 
 		CardEntity fieldGroup = new CardEntity();
 		fieldGroup.setId("fieldGroup");
 		fieldGroup.setName("Field Group");
-		fieldGroup.setClassName("org.imogene.lib.common.model.FieldGroup");
+		fieldGroup.setClassName(FieldGroup.class.getName());
 		save(fieldGroup);
 
 		CardEntity entityProfile = new CardEntity();
 		entityProfile.setId("entityProfile");
 		entityProfile.setName("Entity Profile");
-		entityProfile.setClassName("org.imogene.lib.common.profile.EntityProfile");
+		entityProfile.setClassName(EntityProfile.class.getName());
 		save(entityProfile);
 
 		CardEntity fieldGroupProfile = new CardEntity();
 		fieldGroupProfile.setId("fieldGroupProfile");
 		fieldGroupProfile.setName("Field Group Profile");
-		fieldGroupProfile.setClassName("org.imogene.lib.common.profile.FieldGroupProfile");
+		fieldGroupProfile.setClassName(FieldGroupProfile.class.getName());
 		save(fieldGroupProfile);
 
 		CardEntity profile = new CardEntity();
 		profile.setId("profile");
 		profile.setName("Profile");
-		profile.setClassName("org.imogene.lib.common.profile.Profile");
+		profile.setClassName(Profile.class.getName());
 		save(profile);
 		
 		CardEntity binary = new CardEntity();
 		binary.setId("binary");
 		binary.setName("Binary File");
-		binary.setClassName("org.imogene.lib.common.binary.file.BinaryFile");
+		binary.setClassName(BinaryFile.class.getName());
 		save(binary);
 
 		«FOREACH entities AS e»
