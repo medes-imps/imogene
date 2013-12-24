@@ -36,7 +36,7 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.DETACH)
 	@JoinTable(name = "sync_entities", joinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "synchronizable_id", referencedColumnName = "id"))
-	protected List<CardEntity> synchronizables;
+	private List<CardEntity> synchronizables;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.DETACH)
 	@JoinTable(name = "imog_actor_profiles", joinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "profile_id", referencedColumnName = "id"))

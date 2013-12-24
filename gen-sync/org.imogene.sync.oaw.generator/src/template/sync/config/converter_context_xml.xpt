@@ -134,10 +134,6 @@
 		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
 		<property name="propertyName" value="lastLoginDate" />
 	</bean>
-	<bean id="omitSynchronizables" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
-		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
-		<property name="propertyName" value="synchronizables" />
-	</bean>
 	«EXPAND omitFields(projectName) FOREACH entities-»
 	
 	<!-- Initialize the XML serializer -->
@@ -148,6 +144,7 @@
 				<ref bean="dynFieldInstanceTemplateConverter"/>
 				<ref bean="dynFieldTemplateActorConverter"/>
 				<ref bean="dynamicFieldInstancePropertyConverter"/>
+				<ref bean="synchronizablesActorConverter"/>
 				<ref bean="profilesActorConverter"/>
 				<ref bean="entityProfilesProfileConverter"/>
 				<ref bean="fieldGroupProfilesProfileConverter"/>
@@ -174,7 +171,6 @@
 				<ref bean="omitBeNotified" />
 				<ref bean="omitNotificationData" />
 				<ref bean="omitLastLoginDate" />
-				<ref bean="omitSynchronizables" />
 				«EXPAND omitField FOREACH entities-»
 			</set>
 		</property>

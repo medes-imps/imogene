@@ -119,6 +119,7 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 		transformedBean.setLogin(bean.getLogin());
 		transformedBean.setPassword(bean.getPassword());
 		transformedBean.setProfiles(bean.getProfiles());
+		transformedBean.setSynchronizables(bean.getSynchronizables());
 		«EXPAND filterField FOREACH ((Actor)e).filters-»		
 		«ENDIF-»			
 		
