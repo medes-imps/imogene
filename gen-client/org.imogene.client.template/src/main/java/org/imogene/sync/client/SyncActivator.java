@@ -11,15 +11,18 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.imogene.lib.sync.client.parameter.SyncParameter;
 import org.imogene.sync.client.config.MyPropertyPlaceholderConfigurer;
-import org.imogene.sync.client.init.ClientInitializer;
+import org.imogene.sync.client.jobs.AuthJob;
 import org.imogene.sync.client.jobs.NTPOffsetJob;
 import org.imogene.sync.client.jobs.SyncJob;
 import org.imogene.sync.client.jobs.Synchronizer;
 import org.imogene.sync.client.ssl.EasySSLProtocolSocketFactory;
+import org.imogene.sync.client.ui.AuthenticationDialog;
 import org.imogene.sync.client.ui.ISyncConstants;
 import org.osgi.framework.BundleContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -65,13 +68,11 @@ public class SyncActivator extends AbstractUIPlugin {
 		Protocol.registerProtocol("https", lEasyHttps); //$NON-NLS-1$
 
 		MyPropertyPlaceholderConfigurer.getInstance().setProperties(getSynchronizerProperties());
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("application-context.xml", "dao-context.xml", //$NON-NLS-1$ //$NON-NLS-2$
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
+				"application-context.xml", "dao-context.xml", //$NON-NLS-1$ //$NON-NLS-2$
 				"converter-context.xml"); //$NON-NLS-1$
 
 		synchronizer = (Synchronizer) ctx.getBean("synchronizer"); //$NON-NLS-1$
-
-		ClientInitializer init = (ClientInitializer) ctx.getBean("clientInitializer");
-		init.initDatase();
 	}
 
 	@Override
@@ -95,12 +96,17 @@ public class SyncActivator extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Define the time offset between the machine and an NTP server.
+	 * Update the NTP parameters.
+	 * <p>
+	 * This will try to run the NTP client process if needed.
+	 * </p>
 	 * 
-	 * @param offset Time offset in milliseconds
+	 * @param host URL of the NTP host
+	 * @param rate frequency of the updates
 	 */
-	public void setOffset(long offset) {
-		synchronizer.setOffset(offset);
+	public void setNTPParameters(String host, long rate) {
+		ensureNTPJob();
+		ntpJob.setParameters(host, rate);
 	}
 
 	/**
@@ -113,58 +119,86 @@ public class SyncActivator extends AbstractUIPlugin {
 	 * @param loop whether the synchronization must be repeated or not
 	 * @param period period of synchronization in milliseconds
 	 */
-	public void setSyncParameters(String url, String terminal, boolean start, long period) {
-		ensureSyncJob();
-		synchronizer.setParameters(url, terminal);
-		syncJob.setParameters(start, period);
-	}
-
-	/**
-	 * Retrieves the synchronization parameters.
-	 * 
-	 * @return The synchronization parameters
-	 */
-	public SyncParameter getSyncParameters() {
-		return synchronizer.getParameters();
-	}
-
-	/**
-	 * Update the NTP parameters.
-	 * <p>
-	 * This will try to run the NTP client process if needed.
-	 * </p>
-	 * 
-	 * @param host URL of the NTP host
-	 * @param rate frequency of the updates
-	 */
-	public void setNTPParameters(String host, long rate) {
-		if (ntpJob == null) {
-			ntpJob = new NTPOffsetJob();
-		}
-		ntpJob.setParameters(host, rate);
+	public void setSyncParameters(final boolean start, final long period) {
+		ensureAuthenticated(new Runnable() {
+			@Override
+			public void run() {
+				ensureSyncJob();
+				syncJob.setParameters(start, period);
+			}
+		});
 	}
 
 	/**
 	 * Start the synchronization for the given period.
 	 */
 	public void start() {
-		getPreferenceStore().setValue(ISyncConstants.SYNC_AUTO, true);
+		ensureAuthenticated(new Runnable() {
+			@Override
+			public void run() {
+				getPreferenceStore().setValue(ISyncConstants.SYNC_AUTO, true);
+			}
+		});
 	}
 
 	/**
 	 * Stop the synchronization.
 	 */
 	public void stop() {
-		getPreferenceStore().setValue(ISyncConstants.SYNC_AUTO, false);
+		ensureAuthenticated(new Runnable() {
+			@Override
+			public void run() {
+				getPreferenceStore().setValue(ISyncConstants.SYNC_AUTO, false);
+			}
+		});
 	}
 
 	/**
-	 * Perform a one shot synchronization. If the synchronization is on loop mode it will be reschedule at the end of the process
-	 * for the given period.
+	 * Perform a one shot synchronization. If the synchronization is on loop mode it will be reschedule at the end of
+	 * the process for the given period.
 	 */
 	public void synchronize() {
-		ensureSyncJob();
-		syncJob.synchronize();
+		ensureAuthenticated(new Runnable() {
+			@Override
+			public void run() {
+				ensureSyncJob();
+				syncJob.synchronize();
+			}
+		});
+	}
+
+	private void ensureAuthenticated(final Runnable runnable) {
+		final IPreferenceStore prefs = getPreferenceStore();
+		if (!prefs.contains(ISyncConstants.SYNC_LOGIN)) {
+			AuthenticationDialog dialog = new AuthenticationDialog(Display.getDefault().getActiveShell());
+			dialog.create();
+			if (dialog.open() == Window.OK) {
+				final String url = prefs.getString(ISyncConstants.SYNC_URL);
+				final String login = dialog.getLogin();
+				final String password = dialog.getPassword();
+				AuthJob authJob = new AuthJob();
+				authJob.setUser(true);
+				authJob.setSynchronizer(synchronizer);
+				authJob.setUrl(url);
+				authJob.setLogin(login);
+				authJob.setPassword(password);
+				authJob.addJobChangeListener(new JobChangeAdapter() {
+					@Override
+					public void done(IJobChangeEvent event) {
+						if (event.getResult().getSeverity() == Status.OK) {
+							prefs.setValue(ISyncConstants.SYNC_LOGIN, login);
+							prefs.setValue(ISyncConstants.SYNC_PASSWORD, password);
+							if (runnable != null) {
+								runnable.run();
+							}
+						}
+					}
+				});
+				authJob.schedule();
+			}
+		} else {
+			runnable.run();
+		}
 	}
 
 	private void ensureSyncJob() {
@@ -179,6 +213,12 @@ public class SyncActivator extends AbstractUIPlugin {
 					}
 				}
 			});
+		}
+	}
+
+	private void ensureNTPJob() {
+		if (ntpJob == null) {
+			ntpJob = new NTPOffsetJob();
 		}
 	}
 

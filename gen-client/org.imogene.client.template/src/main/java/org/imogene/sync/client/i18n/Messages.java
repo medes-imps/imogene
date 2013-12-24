@@ -13,17 +13,20 @@ public class Messages extends NLS {
 	public static String sync_pref_period;
 	public static String sync_pref_terminal;
 
-	public static String ntp_pref_title;
-	public static String ntp_pref_host;
-	public static String ntp_pref_host_error;
-	public static String ntp_pref_rate;
-
 	public static String sync_pref_period_15min;
 	public static String sync_pref_period_1hour;
 	public static String sync_pref_period_2hours;
 	public static String sync_pref_period_4hours;
 	public static String sync_pref_period_8hours;
 	public static String sync_pref_period_1day;
+
+	public static String ntp_pref_title;
+	public static String ntp_pref_host;
+	public static String ntp_pref_host_error;
+	public static String ntp_pref_rate;
+	
+	public static String ntp_title;
+	public static String ntp_error;
 
 	public static String sync_title;
 	public static String sync_init;
@@ -40,6 +43,12 @@ public class Messages extends NLS {
 	public static String sync_resume_sending;
 	public static String sync_resume_receiving;
 	public static String sync_resume_close;
+
+	public static String auth_title;
+	public static String auth_info;
+	public static String auth_login;
+	public static String auth_password;
+	public static String auth_failed;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

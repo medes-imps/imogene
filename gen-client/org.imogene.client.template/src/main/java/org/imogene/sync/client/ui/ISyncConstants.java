@@ -9,6 +9,8 @@ public interface ISyncConstants {
 	public static final String SYNC_AUTO = "org.imogene.sync.client.Auto"; //$NON-NLS-1$
 	public static final String SYNC_PERIOD = "org.imogene.sync.client.Period"; //$NON-NLS-1$
 	public static final String SYNC_TERMINAL = "org.imogene.sync.client.Terminal"; //$NON-NLS-1$
+	public static final String SYNC_LOGIN = "org.imogene.sync.client.Login"; //$NON-NLS-1$
+	public static final String SYNC_PASSWORD = "org.imogene.sync.client.Password"; //$NON-NLS-1$
 	public static final String SYNC_LAST = "org.imogene.sync.client.Last"; //$NON-NLS-1$
 	public static final String NTP_HOST = "org.imogene.sync.client.NtpHost"; //$NON-NLS-1$
 	public static final String NTP_RATE = "org.imogene.sync.client.Rate"; //$NON-NLS-1$

@@ -68,7 +68,8 @@ public class SyncPreferencePage extends FieldEditorPreferencePage implements IWo
 		url.setEmptyStringAllowed(false);
 		url.setErrorMessage(Messages.sync_pref_url_error);
 
-		StringFieldEditor terminal = new StringFieldEditor(ISyncConstants.SYNC_TERMINAL, Messages.sync_pref_terminal, sync);
+		StringFieldEditor terminal = new StringFieldEditor(ISyncConstants.SYNC_TERMINAL, Messages.sync_pref_terminal,
+				sync);
 		terminal.setEnabled(false, sync);
 
 		BooleanFieldEditor automatic = new BooleanFieldEditor(ISyncConstants.SYNC_AUTO, Messages.sync_pref_auto, sync);

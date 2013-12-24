@@ -6,29 +6,31 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.codec.binary.Base64;
+import javax.persistence.NoResultException;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.imogene.encryption.EncryptionManager;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
-import org.imogene.lib.common.sync.entity.SynchronizableEntity;
+import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.client.OptimizedSyncClient;
 import org.imogene.lib.sync.client.SyncClient;
 import org.imogene.lib.sync.client.SynchronizationException;
 import org.imogene.lib.sync.client.http.OptimizedSyncClientHttp;
-import org.imogene.lib.sync.client.parameter.SyncParameter;
-import org.imogene.lib.sync.client.parameter.SyncParameterDao;
 import org.imogene.lib.sync.handler.DataHandlerManager;
 import org.imogene.lib.sync.handler.ImogBeanHandler;
 import org.imogene.lib.sync.history.SyncHistory;
@@ -37,15 +39,16 @@ import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.serializer.ImogSerializer;
 import org.imogene.sync.client.SyncActivator;
 import org.imogene.sync.client.i18n.Messages;
+import org.imogene.sync.client.ui.ISyncConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 public class SynchronizerImpl implements Synchronizer {
 
-	private static final Logger logger = Logger.getLogger("org.imogene.sync.client.jobs.SyncJobImpl"); //$NON-NLS-1$
+	private static final Logger logger = Logger.getLogger(SynchronizerImpl.class.getName()); //$NON-NLS-1$
 
 	// Injected by Spring
 	private SyncHistoryDao historyDao;
-	private SyncParameterDao syncParameterDao;
+	private GenericDao genericDao;
 	private DataHandlerManager dataManager;
 	private ImogSerializer serializer;
 	private EntityHelper entityHelper;
@@ -74,15 +77,6 @@ public class SynchronizerImpl implements Synchronizer {
 	 */
 	public void setDirectoryPath(String path) {
 		setDirectory(new File(path));
-	}
-
-	/**
-	 * Setter for bean injection.
-	 * 
-	 * @param client The {@link OptimizedSyncClient} implementation for the synchronization.
-	 */
-	public void setSyncClient(OptimizedSyncClient client) {
-		this.syncClient = client;
 	}
 
 	/**
@@ -121,13 +115,8 @@ public class SynchronizerImpl implements Synchronizer {
 		this.entityHelper = entityHelper;
 	}
 
-	/**
-	 * Setter for bean injection.
-	 * 
-	 * @param syncParameterDao The {@link SyncParameterDao} implementation of the application.
-	 */
-	public void setSyncParameterDao(SyncParameterDao syncParameterDao) {
-		this.syncParameterDao = syncParameterDao;
+	public void setGenericDao(GenericDao genericDao) {
+		this.genericDao = genericDao;
 	}
 
 	/**
@@ -140,32 +129,18 @@ public class SynchronizerImpl implements Synchronizer {
 	}
 
 	@Override
-	@Transactional
-	public void setOffset(long offset) {
-		SyncParameter params = syncParameterDao.load();
-		if (params == null) {
-			params = new SyncParameter();
+	public IStatus authenticate(IProgressMonitor monitor, String url, String login, String password) {
+		OptimizedSyncClient client = new OptimizedSyncClientHttp(url, login, password, null);
+		try {
+			boolean authenticated = client.authenticate();
+			if (authenticated) {
+				return Status.OK_STATUS;
+			} else {
+				return new Status(Status.ERROR, SyncActivator.PLUGIN_ID, Messages.auth_failed);
+			}
+		} catch (SynchronizationException e) {
+			return new Status(Status.ERROR, SyncActivator.PLUGIN_ID, Messages.auth_failed, e);
 		}
-		params.setOffset(offset);
-		syncParameterDao.store(params);
-	}
-
-	@Override
-	@Transactional
-	public void setParameters(String url, String terminal) {
-		SyncParameter params = syncParameterDao.load();
-		if (params == null) {
-			params = new SyncParameter();
-		}
-		params.setUrl(url);
-		params.setTerminalId(terminal);
-		syncParameterDao.store(params);
-	}
-
-	@Override
-	@Transactional
-	public SyncParameter getParameters() {
-		return syncParameterDao.load();
 	}
 
 	@Override
@@ -180,15 +155,16 @@ public class SynchronizerImpl implements Synchronizer {
 			/* 0 - Initialization */
 			monitor.subTask(Messages.sync_init);
 			// Load sync parameters
-			SyncParameter param = syncParameterDao.load();
-			if (param == null || param.getLogin() == null || param.getPassword() == null) {
+			IPreferenceStore prefs = SyncActivator.getDefault().getPreferenceStore();
+			String login = prefs.getString(ISyncConstants.SYNC_LOGIN);
+			String password = prefs.getString(ISyncConstants.SYNC_PASSWORD);
+			String server = prefs.getString(ISyncConstants.SYNC_URL);
+			String terminal = prefs.getString(ISyncConstants.SYNC_TERMINAL);
+			if (login == null || password == null || server == null || terminal == null) {
 				throw new SynchronizationException("Synchronization parameters not initialized, thread not started", //$NON-NLS-1$
 						SynchronizationException.ERROR_INIT);
 			}
-			byte[] encpwd = Base64.decodeBase64(param.getPassword().getBytes());
-			String password = new String(encryptionManager.decrypt(encpwd));
-			syncClient = new OptimizedSyncClientHttp(param.getUrl(), param.getLogin(), password, param.getTerminalId(),
-					param.getType());
+			syncClient = new OptimizedSyncClientHttp(server, login, password, terminal);
 
 			// Look for synchronization ERROR.
 			SyncHistory error = historyDao.loadLastError();
@@ -213,9 +189,9 @@ public class SynchronizerImpl implements Synchronizer {
 			File outFile = new File(directory, sessionId + ".lmodif"); //$NON-NLS-1$
 			FileOutputStream fos = new FileOutputStream(outFile);
 			// we take the date just before to access the database and to serialize
-			long offset = param.getOffset() != null ? param.getOffset() : 0;
+			long offset = prefs.getLong(ISyncConstants.NTP_OFFSET);
 			Date tempDate = new Date(System.currentTimeMillis() + offset);
-			getDataToSynchronize(fos);
+			getDataToSynchronize(login, fos);
 			fos.close();
 			// update sync history
 			SyncHistory history = new SyncHistory();
@@ -392,19 +368,29 @@ public class SynchronizerImpl implements Synchronizer {
 	 * @param os output stream where to write data
 	 * @return number of entities to be synchronized
 	 */
-	private Integer getDataToSynchronize(OutputStream os) throws SynchronizationException {
+	private Integer getDataToSynchronize(String login, OutputStream os) throws SynchronizationException {
 		Date lastSynchro = computeLastDate();
-		SyncParameter param = syncParameterDao.load();
-		Set<SynchronizableEntity> synchronizables = param.getSynchronizables();
+		ImogActor actor = null;
+		try {
+			actor = genericDao.loadFromLogin(login);
+		} catch (NoResultException e) {
+			try {
+				serializer.serialize(new ArrayList<ImogBean>(), os);
+				os.close();
+			} catch (Exception ex) {
+			}
+			return 0;
+		}
+		List<CardEntity> synchronizables = actor.getSynchronizables();
 		List<ImogBean> entities = new Vector<ImogBean>();
 
 		boolean allowBinaries = false;
 
-		for (SynchronizableEntity classEntity : synchronizables) {
-			if (BinaryFile.class.getName().equals(classEntity.getName())) {
+		for (CardEntity classEntity : synchronizables) {
+			if (BinaryFile.class.getName().equals(classEntity.getClassName())) {
 				allowBinaries = true;
 			} else {
-				ImogBeanHandler<?> dao = dataManager.getHandler(classEntity.getName());
+				ImogBeanHandler<?> dao = dataManager.getHandler(classEntity.getClassName());
 				entities.addAll(dao.loadModified(lastSynchro, null));
 			}
 		}

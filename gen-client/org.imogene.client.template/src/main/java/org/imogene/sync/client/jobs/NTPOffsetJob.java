@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.imogene.sync.client.SyncActivator;
+import org.imogene.sync.client.i18n.Messages;
 import org.imogene.sync.client.ui.ISyncConstants;
 
 public class NTPOffsetJob extends PeriodicalJob {
@@ -16,7 +17,7 @@ public class NTPOffsetJob extends PeriodicalJob {
 	private long rate;
 
 	public NTPOffsetJob() {
-		super("NtpOffsetJob"); //$NON-NLS-1$
+		super(Messages.ntp_title);
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class NTPOffsetJob extends PeriodicalJob {
 			SyncActivator.getDefault().getPreferenceStore().setValue(ISyncConstants.NTP_OFFSET, time.getOffset());
 			return Status.OK_STATUS;
 		} catch (Exception e) {
-			return new Status(IStatus.ERROR, SyncActivator.PLUGIN_ID, "Error retrieving the time offset", e); //$NON-NLS-1$
+			return new Status(IStatus.ERROR, SyncActivator.PLUGIN_ID, Messages.ntp_error, e);
 		} finally {
 			client.close();
 			schedule(false, rate);
