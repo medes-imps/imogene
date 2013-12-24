@@ -3,6 +3,7 @@
 
 «DEFINE generate(String projectName) FOR Project-»
 «FILE "application-context.xml"-»
+<?xml version="1.0" encoding="iso-8859-1"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xmlns:context="http://www.springframework.org/schema/context"
@@ -50,13 +51,30 @@
 	<bean id="dynamicFieldTemplateHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandlerImpl">
 		<property name="dao" ref="dynamicFieldTemplateDao"/>
 	</bean>
+	
+	<bean id="profileHandler" class="org.imogene.lib.sync.handler.ProfileHandlerImpl" >
+		<property name="dao" ref="profileDao"/>
+	</bean>
+	
+	<bean id="entityProfileHandler" class="org.imogene.lib.sync.handler.EntityProfileHandlerImpl" >
+		<property name="dao" ref="entityProfileDao"/>
+	</bean>
+
+	<bean id="fieldGroupProfileHandler" class="org.imogene.lib.sync.handler.FieldGroupProfileHandlerImpl" >
+		<property name="dao" ref="fieldGroupProfileDao"/>
+	</bean>
+	
+	<bean id="cardEntityHandler" class="org.imogene.lib.sync.handler.CardEntityHandlerImpl" >
+		<property name="dao" ref="cardEntityDao"/>
+	</bean>
+	
+	<bean id="fieldGroupHandler" class="org.imogene.lib.sync.handler.FieldGroupHandlerImpl" >
+		<property name="dao" ref="fieldGroupDao"/>
+	</bean>
 
     «FOREACH entities AS e»
 	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" />
 	«ENDFOREACH»
-
-	<!-- Client Initializer -->
-	<bean id="clientInitializer" class="org.imogene.«projectName.toLowerCase()».init.ClientInitializerImpl" />	
 
 	<!-- Initialize the Synchronizer -->
 	<bean id="synchronizer" class="org.imogene.sync.client.jobs.SynchronizerImpl">
@@ -65,6 +83,7 @@
 	    <property name="serializer" ref="xmlSerializer" />
 	    <property name="syncHistoryDao" ref="syncHistoryDao" />
 	    <property name="syncParameterDao" ref="syncParameterDao" />
+	    <property name="genericDao" ref="genericDao" />
 	    <property name="entityHelper" ref="entityHelper" />
 	    <property name="encryptionManager" ref="encryptionManager" />
 	</bean>

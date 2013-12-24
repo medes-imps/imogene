@@ -16,7 +16,6 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.ImogActorHandlerImpl;
 import org.imogene.lib.sync.handler.ImogBeanHandlerImpl;
-import org.imogene.lib.sync.uao.security.ImogSecurityHandler;
 «EXPAND template::domain::DaoFieldUtil::importDao(projectName) FOR this-»
 «EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR eContainer-»
 import org.springframework.beans.factory.annotation.Autowired;

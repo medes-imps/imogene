@@ -22,33 +22,9 @@
 		<property name="dataHandlerManager" ref="dataHandlerManager"/>
 	</bean>
 	
-	<!-- Initialize the Password Converter -->
-	<bean  id="passwordConverter" class="org.imogene.lib.sync.serializer.xml.PasswordConverter" >
-		<property name="encryptionManager" ref="encryptionManager"/>
-	</bean>
-	
-	<!-- Initialize the Roles Converter -->
-	<bean id="rolesConverter" class="org.imogene.lib.sync.serializer.xml.RolesConverter" >
-		<property name="roleActorDao" ref="roleActorDao"/>
-	</bean>
-			
 	<!-- Initialize the Binary Converter -->
 	<bean id="binaryConverter" class="org.imogene.lib.sync.binary.file.BinaryFileConverter"/> 	
 	
-	<!-- Initialize the password converter for the actors -->
-    <bean id="passwordPropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
-		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
-		<property name="propertyName" value="password"/>
-		<property name="converter" ref="passwordConverter"/>
-	</bean>
-	
-	<!-- Initialize the roles converter for the actors -->	
-	<bean id="rolesPropertyConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
-		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
-		<property name="propertyName" value="roles"/>
-		<property name="converter" ref="rolesConverter"/>
-	</bean>
-
 	<!-- Initialize the DynamicFieldtemplate convertor for the DynamicFieldInstance -->
 	<bean id="dynFieldInstanceTemplateConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter" >
 	    <property name="className" value="org.imogene.lib.common.dynamicfields.DynamicFieldInstance"/>
@@ -68,6 +44,62 @@
 	    <property name="className" value="org.imogene.lib.common.entity.ImogEntityImpl"/>
 		<property name="propertyName" value="dynamicFieldValues"/>
 		<property name="converter" ref="collectionConverter"/>
+	</bean>
+
+	<!-- Initialize Synchronizables converters -->
+	<bean id="synchronizablesActorConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
+		<property name="propertyName" value="synchronizables"/>
+		<property name="converter" ref="collectionConverter"/>
+	</bean>	  
+
+	<!-- Initialize Profiles converters -->
+	<bean id="profilesActorConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl"/>
+		<property name="propertyName" value="profiles"/>
+		<property name="converter" ref="collectionConverter"/>
+	</bean>	  
+
+	<bean id="entityProfilesProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.Profile"/>
+		<property name="propertyName" value="entityProfiles"/>
+		<property name="converter" ref="collectionConverter"/>
+	</bean>	  
+
+	<bean id="fieldGroupProfilesProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.Profile"/>
+		<property name="propertyName" value="fieldGroupProfiles"/>
+		<property name="converter" ref="collectionConverter"/>
+	</bean>	  
+
+	<bean id="profileEntityProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.EntityProfile"/>
+		<property name="propertyName" value="profile"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>	  
+
+	<bean id="entityEntityProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.EntityProfile"/>
+		<property name="propertyName" value="entity"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>	  
+
+	<bean id="profileFieldGroupProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.FieldGroupProfile"/>
+		<property name="propertyName" value="profile"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>	  
+
+	<bean id="fieldGroupFieldGroupProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.FieldGroupProfile"/>
+		<property name="propertyName" value="fieldGroup"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>	  
+
+	<bean id="entityFieldGroupConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.model.FieldGroup"/>
+		<property name="propertyName" value="entity"/>
+		<property name="converter" ref="associationConverter"/>
 	</bean>
 	
 	<!-- Initialize the Entity Converters -->
@@ -102,10 +134,6 @@
 		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
 		<property name="propertyName" value="lastLoginDate" />
 	</bean>
-	<bean id="omitSynchronizables" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
-		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
-		<property name="propertyName" value="synchronizables" />
-	</bean>
 	«EXPAND omitFields(projectName) FOREACH entities-»
 	
 	<!-- Initialize the XML serializer -->
@@ -113,11 +141,18 @@
 		<property name="dataHandlerManager" ref="dataHandlerManager"/>
 		<property name="propertyConverters">
 			<set>
-				<ref bean="passwordPropertyConverter"/>
-				<ref bean="rolesPropertyConverter"/>
 				<ref bean="dynFieldInstanceTemplateConverter"/>
 				<ref bean="dynFieldTemplateActorConverter"/>
 				<ref bean="dynamicFieldInstancePropertyConverter"/>
+				<ref bean="synchronizablesActorConverter"/>
+				<ref bean="profilesActorConverter"/>
+				<ref bean="entityProfilesProfileConverter"/>
+				<ref bean="fieldGroupProfilesProfileConverter"/>
+				<ref bean="profileEntityProfileConverter"/>
+				<ref bean="entityEntityProfileConverter"/>
+				<ref bean="profileFieldGroupProfileConverter"/>
+				<ref bean="fieldGroupFieldGroupProfileConverter"/>
+				<ref bean="entityFieldGroupConverter"/>
 				«EXPAND getConverter FOREACH entities.groups.fields-»
 			</set>
 		</property>
@@ -136,7 +171,6 @@
 				<ref bean="omitBeNotified" />
 				<ref bean="omitNotificationData" />
 				<ref bean="omitLastLoginDate" />
-				<ref bean="omitSynchronizables" />
 				«EXPAND omitField FOREACH entities-»
 			</set>
 		</property>
