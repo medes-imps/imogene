@@ -82,7 +82,6 @@
 	    <property name="dataManager" ref="dataHandlerManager" />
 	    <property name="serializer" ref="xmlSerializer" />
 	    <property name="syncHistoryDao" ref="syncHistoryDao" />
-	    <property name="syncParameterDao" ref="syncParameterDao" />
 	    <property name="genericDao" ref="genericDao" />
 	    <property name="entityHelper" ref="entityHelper" />
 	    <property name="encryptionManager" ref="encryptionManager" />
