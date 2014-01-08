@@ -9,7 +9,11 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.imogene.sync.client.SyncActivator;
@@ -39,6 +43,7 @@ public class SyncPreferencePage extends FieldEditorPreferencePage implements IWo
 	// private Group group;
 	private Group sync;
 	private FieldEditor period;
+	private FieldEditor automatic;
 
 	public SyncPreferencePage() {
 		super(GRID);
@@ -72,8 +77,33 @@ public class SyncPreferencePage extends FieldEditorPreferencePage implements IWo
 				sync);
 		terminal.setEnabled(false, sync);
 
-		BooleanFieldEditor automatic = new BooleanFieldEditor(ISyncConstants.SYNC_AUTO, Messages.sync_pref_auto, sync);
+		Link link = new Link(sync, SWT.PUSH);
+		GridData gd = new GridData();
+		gd.horizontalAlignment = GridData.FILL;
+		gd.horizontalSpan = 2;
+		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessVerticalSpace = true;
+		link.setLayoutData(gd);
+		link.setText(Messages.sync_pref_user);
+		link.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				SyncActivator.getDefault().authenticate(new Runnable() {
 
+					@Override
+					public void run() {
+						Display.getDefault().asyncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								automatic.setEnabled(true, sync);
+							}
+						});
+					}
+				});
+			}
+		});
+
+		automatic = new BooleanFieldEditor(ISyncConstants.SYNC_AUTO, Messages.sync_pref_auto, sync);
 		period = new ComboFieldEditor(ISyncConstants.SYNC_PERIOD, Messages.sync_pref_period, VALUES, sync);
 
 		addField(url);
@@ -117,8 +147,8 @@ public class SyncPreferencePage extends FieldEditorPreferencePage implements IWo
 	@Override
 	protected void initialize() {
 		super.initialize();
-		boolean enabled = getPreferenceStore().getBoolean(ISyncConstants.SYNC_AUTO);
-		period.setEnabled(enabled, sync);
+		period.setEnabled(getPreferenceStore().getBoolean(ISyncConstants.SYNC_AUTO), sync);
+		automatic.setEnabled(getPreferenceStore().contains(ISyncConstants.SYNC_LOGIN), sync);
 	}
 
 	@Override

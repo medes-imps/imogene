@@ -9,7 +9,7 @@ public class SyncJob extends PeriodicalJob {
 	private Synchronizer synchronizer;
 
 	private long period;
-	private boolean running;
+	private boolean enabled;
 
 	public SyncJob() {
 		super(Messages.sync_title);
@@ -25,18 +25,27 @@ public class SyncJob extends PeriodicalJob {
 	}
 
 	/**
-	 * Update the synchronization parameters.
-	 * <p>
-	 * This will try to run the synchronization process if needed.
-	 * </p>
+	 * Change the synchronization job status.
 	 * 
-	 * @param start whether the synchronization must be started or not
-	 * @param period period of synchronization in milliseconds
+	 * @param enabled {@code true} to enable the synchronization, {@code false} otherwise
 	 */
-	public void setParameters(boolean start, long period) {
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		updateStatus();
+	}
+
+	/**
+	 * Set the synchronization period in milliseconds.
+	 * 
+	 * @param period The synchronization period in milliseconds
+	 */
+	public void setPeriod(long period) {
 		this.period = period;
-		this.running = start;
-		if (start) {
+		updateStatus();
+	}
+
+	private void updateStatus() {
+		if (enabled) {
 			schedule(false, period);
 		} else {
 			cancel();
@@ -44,8 +53,8 @@ public class SyncJob extends PeriodicalJob {
 	}
 
 	/**
-	 * Perform a one shot synchronization. If the synchronization is on loop mode it will be reschedule at the end of the process
-	 * for the given period.
+	 * Perform a one shot synchronization. If the synchronization is on loop mode it will be reschedule at the end of
+	 * the process for the given period.
 	 */
 	public void synchronize() {
 		schedule(true, 0L);
@@ -54,7 +63,7 @@ public class SyncJob extends PeriodicalJob {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		IStatus status = synchronizer.synchronize(monitor);
-		if (running && !monitor.isCanceled()) {
+		if (enabled && !monitor.isCanceled()) {
 			schedule(false, period);
 		}
 		return status;

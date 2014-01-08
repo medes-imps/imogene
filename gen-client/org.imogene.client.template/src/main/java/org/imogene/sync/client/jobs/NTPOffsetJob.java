@@ -21,18 +21,22 @@ public class NTPOffsetJob extends PeriodicalJob {
 	}
 
 	/**
-	 * Update the NTP parameters.
-	 * <p>
-	 * This will try to run the NTP client process if needed.
-	 * </p>
+	 * Set the NTP host address.
 	 * 
-	 * @param host URL of the NTP host
-	 * @param rate frequency of the updates
+	 * @param host The NTP host address
 	 */
-	public void setParameters(String host, long rate) {
+	public void setHost(String host) {
 		this.host = host;
+	}
+
+	/**
+	 * Set the update rate of the offset.
+	 * 
+	 * @param rate The update rate in milliseconds
+	 */
+	public void setRate(long rate) {
 		this.rate = rate;
-		schedule(false, 0L);
+		schedule(false, rate);
 	}
 
 	@Override

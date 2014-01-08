@@ -4,6 +4,8 @@ public interface ISyncConstants {
 
 	public static final int VERSION_NUMBER = 1;
 
+	public static final int MINUTE_IN_MILLIS = 60 * 1000;
+
 	public static final String VERSION = "org.imogene.sync.client.Version"; //$NON-NLS-1$
 	public static final String SYNC_URL = "org.imogene.sync.client.Url"; //$NON-NLS-1$
 	public static final String SYNC_AUTO = "org.imogene.sync.client.Auto"; //$NON-NLS-1$

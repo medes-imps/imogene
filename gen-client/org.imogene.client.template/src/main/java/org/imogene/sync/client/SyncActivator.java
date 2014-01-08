@@ -13,6 +13,8 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -27,7 +29,7 @@ import org.imogene.sync.client.ui.ISyncConstants;
 import org.osgi.framework.BundleContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SyncActivator extends AbstractUIPlugin {
+public class SyncActivator extends AbstractUIPlugin implements IPropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(SyncActivator.class.getName());
 
@@ -41,7 +43,7 @@ public class SyncActivator extends AbstractUIPlugin {
 
 	private Synchronizer synchronizer;
 	private SyncJob syncJob;
-	private NTPOffsetJob ntpJob;
+	private NTPOffsetJob ntpOffsetJob;
 
 	/**
 	 * Returns the shared instance.
@@ -73,60 +75,51 @@ public class SyncActivator extends AbstractUIPlugin {
 				"converter-context.xml"); //$NON-NLS-1$
 
 		synchronizer = (Synchronizer) ctx.getBean("synchronizer"); //$NON-NLS-1$
+
+		IPreferenceStore prefs = getPreferenceStore();
+		prefs.addPropertyChangeListener(this);
+		long period = prefs.getLong(ISyncConstants.SYNC_PERIOD);
+		boolean auto = prefs.getBoolean(ISyncConstants.SYNC_AUTO);
+		boolean logged = prefs.contains(ISyncConstants.SYNC_LOGIN);
+		long rate = prefs.getLong(ISyncConstants.NTP_RATE);
+		String host = prefs.getString(ISyncConstants.NTP_HOST);
+		ensureSyncJob(period * ISyncConstants.MINUTE_IN_MILLIS, auto && logged);
+		ensureNTPOffsetJob(host, rate * ISyncConstants.MINUTE_IN_MILLIS);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if (syncJob != null) {
-			if (!syncJob.cancel()) {
-				syncJob.join();
-			}
-			syncJob = null;
+		if (!syncJob.cancel()) {
+			syncJob.join();
 		}
+		syncJob = null;
 
-		if (ntpJob != null) {
-			if (!ntpJob.cancel()) {
-				ntpJob.join();
-			}
-			ntpJob = null;
+		if (!ntpOffsetJob.cancel()) {
+			ntpOffsetJob.join();
 		}
+		ntpOffsetJob = null;
 
 		plugin = null;
 		super.stop(context);
 	}
 
-	/**
-	 * Update the NTP parameters.
-	 * <p>
-	 * This will try to run the NTP client process if needed.
-	 * </p>
-	 * 
-	 * @param host URL of the NTP host
-	 * @param rate frequency of the updates
-	 */
-	public void setNTPParameters(String host, long rate) {
-		ensureNTPJob();
-		ntpJob.setParameters(host, rate);
-	}
-
-	/**
-	 * Update the synchronization parameters.
-	 * <p>
-	 * This will try to run the synchronization process if needed.
-	 * </p>
-	 * 
-	 * @param url URL of the synchronization server
-	 * @param loop whether the synchronization must be repeated or not
-	 * @param period period of synchronization in milliseconds
-	 */
-	public void setSyncParameters(final boolean start, final long period) {
-		ensureAuthenticated(new Runnable() {
-			@Override
-			public void run() {
-				ensureSyncJob();
-				syncJob.setParameters(start, period);
-			}
-		});
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		if (ISyncConstants.SYNC_AUTO.equals(event.getProperty())) {
+			syncJob.setEnabled((Boolean) event.getNewValue());
+		} else if (ISyncConstants.SYNC_PERIOD.equals(event.getProperty())) {
+			long period = Long.parseLong((String) event.getNewValue());
+			syncJob.setPeriod(period * ISyncConstants.MINUTE_IN_MILLIS);
+		} else if (ISyncConstants.NTP_HOST.equals(event.getProperty())) {
+			ntpOffsetJob.setHost((String) event.getNewValue());
+		} else if (ISyncConstants.NTP_RATE.equals(event.getProperty())) {
+			long rate = Long.parseLong((String) event.getNewValue());
+			ntpOffsetJob.setRate(rate * ISyncConstants.MINUTE_IN_MILLIS);
+		} else if (ISyncConstants.NTP_OFFSET.equals(event.getProperty())) {
+			// IPreferenceStore preferences = SyncActivator.getDefault().getPreferenceStore();
+			// long offset = preferences.getLong(ISyncConstants.NTP_OFFSET);
+			// SyncActivator.getDefault().setOffset(offset);
+		}
 	}
 
 	/**
@@ -161,65 +154,81 @@ public class SyncActivator extends AbstractUIPlugin {
 		ensureAuthenticated(new Runnable() {
 			@Override
 			public void run() {
-				ensureSyncJob();
 				syncJob.synchronize();
 			}
 		});
 	}
 
-	private void ensureAuthenticated(final Runnable runnable) {
+	/**
+	 * Ensure the synchronization user has been authenticated before performing the given action.
+	 * 
+	 * @param runnable The action to perform if the user is authenticated or after the authentication succeed
+	 */
+	public void ensureAuthenticated(final Runnable runnable) {
 		final IPreferenceStore prefs = getPreferenceStore();
 		if (!prefs.contains(ISyncConstants.SYNC_LOGIN)) {
-			AuthenticationDialog dialog = new AuthenticationDialog(Display.getDefault().getActiveShell());
-			dialog.create();
-			if (dialog.open() == Window.OK) {
-				final String url = prefs.getString(ISyncConstants.SYNC_URL);
-				final String login = dialog.getLogin();
-				final String password = dialog.getPassword();
-				AuthJob authJob = new AuthJob();
-				authJob.setUser(true);
-				authJob.setSynchronizer(synchronizer);
-				authJob.setUrl(url);
-				authJob.setLogin(login);
-				authJob.setPassword(password);
-				authJob.addJobChangeListener(new JobChangeAdapter() {
-					@Override
-					public void done(IJobChangeEvent event) {
-						if (event.getResult().getSeverity() == Status.OK) {
-							prefs.setValue(ISyncConstants.SYNC_LOGIN, login);
-							prefs.setValue(ISyncConstants.SYNC_PASSWORD, password);
-							if (runnable != null) {
-								runnable.run();
-							}
-						}
-					}
-				});
-				authJob.schedule();
-			}
+			authenticate(runnable);
 		} else {
 			runnable.run();
 		}
 	}
 
-	private void ensureSyncJob() {
-		if (syncJob == null) {
-			syncJob = new SyncJob();
-			syncJob.setSynchronizer(synchronizer);
-			syncJob.addJobChangeListener(new JobChangeAdapter() {
+	/**
+	 * Authenticate a user and launch the given action once the authentication is successful.
+	 * 
+	 * @param runnable The action to perform after the authentication succeed
+	 */
+	public void authenticate(final Runnable runnable) {
+		final IPreferenceStore prefs = getPreferenceStore();
+		AuthenticationDialog dialog = new AuthenticationDialog(Display.getDefault().getActiveShell());
+		dialog.create();
+		if (dialog.open() == Window.OK) {
+			final String url = prefs.getString(ISyncConstants.SYNC_URL);
+			final String login = dialog.getLogin();
+			final String password = dialog.getPassword();
+			AuthJob authJob = new AuthJob();
+			authJob.setUser(true);
+			authJob.setSynchronizer(synchronizer);
+			authJob.setUrl(url);
+			authJob.setLogin(login);
+			authJob.setPassword(password);
+			authJob.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
 					if (event.getResult().getSeverity() == Status.OK) {
-						getPreferenceStore().setValue(ISyncConstants.SYNC_LAST, System.currentTimeMillis());
+						prefs.setValue(ISyncConstants.SYNC_LOGIN, login);
+						prefs.setValue(ISyncConstants.SYNC_PASSWORD, password);
+						if (runnable != null) {
+							runnable.run();
+						}
+					} else {
+						authenticate(runnable);
 					}
 				}
 			});
+			authJob.schedule();
 		}
 	}
 
-	private void ensureNTPJob() {
-		if (ntpJob == null) {
-			ntpJob = new NTPOffsetJob();
-		}
+	private void ensureSyncJob(long period, boolean enabled) {
+		syncJob = new SyncJob();
+		syncJob.setPeriod(period);
+		syncJob.setEnabled(enabled);
+		syncJob.setSynchronizer(synchronizer);
+		syncJob.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (event.getResult().getSeverity() == Status.OK) {
+					getPreferenceStore().setValue(ISyncConstants.SYNC_LAST, System.currentTimeMillis());
+				}
+			}
+		});
+	}
+
+	private void ensureNTPOffsetJob(String host, long rate) {
+		ntpOffsetJob = new NTPOffsetJob();
+		ntpOffsetJob.setHost(host);
+		ntpOffsetJob.setRate(rate);
 	}
 
 	/**

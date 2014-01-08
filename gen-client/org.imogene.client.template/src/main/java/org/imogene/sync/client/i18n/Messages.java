@@ -9,6 +9,7 @@ public class Messages extends NLS {
 	public static String sync_pref_title;
 	public static String sync_pref_url;
 	public static String sync_pref_url_error;
+	public static String sync_pref_user;
 	public static String sync_pref_auto;
 	public static String sync_pref_period;
 	public static String sync_pref_terminal;
