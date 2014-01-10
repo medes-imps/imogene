@@ -3,7 +3,8 @@
 «EXTENSION template::CommonEntityUtilExt»
 «EXTENSION template::domain::DaoUtilExt»
 
-«DEFINE generate(String projectName, String applicationType) FOR Project»
+«DEFINE generate(String projectName, String embedded) FOR Project»
+«IF embedded != "true"»
 «FILE projectName.toLowerCase() + "/domain/entity/backup/CloneFactoryImpl.java"»
 
 package org.imogene.«projectName.toLowerCase()».domain.entity.backup;
@@ -78,4 +79,5 @@ public class CloneFactoryImpl implements CloneFactory {
 
 
 «ENDFILE»
+«ENDIF»
 «ENDDEFINE»

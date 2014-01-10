@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.imogene.lib.common.constants.CommonConstants;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
@@ -17,6 +16,7 @@ import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
 import org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDao;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.SystemUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,6 +30,8 @@ public class DynamicFieldTemplateHandler {
 
 	/* DynamicField_InstanceDao for Foreign Key Deletion */
 	private DynamicFieldInstanceDao dynamicFieldInstanceFieldTemplateDao;
+
+	private SystemUtil systemUtil;
 
 	/**
 	 * Loads the entity (secured) with the specified id
@@ -56,13 +58,13 @@ public class DynamicFieldTemplateHandler {
 		if (entity != null) {
 
 			if (isNew) {
-				entity.setCreated(new Date(System.currentTimeMillis()));
+				entity.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
 				entity.setCreatedBy(actor.getLogin());
 			}
 
-			entity.setModified(new Date(System.currentTimeMillis()));
+			entity.setModified(new Date(systemUtil.getCurrentTimeMillis()));
 			entity.setModifiedBy(actor.getLogin());
-			entity.setModifiedFrom(CommonConstants.IS_WEB);
+			entity.setModifiedFrom(systemUtil.getTerminal());
 
 			dao.saveOrUpdate(entity, isNew);
 
@@ -380,6 +382,15 @@ public class DynamicFieldTemplateHandler {
 	 */
 	public void setDynamicFieldInstanceFieldTemplateDao(DynamicFieldInstanceDao dynamicField_InstanceFieldTemplateDao) {
 		this.dynamicFieldInstanceFieldTemplateDao = dynamicField_InstanceFieldTemplateDao;
+	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param systemUtil
+	 */
+	public void setSystemUtil(SystemUtil systemUtil) {
+		this.systemUtil = systemUtil;
 	}
 
 	/**

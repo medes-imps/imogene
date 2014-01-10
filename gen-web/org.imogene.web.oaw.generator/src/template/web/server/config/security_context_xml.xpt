@@ -21,11 +21,6 @@
 		<intercept-url pattern="/jsp/WrongLogin.jsp" access="permitAll" />
 		<intercept-url pattern="/jsp/ChangePassword.jsp" access="permitAll" />
 		
-		<!-- for web application in rcp container -->
-		<intercept-url pattern="/jsp_rcp/Login.jsp" access="permitAll" />
-		<intercept-url pattern="/jsp_rcp/UploadFile_result.jsp" access="permitAll" />
-		<intercept-url pattern="/jsp_rcp/WrongLogin.jsp" access="permitAll" />
-				
 		<intercept-url pattern="/«projectName.toFirstUpper()».css" access="permitAll" />
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_16x16.png" access="permitAll" />
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_32x32.png" access="permitAll" />

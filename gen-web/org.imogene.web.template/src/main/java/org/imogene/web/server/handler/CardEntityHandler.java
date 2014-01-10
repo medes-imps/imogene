@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.imogene.lib.common.constants.CommonConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
@@ -13,6 +12,7 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.model.CardEntityDao;
 import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.SystemUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CardEntityHandler {
 
 	private CardEntityDao dao;
+	private SystemUtil systemUtil;
 
 	/**
 	 * Loads the entity (secured) with the specified id
@@ -48,13 +49,13 @@ public class CardEntityHandler {
 		if (entity != null) {
 
 			if (isNew) {
-				entity.setCreated(new Date(System.currentTimeMillis()));
+				entity.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
 				entity.setCreatedBy(actor.getLogin());
 			}
 
-			entity.setModified(new Date(System.currentTimeMillis()));
+			entity.setModified(new Date(systemUtil.getCurrentTimeMillis()));
 			entity.setModifiedBy(actor.getLogin());
-			entity.setModifiedFrom(CommonConstants.IS_WEB);
+			entity.setModifiedFrom(systemUtil.getTerminal());
 
 			dao.saveOrUpdate(entity, isNew);
 		}
@@ -286,6 +287,15 @@ public class CardEntityHandler {
 	 */
 	public void setDao(CardEntityDao dao) {
 		this.dao = dao;
+	}
+	
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param systemUtil
+	 */
+	public void setSystemUtil(SystemUtil systemUtil) {
+		this.systemUtil = systemUtil;
 	}
 
 }

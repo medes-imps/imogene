@@ -112,16 +112,6 @@
 		<url-pattern>*.gupld</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Encryption servlet -->
-    <servlet>
-        <servlet-name>encryptionServlet</servlet-name>
-        <servlet-class>org.imogene.web.server.servlet.EncryptionServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>encryptionServlet</servlet-name>
-        <url-pattern>/encrypt</url-pattern>
-    </servlet-mapping>
-    
 	  <!-- Spring servlet for BIRT report generation -->
 	  <servlet>
 		<servlet-name>«projectName.toFirstUpper()»</servlet-name>

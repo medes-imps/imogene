@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DynamicFieldInstanceHandler {
 
 	private DynamicFieldInstanceDao dao;
-
 	private DynamicFieldTemplateHandler fieldTemplateHandler;
 
 	/**

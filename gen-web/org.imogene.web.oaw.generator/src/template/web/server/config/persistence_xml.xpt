@@ -1,7 +1,6 @@
 «IMPORT core»
-«DEFINE generate(String projectName, String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String applicationType) FOR Project»
+«DEFINE generate(String projectName, String applicationType, String embedded) FOR Project»
 «FILE "persistence.xml"-»
-«LET "admin" AS adminType-»
 <?xml version="1.0" encoding="UTF-8" ?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -17,7 +16,7 @@
 		<class>org.imogene.lib.common.dynamicfields.DynamicFieldInstance</class>	    
 		<class>org.imogene.lib.common.model.CardEntity</class>
 		<class>org.imogene.lib.common.model.FieldGroup</class>
-		«IF applicationType.matches(adminType)-»
+		«IF applicationType == "admin"-»
 		<class>org.imogene.lib.common.notification.Notification</class>
 		«ENDIF-»
 		<class>org.imogene.lib.common.profile.EntityProfile</class>
@@ -27,10 +26,11 @@
 		<class>org.imogene.lib.common.useraction.UserAction</class>
 		«FOREACH entities AS e-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»</class>
+		«IF embedded != "true"-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.backup.«e.name.toFirstUpper()»Bck</class>
+		«ENDIF»
 		«ENDFOREACH-»
 	</persistence-unit>
 </persistence>
-«ENDLET-»
 «ENDFILE-»
 «ENDDEFINE»

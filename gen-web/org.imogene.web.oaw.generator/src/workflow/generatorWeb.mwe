@@ -444,7 +444,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::application_context_xml::generate("${modelName}","${applicationType}") FOR project' />
+		<expand value='template::web::server::config::application_context_xml::generate("${modelName}","${applicationType}", "${embedded}") FOR project' />
 		<genPath value="${home-gen}/src/main/webapp/WEB-INF/" />
 		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
 	</component>
@@ -453,7 +453,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::dao_context_xml::generate("${modelName}","${applicationType}") FOR project' />
+		<expand value='template::web::server::config::dao_context_xml::generate("${modelName}","${applicationType}", "${embedded}") FOR project' />
 		<genPath value="${home-gen}/src/main/webapp/WEB-INF/" />
 		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
 	</component>
@@ -462,7 +462,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::aop_context_xml::generate("${modelName}") FOR project' />
+		<expand value='template::web::server::config::aop_context_xml::generate("${modelName}", "${embedded}") FOR project' />
 		<genPath value="${home-gen}/src/main/webapp/WEB-INF/" />
 		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
 	</component>
@@ -489,7 +489,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::application_properties::generate("${modelName}","${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}") FOR project' />
+		<expand value='template::web::server::config::application_properties::generate("${modelName}","${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}","${embedded}") FOR project' />
 		<genPath value="${home-gen}/src/main/webapp/WEB-INF/" />
 	</component>
 	
@@ -497,7 +497,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::persistence_xml::generate("${modelName}", "${JDBCDRIVER}", "${JDBCPATH}", "${JDBCLOGIN}", "${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${applicationType}") FOR project' />
+		<expand value='template::web::server::config::persistence_xml::generate("${modelName}", "${applicationType}", "${embedded}") FOR project' />
 		<genPath value="${home-gen}/src/main/resources/META-INF/" />
 		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
 	</component>
@@ -594,30 +594,6 @@
 		<expand value='template::web::webcontent::change_password_jsp::generate("${projectName}") FOR project' />
 		<genPath value="${home-gen}/src/main/webapp/jsp" />		
 	</component>
-	
-	<!-- JSP login file for RCP application -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::login_rcp_jsp::generate("${projectName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/jsp_rcp" />		
-	</component>
-	
-	<!-- JSP upload file for RCP application -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::uploadfile_rcp_jsp::generate("${projectName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/jsp_rcp" />		
-	</component>	
-	
-	<!-- JSP wrong login file for RCP application -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::wrong_login_rcp_jsp::generate("${projectName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/jsp_rcp" />		
-	</component>	
 	
 	<!--                  -->
 	<!--       BIRT       -->

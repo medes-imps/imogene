@@ -3,9 +3,9 @@
 «EXTENSION template::CommonEntityUtilExt»
 «EXTENSION template::domain::DaoUtilExt»
 
-«DEFINE generate(String projectName, String applicationType) FOR CardEntity»
+«DEFINE generate(String projectName, String embedded) FOR CardEntity»
+«IF embedded != "true"»
 «FILE projectName.toLowerCase() + "/domain/entity/backup/" + name.toFirstUpper() + "Cloner.java"»
-«LET "web" AS webType-»
 package org.imogene.«projectName.toLowerCase()».domain.entity.backup;
 
 import java.util.Date;
@@ -77,9 +77,8 @@ public class «name.toFirstUpper()»Cloner {
 		return bck;
 	}
 }
-
-«ENDLET»
 «ENDFILE»
+«ENDIF»
 «ENDDEFINE»
 
 «DEFINE cloneProperty FOR FieldEntity »

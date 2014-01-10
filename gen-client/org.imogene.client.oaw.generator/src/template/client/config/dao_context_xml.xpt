@@ -60,9 +60,6 @@
   	<!-- SyncSession DAO -->
 	<bean id="syncSessionDao" class="org.imogene.lib.sync.session.SyncSessionDaoImpl" />
 
-	<!-- SyncParameter DAO -->
-	<bean id="syncParameterDao" class="org.imogene.lib.sync.client.parameter.SyncParameterDaoImpl" />
-  	
   	<!-- DefaultUser DAO -->
   	<bean id="defaultUserDao" class="org.imogene.lib.common.user.DefaultUserDaoImpl" />
 

@@ -2,9 +2,8 @@
 «EXTENSION template::CommonFieldUtilExt» 
 «EXTENSION template::CommonEntityUtilExt»
 
-«DEFINE generate(String projectName, String applicationType) FOR Project-»
+«DEFINE generate(String projectName, String applicationType, String embedded) FOR Project-»
 «FILE "application-context.xml"-»
-«LET "admin" AS adminType-»
 <?xml version="1.0" encoding="iso-8859-1"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -45,7 +44,20 @@
         <property name="accessDeniedUrl" value="jsp/WrongLogin.jsp" />
     </bean> 
 		
-	<!-- Exported spring properties -->	
+	<!-- Exported spring properties -->
+	«IF embedded == "true"-»
+	<bean name="exportedProperties" class="org.imogene.web.server.util.ExportedPropertiesHolder">
+		<property name="properties">
+			<map>
+				<entry key="binaryPath">
+					<bean class="java.lang.System" factory-method="getProperty">
+						<constructor-arg value="imogene.binary.path" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	«ELSE-»
 	<bean name="exportedProperties" class="org.imogene.web.server.util.ExportedPropertiesHolder">
 		<property name="properties">
 			<map>
@@ -53,6 +65,7 @@
 			</map>
 		</property>
 	</bean>
+	«ENDIF-»
 	
 	<!-- Video converter -->
 	<bean name="videoConverter" class="org.imogene.web.server.servlet.util.VideoConverter">
@@ -73,6 +86,7 @@
 	<!-- Binary handler -->		
 	<bean id="binaryHandler" class="org.imogene.web.server.handler.BinaryHandler">
 		<property name="dao" ref="binaryDao" />
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 
 	<!-- Session handler -->	
@@ -81,7 +95,8 @@
 	<!-- Dynamic Fields handler -->
 	<bean id="dynamicFieldTemplateHandler" class="org.imogene.web.server.handler.DynamicFieldTemplateHandler">
 		<property name="dao" ref="dynamicFieldTemplateDaoBase" />
-		<property name="dynamicFieldInstanceFieldTemplateDao" ref="dynamicFieldInstanceDaoBase"/>		
+		<property name="dynamicFieldInstanceFieldTemplateDao" ref="dynamicFieldInstanceDaoBase"/>
+		<property name="systemUtil" ref="systemUtil" />		
 	</bean>		
 	<bean id="dynamicFieldInstanceHandler" class="org.imogene.web.server.handler.DynamicFieldInstanceHandler">
 		<property name="dao" ref="dynamicFieldInstanceDaoBase" />
@@ -91,24 +106,28 @@
 	<!-- Profile handlers -->
 	<bean id="cardEntityHandler" class="org.imogene.web.server.handler.CardEntityHandler">
 		<property name="dao" ref="cardEntityDaoBase" />
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 	<bean id="entityProfileHandler" class="org.imogene.web.server.handler.EntityProfileHandler">
 		<property name="dao" ref="entityProfileDaoBase" />
 		<property name="profileHandler" ref="profileHandler" />
 		<property name="entityHandler" ref="cardEntityHandler" />
 		<property name="filter" ref="filter" />
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 	<bean id="fieldGroupHandler" class="org.imogene.web.server.handler.FieldGroupHandler">
 		<property name="dao" ref="fieldGroupDaoBase" />
 		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
 		<property name="entityHandler" ref="cardEntityHandler" />
 		<property name="filter" ref="filter" />
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 	<bean id="fieldGroupProfileHandler" class="org.imogene.web.server.handler.FieldGroupProfileHandler">
 		<property name="dao" ref="fieldGroupProfileDaoBase" />
 		<property name="profileHandler" ref="profileHandler" />
 		<property name="fieldGroupHandler" ref="fieldGroupHandler" />
 		<property name="filter" ref="filter" />
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 	<bean id="profileHandler" class="org.imogene.web.server.handler.ProfileHandler">
 		<property name="dao" ref="profileDaoBase" />
@@ -117,9 +136,10 @@
 		<property name="entityProfileHandler" ref="entityProfileHandler" />
 		<property name="fieldGroupProfileHandler" ref="fieldGroupProfileHandler" />
 		<property name="filter" ref="filter" />
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 	
-	«IF applicationType.matches(adminType)-»
+	«IF applicationType == "admin"-»
 	<!-- ImogActor handler -->
 	<bean id="imogActorHandler" class="org.imogene.web.server.handler.ImogActorHandler">
 		<property name="dao" ref="imogActorDaoBase" />
@@ -145,14 +165,15 @@
 		«ENDIF-»
 		«EXPAND declareDaoForForeignKeyDeletion(e) FOR this-»
 		«EXPAND declareHandlerForRelation(projectName) FOREACH e.groups.fields-»
+		<property name="systemUtil" ref="systemUtil" />
 	</bean>		
-	«ENDFOREACH -»	
+	«ENDFOREACH -»
 	
-	<!--  encryption system initialization -->
-	<bean id="encryptionKeyProvider" class="org.imogene.web.server.identity.DefaultSecretKeyProvider"/>	
-	<bean id="encryptionManager" class="org.imogene.encryption.EncryptionManager" init-method="getInstance">
-		<property name="keyProvider" ref="encryptionKeyProvider"/>
-	</bean>
+	«IF embedded == "true"-»
+	<bean id="systemUtil" class="org.imogene.web.server.util.impl.SystemUtilEmbeddedImpl" />
+	«ELSE-»
+	<bean id="systemUtil" class="org.imogene.web.server.util.impl.SystemUtilImpl" />
+	«ENDIF-»
 	
 	<bean id="formUtil" class="org.imogene.«projectName.toLowerCase()».server.util.«projectName.toFirstUpper()»FormUtil"/>	
 	
@@ -160,7 +181,6 @@
 	<bean id="filter" class="org.imogene.«projectName.toLowerCase()».server.security.ImogBeanFilterImpl" />
 	
 </beans>
-«ENDLET-»
 «ENDFILE»
 «ENDDEFINE»
 

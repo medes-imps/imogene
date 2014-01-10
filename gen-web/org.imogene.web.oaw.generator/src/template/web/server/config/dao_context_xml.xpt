@@ -1,8 +1,7 @@
 «IMPORT core»
 
-«DEFINE generate(String projectName, String applicationType) FOR Project-»
+«DEFINE generate(String projectName, String applicationType, String embedded) FOR Project-»
 «FILE "dao-context.xml"-»
-«LET "admin" AS adminType-»
 <?xml version="1.0" encoding="iso-8859-1"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -63,9 +62,19 @@
 	<!--						 -->
 	
 	<!-- BinaryFile manager -->
+	«IF embedded == "true"-»
+	<bean id="binaryFileManager" class="org.imogene.lib.common.binary.file.BinaryFileManager" factory-method="getInstance" > 
+		<property name="binaryPath" >
+			<bean class="java.lang.System" factory-method="getProperty">
+				<constructor-arg value="imogene.binary.path" />
+			</bean>
+		</property>
+	</bean>
+	«ELSE-»
 	<bean id="binaryFileManager" class="org.imogene.lib.common.binary.file.BinaryFileManager" factory-method="getInstance">
 		<property name="binaryPath" value="${binary.path}"/>
 	</bean>
+	«ENDIF-»
 	
 	<!-- Binary dao -->	
 	<bean id="binaryDao" class="org.imogene.lib.common.binary.file.BinaryFileDaoImpl" />
@@ -80,7 +89,7 @@
 	<bean id="dynamicFieldTemplateDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDaoImpl"/>
 	<bean id="dynamicFieldInstanceDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldInstanceDaoImpl"/>
 	
-	«IF applicationType.matches(adminType)-»
+	«IF applicationType == "admin"-»
 	<bean id="imogActorDaoBase" class="org.imogene.lib.common.dao.ImogActorImplDaoImpl"/>
 	<bean id="notificationDaoBase" class="org.imogene.lib.common.notification.NotificationDaoImpl"/>
 	«ENDIF-»
@@ -94,10 +103,13 @@
 	
 	<!-- Entity Daos -->
 	«FOREACH entities AS e -»
+	«IF embedded == "true"-»
+	<bean id="«e.name.toFirstLower()»Dao" class="org.imogene.«projectName.toLowerCase()».domain.dao.«e.name.toFirstUpper()»DaoImpl"/>
+	«ELSE-»
 	<bean id="«e.name.toFirstLower()»DaoBase" class="org.imogene.«projectName.toLowerCase()».domain.dao.«e.name.toFirstUpper()»DaoImpl"/>
+	«ENDIF-»
 	«ENDFOREACH -»
 	
 </beans>
-«ENDLET-»
 «ENDFILE»
 «ENDDEFINE»

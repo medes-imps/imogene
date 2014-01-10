@@ -24,7 +24,6 @@
 		<class>org.imogene.lib.common.profile.FieldGroupProfile</class>
 		<class>org.imogene.lib.common.profile.Profile</class>
 		<class>org.imogene.lib.common.user.DefaultUser</class>
-		<class>org.imogene.lib.sync.client.parameter.SyncParameter</class>
 		<class>org.imogene.lib.sync.history.SyncHistory</class>
 		<class>org.imogene.lib.sync.session.SyncSession</class>
 		«FOREACH entities AS e-»

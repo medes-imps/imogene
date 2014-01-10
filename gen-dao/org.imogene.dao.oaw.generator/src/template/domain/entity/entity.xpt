@@ -3,10 +3,8 @@
 «EXTENSION template::CommonEntityUtilExt»
 «EXTENSION template::domain::DaoUtilExt»
 
-«DEFINE generate(String projectName, String applicationType) FOR CardEntity»
+«DEFINE generate(String projectName) FOR CardEntity»
 «FILE projectName.toLowerCase() + "/domain/entity/" + name.toFirstUpper() + ".java"»
-«LET "web" AS webType-»
-«LET "admin" AS adminType-»
 package org.imogene.«projectName.toLowerCase()».domain.entity;
 
 import java.util.ArrayList;
@@ -146,8 +144,6 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 	«ENDIF-»
 	
 }
-«ENDLET»
-«ENDLET»
 «ENDFILE»
 «ENDDEFINE»
 

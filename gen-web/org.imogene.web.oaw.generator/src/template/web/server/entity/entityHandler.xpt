@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
 import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
-import org.imogene.lib.common.constants.CommonConstants;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
@@ -25,6 +24,7 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.SystemUtil;
 «IF isBinaryFieldPresent(this.groups.fields) -»
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.BinaryDao;
@@ -65,6 +65,8 @@ public class «name.toFirstUpper()»Handler {
 	«ENDIF-»
 	
 	private ImogBeanFilter filter;
+	
+	private SystemUtil systemUtil;
 	
 	/**
 	 * Loads the entity with the specified id
@@ -114,13 +116,13 @@ public class «name.toFirstUpper()»Handler {
 			«ENDIF-»		
 			
 			if(isNew) {
-				entity.setCreated(new Date(System.currentTimeMillis()));
+				entity.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
 				entity.setCreatedBy(actor.getLogin());			
 			}
 
-			entity.setModified(new Date(System.currentTimeMillis()));
+			entity.setModified(new Date(systemUtil.getCurrentTimeMillis()));
 			entity.setModifiedBy(actor.getLogin());
-			entity.setModifiedFrom(CommonConstants.IS_WEB);
+			entity.setModifiedFrom(systemUtil.getTerminal());
 			
 			«IF hasDynamicFields -»
 			// manage dynamic fields
@@ -128,9 +130,9 @@ public class «name.toFirstUpper()»Handler {
 			if (dfValues != null && dfValues.size()>0) {
 				for (DynamicFieldInstance dfValue : dfValues) {
 					if(dfValue!=null) {
-						dfValue.setModified(new Date(System.currentTimeMillis()));
+						dfValue.setModified(new Date(systemUtil.getCurrentTimeMillis()));
 						dfValue.setModifiedBy(actor.getLogin());
-						dfValue.setModifiedFrom(CommonConstants.IS_WEB);
+						dfValue.setModifiedFrom(systemUtil.getTerminal());
 						if (dfValue.getCreatedBy() == null) {
 							dfValue.setCreatedBy(actor.getLogin());
 						}
@@ -524,6 +526,15 @@ public class «name.toFirstUpper()»Handler {
 		this.filter = filter;
 	}
 	
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param systemUtil
+	 */
+	public void setSystemUtil(SystemUtil systemUtil) {
+		this.systemUtil = systemUtil;
+	}
+	
 	«IF isBinaryFieldPresent(this.groups.fields) -»
 	/**
 	 * Setter for bean injection
@@ -645,9 +656,9 @@ private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
 «IF cardinality==1-»
 			«entity.name.toFirstUpper()» «name.toFirstLower()» = entity.«EXPAND template::CommonFieldUtil::getterName FOR this»();
 			if(«name.toFirstLower()»!=null) {
-				«name.toFirstLower()».setModified(new Date(System.currentTimeMillis()));
+				«name.toFirstLower()».setModified(new Date(systemUtil.getCurrentTimeMillis()));
 				«name.toFirstLower()».setModifiedBy(actor.getLogin());
-				«name.toFirstLower()».setModifiedFrom(CommonConstants.IS_WEB);
+				«name.toFirstLower()».setModifiedFrom(systemUtil.getTerminal());
 				if(«name.toFirstLower()».getCreatedBy()==null){
 					«name.toFirstLower()».setCreatedBy(actor.getLogin());
 				}
@@ -659,9 +670,9 @@ private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
 				for («entity.name.toFirstUpper()» item : list«name.toFirstUpper()») {
 					if (item != null) {						
 						
-						item.setModified(new Date(System.currentTimeMillis()));
+						item.setModified(new Date(systemUtil.getCurrentTimeMillis()));
 						item.setModifiedBy(actor.getLogin());
-						item.setModifiedFrom(CommonConstants.IS_WEB);
+						item.setModifiedFrom(systemUtil.getTerminal());
 						if (item.getCreatedBy() == null) {
 							item.setCreatedBy(actor.getLogin());
 						}

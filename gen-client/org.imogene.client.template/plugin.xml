@@ -15,5 +15,16 @@
             class="org.imogene.sync.client.ui.SyncPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.imogene.rcp.jetty.servlets">
+      <servlet
+            class="org.imogene.sync.client.servlet.OffsetServlet"
+            name="offset">
+      </servlet>
+      <servlet
+            class="org.imogene.sync.client.servlet.TerminalServlet"
+            name="terminal">
+      </servlet>
+   </extension>
 
 </plugin>

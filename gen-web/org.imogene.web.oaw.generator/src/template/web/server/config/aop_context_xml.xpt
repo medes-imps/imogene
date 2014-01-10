@@ -1,5 +1,6 @@
 «IMPORT core»
-«DEFINE generate(String projectName) FOR Project-»
+«DEFINE generate(String projectName, String embedded) FOR Project-»
+«IF embedded != "true"»
 «FILE "aop-context.xml"-»
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -32,4 +33,5 @@
 	
 </beans>
 «ENDFILE»
+«ENDIF»
 «ENDDEFINE»

@@ -16,6 +16,7 @@
 	<property name="JDBCPASSWORD" value="password"/>
 	<property name="HIBERNATEDIALECT" value="password"/>
 	<property name="applicationType" value="dao"/>
+	<property name="embedded" value="false"/>
 
 	<!-- model reader -->
 	<component file="workflow/modelReader.mwe" inheritAll="true" />
@@ -24,7 +25,7 @@
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::domain::entity::entity::generate("${modelName}","${applicationType}") FOREACH project.entities' />
+		<expand value='template::domain::entity::entity::generate("${modelName}") FOREACH project.entities' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -33,7 +34,7 @@
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::domain::entity::entityBck::generate("${modelName}","${applicationType}") FOREACH project.entities' />
+		<expand value='template::domain::entity::entityBck::generate("${modelName}", "${embedded}") FOREACH project.entities' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -42,7 +43,7 @@
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::domain::entity::entityCloner::generate("${modelName}","${applicationType}") FOREACH project.entities' />
+		<expand value='template::domain::entity::entityCloner::generate("${modelName}", "${embedded}") FOREACH project.entities' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -51,7 +52,7 @@
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::domain::entity::cloneFactory::generate("${modelName}","${applicationType}") FOR project' />
+		<expand value='template::domain::entity::cloneFactory::generate("${modelName}", "${embedded}") FOR project' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -82,16 +83,5 @@
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
-	
-	<!-- persistence -->
-	<!-- 
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::domain::config::persistence_xml::generate("${modelName}", "${JDBCDRIVER}", "${JDBCPATH}", "${JDBCLOGIN}", "${JDBCPASSWORD}", "${HIBERNATEDIALECT}") FOR project' />
-		<genPath value="${home-gen}/src/main/resources/META-INF/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
-	</component>
-	-->
 	
 </workflow>

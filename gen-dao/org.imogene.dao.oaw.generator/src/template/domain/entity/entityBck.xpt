@@ -3,7 +3,8 @@
 «EXTENSION template::CommonEntityUtilExt»
 «EXTENSION template::domain::DaoUtilExt»
 
-«DEFINE generate(String projectName, String applicationType) FOR CardEntity»
+«DEFINE generate(String projectName, String embedded) FOR CardEntity»
+«IF embedded != "true"»
 «FILE projectName.toLowerCase() + "/domain/entity/backup/" + name.toFirstUpper() + "Bck.java"»
 package org.imogene.«projectName.toLowerCase()».domain.entity.backup;
 
@@ -62,6 +63,7 @@ public class «name.toFirstUpper()»Bck extends ImogBeanBck {
 	
 }
 «ENDFILE»
+«ENDIF»
 «ENDDEFINE»
 
 

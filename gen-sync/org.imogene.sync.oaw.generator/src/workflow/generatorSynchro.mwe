@@ -17,6 +17,7 @@
 	<property name="JDBCPASSWORD" value="password"/>
 	<property name="HIBERNATEDIALECT" value="password"/>
 	<property name="applicationType" value="sync.server"/>
+	<property name="embedded" value="false"/>
 
 	<!-- Model reader -->
 	<component file="workflow/modelReader.mwe" inheritAll="true" />

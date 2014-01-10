@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.imogene.lib.common.constants.CommonConstants;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
@@ -17,6 +16,7 @@ import org.imogene.lib.common.profile.FieldGroupProfileDao;
 import org.imogene.lib.common.profile.Profile;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.SystemUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -33,6 +33,8 @@ public class FieldGroupProfileHandler {
 	private FieldGroupHandler fieldGroupHandler;
 
 	private ImogBeanFilter filter;
+
+	private SystemUtil systemUtil;
 
 	/**
 	 * Loads the entity with the specified id
@@ -70,13 +72,13 @@ public class FieldGroupProfileHandler {
 		if (entity != null) {
 
 			if (isNew) {
-				entity.setCreated(new Date(System.currentTimeMillis()));
+				entity.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
 				entity.setCreatedBy(actor.getLogin());
 			}
 
-			entity.setModified(new Date(System.currentTimeMillis()));
+			entity.setModified(new Date(systemUtil.getCurrentTimeMillis()));
 			entity.setModifiedBy(actor.getLogin());
-			entity.setModifiedFrom(CommonConstants.IS_WEB);
+			entity.setModifiedFrom(systemUtil.getTerminal());
 
 			dao.saveOrUpdate(entity, isNew);
 		}
@@ -510,5 +512,14 @@ public class FieldGroupProfileHandler {
 	 */
 	public void setFilter(ImogBeanFilter filter) {
 		this.filter = filter;
+	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param systemUtil
+	 */
+	public void setSystemUtil(SystemUtil systemUtil) {
+		this.systemUtil = systemUtil;
 	}
 }
