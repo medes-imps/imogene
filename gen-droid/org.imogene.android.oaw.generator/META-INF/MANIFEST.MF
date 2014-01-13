@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene Android Generator
+Bundle-SymbolicName: org.imogene.android.oaw.generator;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.android.oaw.generator.OawGeneratorMedooAndroidPlugin
+Eclipse-RegisterBuddy: org.imogene.oaw.generator.common
+Require-Bundle: org.eclipse.emf.mwe.core,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.xpand,
+ org.eclipse.xtend,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.imogene.oaw.generator.common
+Bundle-ActivationPolicy: lazy
+Export-Package: android.template,
+ android.workflow,
+ org.imogene.android.oaw.generator;uses:="org.eclipse.core.runtime,org.eclipse.ui.plugin,org.osgi.framework"
+Bundle-ClassPath: .,
+ src/
+Bundle-Vendor: Medes-IMPS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

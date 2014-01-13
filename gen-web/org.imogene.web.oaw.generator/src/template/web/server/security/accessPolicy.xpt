@@ -1,0 +1,150 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/server/security/AccessPolicyImpl.java"»
+package org.imogene.«projectName.toLowerCase()».server.security;
+
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.profile.FieldGroupProfile;
+import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.security.AccessPolicy;
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
+«ENDFOREACH-»
+
+/**
+ * This class tells if the current user can access the properties of the model
+ * objects in read and in update mode 
+ * @author MEDES-IMPS
+ */
+public class AccessPolicyImpl implements AccessPolicy {
+
+	private boolean isAdmin = false;
+	«FOREACH entities.groups AS g-»
+	private boolean canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	private boolean canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	«ENDFOREACH-»
+	
+	/**
+	 * Constructor
+	 */
+	public AccessPolicyImpl(ImogActor actor) {
+		if (actor.getProfiles() == null) {
+			return;
+		}
+		isAdmin = isAdmin(actor);
+		if (isAdmin) {
+			return;
+		}
+		for (Profile profile : actor.getProfiles()) {
+			if (profile.getFieldGroupProfiles() == null) {
+				continue;
+			}
+			for (FieldGroupProfile group : profile.getFieldGroupProfiles()) {
+				String fieldGroupId = group.getFieldGroup().getId();
+				«FOREACH entities.groups AS g SEPARATOR " else "-»
+				if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(fieldGroupId)) {
+					if (group.getRead() != null) {
+						canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getRead();
+					}
+					if (group.getWrite() != null) {
+						canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getWrite();
+					}
+				}
+				«ENDFOREACH-»
+			}
+		}
+	}
+
+	/**
+	 * Tells if the current user can access a domain object property
+	 * @param bean the object whose property access has to be checked
+	 * @param property the property whose access has to be checked
+	 * @return true if the current user can access an Object property
+	 */
+	public boolean canAccessProperty(Object bean, String property) {
+		if (property.equals("password")) {
+			return false;
+		}
+		if (isAdmin) {
+			return true;
+		}
+		«FOREACH entities AS e-»
+		if (bean instanceof «e.name.toFirstUpper()») {
+			return canAccess«e.name.toFirstUpper()»Property(property);
+		}
+		«ENDFOREACH-»
+		return true;
+	}
+	
+	/**
+	 * Tells if the current user can update a domain object property
+	 * @param bean the object whose property update privilege has to be checked
+	 * @param property the property whose update privilege has to be checked
+	 * @return true if the current user can update an Object property
+	 */
+	public boolean canUpdateProperty(Object bean, String property) {
+		if (isAdmin) {
+			return true;
+		}
+		«FOREACH entities AS e-»
+		if (bean instanceof «e.name.toFirstUpper()») {
+			return canUpdate«e.name.toFirstUpper()»Property(property);
+		}
+		«ENDFOREACH-»
+		return true;
+	}
+	
+	«FOREACH entities.groups AS g-»
+	public boolean canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	public boolean canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	«ENDFOREACH-»
+
+	«FOREACH entities AS e-»
+	/* Privileges check for entity «e.name.toFirstUpper()» */
+	
+	/**
+	 * Tells if the current user can access a «e.name.toFirstUpper()» property
+	 * @param property the property whose access has to be checked
+	 * @return true if the current user can access a «e.name.toFirstUpper()» property
+	 */
+	private boolean canAccess«e.name.toFirstUpper()»Property(String property) {
+		«FOREACH e.groups.fields AS f-»
+		if("«EXPAND template::CommonFieldUtil::propertyName FOR f»".equals(property)) {
+			return canRead«e.name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»;
+		}
+		«ENDFOREACH-»
+		return true;
+	}
+	
+	/**
+	 * Tells if the current user can update a «e.name.toFirstUpper()» property
+	 * @param property the property whose update privilege has to be checked
+	 * @return true if the current user can update a «e.name.toFirstUpper()» property
+	 */
+	private boolean canUpdate«e.name.toFirstUpper()»Property(String property) {
+		«FOREACH e.groups.fields AS f-»
+		if("«EXPAND template::CommonFieldUtil::propertyName FOR f»".equals(property)) {
+			return canEdit«e.name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»;
+		}
+		«ENDFOREACH-»
+		return true;
+	}	
+	«ENDFOREACH-»
+	
+	private boolean isAdmin(ImogActor actor) {
+		for (Profile profile : actor.getProfiles()) {
+			if (profile.getId().equals(Profile.ADMINISTRATOR)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

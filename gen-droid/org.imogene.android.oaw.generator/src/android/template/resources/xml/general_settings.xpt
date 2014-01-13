@@ -1,0 +1,156 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(boolean multilogin) FOR Project »
+«FILE 'xml/general_settings.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory 
+		android:title="@string/ig_synchro_parameters">
+		«IF multilogin»
+		<org.imogene.android.preference.EncryptedPreference
+			android:key="syncLogin"
+			android:title="@string/ig_sync_login_title" />
+		<org.imogene.android.preference.MyEditTextPreference 
+			android:key="syncRoles"
+			android:title="@string/ig_sync_roles_title"
+			android:shouldDisableView="false"
+			android:enabled="false" />
+		«ENDIF»
+		<org.imogene.android.preference.MyEditTextPreference
+			android:key="syncServer"
+			android:title="@string/ig_sync_server_title"
+			android:inputType="textUri" />
+		<org.imogene.android.preference.MyEditTextPreference 
+			android:key="syncTerminal"
+			android:title="@string/ig_sync_terminal_title"
+			android:shouldDisableView="false"
+			android:enabled="false" />
+		«IF hasFilter(this)-»
+		<PreferenceScreen
+			android:key="screenFilters"
+			android:title="@string/ig_screen_filters_title"
+			android:summary="@string/ig_screen_filters_summary">
+			
+			<intent
+                android:targetPackage="org.imogene.android.«name.toLowerCase()»"
+                android:targetClass="org.imogene.android.«name.toLowerCase()».app.FilterPreferenceScreen" />
+        </PreferenceScreen>
+		«ENDIF-»
+		<Preference
+			android:key="syncCheck"
+			android:title="@string/ig_sync_check_title"
+			android:summary="@string/ig_sync_check_summary" />
+		<CheckBoxPreference 
+			android:key="syncEnabled"
+			android:title="@string/ig_sync_enabled_title"
+			android:summaryOn="@string/ig_sync_enabled_summaryon"
+			android:summaryOff="@string/ig_sync_enabled_summaryoff" />
+		<ListPreference
+			android:key="syncPeriod"
+			android:title="@string/ig_sync_period_title"
+			android:summary="@string/ig_sync_period_summary"
+			android:defaultValue="15" 
+			android:entries="@array/ig_entries_period_preference"
+			android:entryValues="@array/ig_entryvalues_period_preference" />
+		<CheckBoxPreference
+			android:key="syncBidirectionalEnabled"
+			android:title="@string/ig_sync_bidirectional_enabled_title"
+			android:summaryOn="@string/ig_sync_bidirectional_enabled_summaryon"
+			android:summaryOff="@string/ig_sync_bidirectional_enabled_summaryoff"
+			android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="syncOnSaveEnabled"
+			android:title="@string/ig_sync_onsave_enabled_title"
+			android:summaryOn="@string/ig_sync_onsave_enabled_summaryon"
+			android:summaryOff="@string/ig_sync_onsave_enabled_summaryoff"
+			android:defaultValue="true" />
+	</PreferenceCategory>
+	<PreferenceCategory 
+		android:title="@string/ig_push_parameters">
+		<CheckBoxPreference 
+			android:key="pushEnabled"
+			android:title="@string/ig_push_enabled_title"
+			android:summaryOn="@string/ig_push_enabled_summaryon"
+			android:summaryOff="@string/ig_push_enabled_summaryoff" />
+		<org.imogene.android.preference.MyEditTextPreference 
+			android:key="pushHost"
+			android:title="@string/ig_push_host_title"
+			android:inputType="textUri" />
+		<org.imogene.android.preference.MyEditTextPreference 
+			android:key="pushPort"
+			android:title="@string/ig_push_port_title"
+			android:inputType="number" />
+		<CheckBoxPreference
+			android:key="pushSslEnabled"
+			android:title="@string/ig_push_ssl_enabled_title"
+			android:summaryOn="@string/ig_push_ssl_enabled_summaryon"
+			android:summaryOff="@string/ig_push_ssl_enabled_summaryoff"
+			android:defaultValue="false" />
+	</PreferenceCategory>
+	<PreferenceCategory 
+		android:title="@string/ig_update_parameters">
+		<org.imogene.android.preference.MyEditTextPreference
+			android:key="updateServer"
+			android:title="@string/ig_update_server_title"
+			android:inputType="textUri" />
+		<Preference
+			android:key="updateAvailable"
+			android:title="@string/ig_update_available_title"
+			android:summary="@string/ig_update_available_summary_disabled"
+			android:enabled="false" >
+			<intent
+                android:targetClass="org.imogene.android.update.UpdateActivity"
+                android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
+        </Preference>
+	</PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/ig_application_parameters">
+		<org.imogene.android.preference.EncryptedPreference
+			android:key="«IF multilogin»currentLogin«ELSE»syncLogin«ENDIF»"
+			android:title="@string/ig_current_login_title" />
+		<org.imogene.android.preference.MyEditTextPreference 
+			android:key="«IF multilogin»currentRoles«ELSE»syncRoles«ENDIF»"
+			android:title="@string/ig_current_roles_title"
+			android:shouldDisableView="false"
+			android:enabled="false" />
+		<CheckBoxPreference
+			android:key="wizardEnabled"
+			android:title="@string/ig_wizard_enabled_title"
+			android:summaryOn="@string/ig_wizard_enabled_summaryon"
+			android:summaryOff="@string/ig_wizard_enabled_summaryoff" />
+	</PreferenceCategory>
+	<PreferenceCategory
+	    android:title="@string/ig_precache_title" >
+    	<Preference
+    		android:key="mapAutomaticCache"
+        	android:title="@string/ig_precache_caching_title"
+        	android:summary="@string/ig_precache_caching_summary" />
+    	<Preference
+    		android:key="mapClearCache"
+        	android:title="@string/ig_precache_clear_title"
+        	android:summary="@string/ig_precache_computing_summary" />
+    	<Preference
+    		android:key="mapPrecacheArea"
+        	android:title="@string/ig_precache_area_title"
+        	android:summary="@string/ig_precache_computing_summary" >
+        	
+        	<intent
+            	android:targetClass="org.imogene.android.maps.app.PreCacheList"
+            	android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
+    	</Preference>
+    </PreferenceCategory>
+	<PreferenceCategory
+		android:title="@string/ig_about">
+		<org.imogene.android.preference.BaseDialogPreference
+			android:key="about"
+			android:title="@string/ig_about_title"
+			android:summary="@string/ig_about_summary"
+			android:dialogIcon="@android:drawable/ic_dialog_info"
+			android:dialogTitle="@string/ig_about_title"
+			android:negativeButtonText="@null"
+			android:dialogLayout="@layout/ig_about_preference" />
+	</PreferenceCategory>
+</PreferenceScreen>
+«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,39 @@
+«IMPORT core»
+«DEFINE generate(String projectName) FOR Project-»
+«FILE projectName.toFirstUpper() + "-servlet.xml"-»
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - DispatcherServlet application context for the Spring web MVC
+  - implementation of «projectName.toFirstUpper()» web tier.
+  --> 
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- url handler for Spring 'classic' controller -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				«FOREACH entities AS e-»
+					<prop key="/«e.name.toFirstLower()».txt">birtController</prop>
+				«ENDFOREACH -»			
+			</props>
+		</property>
+	</bean>
+
+	<!--  Controller for report generation -->
+	<bean class="org.imogene.web.server.birt.BirtController" id="birtController">
+		<property name="birtView" ref="birtView" />
+	</bean>
+		
+	<bean class="org.imogene.web.server.birt.BirtView" id="birtView">
+		<property name="birtEngine" ref="birtEngine" />
+	</bean>
+		
+	<bean class="org.imogene.web.server.birt.BirtEngineFactory" id="birtEngine"/>
+
+</beans>
+«ENDFILE»
+«ENDDEFINE»

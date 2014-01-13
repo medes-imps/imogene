@@ -1,0 +1,80 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/shared/request/" + this.name.toFirstUpper() + "Request.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».shared.request;
+
+import java.util.List;
+import java.util.Set;
+
+import org.imogene.«projectName.toLowerCase()».server.handler.«name.toFirstUpper()»Handler;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+import org.imogene.web.server.locator.SpringServiceLocator;
+import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
+import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+«IF hasDynamicFields -»
+import org.imogene.web.shared.request.DynamicFieldsRequest;
+«ENDIF-»
+
+import com.google.web.bindery.requestfactory.shared.Request;
+import com.google.web.bindery.requestfactory.shared.RequestContext;
+import com.google.web.bindery.requestfactory.shared.Service;
+«EXPAND importForRelation(projectName) FOREACH groups.fields-»
+
+
+
+/**
+ * Source of request objects for the «name.toFirstUpper()» Service.
+ * @author Medes-IMPS
+ */
+@Service(value= «name.toFirstUpper()»Handler.class, locator = SpringServiceLocator.class)
+public interface «name.toFirstUpper()»Request extends RequestContext«IF hasDynamicFields», DynamicFieldsRequest«ENDIF»{
+
+	Request<«name.toFirstUpper()»Proxy> findById(String id);
+
+	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	Request<Void> save(«name.toFirstUpper()»Proxy c, boolean isNew, boolean passwordChanged);	
+	«ELSE-»
+	Request<Void> save(«name.toFirstUpper()»Proxy c, boolean isNew);	
+	«ENDIF-»	
+	
+	Request<List<«name.toFirstUpper()»Proxy>> list«name.toFirstUpper()»(String sortProperty, boolean sortOrder);
+	Request<List<«name.toFirstUpper()»Proxy>> list«name.toFirstUpper()»(int first, int max, String sortProperty, boolean sortOrder);
+	Request<List<«name.toFirstUpper()»Proxy>> list«name.toFirstUpper()»(int first, int max, String sortProperty, boolean sortOrder, ImogJunctionProxy criterions);
+	Request<List<«name.toFirstUpper()»Proxy>> list«name.toFirstUpper()»(int first, int max, String sortProperty, boolean sortOrder, List<BasicCriteriaProxy> criterions);
+	Request<List<«name.toFirstUpper()»Proxy>> listNonAffected«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, String property);
+	Request<List<«name.toFirstUpper()»Proxy>> listNonAffected«name.toFirstUpper()»(int i, int j, String sortProperty, boolean sortOrder, ImogJunctionProxy criterions, String property);
+	Request<List<«name.toFirstUpper()»Proxy>> listNonAffected«name.toFirstUpper()»Reverse(int i, int j, String sortProperty, boolean sortOrder, String property);
+	Request<List<«name.toFirstUpper()»Proxy>> listNonAffected«name.toFirstUpper()»Reverse(int i, int j, String sortProperty, boolean sortOrder, ImogJunctionProxy criterions, String property);
+	Request<List<«name.toFirstUpper()»Proxy>> get«name.toFirstUpper()»EmptyList();
+
+	Request<Long> count«name.toFirstUpper()»();
+	Request<Long> count«name.toFirstUpper()»(ImogJunctionProxy criterions);
+	Request<Long> countNonAffected«name.toFirstUpper()»(String property);
+	Request<Long> countNonAffected«name.toFirstUpper()»(String property, ImogJunctionProxy criterions);
+	Request<Long> countNonAffected«name.toFirstUpper()»Reverse(String property);
+	Request<Long> countNonAffected«name.toFirstUpper()»Reverse(String property, ImogJunctionProxy criterions);
+	
+	Request<Void> delete(Set<«name.toFirstUpper()»Proxy> entities);
+	Request<Void> delete(«name.toFirstUpper()»Proxy entity);
+	
+	«EXPAND methodsForRelation FOREACH groups.fields-»
+}
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» imports for relation with cardinality 1 «ENDREM»
+«DEFINE importForRelation(String projectName) FOR FieldEntity -»«ENDDEFINE»
+«DEFINE importForRelation(String projectName) FOR RelationFieldEntity -»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
+«ENDDEFINE»
+
+«DEFINE methodsForRelation FOR FieldEntity-»«ENDDEFINE»
+«DEFINE methodsForRelation FOR RelationFieldEntity»
+	Request<Void> save«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy entity, boolean isNew);
+	Request<Void> delete«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy entity);
+«ENDDEFINE»

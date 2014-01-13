@@ -1,0 +1,19 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/security/AccessPolicyFactoryImpl.java"»
+package org.imogene.«projectName.toLowerCase()».security;
+
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.security.AccessPolicy;
+import org.imogene.lib.common.security.AccessPolicyFactory;
+
+public class AccessPolicyFactoryImpl implements AccessPolicyFactory {
+
+	@Override
+	public AccessPolicy create(ImogActor actor) {
+		return new AccessPolicyImpl(actor);
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="imogene"
+            name="Imogene">
+      </category>
+      <wizard
+            category="imogene"
+            class="org.imogene.model.contrib.NewModelWizard"
+            icon="icons/logo_imogene_24.png"
+            id="org.imogene.model.contrib.NewImogeneModel"
+            name="New Imogene model"
+            project="true">
+      </wizard>
+   </extension>
+
+</plugin>

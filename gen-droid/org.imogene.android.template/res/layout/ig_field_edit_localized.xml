@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FieldDefault" >
+
+    <View
+        android:layout_width="10dip"
+        android:layout_height="0dip" />
+
+    <ImageView style="@style/FieldArrowView" />
+
+    <View
+        android:layout_width="10dip"
+        android:layout_height="0dip" />
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <include layout="@layout/ig_field_title_bar" />
+
+        <EditText
+            android:id="@+id/ig_value"
+            android:layout_width="0dip"
+            android:layout_height="0dip"
+            android:saveEnabled="false"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/ig_localized"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:saveEnabled="false" />
+
+            <TextView
+                android:id="@+id/ig_locale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dip" />
+
+            <ImageView style="@style/FieldHelpView" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/ig_more_button"
+            android:layout_width="fill_parent"
+            android:layout_height="17dip"
+            android:background="@drawable/ig_btn_default"
+            android:src="@drawable/ig_indicator_down_arrow" />
+
+        <ImageButton
+            android:id="@+id/ig_less_button"
+            android:layout_width="fill_parent"
+            android:layout_height="17dip"
+            android:background="@drawable/ig_btn_default"
+            android:src="@drawable/ig_indicator_up_arrow" />
+
+        <LinearLayout
+            android:id="@+id/ig_localized_entries"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
+
+</LinearLayout>

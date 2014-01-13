@@ -1,0 +1,73 @@
+<workflow>
+	
+	<property name="modelName" value="" />
+	<property name="modelFullPath" value="" />	
+	<property name="imogeneMetaModel" value="metamodel/ImogeneModel.ecore"/>
+	<property name="model" value="${modelFullPath}" />
+	<property name="home-gen" value="/tmp/src-gen" />
+	<property name="packageName" value="org.imogene.${modelName}"  />
+	<property name="packagePath" value="org/imogene/${modelName}" />
+	
+	<property name="JDBCDRIVER" value=""/>
+	<property name="JDBCPATH" value=""/>
+	<property name="JDBCLOGIN" value=""/>
+	<property name="JDBCPASSWORD" value=""/>
+	
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand	value='template::hibernateConfiguration::generate("${packagePath}","${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "hibernate.cfg.xml", "${HIBERNATEDIALECT}") FOR project' />
+		<genPath value="${home-gen}/src" />
+	</component>
+	
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel	class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand	value='template::hibernateMapping::generate("${packageName}") FOREACH project.entities' />
+		<beautifier	class="org.eclipse.xpand2.output.JavaBeautifier" />	
+		<genPath value="${home-gen}/src/${packagePath}" />
+	</component>
+	
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel	class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand	value='template::hibernateMappingForFieldComment::generate("${packageName}") FOR project' />
+		<beautifier	class="org.eclipse.xpand2.output.JavaBeautifier" />	
+		<genPath value="${home-gen}/src/${packagePath}" />
+	</component>
+	
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand	value='template::medanyBean::generateBean("${packageName}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/${packagePath}" />
+		<beautifier	class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<!-- protected regions configuration -->
+		<prSrcPaths value="${home-gen}/src/${packagePath}"/>
+			
+	</component>
+
+    <component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand	value='template::medanyActor::generateActor("${packageName}") FOREACH project.entities' />
+		<genPath value="${home-gen}/src/${packagePath}" />
+		<beautifier	class="org.eclipse.xpand2.output.JavaBeautifier" />	
+	</component>
+	
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand	value='template::beanFactoryProperties::generate("${packageName}") FOR project' />
+		<genPath value="${home-gen}/WebContent/WEB-INF/data" />
+	</component>
+	
+</workflow>

@@ -1,0 +1,39 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity »
+«IF hasFilter(this)»
+«FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "FilterPreferenceScreen.java"-»
+package org.imogene.android.«projectName.toLowerCase()».app;
+
+import android.os.Bundle;
+
+import greendroid.app.GDPreferenceActivity;
+
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+
+public class «name.toFirstUpper()»FilterPreferenceScreen extends GDPreferenceActivity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.«name.toLowerCase()»_filter_preference_screen);
+		
+		preparePreferenceScreenFilter();
+	}
+	
+	private void preparePreferenceScreenFilter() {
+		«FOREACH getFilteredGroups(clientFilterFields) AS g-»
+		boolean canRead«g.name.toFirstUpper()» = «name.toFirstUpper()»Roles.canRead«g.name.toFirstUpper()»(this);
+		«FOREACH clientFilterFields AS f-»
+		«IF g.fields.contains(f)-»
+		findPreference("«f.name.toLowerCase()»_filter").setEnabled(canRead«g.name.toFirstUpper()»);
+		«ENDIF-»
+		«ENDFOREACH-»
+		«ENDFOREACH-»
+	}
+	
+}
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

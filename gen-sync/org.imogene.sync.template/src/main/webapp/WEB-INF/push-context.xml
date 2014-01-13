@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="pushConnectionDao" class="org.imogene.lib.push.dao.ConnectionDaoImpl" />
+
+	<bean id="pushMessageDao" class="org.imogene.lib.push.dao.MessageDaoImpl" />
+
+	<bean id="pushServer" class="org.imogene.lib.push.PushServer">
+		<property name="connectionController" ref="pushConnectionController" />
+	</bean>
+
+	<bean id="pushConnectionController" class="org.imogene.lib.push.connections.ConnectionController">
+		<property name="connectionDao" ref="pushConnectionDao" />
+		<property name="messageDao" ref="pushMessageDao" />
+		<property name="userAccessControl" ref="userAccessControl" />
+	</bean>
+
+	<bean id="pushMessageHelper" class="org.imogene.lib.push.messages.MessageHelper">
+		<property name="connectionDao" ref="pushConnectionDao" />
+		<property name="messageDao" ref="pushMessageDao" />
+		<property name="connectionController" ref="pushConnectionController" />
+	</bean>
+
+	<bean id="pushServlet" class="org.imogene.push.PushServlet">
+		<property name="messageHelper" ref="pushMessageHelper" />
+	</bean>
+
+</beans>

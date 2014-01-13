@@ -1,0 +1,87 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field' 
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+
+	<ui:style>
+		.imogListBox {
+			background-color: #fff;
+			border: 1px solid #777777;
+			color: #444444;
+			width: 199px;
+			font-size: 12px;
+		}
+		
+		.imogListBox-TexBox {
+			border-right: 1px solid #777777;
+			border-top: 0px;
+			border-bottom: 0px;
+			border-left: 0px;
+			color: #444444;
+			width: 199px;
+			padding: 2px;
+			font-size: 12px;
+			background-color: #FFFFFF;
+			margin: 0px;
+		}
+		
+		.imogListBox-TexBox-disabled {
+			background-color: #f2f2f2;
+			border-right: 0px;
+		}
+		
+		.imogRel1Box-ButtonImage {
+			cursor: pointer;
+			cursor: hand;
+			text-align: left;
+		}
+		
+		.imogRel1Box-OpenIcon {
+			cursor: pointer;
+			cursor: hand;
+			vertical-align: top;
+		}
+		@external .imogListBox, .imogListBox-TexBox, .imogListBox-TexBox-disabled;
+	</ui:style>
+
+
+
+	<g:HorizontalPanel ui:field="contentPanel" verticalAlignment="middle" width="285px">
+
+		<g:cell width="201px">
+			<g:HorizontalPanel ui:field="listBoxPanel" stylePrimaryName="{style.imogListBox}"
+				verticalAlignment="middle">
+
+				<g:cell horizontalAlignment="left" verticalAlignment="middle">
+					<g:TextBox ui:field="textBox" readOnly="true"
+						stylePrimaryName="{style.imogListBox-TexBox}" />
+				</g:cell>
+
+				<g:cell horizontalAlignment="left" verticalAlignment="top"
+					width="12px">
+					<g:Image ui:field="openIcon" stylePrimaryName="{style.imogRel1Box-OpenIcon}" />
+				</g:cell>
+
+			</g:HorizontalPanel>
+		</g:cell>
+
+		<g:HorizontalPanel verticalAlignment="middle" horizontalAlignment="left" ui:field="buttonPanel">
+
+			<g:cell horizontalAlignment="left" verticalAlignment="middle">
+				<g:Image ui:field="viewImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />
+			</g:cell>
+
+			<g:cell horizontalAlignment="left" verticalAlignment="middle">
+				<g:Image ui:field="clearImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />
+			</g:cell>
+
+			<g:cell horizontalAlignment="left" verticalAlignment="middle">
+				<g:Image ui:field="addImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />
+			</g:cell>
+
+		</g:HorizontalPanel>
+
+	</g:HorizontalPanel>
+
+
+</ui:UiBinder>

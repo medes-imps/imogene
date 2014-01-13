@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/template/domain/DaoFieldUtil.xpt=ISO-8859-1
+encoding//src/template/domain/dao/entityDao.xpt=ISO-8859-1
+encoding//src/template/domain/dao/entityDaoImpl.xpt=ISO-8859-1
+encoding//src/template/domain/entity/cloneFactory.xpt=ISO-8859-1
+encoding//src/template/domain/entity/entity.xpt=ISO-8859-1
+encoding//src/template/domain/entity/entityBck.xpt=ISO-8859-1
+encoding//src/template/domain/entity/entityCloner.xpt=ISO-8859-1
+encoding//src/template/domain/entity/localizedText.xpt=ISO-8859-1

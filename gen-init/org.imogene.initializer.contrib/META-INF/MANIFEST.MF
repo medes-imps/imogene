@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene initializer contrib
+Bundle-SymbolicName: org.imogene.initializer.contrib;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.initializer.contrib.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.imogene.studio.contrib,
+ org.imogene.library.contrib
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Medes-IMPS

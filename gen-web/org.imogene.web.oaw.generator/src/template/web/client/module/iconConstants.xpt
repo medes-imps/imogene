@@ -1,0 +1,39 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase() + "/client/" + projectName.toFirstUpper() + "IconConstants.java"»
+
+package org.imogene.«projectName.toLowerCase()».client;
+
+import com.google.gwt.core.client.GWT;
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«e.name.toFirstUpper()»Proxy;
+«ENDFOREACH»
+
+/**
+ * Constants that give the path to the entity icons
+ * @author Medes-IMPS
+ */
+public class «projectName.toFirstUpper()»IconConstants {
+		
+		«FOREACH entities AS e»
+			«IF (e.icon!=null && e.icon!="")-»
+			public static final String «e.name.toUpperCase()»_ICON = GWT.getModuleBaseURL() + "images/«e.icon»";
+			«ELSE -»
+			public static final String «e.name.toUpperCase()»_ICON = null;
+			«ENDIF -»			
+		«ENDFOREACH»
+	
+	
+		public static String getIconPath(String name){
+			«FOREACH entities AS e»
+			if (name.equals(«e.name.toFirstUpper()»Proxy.class.getName())) {
+				return «e.name.toUpperCase()»_ICON;
+			}			
+			«ENDFOREACH»
+			return "";			
+		}
+
+}
+«ENDFILE»
+«ENDDEFINE»

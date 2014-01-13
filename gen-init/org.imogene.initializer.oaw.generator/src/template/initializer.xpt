@@ -1,0 +1,140 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName, String password, String packagetName) FOR Project»
+«FILE "InitializerImpl.java"»
+package org.imogene.initializer;
+
+import java.util.Date;
+
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.dao.GenericDao;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.model.FieldGroup;
+import org.imogene.lib.common.profile.EntityProfile;
+import org.imogene.lib.common.profile.FieldGroupProfile;
+import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.user.DefaultUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
+public class InitializerImpl implements Initializer {
+
+	@Autowired
+	private GenericDao genericDao;
+
+	private static Date now = new Date();
+
+	@Override
+	@Transactional
+	public void initialize() {
+		CardEntity dynamicFieldInstance = new CardEntity();
+		dynamicFieldInstance.setId("dynamicFieldInstance");
+		dynamicFieldInstance.setName("Dynamic Field Instance");
+		dynamicFieldInstance.setClassName(DynamicFieldInstance.class.getName());
+		save(dynamicFieldInstance);
+
+		CardEntity dynamicFieldTemplate = new CardEntity();
+		dynamicFieldTemplate.setId("dynamicFieldTemplate");
+		dynamicFieldTemplate.setName("Dynamic Field Template");
+		dynamicFieldTemplate.setClassName(DynamicFieldTemplate.class.getName());
+		save(dynamicFieldTemplate);
+
+		CardEntity cardEntity = new CardEntity();
+		cardEntity.setId("cardEntity");
+		cardEntity.setName("Card Entity");
+		cardEntity.setClassName(CardEntity.class.getName());
+		save(cardEntity);
+
+		CardEntity fieldGroup = new CardEntity();
+		fieldGroup.setId("fieldGroup");
+		fieldGroup.setName("Field Group");
+		fieldGroup.setClassName(FieldGroup.class.getName());
+		save(fieldGroup);
+
+		CardEntity entityProfile = new CardEntity();
+		entityProfile.setId("entityProfile");
+		entityProfile.setName("Entity Profile");
+		entityProfile.setClassName(EntityProfile.class.getName());
+		save(entityProfile);
+
+		CardEntity fieldGroupProfile = new CardEntity();
+		fieldGroupProfile.setId("fieldGroupProfile");
+		fieldGroupProfile.setName("Field Group Profile");
+		fieldGroupProfile.setClassName(FieldGroupProfile.class.getName());
+		save(fieldGroupProfile);
+
+		CardEntity profile = new CardEntity();
+		profile.setId("profile");
+		profile.setName("Profile");
+		profile.setClassName(Profile.class.getName());
+		save(profile);
+		
+		CardEntity binary = new CardEntity();
+		binary.setId("binary");
+		binary.setName("Binary File");
+		binary.setClassName(BinaryFile.class.getName());
+		save(binary);
+
+		«FOREACH entities AS e»
+		CardEntity «e.name.toFirstLower()» = new CardEntity();
+		«e.name.toFirstLower()».setId("«e.name.toLowerCase()»");
+		«e.name.toFirstLower()».setName("«e.name»");
+		«e.name.toFirstLower()».setClassName("org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»");
+		save(«e.name.toFirstLower()»);
+		
+		«FOREACH e.groups AS g»
+		FieldGroup «e.name.toFirstLower()»«g.name.toFirstUpper()» = new FieldGroup();
+		«e.name.toFirstLower()»«g.name.toFirstUpper()».setId("«e.name.toLowerCase()».«g.name.toLowerCase()»");
+		«e.name.toFirstLower()»«g.name.toFirstUpper()».setName("«g.name»");
+		«e.name.toFirstLower()»«g.name.toFirstUpper()».setEntity(«e.name.toFirstLower()»);
+		save(«e.name.toFirstLower()»«g.name.toFirstUpper()»);
+		«ENDFOREACH»
+		«ENDFOREACH»
+		
+		Profile administrator = new Profile();
+		administrator.setId("administrator");
+		administrator.setName("Administrator");
+		save(administrator);
+		
+		DefaultUser defaultUser = new DefaultUser();
+		defaultUser.setId("admin");
+		defaultUser.setLogin("admin");
+		defaultUser.setPassword(passwordHashAsBase64("«password»", "admin"));
+		defaultUser.addProfile(administrator);
+		defaultUser.addSynchronizable(dynamicFieldInstance);
+		defaultUser.addSynchronizable(dynamicFieldTemplate);
+		defaultUser.addSynchronizable(cardEntity);
+		defaultUser.addSynchronizable(fieldGroup);
+		defaultUser.addSynchronizable(entityProfile);
+		defaultUser.addSynchronizable(fieldGroupProfile);
+		defaultUser.addSynchronizable(profile);
+		defaultUser.addSynchronizable(binary);
+		«FOREACH entities AS e-»
+		defaultUser.addSynchronizable(«e.name.toFirstLower()»);
+		«ENDFOREACH-»
+		save(defaultUser);
+	}
+	
+	private <T extends ImogBean> void save(T object) {
+		object.setCreated(now);
+		object.setCreatedBy("admin");
+		object.setModified(now);
+		object.setModifiedBy("admin");
+		object.setModifiedFrom("web");
+		object.setUploadDate(now);
+		object.setVersion(0);
+		genericDao.saveOrUpdate(object);
+	}
+
+	private static String passwordHashAsBase64(String password, String userName){
+		ShaPasswordEncoder encoder = new ShaPasswordEncoder(256);
+		encoder.setEncodeHashAsBase64(true);
+		return encoder.encodePassword(password, userName);
+	}
+}
+«ENDFILE»
+«ENDDEFINE»

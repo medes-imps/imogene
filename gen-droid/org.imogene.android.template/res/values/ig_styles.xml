@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <style name="Imogene.Wizard.TabIndicator" parent="@style/GreenDroid.Widget.TabIndicator">
+        <item name="android:layout_height">@dimen/ig_tab_height</item>
+    	<item name="android:layout_marginLeft">@dimen/ig_tab_side_padding</item>
+    	<item name="android:layout_marginRight">@dimen/ig_tab_side_padding</item>
+    	<item name="android:background">@drawable/ig_tab_indicator</item>
+    	<item name="android:textSize">@dimen/ig_text_size_small</item>
+    	<item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DashboardButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textSize">@dimen/ig_text_size_small</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ig_accent_1</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="BaseField">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">?attr/igFieldLayoutHeight</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="FieldDefault">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">?attr/igFieldLayoutHeight</item>
+        <item name="android:background">@android:drawable/list_selector_background</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingRight">?android:attr/scrollbarSize</item>
+    </style>
+
+    <style name="FieldTitleText">
+        <item name="android:id">@id/ig_title</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:textSize">@dimen/ig_text_size_small</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ig_actionbar_text</item>
+    </style>
+
+    <style name="FieldValueText">
+        <item name="android:id">@id/ig_value</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:duplicateParentState">true</item>
+    </style>
+
+    <style name="FieldValueEditText">
+        <item name="android:id">@id/ig_value</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:imeOptions">actionDone</item>
+    </style>
+
+    <style name="FieldUnitText">
+        <item name="android:id">@id/ig_unit</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:textSize">@dimen/ig_text_size_small</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="FieldArrowView">
+        <item name="android:id">@id/ig_arrow</item>
+        <item name="android:src">@drawable/ig_arrow_icon</item>
+        <item name="android:layout_width">20dip</item>
+        <item name="android:layout_height">20dip</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="FieldHelpView">
+        <item name="android:id">@id/ig_help</item>
+        <item name="android:src">@drawable/ig_help</item>
+        <item name="android:layout_width">40dip</item>
+        <item name="android:layout_height">40dip</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="FieldIconView">
+        <item name="android:id">@id/ig_icon</item>
+        <item name="android:layout_width">32dip</item>
+        <item name="android:layout_height">32dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="FieldRequiredText">
+        <item name="android:id">@id/ig_required</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:textSize">@dimen/ig_text_size_small</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ig_required_text</item>
+        <item name="android:text">@string/ig_required</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="FieldDividerView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">1dip</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+</resources>

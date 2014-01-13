@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene synchronization client contrib
+Bundle-SymbolicName: org.imogene.client.contrib;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.client.contrib.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.imogene.studio.contrib,
+ org.eclipse.jdt.core,
+ org.imogene.library.contrib
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Medes-IMPS

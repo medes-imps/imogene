@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene model validator
+Bundle-SymbolicName: org.imogene.model.validation;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.model.validation.ImogeneValidationPlugin
+Bundle-Vendor: Medes-IMPS
+Export-Package: org.imogene.model.validation,
+ org.imogene.model.validation.constraints,
+ org.imogene.model.validation.expressions
+Require-Bundle: org.imogene.model.core,
+ org.eclipse.core.runtime,
+ org.eclipse.core.expressions,
+ org.eclipse.emf.validation,
+ org.eclipse.ui
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: bin/,
+ .

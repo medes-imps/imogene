@@ -1,0 +1,20 @@
+«IMPORT core»
+«DEFINE generate(String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String smtpServer) FOR Project»
+«FILE "application.properties"»
+# JDBC properties
+jdbc.driverClassName=«jdbcDriver»
+jdbc.url=«jdbcPath»
+jdbc.username=«jdbcLogin»
+jdbc.password=«jdbcPassword»
+
+# Hibernate properties
+hibernate.dialect=«hibernateDialect»
+hibernate.show_sql=false
+hibernate.format_sql=false
+hibernate.generate_statistics=false
+hibernate.hbm2ddl.auto=update
+
+# SMTP properties
+smtp.server=«smtpServer»
+«ENDFILE»
+«ENDDEFINE»

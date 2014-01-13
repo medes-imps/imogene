@@ -1,0 +1,70 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate FOR Project»
+«FILE "/" + name.toLowerCase() + "/app/MultiUserListing.java"»
+package org.imogene.android.«name.toLowerCase()-».app;
+
+import org.imogene.android.app.AbstractImogActorListing;
+import org.imogene.android.database.ImogActorCursorJoiner;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
+import org.imogene.android.database.sqlite.stmt.QueryBuilder;
+«EXPAND importCursor(name) FOREACH entities-»
+«EXPAND importEntity(name) FOREACH entities-»
+
+public class MultiUserListing extends AbstractImogActorListing {
+
+	@Override
+	protected ImogActorCursorJoiner getCursor() {
+		ImogActorCursorJoiner joiner = new ImogActorCursorJoiner();
+		«FOREACH entities AS e-»
+		«IF Actor.isAssignableFrom(e.metaType)-»
+		joiner.newCursor(get«e.name.toFirstUpper()»Cursor(), «e.name.toFirstUpper()-».Columns.COLOR , «e.name.toFirstUpper()».Columns.CONTENT_URI);
+		«ENDIF-»
+		«ENDFOREACH-»
+		return joiner;
+	}
+	
+	«EXPAND getCursor FOREACH entities-»
+
+	
+
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+
+«DEFINE importCursor(String projectName) FOR CardEntity-»
+«ENDDEFINE»
+
+«DEFINE importCursor(String projectName) FOR Actor-»
+import org.imogene.android.«projectName.toLowerCase()».database.sqlite.«name.toFirstUpper()»Cursor;
+«ENDDEFINE»
+
+
+
+«DEFINE importEntity(String projectName) FOR CardEntity-»
+«ENDDEFINE»
+
+«DEFINE importEntity(String projectName) FOR Actor-»
+import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
+«ENDDEFINE»
+
+
+
+«DEFINE getCursor FOR CardEntity-»
+«ENDDEFINE»
+
+«DEFINE getCursor FOR Actor-»
+private «name.toFirstUpper()»Cursor get«name.toFirstUpper()»Cursor() {
+	QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(«name.toFirstUpper()».Columns.CONTENT_URI);
+	builder.where()
+	.isNotNull(«name.toFirstUpper()».Columns.LOGIN)
+	.and()
+	.isNotNull(«name.toFirstUpper()».Columns.PASSWORD)
+	.and()
+	.ne(«name.toFirstUpper()».Columns.MODIFIEDFROM, «name.toFirstUpper()».Columns.SYNC_SYSTEM);
+	return («name.toFirstUpper()»Cursor) builder.query();
+}
+«ENDDEFINE»

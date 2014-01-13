@@ -1,0 +1,67 @@
+import core;
+
+
+
+context CardEntity ERROR "duplicate shortname between entity " +name+ " and one of its fields" :
+	groups.fields.select(f|f.shortName==shortName).size == 0;
+
+context CardEntity ERROR "duplicate name between entity " +name+ " and one of its fields" :
+	groups.fields.select(f|f.name==name).size == 0;
+	
+context CardEntity ERROR "duplicate shortname in fieldEntities of " + name :
+	groups.fields.forAll(f1|groups.fields.notExists(f2| f1!=f2 && f1.shortName==f2.shortName));
+		
+context CardEntity ERROR "duplicate name in fieldentities of " + name :
+	groups.fields.select(f1|groups.fields.select(f2|f1.name==f2.name)).size == 0;
+			
+context CardEntity ERROR "duplicate group shortname in entity " + name :
+	groups.forAll(g1|groups.notExists(g2| g1!=g2 && g1.shortName==g2.shortName));
+			
+context CardEntity ERROR "duplicate group name in entity " + name :
+	groups.forAll(g1|groups.notExists(g2| g1!=g2 && g1.name==g2.name));
+			
+context CardEntity ERROR "duplicate name between fields and groups in " + name :
+	groups.forAll(g|groups.fields.notExists(f| g.name==f.name));
+
+context Project ERROR "two entities have the same shortname " :
+	entities.forAll(e1|entities.notExists(e2| e1!=e2 && e1.shortName==e2.shortName));
+
+context Project ERROR "two card entities have the same name " :
+	entities.forAll(e1|entities.notExists(e2| e1!=e2 && e1.name==e2.name));
+
+context EnumField ERROR "two enumvalues have the same name in enumfield "+ parentGroup.parentCard.name + "::"+parentGroup.name+"::"+ name :
+	enumValues.forAll(v1|enumValues.notExists(v2| v1!=v2 && v1.name==v2.name));
+
+
+	
+	
+	
+	
+	
+context FieldEntity ERROR "caractère interdit dans le field  " + parentGroup.parentCard.name + "::"+parentGroup.name+"::"+ name :
+	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
+	
+context FieldGroup ERROR "caractère interdit dans le groupe  " + parentCard.name + "::" + name :
+	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
+		
+context CardEntity ERROR "caractère interdit dans l'entity " + name :
+	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
+		
+context EnumValue ERROR "caractère interdit dans l'enum value " + name :
+	name.matches("[[a-z]|[A-Z]|_|[0-9]]*");
+
+
+
+
+
+context CardEntity ERROR "main field doit appartenir à l'entité " + name :
+	mainFields.forAll(f1|this == f1.parentGroup.parentCard); 
+
+context CardEntity ERROR "sort field doit appartenir à l'entité " + name :
+	sortFields.forAll(f1|this == f1.parentGroup.parentCard); 
+
+context CardEntity ERROR "column field doit appartenir à l'entité " + name :
+	columnFields.forAll(f1|this == f1.parentGroup.parentCard); 
+
+context CardEntity ERROR "Name doit commencer par une majuscule " + name :
+	name.toFirstUpper() == name; 

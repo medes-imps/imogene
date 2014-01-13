@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene model contrib
+Bundle-SymbolicName: org.imogene.model.contrib;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.model.contrib.Activator
+Bundle-Vendor: Medes-IMPS
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.imogene.studio.contrib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

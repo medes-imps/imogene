@@ -1,0 +1,21 @@
+«IMPORT core»
+
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/workflow/panel/" + this.name.toFirstUpper() + "FormPanel.ui.xml"-»
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:imo1="urn:import:org.imogene.web.client.ui.panel"
+	xmlns:imo2="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.workflow">
+
+	<ui:style>
+	</ui:style>
+	
+	<imo1:WrapperPanel ui:field="wrapperPanel">
+		<imo2:«name.toFirstUpper()»EditorWorkflow ui:field="editorWorkflow"/>
+	</imo1:WrapperPanel>
+
+</ui:UiBinder> 
+«ENDFILE»
+«ENDDEFINE»

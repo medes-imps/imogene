@@ -1,0 +1,44 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.imogene-SimpleMenuItem {
+			width: 100%;
+			/*margin-bottom: 3px;
+						padding-right: 2px;
+						padding-left: 2px;
+						padding-top: 6px;
+						padding-bottom: 6px;*/
+			cursor: pointer;
+		}
+		
+		.imogeneSimpleMenuItemOver {
+			background-color: #eeeeee;
+		}
+		
+		.imogene-SimpleMenuItemSeparator {
+			width: 80%;
+			border-bottom: 1px solid #777777;
+			margin-bottom: 3px;
+			margin-top: 3px;
+			padding-right: 5px;
+		}
+		
+		.imogene-SimpleMenuItemLink {
+			/*width: 90%;*/
+			width: 100%;
+			cursor: pointer;
+			padding-top: 2px;
+			padding-bottom: 2px;
+			padding-left: 4px;
+			padding-right: 4px;
+		}
+		@external .imogene-SimpleMenuItem, .imogeneSimpleMenuItemOver, .imogene-SimpleMenuItemSeparator;
+	</ui:style>
+
+	<g:SimplePanel ui:field="layout" stylePrimaryName="{style.imogene-SimpleMenuItem}">
+		<g:Label ui:field="link" stylePrimaryName="{style.imogene-SimpleMenuItemLink}" />
+	</g:SimplePanel>
+
+</ui:UiBinder> 

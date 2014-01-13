@@ -1,0 +1,37 @@
+«IMPORT core»
+«DEFINE generate(String projectName, String embedded) FOR Project-»
+«IF embedded != "true"»
+«FILE "aop-context.xml"-»
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- notification for the creation or the modification of bean -->
+	<bean id="notifyAfterSave" class="org.imogene.notif.aop.NotificationSaveInterceptor">
+		<property name="notifierUrl" value="${notifier.server}" />
+		<property name="dao" ref="genericDao" />
+		<property name="cloneFactory" ref="cloneFactory" />
+	</bean>
+	
+  	<bean id="cloneFactory" class="org.imogene.«projectName.toLowerCase()».domain.entity.backup.CloneFactoryImpl" factory-method="getInstance"/>
+
+	«FOREACH entities AS e »
+	<!-- proxy Implementation Class -->
+	<bean id="«e.name.toFirstLower()»Dao" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>org.imogene.«projectName.toLowerCase()».domain.dao.«e.name.toFirstUpper()»Dao</value>
+		</property>
+		<property name="interceptorNames">
+			<list><value>notifyAfterSave</value></list>
+		</property>
+		<property name="target"><ref bean="«e.name.toFirstLower()»DaoBase" /></property>
+	</bean>
+	«ENDFOREACH»
+	
+</beans>
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

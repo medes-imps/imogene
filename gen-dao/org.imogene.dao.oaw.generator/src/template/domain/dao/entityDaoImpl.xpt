@@ -1,0 +1,82 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«DEFINE generate(String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+"/domain/dao/"+this.name.toFirstUpper() + "DaoImpl.java"»
+package org.imogene.«projectName.toLowerCase()».domain.dao;
+
+import java.util.List;
+import java.util.Vector;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.imogene.lib.common.dao.«IF Actor.isAssignableFrom(this.metaType)»ImogActorDaoImpl«ELSE»ImogBeanDaoImpl«ENDIF»;
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR eContainer-»
+
+/**
+ * Manage persistence for «name.toFirstUpper()»
+ */
+public class «name.toFirstUpper()»DaoImpl extends «IF Actor.isAssignableFrom(this.metaType)»ImogActorDaoImpl<«name.toFirstUpper()»>«ELSE»ImogBeanDaoImpl<«name.toFirstUpper()»>«ENDIF» implements «name.toFirstUpper()»Dao {
+
+	protected «name.toFirstUpper()»DaoImpl() {
+		super(«name.toFirstUpper()».class);
+	}
+	
+	@Override
+	public void delete() {
+		//TODO
+	}
+	
+	/* relation dependencies */
+	«EXPAND methodsForRelation FOREACH groups.fields-»
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+«REM» Imports implied by the relation fields «ENDREM»
+«DEFINE importsForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE importsForRelation(String projectName) FOR RelationFieldEntity-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirstUpper()»;
+«ENDDEFINE»
+
+
+«REM» DAO methods implied by the relation fields «ENDREM»
+«DEFINE methodsForRelation FOR FieldEntity»«ENDDEFINE»
+«DEFINE methodsForRelation FOR RelationFieldEntity»
+«IF cardinality==-1 || cardinality>1»
+«IF getOppositeCardinality(this)==1 »
+/**
+ * List associated «entity.name.toFirstUpper()», 
+ * on the field «name.toFirstLower()»
+ * @param parent the parent entity
+ * @return the list of the associated entities
+ */
+@Override
+public List<«entity.name.toFirstUpper()»> load«name.toFirstUpper()»(«parentGroup.parentCard.name.toFirstUpper()» parent){
+	CriteriaBuilder builder = em.getCriteriaBuilder();
+	CriteriaQuery<«entity.name.toFirstUpper()»> query = builder.createQuery(«entity.name.toFirstUpper()».class);
+	Root<«entity.name.toFirstUpper()»> root = query.from(«entity.name.toFirstUpper()».class);
+	query.select(root);
+	query.where(builder.equal(root.<«parentGroup.parentCard.name.toFirstUpper()»> get("«EXPAND template::CommonFieldUtil::propertyName FOR oppositeRelationField»"), parent));
+	return em.createQuery(query).getResultList();
+}
+«ELSE»
+/**
+ * List associated «entity.name.toFirstUpper()», 
+ * on the field «name.toFirstLower()»
+ * @param parent the parent entity
+ * @return the list of the associated entities
+ */
+@Override
+public List<«entity.name.toFirstUpper()»> load«name.toFirstUpper()»(«parentGroup.parentCard.name.toFirstUpper()» parent){
+		if (parent == null) {
+			return new Vector<«entity.name.toFirstUpper()»>();
+		}
+		return parent.«EXPAND template::CommonFieldUtil::getterName FOR this-»();
+}
+«ENDIF»
+«ENDIF»
+«ENDDEFINE»

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Epidefender notifier generator
+Bundle-SymbolicName: org.imogene.notifier.oaw.generator
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.notifier.oaw.generator.Activator
+Bundle-Vendor: Medes-IMPS
+Eclipse-RegisterBuddy: org.imogene.oaw.generator.common
+Require-Bundle: org.eclipse.xpand,
+ org.eclipse.xtend,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.imogene.oaw.generator.common
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

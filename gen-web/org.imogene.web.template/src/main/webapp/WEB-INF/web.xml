@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>org.imogene.web.template</display-name>
+  <servlet>
+    <servlet-name>TestServicesImpl</servlet-name>
+    <servlet-class>org.imogene.web.server.test.TestServicesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TestServicesImpl</servlet-name>
+    <url-pattern>*.serv</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>ImogBaseTest.html</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>downloadServlet</servlet-name>
+    <servlet-class>org.imogene.web.server.BinaryDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>downloadServlet</servlet-name>
+    <url-pattern>/getbinary</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <param-name>maxSize</param-name>
+    <param-value>100000000</param-value>
+  </context-param>
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+    <servlet-class>org.imogene.web.server.BinaryUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>*.gupld</url-pattern>
+  </servlet-mapping>
+</web-app>

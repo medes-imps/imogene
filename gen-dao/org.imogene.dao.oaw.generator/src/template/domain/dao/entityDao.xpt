@@ -1,0 +1,52 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«DEFINE generate(String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+"/domain/dao/"+this.name.toFirstUpper() + "Dao.java"»
+package org.imogene.«projectName.toLowerCase()».domain.dao;
+
+import java.util.List;
+
+import org.imogene.lib.common.dao.«IF Actor.isAssignableFrom(this.metaType)»ImogActorDao«ELSE»ImogBeanDao«ENDIF»;
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+«FOREACH groups.fields AS f -»
+«EXPAND importsForRelation(projectName) FOR f -»
+«ENDFOREACH -»
+
+/**
+ * Manage persistence for «name.toFirstUpper()»
+ * @author MEDES-IMPS
+ */
+public interface «name.toFirstUpper()»Dao extends «IF Actor.isAssignableFrom(this.metaType)»ImogActorDao<«name.toFirstUpper()»>«ELSE»ImogBeanDao<«name.toFirstUpper()»>«ENDIF» {
+	
+	/* relation dependencies */
+	«EXPAND methodsForRelation FOREACH groups.fields-»
+	
+	«EXPAND specificPart FOR this-»
+	
+
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» Imports implied by the relation fields «ENDREM»
+«DEFINE importsForRelation(String projectName) FOR FieldEntity»«ENDDEFINE»
+«DEFINE importsForRelation(String projectName) FOR RelationFieldEntity»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirstUpper()»;
+«ENDDEFINE»
+
+«REM» DAO methods implied by the relation fields «ENDREM»
+«DEFINE methodsForRelation FOR FieldEntity»«ENDDEFINE»
+«DEFINE methodsForRelation FOR RelationFieldEntity»
+«IF cardinality == -1 || cardinality>1 »
+/**
+ * List associated «entity.name.toFirstUpper()», 
+ * on the field «name.toFirstLower()»
+ * @param parent the parent entity
+ * @return the list of the associated entities
+ */
+public List<«entity.name.toFirstUpper()»> load«name.toFirstUpper()»(«parentGroup.parentCard.name.toFirstUpper()» parent);
+«ENDIF»
+«ENDDEFINE»
+
+«REM»Specific part AOP hook«ENDREM»
+«DEFINE specificPart FOR CardEntity»«ENDDEFINE»

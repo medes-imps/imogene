@@ -1,0 +1,19 @@
+«IMPORT core»
+«DEFINE generate(String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter, String audioConverter) FOR Project»
+«FILE "application.properties"»
+# JDBC properties
+jdbc.driverClassName=org.apache.derby.jdbc.ClientDriver
+jdbc.url=jdbc:derby://localhost:1493/«name.toLowerCase()»;create=true
+jdbc.username=admin
+jdbc.password=admin
+hibernate.dialect=org.hibernate.dialect.DerbyDialect
+
+# Binary management as File.
+# WARNING : On windows please use '/' in place of '\'.
+sync.file.directory=%PLATFORM%/sync
+
+# Binary management as File.
+# WARNING : On windows please use '/' in place of '\'.
+binary.file.directory=%PLATFORM%/binary
+«ENDFILE»
+«ENDDEFINE»

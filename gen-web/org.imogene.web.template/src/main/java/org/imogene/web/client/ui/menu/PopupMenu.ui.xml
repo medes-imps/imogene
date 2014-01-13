@@ -1,0 +1,108 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:style src="../../css/ImogCss.css">
+		.PopupPanel {
+			-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+			-moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+			-webkit-transition: opacity .218s;
+			-moz-transition: opacity .218s;
+			-ms-transition: opacity .218s;
+			-o-transition: opacity .218s;
+			transition: opacity .218s;
+			background: PageBackground;
+			border: 1px solid PanelBorder;
+			border: 1px solid rgba(0, 0, 0, .2);
+			font-size: 13px;
+			margin: 0;
+			outline: none;
+			padding: 6px;
+			position: absolute;
+			color: TextColor;
+			z-index: 5;
+			width: 190px;
+		}
+		
+		.PopupPanel-title {
+			margin-bottom: 5px;
+			color: TextColor;
+			text-shadow: 0 1px 1px rgba(150, 150, 150, 0.25);
+		}
+		
+		.PopupPanel-content {
+			color: TextColor;
+			font-size: 12px;
+			background-color: PanelBackground;
+		}
+		
+		.menuButton {
+			width: 45px;
+			text-align: center;
+		}
+		
+		.searchButton {
+			height: 14px;
+			width: 14px;
+			text-align: center;
+			-webkit-border-radius: 7px;
+			-moz-border-radius: 7px;
+			border-radius: 7px;
+			font-size: 10px;
+			padding: 1px 2px 2px 2px;
+			/*padding: 2px;*/
+			margin-left: 2px;
+		}
+		
+		.searchBox {
+			overflow: hidden;
+			border: 1px solid;
+			border-color: #CCC;
+			padding: 1px;
+			margin: 0px;
+		}
+		
+		/*@external .PopupPanel-Button-Search, .PopupPanel-Button-Search .html-face;*/
+	</ui:style>
+
+	<g:PopupPanel ui:field="popup" stylePrimaryName="{style.PopupPanel}">
+
+		<g:VerticalPanel ui:field="mainPanel">
+
+			<g:VerticalPanel spacing="0">
+				<g:Label ui:field="title" styleName="{style.PopupPanel-title}" />
+			</g:VerticalPanel>
+
+			<g:VerticalPanel styleName="{style.PopupPanel-content} {style.imogenePanel}"
+				spacing="5">
+
+				<g:PushButton ui:field="create"
+					styleName="{style.imogButton} {style.imogButton2} {style.menuButton}" />
+
+				<g:PushButton ui:field="list"
+					styleName="{style.imogButton} {style.imogButton1} {style.menuButton}" />
+
+				<g:VerticalPanel>
+					<g:Label ui:field="searchLabel" />
+					<g:HorizontalPanel verticalAlignment="middle">
+						<g:cell verticalAlignment="middle">
+							<g:TextBox ui:field="searchValue" styleName="{style.searchBox}" />
+						</g:cell>
+						<g:cell verticalAlignment="middle">
+							<g:PushButton text="ok"
+								styleName="{style.imogButton} {style.searchButton}" />
+						</g:cell>
+					</g:HorizontalPanel>
+
+				</g:VerticalPanel>
+
+			</g:VerticalPanel>
+
+		</g:VerticalPanel>
+
+
+
+	</g:PopupPanel>
+
+
+</ui:UiBinder>

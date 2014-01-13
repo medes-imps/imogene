@@ -1,0 +1,359 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity»
+«FILE "/" + projectName.toLowerCase() + "/database/sqlite/" + name.toFirstUpper() + "Cursor.java"»
+package org.imogene.android.«projectName.toLowerCase()-».database.sqlite;
+
+import java.util.Date;
+import java.util.List;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.location.Location;
+import android.net.Uri;
+import org.imogene.android.database.GeoreferencedCursor;
+import org.imogene.android.database.sqlite.ImogActorCursorImpl;
+import org.imogene.android.database.sqlite.ImogBeanCursorImpl;
+import org.imogene.android.database.sqlite.ImogEntityCursorImpl;
+import org.imogene.android.domain.Binary;
+import org.imogene.android.domain.LocalizedText;
+import org.imogene.android.util.FormatHelper;
+import org.imogene.android.util.field.EnumHelper;
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
+«EXPAND organizeImports(projectName) FOREACH groups.fields-»
+
+public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(metaType)-»ImogActorCursorImpl«ELSE»«IF hasDynamicFields»ImogEntityCursorImpl«ELSE»ImogBeanCursorImpl«ENDIF»«ENDIF»
+	«IF georeferenced != null-»
+	implements GeoreferencedCursor
+	«ENDIF-»
+ {
+
+	public «name.toFirstUpper()-»Cursor(SQLiteDatabase db, SQLiteCursorDriver driver,
+			String editTable, SQLiteQuery query) {
+		super(db, driver, editTable, query);
+	}
+	
+	public static class Factory implements CursorFactory {
+		public Cursor newCursor(SQLiteDatabase db,
+				SQLiteCursorDriver masterQuery, String editTable,
+				SQLiteQuery query) {
+			return new «name.toFirstUpper()-»Cursor(db, masterQuery, editTable, query);
+		}
+	}
+	
+	@Override
+	public «name.toFirstUpper()» newBean() {
+		return new «name.toFirstUpper()»(this);
+	}
+	
+	«EXPAND createGetter FOREACH groups.fields»
+	
+	@Override
+	public String getMainDisplay(Context context) {
+		StringBuilder str = new StringBuilder();
+		«EXPAND getDisplay FOREACH getMainFields(this)-»
+		return str.toString();
+	}
+
+	@Override
+	public String getSecondaryDisplay(Context context) {
+		StringBuilder str = new StringBuilder();
+		«EXPAND getDisplay FOREACH secondaryFields-»
+		return str.toString();
+	}
+	
+	«IF Actor.isAssignableFrom(metaType)-»
+	@Override
+	public String getUserDisplay(Context context) {
+		StringBuilder str = new StringBuilder();
+		«EXPAND getDisplayForActor FOR this-»
+		return str.toString();
+	}
+	«ENDIF-»
+	
+	«IF georeferenced != null-»
+	@Override
+	public Location getGeoreference() {
+		return get«georeferenced.name.toFirstUpper()»();
+	}
+	«ENDIF-»
+}
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+
+
+
+«DEFINE organizeImports(String projectName) FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE organizeImports(String projectName) FOR RelationFieldEntity-»
+import org.imogene.android.«projectName.toLowerCase()-».entities.«entity.name.toFirstUpper()-»;
+«ENDDEFINE»
+
+
+
+
+«DEFINE createGetter FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE createGetter FOR StringField-»
+public final String get«name.toFirstUpper()»() {
+	return getString(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR TextField-»
+«IF translatable-»
+public final LocalizedText get«name.toFirstUpper()»() {
+	LocalizedText text = LocalizedText.newInstance();
+	«FOREACH ((Project) eRootContainer).languages AS l-»
+	text.setValue("«l.isoCode»", getString(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»_«l.isoCode.toUpperCase()»));
+	«ENDFOREACH-»
+	return text;
+}
+«ELSE-»
+public final String get«name.toFirstUpper()»() {
+	return getString(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createGetter FOR IntegerField-»
+public final Integer get«name.toFirstUpper()»() {
+	return getAsInteger(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR FloatField-»
+public final Float get«name.toFirstUpper()»() {
+	return getAsFloat(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR BooleanField-»
+public final Boolean get«name.toFirstUpper()»() {
+	return getAsBoolean(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR DatesField-»
+public final Date get«name.toFirstUpper()»() {
+	return getDate(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR BinaryField-»
+public final Uri get«name.toFirstUpper()-»() {
+	return getEntity(Binary.Columns.CONTENT_URI, Binary.Columns.TABLE_NAME, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR EnumField-»
+«IF multipleSelection -»
+public final boolean[] get«name.toFirstUpper()-»() {
+	return getEnumMulti(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this», «enumValues.size-»);
+}
+«ELSE-»
+public final int get«name.toFirstUpper()-»() {
+	Integer i = getAsInteger(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+	if (i != null) {
+		return i.intValue();
+	} else {
+		return -1;
+	}
+}
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createGetter FOR GeoField-»
+public final Location get«name.toFirstUpper()-»() {
+	return getAsLocation(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+}
+«ENDDEFINE»
+
+«DEFINE createGetter FOR RelationFieldEntity-»
+«IF cardinality == 1-»
+public final Uri get«name.toFirstUpper()-»() {
+	return «EXPAND getterSingleForRelation FOR this -»
+}
+«ELSE-»
+public final List<Uri> get«name.toFirstUpper()-»() {
+	return «EXPAND getterMultiForRelation FOR this-»
+}
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+
+
+
+«DEFINE getterSingleForRelation FOR RelationFieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getterSingleForRelation FOR MainRelationFieldEntity-»
+getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+«ENDDEFINE»
+
+«DEFINE getterSingleForRelation FOR ReverseRelationFieldEntity-»
+«IF oppositeRelationField != null-»
+«IF oppositeRelationField.cardinality == 1-»
+getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+«ELSE-»
+getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+
+
+
+«DEFINE getterMultiForRelation FOR RelationFieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getterMultiForRelation FOR MainRelationFieldEntity-»
+«IF oppositeRelationField != null-»
+«IF oppositeRelationField.cardinality == 1-»
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+«ELSE-»
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
+«ENDIF-»
+«ELSEIF InverseCardinality == -1 -»
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getterMultiForRelation FOR ReverseRelationFieldEntity-»
+«IF oppositeRelationField != null-»
+«IF oppositeRelationField.cardinality == 1-»
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+«ELSE-»
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
+«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE getDisplayForActor FOR CardEntity-»
+«ENDDEFINE»
+
+«DEFINE getDisplayForActor FOR Actor-»
+«EXPAND getDisplay FOREACH adminFields-»
+«ENDDEFINE»
+
+
+
+
+
+
+«DEFINE getDisplay FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR StringField-»
+String «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	str.append(«name.toFirstLower()»);
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR TextField-»
+«IF translatable-»
+LocalizedText «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	String localized = «name.toFirstLower()».getLocalized();
+	if (localized != null) {
+		str.append(localized);
+		str.append(" ");
+	}
+}
+«ELSE-»
+String «name.toFirstLower()» = get«name.toFirstUpper()»();
+if («name.toFirstLower()» != null) {
+	str.append(«name.toFirstLower()»);
+	str.append(" ");
+}
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR NumericField-»
+Number «name.toFirstLower()» = get«name.toFirstUpper()»();
+if («name.toFirstLower()» != null) {
+	str.append(context.getString(R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format, «name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR DateField-»
+Date «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayDate(«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR DateTimeField-»
+Date «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayDateTime(«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR TimeField-»
+Date «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayTime(«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR EnumField-»
+«IF multipleSelection»
+boolean[] «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	str.append(EnumHelper.displayEnumMulti(
+			context,
+			R.array.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»,
+			«name.toFirstLower()»));
+	str.append(" ");
+}
+«ELSE»
+int «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != -1) {
+	str.append(EnumHelper.displayEnumSingle(
+			context,
+			R.array.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»,
+			R.array.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values,
+			«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR GeoField-»
+Location «name.toFirstLower()» = get«name.toFirstUpper()-»();
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayLocation(context, «name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR RelationFieldEntity-»
+«IF cardinality == 1-»
+buildRelationDisplay(context, str, get«name.toFirstUpper()-»());
+«ENDIF-»
+«ENDDEFINE»

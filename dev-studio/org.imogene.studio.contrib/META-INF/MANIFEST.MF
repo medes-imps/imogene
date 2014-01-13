@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene studio contrib
+Bundle-SymbolicName: org.imogene.studio.contrib;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.studio.contrib.ImogeneStudioPlugin
+Bundle-Vendor: Medes-IMPS
+Require-Bundle: org.imogene.model.core,
+ org.imogene.oaw.generator.common,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources;visibility:=reexport,
+ org.eclipse.ui.navigator,
+ org.eclipse.ui.navigator.resources,
+ org.eclipse.ui.console,
+ org.eclipse.emf.mwe.core,
+ org.apache.commons.logging,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.imogene.studio.contrib,
+ org.imogene.studio.contrib.interfaces,
+ org.imogene.studio.contrib.tools,
+ org.imogene.studio.contrib.ui.generation,
+ org.imogene.studio.contrib.ui.navigator

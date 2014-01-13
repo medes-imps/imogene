@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene dao generator
+Bundle-SymbolicName: org.imogene.dao.oaw.generator;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.dao.oaw.generator.Activator
+Bundle-Vendor: Medes-IMPS
+Eclipse-RegisterBuddy: org.imogene.oaw.generator.common
+Require-Bundle: org.eclipse.emf.mwe.core,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.xpand,
+ org.eclipse.xtend,
+ org.imogene.oaw.generator.common,
+ org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.imogene.dao.oaw.generator,
+ template.domain,
+ workflow
+Bundle-ClassPath: .,
+ src/

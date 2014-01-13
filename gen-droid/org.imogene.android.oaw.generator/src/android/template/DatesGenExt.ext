@@ -1,0 +1,19 @@
+import core;
+
+boolean isDate(String date) :
+  JAVA org.imogene.android.oaw.generator.DatesGenHelper.isDate(java.lang.String);
+  
+int convertDate(String date) :
+  JAVA org.imogene.android.oaw.generator.DatesGenHelper.convertDate(java.lang.String);
+  
+boolean isDateTime(String date) :
+  JAVA org.imogene.android.oaw.generator.DatesGenHelper.isDateTime(java.lang.String);
+  
+int convertDateTime(String date) :
+  JAVA org.imogene.android.oaw.generator.DatesGenHelper.convertDateTime(java.lang.String);
+  
+boolean isTime(String date) :
+  JAVA org.imogene.android.oaw.generator.DatesGenHelper.isTime(java.lang.String);
+
+int convertTime(String date) :
+  JAVA org.imogene.android.oaw.generator.DatesGenHelper.convertTime(java.lang.String);

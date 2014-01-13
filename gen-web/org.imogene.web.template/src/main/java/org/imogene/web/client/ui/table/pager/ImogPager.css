@@ -1,0 +1,25 @@
+.pageDetails {
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	padding-left: 2px;
+	text-align: center;
+	/*font-weight: bold;*/
+	vertical-align: middle;
+}
+
+.button {
+	/*padding: 4px;*/
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	padding-left: 2px;	
+	cursor: pointer;
+	cursor: hand;
+	vertical-align: middle;
+}
+
+.disabledButton {
+	cursor: default;
+	vertical-align: middle;
+}

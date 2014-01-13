@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Medes-IMPS 2011"
+    modelDirectory="/org.imogene.model.core/src" editDirectory="/org.imogene.model.core.editor/src"
+    editorDirectory="/org.imogene.model.core.editor/src" modelPluginID="org.imogene.model.core"
+    forceOverwrite="true" modelName="Imogene Model" modelPluginClass="" editPluginClass="org.imogene.model.core.editor.ImogeneModelEditPlugin"
+    editorPluginClass="org.imogene.model.core.editor.ImogeneModelEditPlugin" testSuiteClass="org.imogene.model.tests.ImogeneModelAllTests"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" colorProviders="true"
+    fontProviders="true">
+  <foreignModel>ImogeneModel.ecore</foreignModel>
+  <genPackages prefix="Imogene" basePackage="org.imogene.model" disposableProviderFactory="true"
+      ecorePackage="ImogeneModel.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="ImogeneModel.ecore#//GeoType">
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//GeoType/Nothing"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//GeoType/GpsValue"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//GeoType/NetworkType"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//GeoType/MapType"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//GeoType/BestType"/>
+    </genEnums>
+    <genEnums ecoreEnum="ImogeneModel.ecore#//PhoneType">
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//PhoneType/PhoneNumber"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//PhoneType/FaxNumber"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//PhoneType/MobileNumber"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//PhoneType/FixeNumber"/>
+    </genEnums>
+    <genEnums ecoreEnum="ImogeneModel.ecore#//RelationType">
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//RelationType/Association"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//RelationType/Composition"/>
+    </genEnums>
+    <genEnums ecoreEnum="ImogeneModel.ecore#//NotificationMethod">
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//NotificationMethod/SMSMethod"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//NotificationMethod/MailMethod"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//NotificationMethod/DefaultMethod"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//NotificationMethod/VocalMethod"/>
+      <genEnumLiterals ecoreEnumLiteral="ImogeneModel.ecore#//NotificationMethod/WebServiceMethod"/>
+    </genEnums>
+    <genClasses ecoreClass="ImogeneModel.ecore#//Project">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Project/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/entities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/entityUIFormats"/>
+      <genFeatures property="None" children="true" createChild="true" propertySortChoices="true"
+          ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/themas"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Project/languages"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//CardEntity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/shortName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/descriptions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/columnFields"/>
+      <genFeatures notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/mainFields"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/secondaryFields"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/icon"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/topLevel"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/clientFilterFields"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/groups"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/sortFields"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/actorFilterFields"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/color"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/DisplayQRCode"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/clientPeriodFilterable"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/georeferenced"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/rdfSubject"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/rdfPredicate"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntity/nestedFields"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntity/hasDynamicFields"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//FieldGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/descriptions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/fields"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldGroup/parentCard"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldGroup/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldGroup/shortName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldGroup/icon"/>
+      <genOperations ecoreOperation="ImogeneModel.ecore#//FieldGroup/containsOnlyHiddenFields"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="ImogeneModel.ecore#//FieldEntity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/shortName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldEntity/descriptions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/required"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/hidden"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/readOnly"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldEntity/parentGroup"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/calculationFunctionName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldEntity/fieldDependentVisibility"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldEntity/rdfPredicate"/>
+      <genOperations ecoreOperation="ImogeneModel.ecore#//FieldEntity/validate"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//BooleanField"/>
+    <genClasses image="false" ecoreClass="ImogeneModel.ecore#//NumericField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//NumericField/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//NumericField/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//NumericField/unit"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//IntegerField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//FloatField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FloatField/DecimalNumber"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//StringField">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//StringField/validationRules"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//ValidationRule">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//ValidationRule/validationRegularExpression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//ValidationRule/descriptions"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//AddressField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//EmailField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//GeoField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//GeoField/type"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//TextField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//TextField/translatable"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//TextAreaField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//BarcodeField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//PhoneField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//PhoneField/phoneType"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="ImogeneModel.ecore#//MediaFileField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//RelationFieldEntity">
+      <genFeatures notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/entity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//RelationFieldEntity/cardinality"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//RelationFieldEntity/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/commonFields"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/oppositeRelationField"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//RelationFieldEntity/relationHierarchicalFilter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//RelationFieldEntity/nestedForm"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//MainRelationFieldEntity">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//MainRelationFieldEntity/InverseCardinality"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//ReverseRelationFieldEntity"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//EnumField">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//EnumField/enumValues"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//EnumField/multipleSelection"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//EnumValue">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//EnumValue/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//EnumValue/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//EnumValue/descriptions"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//BinaryField">
+      <genFeatures createChild="false" propertyCategory="" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//BinaryField/category"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//VideoField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//PhotoField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//SoundField"/>
+    <genClasses image="false" ecoreClass="ImogeneModel.ecore#//DatesField">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//DatesField/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//DatesField/max"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//DateField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//DateTimeField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//TimeField"/>
+    <genClasses ecoreClass="ImogeneModel.ecore#//Actor">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/notificationInfos"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/adminFields"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Actor/filters"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//FilterField">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FilterField/parentActor"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//NotificationInfo">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//NotificationInfo/dataField"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//NotificationInfo/method"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//Description">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Description/display"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Description/help"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Description/locale"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//Language">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Language/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Language/dateFormat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Language/timeFormat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Language/integerFormat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Language/floatFormat"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Language/isoCode"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//FieldDependentVisibility">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldDependentVisibility/dependencyField"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//FieldDependentVisibility/dependencyFieldValue"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ImogeneModel.ecore#//FieldDependentVisibility/parentFieldEntity"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//ActorFilter">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//ActorFilter/entityField"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//ActorFilter/actorField"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//ActorFilter/sufficient"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//Thema">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//Thema/name"/>
+      <genFeatures property="None" children="true" createChild="true" propertySortChoices="true"
+          ecoreFeature="ecore:EReference ImogeneModel.ecore#//Thema/descriptions"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//Thema/entities"/>
+    </genClasses>
+    <genClasses ecoreClass="ImogeneModel.ecore#//CardEntityUIFormat">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ImogeneModel.ecore#//CardEntityUIFormat/entity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ImogeneModel.ecore#//CardEntityUIFormat/withTabulations"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

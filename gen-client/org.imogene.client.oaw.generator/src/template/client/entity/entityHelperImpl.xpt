@@ -1,0 +1,157 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/entity/EntityHelperImpl.java"»
+package org.imogene.«projectName.toLowerCase()».entity;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+
+import org.imogene.lib.common.binary.Binary;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.sync.EntityHelper;
+import org.imogene.lib.sync.binary.file.BinaryFileHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+
+/**
+ * «name» Bean Implementation
+ * @author Medes-IMPS
+ */
+public class EntityHelperImpl implements EntityHelper {
+
+	@Autowired
+	@Qualifier(value = "binaryHandler")
+	private BinaryFileHandler binaryHandler;
+
+	@Override
+	public List<ImogBean> getAssociatedEntitiesIds(ImogBean entity){
+		«FOREACH entities AS e SEPARATOR " else "-»
+		if(entity instanceof «e.name.toFirstUpper()») {
+			return getFor«e.name.toFirstUpper()-»((«e.name.toFirstUpper()»)entity);
+		}
+		«ENDFOREACH -»
+		return new Vector<ImogBean>();
+	}
+	
+	«FOREACH entities AS e -»
+	private List<ImogBean> getFor«e.name.toFirstUpper()-»(«e.name.toFirstUpper()» entity){
+		List<ImogBean> result = new Vector<ImogBean>();
+		«EXPAND addRelationField FOREACH e.groups.fields-»
+		return result;
+	}
+	«ENDFOREACH»
+	
+	public List<Binary> getAssociatedBinaries(List<ImogBean> entities) {
+		List<Binary> result = new Vector<Binary>();
+		for (ImogBean entity : entities) {
+			«FOREACH entities AS e SEPARATOR " else "-»
+			if(entity instanceof «e.name.toFirstUpper()») {
+				«EXPAND associateBinary FOREACH e.groups.fields-»
+			}
+			«ENDFOREACH -»
+			else if (entity instanceof DynamicFieldInstance) {
+				DynamicFieldInstance instance = (DynamicFieldInstance) entity;
+				if (instance.getFieldValue() != null &&
+					("bin".equals(instance.getFieldTemplate().getFieldType()) ||
+					 "img".equals(instance.getFieldTemplate().getFieldType()))) {
+					result.add(binaryHandler.loadEntity(instance.getFieldValue()));
+				}
+			}
+		}
+		return result;
+	}
+	
+	public List<Binary> getAssociatedBinariesUploaded(List<ImogBean> entities, Date lastDate) {
+		List<Binary> result = new Vector<Binary>();
+		for (ImogBean entity : entities) {
+			«FOREACH entities AS e SEPARATOR " else "-»
+			if(entity instanceof «e.name.toFirstUpper()») {
+				«EXPAND associateBinaryUploaded FOREACH e.groups.fields-»
+			}
+			«ENDFOREACH -»
+			else if (entity instanceof DynamicFieldInstance) {
+				DynamicFieldInstance instance = (DynamicFieldInstance) entity;
+				if (instance.getFieldValue() != null &&
+					("bin".equals(instance.getFieldTemplate().getFieldType()) ||
+					 "img".equals(instance.getFieldTemplate().getFieldType()))) {
+					Binary binary = binaryHandler.loadUploaded(instance.getFieldValue(), lastDate, null);
+					if (binary != null) {
+						result.add(binary);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	public List<Binary> getAssociatedBinariesModified(List<ImogBean> entities, Date lastDate) {
+		List<Binary> result = new Vector<Binary>();
+		for (ImogBean entity : entities) {
+			«FOREACH entities AS e SEPARATOR " else "-»
+			if(entity instanceof «e.name.toFirstUpper()») {
+				«EXPAND associateBinaryModified FOREACH e.groups.fields-»
+			}
+			«ENDFOREACH -»
+			else if (entity instanceof DynamicFieldInstance) {
+				DynamicFieldInstance instance = (DynamicFieldInstance) entity;
+				if (instance.getFieldValue() != null &&
+					("bin".equals(instance.getFieldTemplate().getFieldType()) ||
+					 "img".equals(instance.getFieldTemplate().getFieldType()))) {
+					Binary binary = binaryHandler.loadModified(instance.getFieldValue(), lastDate, null);
+					if (binary != null) {
+						result.add(binary);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» ------------------------------------------------
+----- If the field is a relation with a cardinality 1, 
+----- we add it the list of associated card entity «ENDREM»  
+«DEFINE addRelationField FOR FieldEntity»«ENDDEFINE»
+«DEFINE addRelationField FOR RelationFieldEntity-»
+	«IF cardinality==1 -»
+	if(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null) {
+		result.add(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+	}
+	«ENDIF -»
+«ENDDEFINE»
+
+
+
+«DEFINE associateBinary FOR FieldEntity»«ENDDEFINE»
+«DEFINE associateBinary FOR BinaryField-»
+Binary «name.toFirstLower()» = ((«parentGroup.parentCard.name.toFirstUpper()») entity).«EXPAND template::CommonFieldUtil::getterName FOR this»();
+if («name.toFirstLower()» != null) {
+	result.add(«name.toFirstLower()»);
+}
+«ENDDEFINE»
+
+
+«DEFINE associateBinaryUploaded FOR FieldEntity»«ENDDEFINE»
+«DEFINE associateBinaryUploaded FOR BinaryField-»
+Binary «name.toFirstLower()» = ((«parentGroup.parentCard.name.toFirstUpper()») entity).«EXPAND template::CommonFieldUtil::getterName FOR this»();
+if («name.toFirstLower()» != null && «name.toFirstLower()».getUploadDate().after(lastDate)) {
+	result.add(«name.toFirstLower()»);
+}
+«ENDDEFINE»
+
+
+«DEFINE associateBinaryModified FOR FieldEntity»«ENDDEFINE»
+«DEFINE associateBinaryModified FOR BinaryField-»
+Binary «name.toFirstLower()» = ((«parentGroup.parentCard.name.toFirstUpper()») entity).«EXPAND template::CommonFieldUtil::getterName FOR this»();
+if («name.toFirstLower()» != null && «name.toFirstLower()».getModified().after(lastDate)) {
+	result.add(«name.toFirstLower()»);
+}
+«ENDDEFINE»
+«ENDDEFINE»

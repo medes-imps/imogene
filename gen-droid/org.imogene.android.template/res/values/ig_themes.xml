@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Dialog.Alert" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="Theme.Light.Hack" parent="@android:style/Theme.Light">
+        <item name="android:textColorPrimaryInverse">@android:color/primary_text_light</item>
+    </style>
+
+    <!-- Variation on the Light theme that turns off the title -->
+    <style name="Theme.Imogene" parent="@style/Theme.GreenDroid.Light.NoTitleBar">
+        <item name="gdActionBarTitleColor">@color/ig_actionbar_text</item>
+        <item name="gdActionBarBackground">@drawable/ig_actionbar_compat_background</item>
+        <item name="gdActionBarDividerDrawable">@drawable/ig_actionbar_compat_separator</item>
+        <item name="gdActionBarDividerWidth">2px</item>
+        <item name="gdActionBarHomeDrawable">@drawable/ig_ic_title_home</item>
+        <item name="gdActionBarColorstripBackground">@drawable/ig_colorstrip</item>
+        
+        <item name="gdTabIndicatorStyle">@style/Imogene.Wizard.TabIndicator</item>
+        
+        <item name="igFieldLayoutHeight">wrap_content</item>
+    </style>
+
+    <style name="Theme.Imogene.Wizard" parent="style/Theme.Imogene">
+        <item name="igFieldLayoutHeight">fill_parent</item>
+    </style>
+
+    <!-- Start with the Holographic Light theme -->
+    <style name="Theme.Imogene.Home" parent="style/Theme.Imogene">
+        <item name="android:windowBackground">@drawable/ig_background_noise</item>
+    </style>
+
+</resources>

@@ -1,0 +1,39 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+
+«REM»-------------------------------------------------------------------- «ENDREM»
+«REM»  Retourne le nom du setter dans le javabean selon le nom du champs  «ENDREM»
+«REM»-------------------------------------------------------------------- «ENDREM»
+«DEFINE setterName FOR FieldEntity-»«setterName(name)-»«ENDDEFINE»
+«DEFINE setterName FOR FilterField-»«setterName(name + parentActor.name.toFirstUpper() + "FilterField")»«ENDDEFINE»
+«DEFINE setterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR FieldEntity-»«setterNameForPropertyWithLowerUpperCaseFirstTwoChar(name)-»«ENDDEFINE»
+
+«REM»-------------------------------------------------------------------- «ENDREM»
+«REM»  Retourne le nom du getter dans le javabean selon le nom du champs  «ENDREM»
+«REM»-------------------------------------------------------------------- «ENDREM»
+«DEFINE getterName FOR FieldEntity-»«getterName(name)-»«ENDDEFINE»
+«DEFINE getterName FOR FilterField-»«getterName(name + parentActor.name.toFirstUpper() + "FilterField")»«ENDDEFINE»
+«DEFINE getterNameForPropertyWithLowerUpperCaseFirstTwoChar FOR FieldEntity-»«getterNameForPropertyWithLowerUpperCaseFirstTwoChar(name)-»«ENDDEFINE»
+
+«REM»----------------------------------------------------------- «ENDREM»
+«REM» Retourne le nom d'une propriété en fonction du champs      «ENDREM»
+«REM»----------------------------------------------------------- «ENDREM»
+«DEFINE propertyName FOR FieldEntity-»«getFieldPropertyName(name)-»«ENDDEFINE»
+«DEFINE propertyName FOR FilterField-»«getFieldPropertyName(name + parentActor.name.toFirstUpper() + "FilterField")-»«ENDDEFINE»
+
+
+«REM» Retourne le premier sort field «ENDREM»
+«DEFINE getFirstSortField FOR CardEntity-»«IF this.sortFields!=null && this.sortFields.size > 0 && this.sortFields.get(0)!=null-»«EXPAND propertyName FOR this.sortFields.get(0)-»«ELSE-»modified«ENDIF-»«ENDDEFINE»
+
+«REM» Retourne le sort order du premier sort field «ENDREM»
+«DEFINE getFirstSortFieldOrderDirection FOR CardEntity-»
+«IF this.sortFields!=null && this.sortFields.size > 0 && this.sortFields.get(0)!=null-»
+«EXPAND getSortBoolean FOR this.sortFields.get(0)-»
+«ELSE-»
+false
+«ENDIF-»
+«ENDDEFINE»
+
+«REM» Retourne le sort order (boolean) d'un field «ENDREM»
+«DEFINE getSortBoolean FOR FieldEntity-»true«ENDDEFINE»
+«DEFINE getSortBoolean FOR DateField-»false«ENDDEFINE»

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>%projectName%</name>
+	<projects />
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.imogene.nature.gen.dao</nature>
+		<nature>org.imogene.nature.model.%modelName%</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>

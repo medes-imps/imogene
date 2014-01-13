@@ -1,0 +1,45 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE "enumeration_values.sql"»
+----------------------------------------------------------------------------
+-- CREATE TABLE enumeration_values TO STORE 
+-- ENUMERATION VALUES OF ENTITY ENUMERATION FIELDS
+----------------------------------------------------------------------------
+
+CREATE TABLE enumeration_values
+ (
+	enumeration_id character varying(255) NOT NULL,
+	enumeration_entity character varying(255) NOT NULL,
+	enumeration_field character varying(255) NOT NULL,
+	enumeration_value character varying(255) NOT NULL,
+	enumeration_name character varying(255) NOT NULL,
+  	CONSTRAINT enumeration_values_pkey PRIMARY KEY (enumeration_id)
+  );
+-- ) WITHOUT OIDS;
+-- GRANT ALL ON TABLE "enumeration_values" TO safedev;
+
+«FOREACH entities AS e-»
+	«FOREACH e.groups.fields AS f-»
+		«EXPAND createEnumTable FOR f-»		
+	«ENDFOREACH-»
+«ENDFOREACH-»
+
+«ENDFILE»
+«ENDDEFINE»
+«REM» ----------------------------------------- «ENDREM»
+
+
+
+«DEFINE createEnumTable FOR FieldEntity -»«ENDDEFINE»
+
+«DEFINE createEnumTable FOR EnumField »
+-- Table: «parentGroup.parentCard.name.toLowerCase()»
+-- Field: «name.toLowerCase()»
+«FOREACH enumValues AS enumValue-»
+INSERT INTO enumeration_values 
+	(enumeration_id, enumeration_entity, enumeration_field, enumeration_value, enumeration_name)
+VALUES 
+	('«shortName.toLowerCase()»_«enumValue.value»', '«parentGroup.parentCard.name.toLowerCase()»', '«name.toLowerCase()»', '«enumValue.value»', '«enumValue.name»');		
+«ENDFOREACH-»
+«ENDDEFINE»

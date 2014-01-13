@@ -1,0 +1,80 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project-»
+«FILE "dao-context.xml"-»
+<?xml version="1.0" encoding="iso-8859-1"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<!-- jdbc properties placeholder -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="/WEB-INF/application.properties"/>
+	</bean>
+	
+	<!-- C3PO data source -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    	<property name="driverClass" value="${jdbc.driverClassName}" />
+    	<property name="jdbcUrl"     value="${jdbc.url}" />
+        <property name="user"        value="${jdbc.username}" />
+        <property name="password"    value="${jdbc.password}" />  
+	     <!-- C3PO configuration -->
+        <property name="acquireIncrement" value="1" />
+        <property name="minPoolSize" value="3" />
+        <property name="maxPoolSize" value="20" />
+        <property name="maxStatements" value="0" />
+        <property name="idleConnectionTestPeriod" value="30"/>
+    </bean> 
+    
+	<!-- Hibernate JPA adapter -->
+	<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	    <property name="databasePlatform" value="${hibernate.dialect}" />
+	</bean>	
+      
+    <!-- JPA session factory -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	   	<property name="persistenceUnitName" value="«projectName.toLowerCase()»" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter" ref="jpaAdapter"/>
+	    <property name="jpaProperties">
+	        <props>
+	        	<prop key="javax.persistence.validation.mode">none</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.generate_statistics">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.connection.release_mode">after_transaction</prop>	
+	        </props>
+	    </property>			
+	</bean>
+	
+	<!-- Transaction manager for the Jpa entity manager factory -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+		
+	<!--                         -->
+	<!-- DAO layer configuration -->
+	<!--						 -->
+	
+	<!-- Role dao -->
+	<bean id="roleActorDao" class="org.imogene.lib.common.role.RoleActorDaoImpl" />
+  	
+  	<!-- Generic DAO -->
+  	<bean id="genericDao" class="org.imogene.lib.common.dao.GenericDaoImpl" />
+  	
+  	<!-- Notification Dao -->
+  	<bean id="notificationDao" class="org.imogene.lib.common.notification.NotificationDaoImpl" />
+  	
+</beans>
+«ENDFILE»	
+«ENDDEFINE»		   

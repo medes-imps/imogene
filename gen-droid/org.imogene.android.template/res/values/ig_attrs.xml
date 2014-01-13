@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr format="dimension" name="igFieldLayoutHeight">
+        <!-- The view should be as big as its parent (minus padding) -->
+        <enum name="fill_parent" value="-1" />
+        <!-- The view should be as big as its parent (minus padding) -->
+        <enum name="match_parent" value="-1" />
+        <!-- The view should be only big enough to enclose its content (plus padding). -->
+        <enum name="wrap_content" value="-2" />
+    </attr>
+
+    <declare-styleable name="DateTimePicker">
+
+        <!-- The first year (inclusive) i.e. 1940 -->
+        <attr format="integer" name="startYear" />
+        <!-- The last year (inclusive) i.e. 2010 -->
+        <attr format="integer" name="endYear" />
+    </declare-styleable>
+    <declare-styleable name="FilterPreference">
+
+        <!-- The card entity on which this filter refers -->
+        <attr format="string" name="igFilterEntity" />
+        <!-- The field entity on which this filter refers -->
+        <attr format="string" name="igFilterField" />
+    </declare-styleable>
+    <declare-styleable name="EnumFilterPreference">
+
+        <!-- Defines whether this enumeration is a multiple selection. -->
+        <attr format="boolean" name="igFilterMultiple" />
+        <!-- The human-readable array to present as a list -->
+        <attr format="reference" name="igFilterItems" />
+        <!-- Conversion array for enumerate field -->
+        <attr format="reference" name="igFilterItemsValues" />
+    </declare-styleable>
+    <declare-styleable name="RelationFilterPreference">
+
+        <!-- The card entity web service -->
+        <attr format="string" name="igFilterEntityws" />
+        <!-- The hierarchical field to filter on -->
+        <attr format="string" name="igFilterHierarchicalField" />
+    </declare-styleable>
+    <declare-styleable name="BaseField">
+
+        <!-- Indicates whether this field is dependent of the value of an other	field -->
+        <attr format="boolean" name="igDependent" />
+        <!-- The title of the field -->
+        <attr format="reference" name="igTitle" />
+        <!-- Indicates whether this field is hidden or not -->
+        <attr format="boolean" name="igHidden" />
+        <!-- The default text to display when the field is empty -->
+        <attr format="reference" name="igEmptyText" />
+    </declare-styleable>
+    <declare-styleable name="BaseFieldEdit">
+
+        <!-- The help of the field -->
+        <attr format="reference" name="igHelp" />
+        <!-- Indicates whether this field is required or not -->
+        <attr format="boolean" name="igRequired" />
+        <!-- Indicates whether this field is read only or not -->
+        <attr format="boolean" name="igReadOnly" />
+    </declare-styleable>
+    <declare-styleable name="StringFieldEdit">
+
+        <!-- The input type -->
+        <attr name="igStringType">
+            <enum name="string" value="0" />
+            <enum name="address" value="1" />
+            <enum name="phone" value="2" />
+            <enum name="text" value="3" />
+            <enum name="email" value="4" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="GeoFieldEdit">
+
+        <!-- The gps location providers -->
+        <attr name="igGeoType">
+            <enum name="gps" value="0" />
+            <enum name="network" value="1" />
+            <enum name="map" value="2" />
+            <enum name="best" value="3" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="EnumField">
+
+        <!-- The human-readable array to present as a list -->
+        <attr format="reference" name="igItems" />
+        <!-- Conversion array for enumerate field -->
+        <attr format="reference" name="igItemsValues" />
+    </declare-styleable>
+    <declare-styleable name="NumberField">
+
+        <!-- Unit reference id of a numeric field -->
+        <attr format="reference" name="igUnit" />
+        <!-- Formatter reference id of a numeric field -->
+        <attr format="reference" name="igFormat" />
+        <!-- The minimum value this field can take -->
+        <attr format="integer" name="igIntMin" />
+        <!-- The maximum value this field can take -->
+        <attr format="integer" name="igIntMax" />
+        <!-- The minimum value this field can take -->
+        <attr format="float" name="igFloatMin" />
+        <!-- The maximum value this field can take -->
+        <attr format="float" name="igFloatMax" />
+    </declare-styleable>
+    <declare-styleable name="DatesFieldEdit">
+
+        <!-- The minimum value this field can take -->
+        <attr format="string" name="igDateMin" />
+        <!-- The maximum value this field can take -->
+        <attr format="string" name="igDateMax" />
+    </declare-styleable>
+    <declare-styleable name="RelationField">
+
+        <!-- Has a reverse relation field -->
+        <attr format="boolean" name="igHasReverse" />
+        <!-- Reference to the plural display value -->
+        <attr format="reference" name="igDisplay" />
+        <!-- Opposite cardinality -->
+        <attr format="integer" name="igOppositeCardinality" />
+        <!-- Relation type (main or reverse) -->
+        <attr name="igRelationType">
+            <enum name="main" value="0" />
+            <enum name="reverse" value="1" />
+        </attr>
+    </declare-styleable>
+
+</resources>

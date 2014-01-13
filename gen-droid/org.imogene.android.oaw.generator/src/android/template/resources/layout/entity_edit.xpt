@@ -1,0 +1,47 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity-»
+«FILE 'layout/'+ name.toLowerCase() + '_edit.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<merge 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/org.imogene.android.«projectName.toLowerCase()»" >
+	
+	«FOREACH groups AS group-»
+	<ScrollView 
+		android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+		
+		«EXPAND android::template::LayoutUtil::layout FOREACH  group.fields-»
+
+		</LinearLayout>
+
+
+	</ScrollView>
+	«ENDFOREACH»
+	
+	«IF hasDynamicFields-»
+	<ScrollView 
+		android:id="@+id/«name.toLowerCase()»_dynamic_field_group"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		
+		<LinearLayout
+			android:id="@+id/«name.toLowerCase()»_dynamic_field_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" />
+	
+	</ScrollView>
+	«ENDIF-»
+
+</merge>
+«ENDFILE»
+«ENDDEFINE»

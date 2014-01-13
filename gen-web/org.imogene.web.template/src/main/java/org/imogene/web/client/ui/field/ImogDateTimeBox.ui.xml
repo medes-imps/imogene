@@ -1,0 +1,42 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+
+	<ui:style>
+		
+		.imogene-FormDate {
+			border: 1px solid #777777;
+			color: #444444;
+			font-size: 12px;
+			padding: 2px;
+			margin: 0px;
+			background-color: #FFFFFF;
+			width: 200px;
+		}
+		
+		.imogene-FormDate-disabled {
+			background-color: #f2f2f2;
+		}
+		@external .imogene-FormDate, .imogene-FormDate-disabled;
+	</ui:style>
+
+
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+
+		<g:VerticalPanel>
+
+			<imo2:ImogErrorLabel ui:field="errorLabel" />
+
+			<g:TextBox ui:field="dateBox" stylePrimaryName="{style.imogene-FormDate}" />
+
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>
+
+
+
+
+
+
+</ui:UiBinder>

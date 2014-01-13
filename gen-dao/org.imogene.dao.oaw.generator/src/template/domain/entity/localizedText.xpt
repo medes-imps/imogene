@@ -1,0 +1,33 @@
+«IMPORT core»
+«EXTENSION template::domain::DaoUtilExt»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/domain/entity/LocalizedText.java"»
+package org.imogene.«projectName.toLowerCase()».domain.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class LocalizedText implements Serializable {
+
+	private static final long serialVersionUID = «generateSerialVersionUID()»L;
+
+	«FOREACH languages AS l-»
+	private String «l.name.toFirstLower()»;
+	«ENDFOREACH-»
+	
+	«FOREACH languages AS l-»
+	public String get«l.name.toFirstUpper()»() {
+		return «l.name.toFirstLower()»;
+	}
+	
+	public void set«l.name.toFirstUpper()»(String «l.name.toFirstLower()») {
+		this.«l.name.toFirstLower()» = «l.name.toFirstLower()»;
+	}
+	«ENDFOREACH-»
+
+}
+«ENDFILE»
+«ENDDEFINE»

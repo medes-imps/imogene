@@ -1,0 +1,50 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo1='urn:import:org.imogene.web.client.ui.field.relation.single'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.relation.multi'
+	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group"
+	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary"
+	xmlns:imo5="urn:import:org.imogene.web.client.ui.widget">		
+
+	<ui:style>
+		.imogene-form {
+			width: 100%;
+			vertical-align: top;
+			padding-top: 2px;
+			margin-bottom: 2px;	
+		}
+		/*.imog-clearImage {
+			cursor: pointer;
+			cursor: hand;
+			text-align: left;
+			margin-left: 3px;
+		}*/
+		.dfTemplateButton {
+			width: 0px;
+			height: 0px;
+			padding: 2px 5px;
+			line-height: 13px;
+			min-width: 3px;
+			margin-left: 5px;
+		}
+		@external .dfTemplateButton;
+	</ui:style>
+
+
+	<g:HorizontalPanel stylePrimaryName="{style.imogene-form}" verticalAlignment="middle">
+	
+		<g:cell verticalAlignment="middle">
+			<!-- <imo:ImogTextBox ui:field="fieldValue" /> -->
+			<g:VerticalPanel ui:field="fieldContainer"/>
+		</g:cell>
+	
+		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">
+			<!-- <g:Image ui:field="clearImage" stylePrimaryName="{style.imog-clearImage}" /> -->
+			<imo5:PopupButton ui:field="templateButton" />
+		</g:cell>
+	
+	</g:HorizontalPanel>
+	
+
+</ui:UiBinder>

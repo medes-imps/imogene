@@ -1,0 +1,640 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase()+"/client/ui/panel/HomePanel.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».client.ui.panel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.imogene.admin.client.AdminIconConstants;
+import org.imogene.admin.client.event.create.CreateCardEntityEvent;
+import org.imogene.admin.client.event.create.CreateEntityProfileEvent;
+import org.imogene.admin.client.event.create.CreateFieldGroupEvent;
+import org.imogene.admin.client.event.create.CreateFieldGroupProfileEvent;
+import org.imogene.admin.client.event.create.CreateNotificationEvent;
+import org.imogene.admin.client.event.create.CreateProfileEvent;
+import org.imogene.admin.client.event.list.ListCardEntityEvent;
+import org.imogene.admin.client.event.list.ListEntityProfileEvent;
+import org.imogene.admin.client.event.list.ListFieldGroupEvent;
+import org.imogene.admin.client.event.list.ListFieldGroupProfileEvent;
+import org.imogene.admin.client.event.list.ListNotificationEvent;
+import org.imogene.admin.client.event.list.ListProfileEvent;
+import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.web.client.dynamicfields.i18n.DynFieldsNLS;
+import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
+import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
+import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.client.ui.panel.EntityPanel;
+import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.LocalSession;
+import org.imogene.«projectName.toLowerCase()».client.AccessManager;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»IconConstants;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+«FOREACH this.entities AS e-»
+«IF e.topLevel-»
+import org.imogene.«projectName.toLowerCase()».client.event.create.Create«e.name.toFirstUpper()»Event;
+import org.imogene.«projectName.toLowerCase()».client.event.list.List«e.name.toFirstUpper()»Event;
+«ENDIF-»
+«ENDFOREACH -»
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+
+/**
+ * Home panel of the application
+ * @author Medes-IMPS
+ */
+public class HomePanel extends Composite {
+
+	interface Binder extends UiBinder<Widget, HomePanel> {
+	}
+
+	private static final Binder BINDER = GWT.create(Binder.class);
+	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
+
+	private EventBus eventBus;
+
+	@UiField(provided = true)
+	HTML welcomeMessage;
+	@UiField
+	ScrollPanel scrollPanel;
+	
+«IF applicationType.matches(adminType)-»
+	/* thema  Users */
+	@UiField(provided = true)
+	FieldGroupPanel temaUsers;
+	«FOREACH entities AS e-»
+	«IF Actor.isAssignableFrom(e.metaType)-»
+	@UiField(provided = true)
+	EntityPanel «e.name.toFirstLower()»;	
+	«ENDIF-»
+	«ENDFOREACH -»
+
+	/* thema  Administration */
+	@UiField(provided = true)
+	FieldGroupPanel temaAdministration;
+	@UiField(provided = true)
+	EntityPanel notification;
+	@UiField(provided = true)
+	EntityPanel dynamicField_Template;
+	
+	/* thema Profiles */
+	@UiField(provided = true)
+	FieldGroupPanel temaProfiles;
+	@UiField(provided = true)
+	EntityPanel profile;
+	@UiField(provided = true)
+	EntityPanel entityProfile;
+	@UiField(provided = true)
+	EntityPanel fieldGroupProfile;
+
+	/* thema Model */
+	@UiField(provided = true)
+	FieldGroupPanel temaModel;
+	@UiField(provided = true)
+	EntityPanel cardEntity;
+	@UiField(provided = true)
+	EntityPanel fieldGroup;
+«ELSE-»
+	«IF themas!=null && themas.size>0-»	
+		«FOREACH themas AS t»
+		/* thema  «t.name» */
+		@UiField(provided = true)	
+		FieldGroupPanel tema«t.name.toFirstUpper()»;	
+		«FOREACH t.entities AS e-»
+		«IF e.topLevel-»
+		@UiField(provided = true)
+		EntityPanel «e.name.toFirstLower()»;
+		«ENDIF-»
+		«ENDFOREACH -»
+		«ENDFOREACH»
+	«ELSE-»
+		/* thema  default */
+		@UiField(provided = true)	
+		FieldGroupPanel defaultTema;	
+		«FOREACH entities AS e-»
+		«IF e.topLevel-»
+		@UiField(provided = true)
+		EntityPanel «e.name.toFirstLower()»;
+		«ENDIF-»
+		«ENDFOREACH -»
+	«ENDIF-»
+«ENDIF-»	
+
+
+	
+	/**
+	 * 
+	 * @param eventBus
+	 */
+	public HomePanel(EventBus eventBus) {
+		
+		this.eventBus = eventBus;
+		welcomeMessage = new HTML(BaseNLS.messages().welcome_message(NLS.constants().application_title()));
+		
+«IF applicationType.matches(adminType)-»
+		/* thema  Users */
+		temaUsers = new FieldGroupPanel();
+		temaUsers.setGroupTitle(AdminNLS.constants().thema_users());
+		«FOREACH entities AS e-»
+		«IF Actor.isAssignableFrom(e.metaType)-»
+		if («projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON != null)
+			«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
+		else
+			«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name());	
+		«ENDIF-»
+		«ENDFOREACH -»		
+
+		/* thema  Administration */
+		temaAdministration = new FieldGroupPanel();
+		temaAdministration.setGroupTitle(AdminNLS.constants().thema_administration());
+		notification = new EntityPanel(AdminNLS.constants().notification_name(), AdminIconConstants.NOTIFICATION_ICON);
+		dynamicField_Template = new EntityPanel(DynFieldsNLS.constants().dynamicField_Template_name(), AdminIconConstants.DYNAMICFIELD_TEMPLATE_ICON);
+		
+		/* thema Profiles */
+		temaProfiles = new FieldGroupPanel();
+		temaProfiles.setGroupTitle("Profiles");
+		profile = new EntityPanel(AdminNLS.constants().profile_name());
+		entityProfile = new EntityPanel(AdminNLS.constants().entityProfile_name());
+		fieldGroupProfile = new EntityPanel(AdminNLS.constants().fieldGroupProfile_name());
+
+		/* thema Model */
+		temaModel = new FieldGroupPanel();
+		temaModel.setGroupTitle("Model");
+		cardEntity = new EntityPanel(AdminNLS.constants().cardEntity_name());
+		fieldGroup = new EntityPanel(AdminNLS.constants().fieldGroup_name());
+«ELSE-»
+	«IF themas!=null && themas.size>0-»		
+			«FOREACH themas AS t»
+			/* thema  «t.name» */
+			tema«t.name.toFirstUpper()» = new FieldGroupPanel();
+			tema«t.name.toFirstUpper()».setGroupTitle(NLS.constants().thema_«t.name.toFirstLower()»());
+			«FOREACH t.entities AS e-»
+			«IF e.topLevel-»
+			if(«projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON!=null)		
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
+			else
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name());	
+			«ENDIF-»		
+			«ENDFOREACH -»		
+			«ENDFOREACH -»
+	«ELSE-»
+			defaultTema = new FieldGroupPanel();
+			defaultTema.setGroupTitle(BaseNLS.constants().thema_default());
+			«FOREACH entities AS e-»
+			«IF e.topLevel-»
+			if(«projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON!=null)		
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name(), «projectName.toFirstUpper()»IconConstants.«e.name.toUpperCase()»_ICON);
+			else
+				«e.name.toFirstLower()» = new EntityPanel(NLS.constants().«e.name.toFirstLower()»_name());				
+			«ENDIF-»		
+			«ENDFOREACH -»		
+	«ENDIF-»
+«ENDIF-»	
+
+
+		
+		initWidget(BINDER.createAndBindUi(this));
+
+		configMenus();
+		setVisibility();
+		
+		int height = Window.getClientHeight();
+		setPanelContentHeight(height - height / 5);		
+	}
+
+	/**
+	 * Configures the menu buttons
+	 */
+	private void configMenus() {
+
+«IF applicationType.matches(adminType)-»
+	«FOREACH entities AS e-»
+	«IF Actor.isAssignableFrom(e.metaType)-»
+	«EXPAND setActions FOR e-»	
+	«ENDIF-»
+	«ENDFOREACH -»
+
+		/* Notification Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			notification.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateNotificationEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			notification.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			notification.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListNotificationEvent());
+				}
+			});
+			notification.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = notification.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListNotificationEvent(searchValue));
+				}
+			});
+		} else {
+			notification.setListClickHandler(null);
+			notification.setSearchClickHandler(null);
+		}
+		
+		/* DynamicFieldTemplate Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			dynamicField_Template.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateDynamicFieldTemplateEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			dynamicField_Template.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			dynamicField_Template.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListDynamicFieldTemplateEvent());
+				}
+			});
+			dynamicField_Template.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = dynamicField_Template.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListDynamicFieldTemplateEvent(searchValue));
+				}
+			});
+		} else {
+			dynamicField_Template.setListClickHandler(null);
+			dynamicField_Template.setSearchClickHandler(null);
+		}
+		
+		/* EntityProfile Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			entityProfile.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateEntityProfileEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			entityProfile.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			entityProfile.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListEntityProfileEvent());
+				}
+			});
+			entityProfile.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = entityProfile.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListEntityProfileEvent(searchValue));
+				}
+			});
+		} else {
+			entityProfile.setListClickHandler(null);
+			entityProfile.setSearchClickHandler(null);
+		}
+
+		/* FieldGroup Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			fieldGroup.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateFieldGroupEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			fieldGroup.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			fieldGroup.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListFieldGroupEvent());
+				}
+			});
+			fieldGroup.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = fieldGroup.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListFieldGroupEvent(searchValue));
+				}
+			});
+		} else {
+			fieldGroup.setListClickHandler(null);
+			fieldGroup.setSearchClickHandler(null);
+		}
+
+		/* FieldGroupProfile Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			fieldGroupProfile.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateFieldGroupProfileEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			fieldGroupProfile.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			fieldGroupProfile.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListFieldGroupProfileEvent());
+				}
+			});
+			fieldGroupProfile.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = fieldGroupProfile.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListFieldGroupProfileEvent(searchValue));
+				}
+			});
+		} else {
+			fieldGroupProfile.setListClickHandler(null);
+			fieldGroupProfile.setSearchClickHandler(null);
+		}
+
+		/* Profile Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			profile.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateProfileEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			profile.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			profile.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListProfileEvent());
+				}
+			});
+			profile.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = profile.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListProfileEvent(searchValue));
+				}
+			});
+		} else {
+			profile.setListClickHandler(null);
+			profile.setSearchClickHandler(null);
+		}
+
+		/* CardEntity Menu */
+
+		if (ProfileUtil.isAdmin()) {
+			cardEntity.setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new CreateCardEntityEvent(new GoHomeEvent()));
+				}
+			});
+		} else
+			cardEntity.setCreateClickHandler(null);
+
+		if (ProfileUtil.isAdmin()) {
+			cardEntity.setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new ListCardEntityEvent());
+				}
+			});
+			cardEntity.setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = cardEntity.getSearchValue();
+					if (searchValue != null && !searchValue.isEmpty())
+						eventBus.fireEvent(new ListCardEntityEvent(searchValue));
+				}
+			});
+		} else {
+			cardEntity.setListClickHandler(null);
+			cardEntity.setSearchClickHandler(null);
+		}
+«ELSE-»
+	«IF themas!=null && themas.size>0-»	
+		«EXPAND setActions FOREACH themas.entities-»
+	«ELSE-»
+		«EXPAND setActions FOREACH entities-»
+	«ENDIF-»	
+«ENDIF-»
+		
+	}
+	
+	/**
+	 * Set the menu visibility
+	 */
+	private void setVisibility() {
+	
+«IF applicationType.matches(adminType)-»
+		/* thema  Users */
+		boolean showUsersTema = false;
+		«FOREACH entities AS e-»
+		«IF Actor.isAssignableFrom(e.metaType)-»
+			«IF e.topLevel-»
+			if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
+				«e.name.toFirstLower()».setVisible(false);
+			else
+				showUsersTema = true;
+			«ENDIF-»
+		«ENDIF-»
+		«ENDFOREACH -»
+		if (!showUsersTema)
+			temaUsers.setVisible(false);
+
+		/* thema  Administration */
+		boolean showAdministrationTema = false;
+		
+		«IF hasNotifications(entities)-»
+		if (!ProfileUtil.isAdmin())
+			notification.setVisible(false);
+		else
+			showAdministrationTema = true;
+		«ELSE-»
+		/* no notification defined in model, panel hidden */	
+		notification.setVisible(false);
+		«ENDIF-»
+			
+		«IF hasDynamicFields(entities)-»
+		if (!ProfileUtil.isAdmin())
+			dynamicField_Template.setVisible(false);
+		else
+			showAdministrationTema = true;	
+		«ELSE-»
+		/* no dynamic field defined in model, panel hidden */
+		dynamicField_Template.setVisible(false);
+		«ENDIF-»
+	
+		if (!showAdministrationTema)
+			temaAdministration.setVisible(false);
+		
+		/* thema Profiles */
+		profile.setVisible(true);
+		entityProfile.setVisible(true);
+		fieldGroupProfile.setVisible(true);
+		temaProfiles.setVisible(true);
+
+		/* thema Model */
+		cardEntity.setVisible(true);
+		fieldGroup.setVisible(true);
+		temaModel.setVisible(true);
+«ELSE-»
+	«IF themas!=null && themas.size>0-»
+		«FOREACH themas AS t»
+		/* thema  «t.name» */
+		boolean show«t.name.toFirstUpper()»Tema = false;
+		«FOREACH t.entities AS e-»
+		«IF e.topLevel-»
+		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
+			«e.name.toFirstLower()».setVisible(false);
+		else
+			show«t.name.toFirstUpper()»Tema = true;
+		«ENDIF-»
+		«ENDFOREACH -»
+		if(!show«t.name.toFirstUpper()»Tema)
+			tema«t.name.toFirstUpper()».setVisible(false);
+		«ENDFOREACH -»	
+	«ELSE-»
+		«FOREACH entities AS e-»
+		«IF e.topLevel-»
+		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»))
+			«e.name.toFirstLower()».setVisible(false);
+		«ENDIF-»
+		«ENDFOREACH -»
+	«ENDIF-»
+«ENDIF-»
+
+	}
+
+	/**
+	 * Sets the height of the panel that contents the entity menus
+	 * @param height
+	 */	
+	public void setPanelContentHeight(int height) {
+		scrollPanel.getElement().getStyle().clearHeight();
+		scrollPanel.getElement().getStyle().setProperty("height", height + "px");
+	}
+	
+	/**
+	 * 
+	 */
+	private void setWindowHandler() {
+		registrations.add(Window.addResizeHandler(new ResizeHandler() {
+			@Override
+			public void onResize(ResizeEvent arg0) {
+				int height = Window.getClientHeight();
+				setPanelContentHeight(height - height / 5);
+			}			
+		}));
+	}
+	
+	@Override
+	protected void onUnload() {
+		for (HandlerRegistration r : registrations)
+			r.removeHandler();
+		registrations.clear();
+		super.onUnload();
+	}
+
+	@Override
+	protected void onLoad() {
+		setWindowHandler();
+		super.onLoad();
+	}	
+		
+}
+«ENDLET-»
+«ENDFILE-»
+«ENDDEFINE»
+
+
+«DEFINE setActions FOR CardEntity-»
+		«IF topLevel-»
+		/* «name.toFirstUpper()» Menu */
+		
+		if (AccessManager.canCreate«name.toFirstUpper()»() && AccessManager.canEdit«name.toFirstUpper()»()) {		
+			«name.toFirstLower()».setCreateClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					eventBus.fireEvent(new Create«name.toFirstUpper()»Event(new GoHomeEvent()));
+				}
+			});
+		}
+		else
+			«name.toFirstLower()».setCreateClickHandler(null);
+						
+		if (AccessManager.canDirectAccess«name.toFirstUpper()»() && AccessManager.canRead«name.toFirstUpper()»()) {						
+			«name.toFirstLower()».setListClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					LocalSession.get().setSearchCriterions(null, null);
+					eventBus.fireEvent(new List«name.toFirstUpper()»Event());
+				}
+			});
+			«name.toFirstLower()».setSearchClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					String searchValue = «name.toFirstLower()».getSearchValue();
+					if(searchValue!=null && !searchValue.isEmpty())
+						eventBus.fireEvent(new List«name.toFirstUpper()»Event(searchValue));
+				}
+			});	
+		}
+		else {
+			«name.toFirstLower()».setListClickHandler(null);
+			«name.toFirstLower()».setSearchClickHandler(null);
+		}	
+		«ENDIF-»
+
+«ENDDEFINE»
+

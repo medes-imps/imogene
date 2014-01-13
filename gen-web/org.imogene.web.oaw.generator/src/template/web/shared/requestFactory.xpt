@@ -1,0 +1,46 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR Project»
+«FILE projectName.toLowerCase() + "/shared/" + projectName.toFirstUpper() + "RequestFactory.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».shared;
+
+import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».shared.request.«e.name.toFirstUpper()»Request;
+«ENDFOREACH -»
+
+«IF !applicationType.matches(adminType)-»
+import org.imogene.web.shared.ImogRequestFactory;
+«ELSE-»
+import org.imogene.admin.shared.AdminRequestFactory;
+«ENDIF-»
+«EXPAND importActors(projectName) FOREACH entities-»
+
+import com.google.web.bindery.requestfactory.shared.ExtraTypes;
+
+
+/**
+ * RequestFactory of the application
+ * @author Medes-IMPS
+ */
+ @ExtraTypes({LocalizedTextProxy.class«EXPAND getActors FOREACH entities»})
+public interface «projectName.toFirstUpper()»RequestFactory extends «IF !applicationType.matches(adminType)-»ImogRequestFactory«ELSE-»AdminRequestFactory«ENDIF-» {
+
+	«FOREACH entities AS e-»
+	«e.name.toFirstUpper()»Request «e.name.toFirstLower()»Request();
+	«ENDFOREACH -»
+		
+}
+«ENDLET-»
+«ENDFILE-»
+«ENDDEFINE»
+
+
+«DEFINE importActors(String projectName) FOR CardEntity-»«ENDDEFINE»
+«DEFINE importActors(String projectName) FOR Actor-»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+ «ENDDEFINE»
+
+«DEFINE getActors FOR CardEntity-»«ENDDEFINE»
+«DEFINE getActors FOR Actor-» , «name.toFirstUpper()»Proxy.class «ENDDEFINE»

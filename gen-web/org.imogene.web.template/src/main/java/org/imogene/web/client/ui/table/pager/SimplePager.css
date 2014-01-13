@@ -1,0 +1,39 @@
+.pageDetails {
+	padding-top: 4px;
+	padding-right: 2px;
+	padding-bottom: 4px;
+	padding-left: 2px;
+	text-align: center;
+	font-weight: bold;
+	vertical-align: middle;
+	font-size: 16px;
+}
+
+.pageDetails2 {
+	padding-top: 4px;
+	padding-right: 2px;
+	padding-bottom: 4px;
+	padding-left: 2px;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 16px;
+}
+
+.button {
+	padding-top: 4px;
+	padding-right: 2px;
+	padding-bottom: 4px;
+	padding-left: 2px;	
+	cursor: pointer;
+	cursor: hand;
+	vertical-align: middle;
+}
+
+.disabledButton {
+	cursor: default;
+	vertical-align: middle;
+}
+
+.imogPagerLayout {
+	min-width: 162px;
+}

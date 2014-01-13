@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.imogene.admin.contrib.specificWorkflow" name="Specific Workflow" schema="schema/org.imogene.admin.contrib.specificWorkflow.exsd"/>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.admin.contrib.objectContribution1"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.admin.contrib.WebGenerationAction"
+               icon="icons/web_16.png"
+               id="org.imogene.admin.contrib.WebGenerationAction"
+               label="Admin application generation"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.sync.contrib.generationContribution"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.sync.contrib.SynchroGenerationAction"
+               icon="icons/serverSynchro.png"
+               id="org.imogene.sync.contrib.SynchroGenerationAction"
+               label="Synchronization server generation"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

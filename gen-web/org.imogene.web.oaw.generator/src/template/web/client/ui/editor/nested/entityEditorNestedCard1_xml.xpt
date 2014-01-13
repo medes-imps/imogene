@@ -1,0 +1,122 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«IF nestedFields!=null && !nestedFields.isEmpty-»
+«FILE projectName.toLowerCase()+ "/client/ui/editor/nested/" + this.name.toFirstUpper() + "EditorNestedForm.ui.xml"-»
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo1='urn:import:org.imogene.web.client.ui.field.relation.single'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.relation.multi'
+	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group"
+	«IF isTranslatableFieldPresent(nestedFields)-»
+	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary"
+	xmlns:imo5="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.field">
+	«ELSE -»
+	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary">		
+	«ENDIF -»
+
+	<ui:style>
+		.imogene-form {
+			width: 100%;
+			vertical-align: top;
+		}
+		
+		.imogene-fieldTable {
+			width: 100%;
+			border-spacing: 10px 0px;
+		}
+		
+		.imogene-field {
+			margin-left: 10px;
+		}
+		
+		.dependentVisibility {
+			padding-left: 20px;
+			background: url(images/arrow-18.png) no-repeat;
+			background-position: 0% 50%;	
+		}
+		
+		.imog-clearImage {
+			cursor: pointer;
+			cursor: hand;
+			text-align: left;
+			margin-left: 3px;
+		}	
+
+		@external .dependentVisibility;
+	</ui:style>
+
+	<g:HorizontalPanel stylePrimaryName="{style.imogene-form}" verticalAlignment="middle">
+	
+	<g:VerticalPanel stylePrimaryName="{style.imogene-form}">
+	
+	<!-- «name.toFirstUpper()» section widgets -->
+		<imo3:FieldGroupPanel ui:field="«name.toFirstLower()»Section">
+	
+			«FOREACH nestedFields AS f -»
+			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
+				<«EXPAND template::web::WebFieldUtil::formFieldTypeDecXml FOR f»:«EXPAND template::web::WebFieldUtil::formFieldTypeXml FOR f» ui:field="«EXPAND template::CommonFieldUtil::propertyName FOR f»" />
+			</g:SimplePanel>
+			«ENDFOREACH -»	
+
+		</imo3:FieldGroupPanel>	
+	
+	</g:VerticalPanel>
+	
+		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">
+			<g:Image ui:field="clearImage" stylePrimaryName="{style.imog-clearImage}"/>
+		</g:cell>
+	
+	</g:HorizontalPanel>
+	
+	
+	<!-- if table with columns -->
+	
+	<!--
+	
+			<g:Grid stylePrimaryName="{style.imogene-fieldTable}">
+				<g:row>
+					<g:customCell>
+						<imo:ImogIntegerBox ui:field="floor" />
+					</g:customCell>
+					<g:customCell>
+						<imo:ImogTimeBox ui:field="visitTime" />
+					</g:customCell>
+				</g:row>
+
+				<g:row>
+					<g:customCell>
+						<imo:ImogBooleanBox ui:field="isBooked" />
+					</g:customCell>
+					<g:customCell>
+						<imo:ImogSingleEnumBox ui:field="type" />
+					</g:customCell>
+				</g:row>
+
+				<g:row>
+					<g:customCell>
+						<imo:ImogMultiEnumBox ui:field="colors" />
+					</g:customCell>
+					<g:customCell>
+						<imo:ImogTextBox ui:field="comment" />
+					</g:customCell>
+				</g:row>
+
+				<g:row>
+					<g:customCell>
+						<imo:ImogAddressBox ui:field="address" />
+					</g:customCell>
+					<g:customCell>
+						<imo:ImogEmailBox ui:field="email" />
+					</g:customCell>
+				</g:row>
+			</g:Grid>	
+	-->		
+
+</ui:UiBinder>
+«ENDFILE»
+«ENDIF -»
+«ENDDEFINE»

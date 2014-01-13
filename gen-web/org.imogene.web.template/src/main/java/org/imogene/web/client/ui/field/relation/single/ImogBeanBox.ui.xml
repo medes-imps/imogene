@@ -1,0 +1,84 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field' 
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+
+	<ui:style>
+		.imogListBox {
+			background-color: #fff;
+			border: 1px solid #777777;
+			color: #444444;
+			width: 199px;
+			font-size: 12px;
+		}
+		
+		.imogListBox-TexBox {
+			border-right: 1px solid #777777;
+			border-top: 0px;
+			border-bottom: 0px;
+			border-left: 0px;
+			color: #444444;
+			width: 199px;
+			padding: 2px;
+			font-size: 12px;
+			background-color: #FFFFFF;
+			margin: 0px;
+		}
+		
+		.imogListBox-TexBox-disabled {
+			background-color: #f2f2f2;
+			border-right: 0px;
+		}
+		
+		.imogRel1Box-ButtonImage {
+			cursor: pointer;
+			cursor: hand;
+			text-align: left;
+		}
+		
+		/*@external .imogListBox;*/
+	</ui:style>
+
+
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+
+		<g:VerticalPanel>
+		    
+			<imo2:ImogErrorLabel ui:field="errorLabel" />
+
+			<g:HorizontalPanel verticalAlignment="middle" width="285px">
+		
+				<g:cell width="199px">
+					<g:HorizontalPanel stylePrimaryName="{style.imogListBox}" verticalAlignment="middle">
+		
+						<g:cell horizontalAlignment="left" verticalAlignment="middle">
+							<g:TextBox ui:field="textBox" readOnly="true" styleName="{style.imogListBox-TexBox} {style.imogListBox-TexBox-disabled}" />
+						</g:cell>
+		
+					</g:HorizontalPanel>
+				</g:cell>
+		
+				<g:HorizontalPanel verticalAlignment="middle" horizontalAlignment="left">
+		
+					<g:cell horizontalAlignment="left" verticalAlignment="middle">
+						<g:Image ui:field="viewImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />
+					</g:cell>
+		
+					<g:cell horizontalAlignment="left" verticalAlignment="middle">
+						<g:Image ui:field="clearImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />
+					</g:cell>
+		
+					<g:cell horizontalAlignment="left" verticalAlignment="middle">
+						<g:Image ui:field="addImage" stylePrimaryName="{style.imogRel1Box-ButtonImage}" />
+					</g:cell>
+		
+				</g:HorizontalPanel>
+		
+			</g:HorizontalPanel>
+
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>
+	
+
+</ui:UiBinder>

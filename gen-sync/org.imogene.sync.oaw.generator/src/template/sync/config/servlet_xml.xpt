@@ -1,0 +1,31 @@
+«IMPORT core»
+«DEFINE generate(String projectName) FOR Project-»
+«FILE projectName + "-servlet.xml"-»
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!--  multipart request resolver
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="-1"/>
+	</bean> -->
+	<!--  multipart request resolver for the optimized server -->
+	<bean class="org.imogene.lib.sync.server.custom.OptimizedMultiPartResolver" id="multipartResolver">
+		<property name="maxUploadSize" value="-1"/>
+	</bean>
+		
+	<!-- Url handler -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  		<property name="mappings">
+    		<props>
+    			<prop key="/sync.html">syncController</prop>  		      	      		
+    		</props>
+  		</property>
+	</bean>	
+
+</beans>
+«ENDFILE»
+«ENDDEFINE»

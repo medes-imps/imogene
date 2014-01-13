@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ Medes-IMPS 2011
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
+      <factory
+            uri="http://www.i-mogene.org/imogene/1.0"
+            class="org.imogene.model.core.provider.ImogeneItemProviderAdapterFactory"
+            supportedTypes=
+              "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
+               org.eclipse.emf.edit.provider.IStructuredItemContentProvider
+               org.eclipse.emf.edit.provider.ITreeItemContentProvider
+               org.eclipse.emf.edit.provider.IItemLabelProvider
+               org.eclipse.emf.edit.provider.IItemPropertySource"/>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.imogene.model.core.presentation.ImogeneModelWizardID"
+            name="%_UI_ImogeneModelWizard_label"
+            class="org.imogene.model.core.presentation.ImogeneModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/logo_imogene_16.png">
+         <description>%_UI_ImogeneModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.imogene.model.core.presentation.ImogeneEditorID"
+            name="%_UI_ImogeneEditor_label"
+            icon="icons/full/obj16/logo_imogene_16.gif"
+            extensions="imog"
+            class="org.imogene.model.core.presentation.ImogeneEditor"
+            contributorClass="org.imogene.model.core.presentation.ImogeneActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

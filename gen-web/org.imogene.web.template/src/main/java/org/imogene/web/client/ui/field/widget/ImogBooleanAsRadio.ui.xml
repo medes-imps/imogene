@@ -1,0 +1,31 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:style>
+		.imogene-FormText {
+			color: #444444;
+			font-size: 12px;
+			margin-top: 2px;
+			margin-bottom: 2px;
+			height: 20px;
+		}
+		
+		.imogene-Radio {
+			vertical-align: top;
+			margin-right: 10px;
+		}
+		
+		.imogene-Radio input[type="radio"] {
+			vertical-align: bottom;
+			margin: 0px 3px 0px 0px;
+		}
+		@external .imogene-Radio;
+	</ui:style>
+
+	<g:HorizontalPanel verticalAlignment="middle" stylePrimaryName="{style.imogene-FormText}">
+		<g:RadioButton ui:field="yes" name="ImogBooleanBox"	stylePrimaryName="{style.imogene-Radio}" />
+		<g:RadioButton ui:field="no" name="ImogBooleanBox"	stylePrimaryName="{style.imogene-Radio}" />
+		<g:RadioButton ui:field="unknown" name="ImogBooleanBox"	stylePrimaryName="{style.imogene-Radio}" />
+	</g:HorizontalPanel>
+
+</ui:UiBinder>

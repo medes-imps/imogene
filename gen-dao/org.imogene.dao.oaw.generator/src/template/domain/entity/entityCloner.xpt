@@ -1,0 +1,106 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt»
+«EXTENSION template::domain::DaoUtilExt»
+
+«DEFINE generate(String projectName, String embedded) FOR CardEntity»
+«IF embedded != "true"»
+«FILE projectName.toLowerCase() + "/domain/entity/backup/" + name.toFirstUpper() + "Cloner.java"»
+package org.imogene.«projectName.toLowerCase()».domain.entity.backup;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.UUID;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.entity.GeoField;
+import org.imogene.lib.common.entity.ImogActorImpl;
+import org.imogene.lib.common.entity.ImogBeanImpl;
+import org.imogene.lib.common.entity.IsGeoreferenced;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».domain.entity.backup.«name.toFirstUpper()»Bck;
+«FOREACH groups.fields AS f -»
+  «IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).cardinality!=1-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«((RelationFieldEntity)f).entity.name.toFirstUpper()»; 
+  «ENDIF -»
+«ENDFOREACH -»		
+
+/**
+ * ImogBean implementation for the entity «name.toFirstUpper()»
+ * @author MEDES-IMPS
+ */
+public class «name.toFirstUpper()»Cloner {
+
+	public static «name.toFirstUpper()»Bck cloneEntity(«name.toFirstUpper()» entity) {
+		«name.toFirstUpper()»Bck bck = new «name.toFirstUpper()»Bck();
+		bck.setTraceId(UUID.randomUUID().toString());
+		bck.setId(entity.getId());
+		bck.setCreated(entity.getCreated());
+		bck.setCreatedBy(entity.getCreatedBy());
+		bck.setModified(entity.getModified());
+		bck.setModifiedBy(entity.getModifiedBy());
+		bck.setModifiedFrom(entity.getModifiedFrom());
+		bck.setUploadDate(entity.getUploadDate());
+		bck.setDeleted(entity.getDeleted());
+		bck.setVersion(entity.getVersion());
+		«FOREACH groups AS g -»
+			«FOREACH g.fields AS f -»
+				«EXPAND cloneProperty FOR f-»
+			«ENDFOREACH -»		
+		«ENDFOREACH -»
+		return bck;
+	}
+}
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»
+
+«DEFINE cloneProperty FOR FieldEntity »
+bck.«EXPAND template::CommonFieldUtil::setterName FOR this»(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»());			
+«ENDDEFINE »
+
+«DEFINE cloneProperty FOR BinaryField »
+if(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null){
+	 bck.«EXPAND template::CommonFieldUtil::setterName FOR this»(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»().getId());
+}
+«ENDDEFINE »
+
+«DEFINE cloneProperty FOR RelationFieldEntity »
+if(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null){
+  «IF cardinality == 1 -»
+  bck.«EXPAND template::CommonFieldUtil::setterName FOR this»(entity.«EXPAND template::CommonFieldUtil::getterName FOR this»().getId());  
+  «ELSE -»
+  	StringBuilder builder = new StringBuilder();
+  	for(«entity.name.toFirstUpper()-» i : entity.«EXPAND template::CommonFieldUtil::getterName FOR this»()){
+  		builder.append(i.getId()).append(";");
+  	}
+   bck.«EXPAND template::CommonFieldUtil::setterName FOR this»(builder.toString());
+  «ENDIF -»
+}
+«ENDDEFINE »

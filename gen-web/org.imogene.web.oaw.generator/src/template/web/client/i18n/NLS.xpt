@@ -1,0 +1,20 @@
+«IMPORT core»
+«DEFINE generate(String modelName) FOR Project»
+«FILE modelName.toLowerCase()+"/client/i18n/NLS.java"»
+
+package org.imogene.«modelName.toLowerCase()».client.i18n;
+import com.google.gwt.core.client.GWT;
+
+
+public class NLS {
+
+	private static «modelName.toFirstUpper()»Translations constants = («modelName.toFirstUpper()»Translations)GWT.create(«modelName.toFirstUpper()»Translations.class);
+	
+	public static «modelName.toFirstUpper()»Translations constants(){
+		return constants;
+	}
+
+	
+}
+«ENDFILE»
+«ENDDEFINE»

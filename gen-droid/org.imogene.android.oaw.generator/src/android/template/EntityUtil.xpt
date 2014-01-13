@@ -1,0 +1,28 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+
+
+«REM» ----------------------------------------------------	«ENDREM»
+«REM» Organize cursors imports for viewers and editors		«ENDREM»
+«REM» ----------------------------------------------------	«ENDREM»
+«DEFINE organizeCursorImport(String project) FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE organizeCursorImport(String project) FOR RelationFieldEntity-»
+«IF cardinality == 1-»
+import org.imogene.android.«project.toLowerCase()-».database.sqlite.«entity.name.toFirstUpper()-»Cursor;
+«EXPAND organizeCursorImport(project) FOREACH getMainFields(entity)-»
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+«REM» ----------------------------------------------------	«ENDREM»
+«REM» Organize entities imports for viewers and editors		«ENDREM»
+«REM» ----------------------------------------------------	«ENDREM»
+«DEFINE organizeEntityImport(String project) FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE organizeEntityImport(String project) FOR RelationFieldEntity-»
+import org.imogene.android.«project.toLowerCase()-».entities.«entity.name.toFirstUpper()-»;
+«ENDDEFINE»

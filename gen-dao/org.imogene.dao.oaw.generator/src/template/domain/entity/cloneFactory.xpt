@@ -1,0 +1,83 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt»
+«EXTENSION template::domain::DaoUtilExt»
+
+«DEFINE generate(String projectName, String embedded) FOR Project»
+«IF embedded != "true"»
+«FILE projectName.toLowerCase() + "/domain/entity/backup/CloneFactoryImpl.java"»
+
+package org.imogene.«projectName.toLowerCase()».domain.entity.backup;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.entity.CloneFactory;
+import org.imogene.lib.common.entity.GeoField;
+import org.imogene.lib.common.entity.ImogActorImpl;
+import org.imogene.lib.common.entity.ImogBeanImpl;
+import org.imogene.lib.common.entity.IsGeoreferenced;
+
+«FOREACH entities AS e -»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».domain.entity.backup.«e.name.toFirstUpper()»Bck;
+«ENDFOREACH -»
+
+public class CloneFactoryImpl implements CloneFactory {
+	
+	/* The unique instance of this object */
+	private static CloneFactory instance = null;
+	
+	
+
+	public static CloneFactory getInstance() {
+		if (instance == null)
+			instance = new CloneFactoryImpl();
+		return instance;
+	}
+
+	public Object clone(Object source){
+		«FOREACH entities AS e -»
+			if(source instanceof «e.name.toFirstUpper()»)
+				return cloneEntity(( «e.name.toFirstUpper()»)source);
+		«ENDFOREACH»
+		return null;
+	}
+	
+	«FOREACH entities AS e-»			
+	public «e.name.toFirstUpper()»Bck cloneEntity(«e.name.toFirstUpper()» entity) {
+		 return «e.name.toFirstUpper()»Cloner.cloneEntity(entity);
+	}
+	«ENDFOREACH -»
+}
+
+
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene generation base
+Bundle-SymbolicName: org.imogene.oaw.generator.common
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.oaw.generator.common.OawGeneratorMedooCommon
+Require-Bundle: org.eclipse.emf.mwe.core,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.xpand,
+ org.eclipse.xtend,
+ org.eclipse.xtend.typesystem.emf,
+ org.imogene.model.core;visibility:=reexport,
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Eclipse-BuddyPolicy: registered
+Bundle-Vendor: Medes-IMPS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: src/,
+ .
+Export-Package: org.imogene.oaw.generator.common,
+ template

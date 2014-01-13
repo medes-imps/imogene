@@ -1,0 +1,162 @@
+«IMPORT core»
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/client/AccessManager.java"»
+package org.imogene.«projectName.toLowerCase()».client;
+
+import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.shared.proxy.EntityProfileProxy;
+import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
+import org.imogene.web.shared.proxy.ImogActorProxy;
+import org.imogene.web.shared.proxy.ProfileProxy;
+
+/**
+ * Class to manage the access to the entity forms and 
+ * form groups in read and write mode on the Client side
+ * @author MEDES-IMPS
+ */
+public class AccessManager {
+	
+	private static boolean loaded = false;
+	«FOREACH entities AS e-»
+	private static boolean canCreate«e.name.toFirstUpper()»;
+	private static boolean canDelete«e.name.toFirstUpper()»;
+	private static boolean canDirectAccess«e.name.toFirstUpper()»;
+	private static boolean canExport«e.name.toFirstUpper()»;
+	«FOREACH e.groups AS g-»
+	private static boolean canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	private static boolean canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	private static boolean canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	«ENDFOREACH-»
+	«ENDFOREACH-»
+	
+	«FOREACH entities AS e-»
+	public static boolean canRead«e.name.toFirstUpper()»() {
+		ensureLoaded();
+		return «FOREACH e.groups AS g SEPARATOR ' || '»canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»«ENDFOREACH»;
+	}
+	
+	public static boolean canEdit«e.name.toFirstUpper()»() {
+		ensureLoaded();
+		return «FOREACH e.groups AS g SEPARATOR ' || '»canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()»«ENDFOREACH»;
+	}
+
+	public static boolean canCreate«e.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canCreate«e.name.toFirstUpper()»;
+	}
+
+	public static boolean canDelete«e.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canDelete«e.name.toFirstUpper()»;
+	}
+
+	public static boolean canDirectAccess«e.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canDirectAccess«e.name.toFirstUpper()»;
+	}
+
+	public static boolean canExport«e.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canExport«e.name.toFirstUpper()»;
+	}
+
+	«FOREACH e.groups AS g-»
+	public static boolean canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+
+	public static boolean canEdit«e.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+
+	public static boolean canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		ensureLoaded();
+		return canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	«ENDFOREACH-»
+	«ENDFOREACH-»
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean isAdmin() {
+		return ProfileUtil.isAdmin();
+	}
+
+	private static void ensureLoaded() {
+		if (!loaded) {
+			ImogActorProxy actor = LocalSession.get().getCurrentUser();
+			load(actor);
+		}
+	}
+	
+	private static void load(ImogActorProxy actor) {
+		loaded = true;
+		«FOREACH entities AS e-»
+		canCreate«e.name.toFirstUpper()» = true;
+		canDelete«e.name.toFirstUpper()» = true;
+		canDirectAccess«e.name.toFirstUpper()» = true;
+		canExport«e.name.toFirstUpper()» = true;
+		«FOREACH e.groups AS g-»
+		canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+		canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+		canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+		«ENDFOREACH-»
+		«ENDFOREACH-»
+		if (isAdmin()) {
+			return;
+		}
+		if (actor.getProfiles() == null) {
+			return;
+		}
+		for (ProfileProxy profile : actor.getProfiles()) {
+			if (profile.getEntityProfiles() != null) {
+				for (EntityProfileProxy entity : profile.getEntityProfiles()) {
+					String entityId = entity.getEntity().getId();
+					«FOREACH entities AS e SEPARATOR " else "-»
+					if ("«e.name.toLowerCase()»".equals(entityId)) {
+						if (entity.getCreate() != null) {
+							canCreate«e.name.toFirstUpper()» &= entity.getCreate();
+						}
+						if (entity.getDelete() != null) {
+							canDelete«e.name.toFirstUpper()» &= entity.getDelete();
+						}
+						if (entity.getDirectAccess() != null) {
+							canDirectAccess«e.name.toFirstUpper()» &= entity.getDirectAccess();
+						}
+						if (entity.getExport() != null) {
+							canExport«e.name.toFirstUpper()» &= entity.getExport();
+						}
+					}
+					«ENDFOREACH-»
+				}
+			}
+			if (profile.getFieldGroupProfiles() != null) {
+				for (FieldGroupProfileProxy group : profile.getFieldGroupProfiles()) {
+					String fieldGroupId = group.getFieldGroup().getId();
+					«FOREACH entities.groups AS g SEPARATOR " else "-»
+					if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(fieldGroupId)) {
+						if (group.getRead() != null) {
+							canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getRead();
+						}
+						if (group.getWrite() != null) {
+							canWrite«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getWrite();
+						}
+						if (group.getExport() != null) {
+							canExport«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getExport();
+						}
+					}
+					«ENDFOREACH-»
+				}
+			}
+		}
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»
+

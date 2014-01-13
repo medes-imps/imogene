@@ -1,0 +1,130 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt»
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/client/i18n/"+projectName.toFirstUpper()+"Translations.java"»
+
+package org.imogene.«projectName.toLowerCase()».client.i18n;
+
+import com.google.gwt.i18n.client.Constants;
+
+public interface «projectName.toFirstUpper()»Translations extends Constants {	
+
+	/* ------------------------------------------------------------------- */
+	/*                        GENERATED TEXTS                              */
+	/* ------------------------------------------------------------------- */
+
+	/* Languages texts */
+	String locale();
+	«FOREACH languages AS lang -»
+	String menu_«lang.name.toFirstLower()»();
+	«ENDFOREACH-»	
+	
+	/* Enumeration texts */
+	String enumeration_unknown();
+	
+	«REM»
+	/* Formating templates */
+	String format_date();
+	String format_time();
+	String format_validation_date();
+	String format_validation_time();
+	«ENDREM»
+	
+	/* Thema texts */
+	«FOREACH this.themas AS tema-»
+	String thema_«tema.name.toFirstLower()»();
+	«ENDFOREACH-»
+	
+	String application_title();
+
+	«FOREACH entities AS e»
+	/* «e.name» texts */
+	String «e.name.toFirstLower()»_name();	
+	String «e.name.toFirstLower()»_name_plur();	
+	String «e.name.toFirstLower()»_create_title();
+	String «e.name.toFirstLower()»_select_title();
+	String «e.name.toFirstLower()»_table_text();
+	String «e.name.toFirstLower()»_excel_title();	
+	
+	/* «e.name» field group texts */		
+		«FOREACH e.groups AS group -»	
+	String «e.name.toFirstLower()»_group_«group.name.toFirstLower()»();
+		«ENDFOREACH -»	
+	
+	/* «e.name» fields texts */	
+		«FOREACH e.groups.fields AS field-»
+		«EXPAND getFieldTexts FOR field-»
+		«ENDFOREACH-»
+		«EXPAND getFilterFieldText FOR e-»
+		
+		«FOREACH e.columnFields.union(e.mainFields) AS f-»
+		String «e.name.toFirstLower()»_field_s_«f.name.toFirstLower()»();
+		«ENDFOREACH -»		
+				
+	«ENDFOREACH»
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+«REM» ----------------------------------------- «ENDREM»
+
+
+«REM» ----- get texts for entity fields in a CardEntity----- «ENDREM»
+«DEFINE getFieldTexts FOR FieldEntity-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»();
+«ENDDEFINE»
+
+«DEFINE getFieldTexts FOR TextField-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»();
+	«FOREACH validationRules AS r ITERATOR i-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_rule_«i.counter0-»();
+	«ENDFOREACH»
+«ENDDEFINE»
+
+«DEFINE getFieldTexts FOR IntegerField-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»();
+	«IF this.min!=null && this.min.length>0 -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min();							
+	«ENDIF-»
+	«IF this.max!=null && this.max.length>0 -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max();							
+	«ENDIF-»		
+«ENDDEFINE»
+
+«DEFINE getFieldTexts FOR FloatField-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»();
+	«IF this.min!=null && this.min.length>0 -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min();							
+	«ENDIF-»
+	«IF this.max!=null && this.max.length>0 -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max();							
+	«ENDIF-»
+	«IF this.DecimalNumber!=null -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_decimalNumber();
+	«ENDIF-»	
+«ENDDEFINE»
+
+«DEFINE getFieldTexts FOR DatesField-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»();
+	«IF this.min!=null && this.min.length>0 -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_min();							
+	«ENDIF-»
+	«IF this.max!=null && this.max.length>0 -»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»_max();							
+	«ENDIF-»		
+«ENDDEFINE»
+
+«DEFINE getFieldTexts FOR EnumField-»
+	String «parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»();
+	«FOREACH enumValues AS enumValue-»
+	String «parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option();
+	«ENDFOREACH-»	
+«ENDDEFINE»
+«REM» ----------------------------------------- «ENDREM»
+
+«DEFINE getFilterFieldText FOR CardEntity-»«ENDDEFINE»
+«DEFINE getFilterFieldText FOR Actor-»
+«FOREACH filters AS f-»
+	String «name.toFirstLower()»_field_«EXPAND template::CommonFieldUtil::propertyName FOR f»();
+«ENDFOREACH-»
+«ENDDEFINE»

@@ -1,0 +1,138 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+
+
+
+«DEFINE layout FOR FieldEntity-»
+<org.imogene.android.widget.field.edit.«EXPAND class FOR this-»
+	style="@style/BaseField"
+	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+	app:igDependent="«fieldDependentVisibility.size > 0»"
+	app:igReadOnly="«readOnly»"
+	app:igRequired="«required»"
+	app:igHidden="«hidden»"
+	app:igTitle="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+	«IF hasHelp(descriptions)-»
+	app:igHelp="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_help"
+	«ENDIF-»
+	«EXPAND specificAttributes FOR this-»
+/>
+«ENDDEFINE»
+
+«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE class FOR StringField-»TextFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR TextField-»«IF translatable»LocalizedTextFieldEdit«ELSE»TextFieldEdit«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR BarcodeField»BarcodeFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR GeoField»GeoFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR FloatField»FloatFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR IntegerField-»
+«IF max != null && max.length > 0 && min != null && min.length > 0-»
+BoundedIntegerFieldEdit
+«ELSE-»
+IntegerFieldEdit
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE class FOR BooleanField»BooleanFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR EnumField»«IF multipleSelection»EnumMultipleFieldEdit«ELSE»EnumSingleFieldEdit«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR DatesField»«IF DateField.isAssignableFrom(metaType)-»DateFieldEdit«ELSEIF TimeField.isAssignableFrom(metaType)-»TimeFieldEdit«ELSE-»DateTimeFieldEdit«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR BinaryField»«IF PhotoField.isAssignableFrom(metaType)-»PhotoFieldEdit«ELSEIF VideoField.isAssignableFrom(metaType)-»VideoFieldEdit«ELSEIF SoundField.isAssignableFrom(metaType)-»SoundFieldEdit«ELSE»BinaryFieldEdit«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldEdit«ELSE-»RelationManyFieldEdit«ENDIF-»«ENDDEFINE»
+
+
+
+
+«DEFINE specificAttributes FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR TextField-»
+app:igStringType="string"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR AddressField-»
+app:igStringType="address"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR EmailField-»
+app:igStringType="email"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR PhoneField-»
+app:igStringType="phone"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR TextAreaField-»
+app:igStringType="text"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR GeoField-»
+«LET getGeoType(this) AS geoType-»
+«IF geoType == 0»
+app:igGeoType="gps"
+«ELSEIF geoType == 1»
+app:igGeoType="network"
+«ELSEIF geoType == 2»
+app:igGeoType="map"
+«ELSEIF geoType == 3»
+app:igGeoType="best"
+«ENDIF»
+«ENDLET-»
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR FloatField-»
+«IF unit.length > 0-»
+app:igUnit="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_unit"
+«ENDIF-»
+app:igFormat="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format"
+«IF max != null && max.length > 0-»
+app:igFloatMax="«max»"
+«ENDIF-»
+«IF min != null && min.length > 0-»
+app:igFloatMin="«min»"
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR IntegerField-»
+«IF unit.length > 0-»
+app:igUnit="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_unit"
+«ENDIF-»
+app:igFormat="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format"
+«IF max != null && max.length > 0-»
+app:igIntMax="«max»"
+«ENDIF-»
+«IF min != null && min.length > 0-»
+app:igIntMin="«min»"
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR EnumField-»
+app:igItems="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+app:igItemsValues="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR DatesField-»
+«IF max != null && max.length > 0-»
+app:igDateMax="«max»"
+«ENDIF-»
+«IF min != null && min.length > 0-»
+app:igDateMin="«min»"
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR RelationFieldEntity-»
+app:igHasReverse="«oppositeRelationField != null»"
+app:igDisplay="@plurals/«entity.name.toLowerCase()-»_display"
+app:igOppositeCardinality="«getOppositeCardinality(this)-»"
+app:igRelationType="«IF MainRelationFieldEntity.isAssignableFrom(metaType)»main«ELSE»reverse«ENDIF»"
+«ENDDEFINE»

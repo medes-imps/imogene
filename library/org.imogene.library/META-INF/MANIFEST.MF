@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene library
+Bundle-SymbolicName: org.imogene.library
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.imogene.library.LibraryPlugin
+Bundle-Vendor: Medes-IMPS
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.imogene.library

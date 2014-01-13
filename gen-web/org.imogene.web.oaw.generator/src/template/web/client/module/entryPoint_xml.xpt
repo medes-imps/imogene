@@ -1,0 +1,29 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/client/"+projectName.toFirstUpper() + "EntryPoint.ui.xml"»
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo-p='urn:import:org.imogene.web.client.ui.panel'
+	xmlns:imo-ui='urn:import:org.imogene.«projectName.toLowerCase()».client.ui.panel'>
+
+	<ui:style src="../../web/client/css/ImogCss.css">
+	
+		.imogene-main {
+			width: 100%;
+			height: 100%;
+		}
+	</ui:style>
+
+	<g:VerticalPanel ui:field="mainPanel" styleName="{style.pageBackground} {style.imogene-main}">
+
+		<imo-ui:TopBannerPanel ui:field="topPanel"/>
+
+		<g:cell height="100%" styleName="{style.pageBackground}" horizontalAlignment="center">
+			<imo-p:MainContentPanel ui:field="content" />
+		</g:cell>
+
+	</g:VerticalPanel>
+</ui:UiBinder>
+«ENDFILE-»
+«ENDDEFINE»

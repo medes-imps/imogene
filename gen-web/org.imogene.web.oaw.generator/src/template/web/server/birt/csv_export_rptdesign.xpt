@@ -1,0 +1,529 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity-»
+«FILE name.toFirstLower() + "_csv.rptdesign"-»
+«LET "admin" AS adminType-»
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.1.v201209101448 Build &lt;4.2.1.v20120912-1721></property>
+    <simple-property-list name="includeResource">
+		«LET (Project)eContainer AS project-»
+			<value>«projectName.toFirstUpper()»Translations</value>
+			«FOREACH project.languages AS l-»
+			<value>«projectName.toFirstUpper()»Translations_«l.isoCode»</value>
+			«ENDFOREACH-»
+		«ENDLET-»    
+    </simple-property-list>
+    <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[
+    	var locale = params["loc"];
+		if(locale!=null) {
+			if(locale=="fr") {
+				reportContext.getDesignHandle().setLocale(Packages.com.ibm.icu.util.ULocale.FRENCH);
+			}
+			else if(locale=="en") {
+				reportContext.getDesignHandle().setLocale(Packages.com.ibm.icu.util.ULocale.ENGLISH);
+			}
+		}
+	]]></method>
+    <property name="iconFile">/templates/simple_listing.gif</property>
+    <property name="cheatSheet">org.eclipse.birt.report.designer.ui.cheatsheet.simplelisting</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="loc">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>       
+		«FOREACH columnFields AS c-»
+		«EXPAND declareSearchParameter((Project)this.eContainer, "") FOR c-»
+		«ENDFOREACH -»
+    </parameters>
+    <data-sources>
+        <script-data-source name="«name.toFirstUpper()»Handler"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="«name.toFirstUpper()»DataSet">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">Id</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">CreationDate</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">ModificationDate</property>
+                    <property name="dataType">date-time</property>
+                </structure>                      
+		 		«FOREACH groups.fields AS f ITERATOR iter -»
+				«EXPAND declareFieldPosition(iter.counter1 + 3) FOR f-»
+				«ENDFOREACH -»           
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">Id</property>
+                    <text-property name="displayName" key="field_id"></text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CreationDate</property>
+                    <text-property name="displayName" key="field_creationDate"></text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ModificationDate</property>
+                    <text-property name="displayName" key="field_lastModificationDate"></text-property>
+                </structure>
+		 		«FOREACH groups.fields AS f-»
+				«EXPAND declareFieldLabel FOR f-»
+				«ENDFOREACH -»                 
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">Id</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">CreationDate</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">ModificationDate</property>
+                        <property name="dataType">date-time</property>
+                    </structure>                
+			 		«FOREACH groups.fields AS f ITERATOR iter -»
+					«EXPAND declareFieldPosition(iter.counter1 + 3) FOR f-»
+					«ENDFOREACH -» 
+                </list-property>
+            </structure>
+            <method name="beforeOpen"><![CDATA[
+            
+	            count = 0;			
+	
+				// Get instance of Renderer
+				beanRenderer = Packages.org.imogene.«projectName.toLowerCase()».server.«projectName.toFirstUpper()»ServerRenderer.get();
+				beanRenderer.setLocale(params["loc"]);
+				
+				// Get instance of «name.toFirstUpper()»Handler class
+				«name.toFirstLower()»Handler = spring.getBean("«name.toFirstLower()»Handler");
+								
+				//Load the beans
+				beans =«name.toFirstLower()»Handler.listForCsv("modified", false
+						«FOREACH columnFields AS c-»
+						«EXPAND setHandlerMethodCriteria((Project)this.eContainer, "") FOR c-»
+						«ENDFOREACH -»				
+						);
+			]]></method>
+			<property name="dataSource">«name.toFirstUpper()»Handler</property>
+			<method name="fetch"><![CDATA[
+				if(beans != null) {
+				
+					if(count < beans.size()){
+					
+						var bean = beans.get(count);
+						
+					    row["Id"] = bean.getId();	
+					    row["CreationDate"] = bean.getCreated();
+					    row["ModificationDate"] = bean.getModified();							
+						
+				 		«FOREACH groups.fields AS f-»
+						«EXPAND setRowValue FOR f-»
+						«ENDFOREACH -» 						
+    	
+					    count++;
+					    return true;
+					}
+				}
+				return false; 
+	]]></method>
+        </script-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="24">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="25">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="26">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="orientation">landscape</property>
+            <property name="showHeaderOnFirst">false</property>
+            <property name="showFooterOnLast">false</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="171">
+            <property name="dataSet">«name.toFirstUpper()»DataSet</property>
+            <list-property name="boundDataColumns">               
+                <structure>
+                    <property name="name">Id</property>
+                    <text-property name="displayName" key="field_id"/>
+                    <expression name="expression" type="javascript">dataSetRow["Id"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>                   
+                    <property name="name">CreationDate</property>
+                    <text-property name="displayName" key="field_creationDate"/>
+                    <expression name="expression" type="javascript">dataSetRow["CreationDate"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">ModificationDate</property>
+                    <text-property name="displayName" key="field_lastModificationDate"/>
+                    <expression name="expression" type="javascript">dataSetRow["ModificationDate"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+         
+		 		«FOREACH groups.fields AS f-»
+				«EXPAND boundField FOR f-»
+				«ENDFOREACH -» 
+            </list-property>
+            <column/>
+            <column/>
+            <column/>
+		 		«FOREACH groups.fields AS f-»
+			<column/>
+				«ENDFOREACH -»             
+            <header>
+                <row>
+                    <cell>
+                        <label>
+                            <text-property name="text" key="field_id"/>
+                        </label>
+                    </cell>                  
+                    <cell>
+                        <label>
+                            <text-property name="text" key="field_creationDate"/>
+                        </label>
+                    </cell>
+                    <cell>
+                        <label>
+                            <text-property name="text" key="field_lastModificationDate"/>
+                        </label>
+                    </cell>             
+			 		«FOREACH groups.fields AS f-»
+                    <cell>
+                        <label>
+                            <text-property name="text" key="«f.parentGroup.parentCard.name.toFirstLower()»_field_«f.name.toFirstLower()»"/>
+                        </label>
+                    </cell>
+					«ENDFOREACH -»                  
+                </row>
+            </header>
+            <detail>
+                <row>
+                    <cell>
+                        <data>
+                            <property name="resultSetColumn">Id</property>
+                        </data>
+                    </cell>                 
+                    <cell>
+                        <data>
+                            <property name="resultSetColumn">CreationDate</property>
+                        </data>
+                    </cell>
+                    <cell>
+                        <data>
+                            <property name="resultSetColumn">ModificationDate</property>
+                        </data>
+                    </cell>
+			 		«FOREACH groups.fields AS f-»
+                    <cell>
+                        <data>
+                            <property name="resultSetColumn">«f.name.toFirstUpper()»</property>
+                        </data>
+                    </cell>
+					«ENDFOREACH -»
+                </row>
+            </detail>
+        </table>
+    </body>
+</report>
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»
+
+
+«REM» ************************ «ENDREM»
+«DEFINE declareSearchParameter(Project p, String property) FOR FieldEntity-»
+        <scalar-parameter name="«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">new String()</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR TextField-»
+		«IF translatable-»
+			«FOREACH p.languages AS l ITERATOR iter-»
+        <scalar-parameter name="«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»_«l.name.toFirstLower()»">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">new String()</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>	
+			«ENDFOREACH-»
+		«ELSE-»
+        <scalar-parameter name="«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">new String()</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+		«ENDIF-»
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR DatesField-»
+        <scalar-parameter name="«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»Before">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">new String()</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">new String()</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR RelationFieldEntity-»
+	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND declareSearchParameter(p, property + name.toFirstLower() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE declareSearchParameter(Project p, String property) FOR BinaryField-»«ENDDEFINE»
+
+
+«REM» ************************ «ENDREM»
+«DEFINE declareFieldPosition(Integer position) FOR FieldEntity-»
+                <structure>
+                    <property name="position">«position»</property>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <property name="dataType">string</property>
+                </structure>
+«ENDDEFINE»
+«DEFINE declareFieldPosition(Integer position) FOR DateField-»
+                <structure>
+                    <property name="position">«position»</property>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <property name="dataType">date</property>
+                </structure>
+«ENDDEFINE»
+«DEFINE declareFieldPosition(Integer position) FOR DateTimeField-»
+                <structure>
+                    <property name="position">«position»</property>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+«ENDDEFINE»
+«DEFINE declareFieldPosition(Integer position) FOR TimeField-»
+                <structure>
+                    <property name="position">«position»</property>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <property name="dataType">time</property>
+                </structure>
+«ENDDEFINE»
+
+«REM» ************************ «ENDREM»
+«DEFINE declareFieldLabel FOR FieldEntity-»
+                <structure>
+                    <property name="columnName">«name.toFirstUpper()»</property>
+                    <text-property name="displayName" key="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»"></text-property>
+                </structure>
+«ENDDEFINE»
+
+«REM» ************************ «ENDREM»
+«DEFINE setHandlerMethodCriteria(Project p, String property) FOR FieldEntity-»
+		, params["«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»"]
+«ENDDEFINE»
+«DEFINE setHandlerMethodCriteria(Project p, String property) FOR TextField-»
+		«IF translatable-»
+			«FOREACH p.languages AS l ITERATOR iter-»
+		, params["«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»_«l.name.toFirstLower()»"]
+			«ENDFOREACH-»
+		«ELSE-»
+		, params["«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»"]
+		«ENDIF-»
+«ENDDEFINE»
+«DEFINE setHandlerMethodCriteria(Project p, String property) FOR DatesField-»
+		, params["«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»Before"]
+		, params["«property»«EXPAND template::CommonFieldUtil::propertyName FOR this»After"]
+«ENDDEFINE»
+«DEFINE setHandlerMethodCriteria(Project p, String property) FOR RelationFieldEntity-»
+	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
+	«FOREACH entity.mainFields AS f-»
+	 	«EXPAND setHandlerMethodCriteria(p, property + name.toFirstLower() + "_") FOR f-»		
+	«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setHandlerMethodCriteria(Project p, String property) FOR BinaryField-»«ENDDEFINE»
+
+
+
+«REM» ************************ «ENDREM»
+«DEFINE setRowValue FOR FieldEntity-»
+					    row["«name.toFirstUpper()»"] = bean.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+«ENDDEFINE»
+«DEFINE setRowValue FOR TextField-»
+	«IF translatable-»
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
+					    	row["«name.toFirstUpper()»"] = beanRenderer.getLocalizedText(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»());	
+	«ELSE-»
+					    row["«name.toFirstUpper()»"] = bean.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+	«ENDIF-»
+«ENDDEFINE»
+«DEFINE setRowValue FOR BooleanField-»
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
+					    	row["«name.toFirstUpper()»"] = beanRenderer.getBooleanDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+«ENDDEFINE»
+«DEFINE setRowValue FOR EnumField-»
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
+					    	row["«name.toFirstUpper()»"] = beanRenderer.get«parentGroup.parentCard.name»EnumDisplayValue("«EXPAND template::CommonFieldUtil::propertyName FOR this-»", bean.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+«ENDDEFINE»
+«DEFINE setRowValue FOR RelationFieldEntity-»
+	«IF cardinality == 1 -»
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
+					    	row["«name.toFirstUpper()»"] = beanRenderer.getDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+	«ELSE -»
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	{
+							var info = "";
+							for (var i=0; i<bean.«EXPAND template::CommonFieldUtil::getterName FOR this»().size(); i++) { 
+								info = info + beanRenderer.getDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»().get(i)) + " & ";
+							}						
+					    	row["«name.toFirstUpper()»"] = info;							
+						}
+	«ENDIF -»
+«ENDDEFINE»
+«DEFINE setRowValue FOR BinaryField-»
+						if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)	
+					    	row["«name.toFirstUpper()»"] = beanRenderer.getBooleanDisplayValue(true);
+«ENDDEFINE»
+
+
+«REM» ************************ «ENDREM»
+«DEFINE boundField FOR FieldEntity-»
+                <structure>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <text-property name="displayName" key="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»"/>
+                    <expression name="expression" type="javascript">dataSetRow["«name.toFirstUpper()»"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+«ENDDEFINE»
+«DEFINE boundField FOR DateField-»
+                <structure>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <text-property name="displayName" key="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»"/>
+                    <expression name="expression" type="javascript">dataSetRow["«name.toFirstUpper()»"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+«ENDDEFINE»
+«DEFINE boundField FOR DateTimeField-»
+                <structure>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <text-property name="displayName" key="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»"/>
+                    <expression name="expression" type="javascript">dataSetRow["«name.toFirstUpper()»"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+«ENDDEFINE»
+«DEFINE boundField FOR TimeField-»
+                <structure>
+                    <property name="name">«name.toFirstUpper()»</property>
+                    <text-property name="displayName" key="«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»"/>
+                    <expression name="expression" type="javascript">dataSetRow["«name.toFirstUpper()»"]</expression>
+                    <property name="dataType">time</property>
+                </structure>
+«ENDDEFINE»

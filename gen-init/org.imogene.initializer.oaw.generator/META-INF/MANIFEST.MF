@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Imogene initializer generator
+Bundle-SymbolicName: org.imogene.initializer.oaw.generator;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.emf.mwe.core,
+ org.eclipse.emf.mwe.utils,
+ org.eclipse.xpand,
+ org.eclipse.xtend,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.imogene.oaw.generator.common,
+ org.imogene.dao.oaw.generator
+Bundle-Activator: org.imogene.initializer.oaw.generator.InitializerOawGeneratorPlugin
+Eclipse-RegisterBuddy: org.imogene.oaw.generator.common
+Bundle-ActivationPolicy: lazy
+Export-Package: org.imogene.initializer.oaw.generator
+Bundle-Vendor: Medes-IMPS
+Bundle-ClassPath: src/
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

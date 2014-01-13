@@ -1,0 +1,14 @@
+«IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate FOR CardEntity »
+«IF getMoreFields(groups.fields).size > 0»
+«FILE 'menu/'+ name.toLowerCase() + '_more_menu.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	«FOREACH getMoreFields(groups.fields) AS f»
+	<item android:id="@+id/menu_action_new_«f.name.toLowerCase()»" android:title="@string/«f.entity.name.toLowerCase()»_des_new" />
+	«ENDFOREACH»
+</menu>
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

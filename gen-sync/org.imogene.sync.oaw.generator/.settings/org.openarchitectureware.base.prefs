@@ -1,0 +1,4 @@
+#Mon Jan 08 11:38:28 CET 2007
+eclipse.preferences.version=1
+metamodel=org.openarchitectureware.EmfMetamodelContributor,
+project.specific.metamodel=true

@@ -1,0 +1,14 @@
+«IMPORT core»
+«DEFINE generate FOR Project »
+«FILE "/" + name.toLowerCase() + "/roles/" + name.toFirstUpper() + "Roles.java"-»
+package org.imogene.android.«name.toLowerCase()-».roles;
+
+public class «name.toFirstUpper()-»Roles {
+
+	«FOREACH roles AS role-»
+	public static final String «role.name.toUpperCase()-» = "«role.name-»";
+	«ENDFOREACH-»
+
+}
+«ENDFILE-»
+«ENDDEFINE»

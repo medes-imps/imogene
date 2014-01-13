@@ -1,0 +1,84 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/security/AccessPolicyImpl.java"»
+package org.imogene.«projectName.toLowerCase()».security;
+
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.profile.FieldGroupProfile;
+import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.security.AccessPolicy;
+
+/**
+ * This class tells if the current user can access the properties of the model
+ * objects in read and in update mode 
+ * @author MEDES-IMPS
+ */
+public class AccessPolicyImpl implements AccessPolicy {
+
+	«FOREACH entities.groups AS g-»
+	private boolean canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	private boolean canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	«ENDFOREACH-»
+	
+	/**
+	 * Constructor
+	 */
+	public AccessPolicyImpl(ImogActor actor) {
+		if (actor.getProfiles() == null) {
+			return;
+		}
+		if (isAdmin(actor)) {
+			return;
+		}
+		for (Profile profile : actor.getProfiles()) {
+			if (profile.getFieldGroupProfiles() == null) {
+				continue;
+			}
+			for (FieldGroupProfile group : profile.getFieldGroupProfiles()) {
+				String fieldGroupId = group.getFieldGroup().getId();
+				«FOREACH entities.groups AS g SEPARATOR " else "-»
+				if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(fieldGroupId)) {
+					if (group.getRead() != null) {
+						canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getRead();
+					}
+					if (group.getWrite() != null) {
+						canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= group.getWrite();
+					}
+				}
+				«ENDFOREACH-»
+			}
+		}
+	}
+
+	@Override
+	public boolean canAccessProperty(Object bean, String property) {
+		return false;
+	}
+	
+	@Override
+	public boolean canUpdateProperty(Object bean, String property) {
+		return false;
+	}
+	
+	«FOREACH entities.groups AS g-»
+	public boolean canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	public boolean canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canEdit«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	«ENDFOREACH-»
+
+	private boolean isAdmin(ImogActor actor) {
+		for (Profile profile : actor.getProfiles()) {
+			if (profile.getId().equals(Profile.ADMINISTRATOR)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

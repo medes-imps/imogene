@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//src/template/client/config/application_context_xml.xpt=ISO-8859-1
+encoding//src/template/client/config/application_properties.xpt=ISO-8859-1
+encoding//src/template/client/config/converter_context_xml.xpt=ISO-8859-1
+encoding//src/template/client/config/dao_context_xml.xpt=ISO-8859-1
+encoding//src/template/client/config/persistence_xml.xpt=ISO-8859-1
+encoding//src/template/client/entity/entityHelperImpl.xpt=ISO-8859-1
+encoding//src/template/client/handler/dataHandlerImpl.xpt=ISO-8859-1
+encoding//src/template/client/handler/entityHandler.xpt=ISO-8859-1
+encoding//src/template/client/handler/entityHandlerImpl.xpt=ISO-8859-1
+encoding//src/template/client/plugin/manifest_mf.xpt=ISO-8859-1

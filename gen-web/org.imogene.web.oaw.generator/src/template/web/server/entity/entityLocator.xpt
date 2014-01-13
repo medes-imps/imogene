@@ -1,0 +1,76 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/server/locator/" + this.name.toFirstUpper() + "Locator.java"»
+package org.imogene.«projectName.toLowerCase()».server.locator;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».server.handler.«name.toFirstUpper()»Handler;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.google.web.bindery.requestfactory.server.RequestFactoryServlet;
+import com.google.web.bindery.requestfactory.shared.Locator;
+
+
+
+
+/**
+ * A Locator to locate «name.toFirstUpper()» beans 
+ * @author Medes-IMPS
+ */
+public class «name.toFirstUpper()»Locator extends Locator<«name.toFirstUpper()», String> {
+
+	
+	private «name.toFirstUpper()»Handler handler;
+	
+	
+	public «name.toFirstUpper()»Locator() {
+
+	}
+
+	@Override
+	public «name.toFirstUpper()» create(Class<? extends «name.toFirstUpper()»> clazz) {
+		return new «name.toFirstUpper()»();
+	}
+
+	@Override
+	public «name.toFirstUpper()» find(Class<? extends «name.toFirstUpper()»> clazz, String id) {	
+		if (handler == null)
+            initHandler();
+		return handler.getById(id);
+	}
+
+	@Override
+	public Class<«name.toFirstUpper()»> getDomainType() {
+		return «name.toFirstUpper()».class;
+	}
+
+	@Override
+	public String getId(«name.toFirstUpper()» domainObject) {
+		return domainObject.getId();
+	}
+
+	@Override
+	public Class<String> getIdType() {
+		return String.class;
+	}
+
+	@Override
+	public Object getVersion(«name.toFirstUpper()» domainObject) {
+		return domainObject.getVersion();
+	}	
+
+		
+    private void initHandler() {
+        HttpServletRequest request = RequestFactoryServlet.getThreadLocalRequest();
+        ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
+        handler = («name.toFirstUpper()»Handler)context.getBean("«name.toFirstLower()»Handler");
+    }
+}
+«ENDFILE»
+«ENDDEFINE»

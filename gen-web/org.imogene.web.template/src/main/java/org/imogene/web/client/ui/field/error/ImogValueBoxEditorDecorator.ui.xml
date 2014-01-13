@@ -1,0 +1,21 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'>
+	
+	<ui:style>		
+		.contents {
+			display: inline;
+		}
+	</ui:style>
+
+	<g:VerticalPanel>
+
+		<imo2:ImogErrorLabel ui:field="errorLabel" />
+
+		<g:SimplePanel ui:field="contents" stylePrimaryName="{style.contents}" />
+
+	</g:VerticalPanel>
+
+
+
+</ui:UiBinder>

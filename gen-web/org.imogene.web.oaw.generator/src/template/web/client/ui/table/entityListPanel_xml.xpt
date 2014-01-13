@@ -1,0 +1,23 @@
+«IMPORT core»
+
+
+«DEFINE generate(String packageName, String projectName) FOR CardEntity»
+«FILE projectName.toLowerCase()+ "/client/ui/table/panel/" + this.name.toFirstUpper() + "ListPanel.ui.xml"-»
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:imo1="urn:import:org.imogene.web.client.ui.panel"
+	xmlns:imo2="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.table">
+
+	<ui:with field='imogResources' type='org.imogene.web.client.css.ImogResources' />
+	
+	<ui:style>
+	</ui:style>
+	
+	<imo1:WrapperPanelForTable ui:field="wrapperPanel">
+		<imo2:«name.toFirstUpper()»DynaTable ui:field="listComposite"/>
+	</imo1:WrapperPanelForTable>
+
+</ui:UiBinder> 
+«ENDFILE»
+«ENDDEFINE»

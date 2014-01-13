@@ -1,0 +1,21 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:h='urn:import:com.google.gwt.user.datepicker.client'
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'>
+
+	<ui:style>
+		.errorLabel {
+			color: red;
+			font-weight: bold;
+			font-size: 10px;
+			display: none;
+			white-space: pre;
+		}
+	</ui:style>
+
+
+	<g:HTMLPanel>
+		<div ui:field="errorLabel" class="{style.errorLabel}" />
+	</g:HTMLPanel>
+
+
+</ui:UiBinder>

@@ -1,0 +1,35 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt»
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase()+"/shared/constants/" + projectName.toFirstUpper() + "EnumConstants.java"»
+
+package org.imogene.«projectName.toLowerCase()».shared.constants;
+
+public class «projectName.toFirstUpper()»EnumConstants {	
+
+
+	«FOREACH entities AS e»
+	/** «e.name» enumeration constants */		
+		 	
+	«FOREACH e.groups.fields AS field»
+	«EXPAND getEnumerationValues FOR field-»
+	«ENDFOREACH»
+				
+	«ENDFOREACH»
+	
+}
+«ENDFILE»
+«ENDDEFINE»
+«REM» ----------------------------------------- «ENDREM»
+
+
+
+«DEFINE getEnumerationValues FOR FieldEntity-»«ENDDEFINE»
+
+«DEFINE getEnumerationValues FOR EnumField-»
+	// «name.toFirstUpper()» values
+	«FOREACH enumValues AS enumValue-»
+	public static final String «parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()» = "«enumValue.value»";
+	«ENDFOREACH-»	
+«ENDDEFINE»
+

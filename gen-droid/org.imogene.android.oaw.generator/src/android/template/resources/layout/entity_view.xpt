@@ -1,0 +1,136 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity-»
+«FILE 'layout/'+ name.toLowerCase() + '_view.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<merge 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/org.imogene.android.«projectName.toLowerCase()»" >
+	
+	«FOREACH groups AS group-»
+	<ScrollView 
+		android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" >
+		
+		«EXPAND layout FOREACH group.fields-»
+
+		</LinearLayout>
+
+
+	</ScrollView>
+	«ENDFOREACH»
+	
+	«IF hasDynamicFields-»
+	<ScrollView 
+		android:id="@+id/«name.toLowerCase()»_dynamic_field_group"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		
+		<LinearLayout
+			android:id="@+id/«name.toLowerCase()»_dynamic_field_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" />
+	
+	</ScrollView>
+	«ENDIF-»
+
+</merge>
+«ENDFILE»
+«ENDDEFINE»
+
+
+
+«DEFINE layout FOR FieldEntity-»
+<org.imogene.android.widget.field.view.«EXPAND class FOR this-»
+	style="@style/BaseField"
+	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+	app:igDependent="«fieldDependentVisibility.size > 0»"
+	app:igHidden="«hidden»"
+	app:igTitle="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+	«EXPAND specificAttributes FOR this-»
+/>
+«ENDDEFINE»
+
+«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE class FOR StringField-»TextFieldView«ENDDEFINE»
+
+«DEFINE class FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR AddressField-»AddressFieldView«ENDDEFINE»
+
+«DEFINE class FOR EmailField-»EmailFieldView«ENDDEFINE»
+
+«DEFINE class FOR PhoneField-»PhoneFieldView«ENDDEFINE»
+
+«DEFINE class FOR GeoField-»GeoFieldView«ENDDEFINE»
+
+«DEFINE class FOR BooleanField-»BooleanFieldView«ENDDEFINE»
+
+«DEFINE class FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR DateField-»DateFieldView«ENDDEFINE»
+
+«DEFINE class FOR TimeField-»TimeFieldView«ENDDEFINE»
+
+«DEFINE class FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
+
+«DEFINE class FOR FloatField»FloatFieldView«ENDDEFINE»
+
+«DEFINE class FOR IntegerField»IntegerFieldView«ENDDEFINE»
+
+«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldView«ELSE-»RelationManyFieldView«ENDIF-»«ENDDEFINE»
+
+«DEFINE class FOR BinaryField»BinaryFieldView«ENDDEFINE»
+
+«DEFINE class FOR PhotoField»PhotoFieldView«ENDDEFINE»
+
+«DEFINE class FOR VideoField»VideoFieldView«ENDDEFINE»
+
+«DEFINE class FOR SoundField»SoundFieldView«ENDDEFINE»
+
+
+
+
+
+«DEFINE specificAttributes FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR TextField-»
+app:igStringType="string"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR AddressField-»
+app:igStringType="address"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR PhoneField-»
+app:igStringType="address"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR TextAreaField-»
+app:igStringType="address"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR NumericField-»
+app:igFormat="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR EnumField-»
+app:igItems="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+app:igItemsValues="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values"
+«ENDDEFINE»
+
+«DEFINE specificAttributes FOR RelationFieldEntity-»
+«IF cardinality != 1»
+app:igDisplay="@plurals/«entity.name.toLowerCase()-»_display"
+«ENDIF»
+«ENDDEFINE»

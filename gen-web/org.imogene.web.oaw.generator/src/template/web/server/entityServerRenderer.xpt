@@ -1,0 +1,327 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase() + "/server/" + projectName.toFirstUpper() + "ServerRenderer.java"»
+
+package org.imogene.«projectName.toLowerCase()».server;
+
+import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.LocalizedText;
+import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.web.server.util.DateUtil;
+
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
+«ENDFOREACH -»
+
+
+/**
+ * Singleton that enables to render a display value of the beans
+ * on the server side
+ * @author MEDES-IMPS
+ */
+public class «projectName.toFirstUpper()»ServerRenderer {
+
+	private final static String propertyFile = "org.imogene.«projectName.toLowerCase()».client.i18n.«projectName.toFirstUpper()»Translations";
+	private static ResourceBundle rb;
+
+	private static «projectName.toFirstUpper()»ServerRenderer instance = new «projectName.toFirstUpper()»ServerRenderer();
+	
+	
+	private «projectName.toFirstUpper()»ServerRenderer() {
+		rb = ResourceBundle.getBundle(propertyFile);
+	}
+	
+	public static «projectName.toFirstUpper()»ServerRenderer get() {
+		return instance;
+	}
+	
+	public void setLocale(String isoCode) {
+		if(isoCode!=null && !isoCode.isEmpty()) {		
+			if(isoCode.length()==2)
+				rb = ResourceBundle.getBundle(propertyFile + "_" + isoCode);	
+			else if(isoCode.length()==5)
+				rb = ResourceBundle.getBundle(propertyFile + "_" + isoCode.substring(0, 2));
+		}	
+	}
+
+	public String getDisplayValue(ImogBean bean, ResourceBundle bundle) {
+		if (!rb.equals(bundle)) {
+			rb = bundle;
+		}
+		return getDisplayValue(bean);
+	}
+
+    /**
+     * Get display representation for a ImogBean     
+     * @param bean the ImogBean
+     * @return the string representation
+     */
+	public String getDisplayValue(ImogBean bean){
+			
+		«FOREACH entities AS e -»
+		if(bean instanceof «e.name.toFirstUpper()»){
+			return getDisplayValue((«e.name.toFirstUpper()») bean);
+		}
+		«ENDFOREACH -»		
+		return "";
+	}
+		
+	
+	«FOREACH entities AS e -»
+	/**	 */
+	public String getDisplayValue(«e.name.toFirstUpper()» bean){
+		String value = "";
+		«IF !(e.mainFields==null) && !e.mainFields.isEmpty -»
+		«FOREACH e.mainFields AS f -»
+			«EXPAND stringRepresentation(projectName) FOR f -»
+		«ENDFOREACH -»	
+		«REM»
+		«FOREACH e.secondaryFields AS f -»
+			«EXPAND stringRepresentation FOR f -»
+		«ENDFOREACH -»	
+		«ENDREM»
+		«ENDIF -»		
+		return value.trim();	
+	}
+	«ENDFOREACH»
+	
+
+
+   /**
+     * Get an enumeration representation for a ImogBean type enumeration field
+     * @param beanClass a ImogBean class type
+     * @param fieldName the ImogBean field name     
+     * @param fieldValue the bean field value    
+     * @return the enumeration string representation
+     */
+	public String getEnumDisplayValue(Class<?> beanClass, String fieldName, String fieldValue){
+
+		if (fieldValue!=null && !fieldValue.equals("")){
+			«FOREACH entities AS e»
+			if (beanClass.equals(«e.name.toFirstUpper()».class)) {
+				return get«e.name»EnumDisplayValue(fieldName, fieldValue);
+			}		
+			«ENDFOREACH»				
+		}
+		return "";		
+	}	
+
+	
+	«FOREACH entities AS e»
+	/**
+	 *
+	 */
+	public String get«e.name»EnumDisplayValue(String fieldName, String fieldValue){
+		String value = "";
+		«FOREACH e.groups.fields AS f»
+			«EXPAND enumStringRepresentation(projectName) FOR f»
+		«ENDFOREACH»
+		return value.trim();
+	}
+	«ENDFOREACH»
+	
+	/**
+	 * Gets the text corresponding to a given locale
+	 * @param localizedText the localizedText for which the text has to be returned
+	 * @return the text corresponding to a given locale (if empty, returns the first non empty text)
+	 */
+	public String getLocalizedText(LocalizedText localizedText) {
+
+		String locale = rb.getString("locale");
+
+		if (localizedText != null) {
+
+			String text = "";
+			
+			«FOREACH languages AS l»
+				if (locale.equals("«l.isoCode»"))
+					text = localizedText.get«l.name.toFirstUpper()»();
+			«ENDFOREACH»
+
+			if (text != null && !text.isEmpty())
+				return text;
+			else { // return first not empty text
+			
+				«FOREACH languages AS l»
+				if(localizedText.get«l.name.toFirstUpper()»()!=null && !localizedText.get«l.name.toFirstUpper()»().isEmpty())
+					return localizedText.get«l.name.toFirstUpper()»();
+				«ENDFOREACH»
+			}
+		}
+		return "";
+	}	
+	
+	
+	public static String getBooleanDisplayValue(Boolean bool) {
+		if (bool!=null)
+		{
+			if(bool.booleanValue())
+				return rb.getString("boolean_true");
+			else
+				return rb.getString("boolean_false");			
+		}
+		else	
+			return "";
+	}
+	
+	public static String getDateDisplayValue(Date date) {
+		if (date != null)
+			return DateUtil.getFormatedDate(date);
+		else
+			return "";
+	}
+	
+	public String getEntityTypeDisplayValue(ImogBean bean){
+			
+		«FOREACH entities AS e -»
+		if(bean instanceof «e.name.toFirstUpper()»){
+			return rb.getString("«e.name.toFirstLower()»_name");
+		}
+		«ENDFOREACH -»		
+		return "";
+	}	
+
+
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«REM» Format date/time and enumeration field to current local «ENDREM»
+«DEFINE stringRepresentation(String projectName) FOR FieldEntity -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() + " ";
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR TextField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null) {
+		«IF this.translatable -»
+		value = value + getLocalizedText(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " ";		
+		«ELSE -»
+		value = value + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»() + " ";
+		«ENDIF -»
+	}
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR RelationFieldEntity -»
+	«IF cardinality==1»
+	if(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + getDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " " ;
+	«ENDIF»
+		
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR DateField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + DateUtil.getFormatedDate(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»())+	" " ;						
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR DateTimeField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + DateUtil.getFormatedDateTime(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " " ;
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR TimeField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()!=null)
+		value = value + DateUtil.getFormatedTime(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»())+	" " ;
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR EnumField -»
+	String «name.toFirstLower()» = bean.«EXPAND template::CommonFieldUtil::getterName FOR this-»();
+	if ( «name.toFirstLower()»!=null)
+	{	
+	«IF this.multipleSelection==true-»		
+		String[] indexesStr = «name.toFirstLower()».split(";");
+		String result = new String();
+		for(int j=0; j< indexesStr.length; j++){				
+		«FOREACH enumValues AS enumValue ITERATOR iter-»
+		«IF iter.counter1==1 -»
+			if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");
+				else
+					result = result + ", " + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");											
+			}				
+        «ELSE -»
+			else if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");
+				else
+					result = result + ", " + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");											
+			}			
+		«ENDIF -»
+		«ENDFOREACH -»									
+		}				
+		value = value + result + " ";		
+	«ELSE-»
+		«FOREACH enumValues AS enumValue ITERATOR iter-»		
+			«IF iter.counter1==1 -»
+        if («name.toFirstLower()».equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	value = value + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option")+ " ";
+        	«ELSE -»
+        else if («name.toFirstLower()».equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	 value = value + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option")+ " ";		
+			«ENDIF -»
+		«ENDFOREACH -»	
+	«ENDIF-»	
+	}
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR BooleanField»
+	value = value + getBooleanDisplayValue(bean.«EXPAND template::CommonFieldUtil::getterName FOR this»()) + " ";
+«ENDDEFINE»
+
+«DEFINE stringRepresentation(String projectName) FOR GeoField -»
+	if (bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Latitude()!=null && bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Longitude()!=null)
+		value = value + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Latitude() + "," + bean.«EXPAND template::CommonFieldUtil::getterName FOR this»Longitude() + " ";
+«ENDDEFINE»
+
+
+«DEFINE enumStringRepresentation(String projectName) FOR FieldEntity»«ENDDEFINE»
+«DEFINE enumStringRepresentation(String projectName) FOR EnumField»
+	if (fieldName.equals("«EXPAND template::CommonFieldUtil::propertyName FOR this-»"))
+	{
+	
+	«IF this.multipleSelection==true-»		
+		String[] indexesStr = fieldValue.split(";");
+		String result = new String();
+		for(int j=0; j< indexesStr.length; j++){				
+		«FOREACH enumValues AS enumValue ITERATOR iter-»
+		«IF iter.counter1==1 -»
+			if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");
+				else
+					result = result + ", " + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");											
+			}				
+        «ELSE -»
+			else if (indexesStr[j].equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»)) {
+				if(j==0)
+					result = result + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");
+				else
+					result = result + ", " + rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");											
+			}			
+		«ENDIF -»
+		«ENDFOREACH -»									
+		}				
+		value = result;		
+	«ELSE-»
+		«FOREACH enumValues AS enumValue ITERATOR iter-»		
+			«IF iter.counter1==1 -»
+        if (fieldValue.equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	value = rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");        	
+        	«ELSE -»
+        else if (fieldValue.equals(«projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()») )
+        	value = rb.getString("«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option");        	 		
+			«ENDIF -»
+		«ENDFOREACH -»	
+	«ENDIF-»	
+		
+	}
+«ENDDEFINE»
+
+

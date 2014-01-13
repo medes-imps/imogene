@@ -1,0 +1,37 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase() + "/server/util/" + projectName.toFirstUpper() + "FormUtil.java"»
+«LET "admin" AS adminType-»
+package org.imogene.«projectName.toLowerCase()».server.util;
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.imogene.web.server.util.FormUtil;
+
+/**
+ * @author MEDES-IMPS
+ */
+public class «projectName.toFirstUpper()»FormUtil implements FormUtil {
+	
+	
+	public String getActorClassName(String shortName) {
+		
+		Map<String, String> classesNames = new HashMap<String, String>();
+		
+		«FOREACH entities AS e -»
+		«IF Actor.isAssignableFrom(e.metaType)-»
+		classesNames.put("«e.shortName»", "org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»");
+		«ENDIF-»
+		«ENDFOREACH -»
+		
+		return classesNames.get(shortName);
+	}
+
+}
+
+«ENDLET-»
+«ENDFILE»
+«ENDDEFINE»

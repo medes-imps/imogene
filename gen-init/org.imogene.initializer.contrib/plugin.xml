@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.imogene.initializer.contrib.menu"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.imogene.initializer.contrib.InitializerGenerationAction"
+               icon="icons/initializer.png"
+               id="org.imogene.initializer.contrib.InitializerGenerationAction"
+               label="Generation Initializer"
+               menubarPath="imogene.gen.menu/generator">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

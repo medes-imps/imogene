@@ -1,0 +1,52 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'
+	xmlns:imo3='urn:import:org.imogene.web.client.ui.field.binary.upload'>
+
+	<ui:style>
+		.imogene-greytext {
+			color: #777777;
+			font-size: 12px;
+		}
+		
+		.downloadPanelStyle {
+			margin-left: 5px;
+		}
+	</ui:style>
+
+
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+
+		<g:VerticalPanel>
+
+			<imo2:ImogErrorLabel ui:field="errorLabel" />
+
+			<g:HorizontalPanel ui:field="main" width="100%">
+
+				<g:cell width="32px">
+					<g:Image ui:field="fileIcon" width="32px" />
+				</g:cell>
+
+				<g:cell verticalAlignment="middle">
+					<g:VerticalPanel ui:field="infoPanel" styleName="{style.downloadPanelStyle}">
+						<g:Label ui:field="nameLabel" stylePrimaryName="style.imogene-greytext}" />
+						<g:Label ui:field="sizeLabel" stylePrimaryName="style.imogene-greytext}" />
+						<g:HTML ui:field="downloadLink" />
+					</g:VerticalPanel>
+				</g:cell>
+
+				<g:cell verticalAlignment="middle">
+					<g:VerticalPanel ui:field="editPanel">
+						<g:cell>
+							<imo3:ImogBinaryUploader ui:field="uploader" />
+						</g:cell>
+					</g:VerticalPanel>
+				</g:cell>
+
+			</g:HorizontalPanel>
+
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>
+
+</ui:UiBinder>

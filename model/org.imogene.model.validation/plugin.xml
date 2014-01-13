@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+     <extension point="org.eclipse.ui.startup">
+      <startup class="org.imogene.model.validation.Startup"/>
+   </extension>
+   
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+         id="com.ibm.xtools.emf.validation.example.pde.adapter.EObjectPropertyTester"
+         type="org.eclipse.emf.ecore.EObject"
+         namespace="com.ibm.xtools.emf.validation.example.pde.adapter"
+         properties="ePackage"
+         class="org.imogene.model.validation.expressions.EObjectPropertyTester">
+      </propertyTester>
+   </extension>
+   
+   <extension point="org.eclipse.emf.validation.constraintBindings">
+      <clientContext id="com.ibm.xtools.emf.validation.example.pde.adapter">
+         <enablement>
+            <and>
+               <instanceof value="org.eclipse.emf.ecore.EObject"/>
+               <test
+                  property="com.ibm.xtools.emf.validation.example.pde.adapter.ePackage"
+                  value="http://www.i-mogene.org/imogene/1.0"/>
+            </and>
+         </enablement>
+      </clientContext>
+      
+      <binding
+         context="com.ibm.xtools.emf.validation.example.pde.adapter"
+         category="medoo-emf-validation"/>
+   </extension>
+   
+   <!-- Define a constraint that we can use to demonstrate this adapter. -->
+   <extension
+         point="org.eclipse.emf.validation.constraintProviders">
+      <category
+            name="%category.name"
+            id="medoo-emf-validation/adapter">
+         %category.description
+      </category>
+      <constraintProvider cache="true">
+         <package namespaceUri="http://www.i-mogene.org/imogene/1.0"/>
+         
+         <constraints categories="medoo-emf-validation/adapter">
+            <constraint
+                  class="org.imogene.model.validation.constraints.RelationConstraint"
+                  id="org.imogene.model.validation.constraints.RelationConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Relation validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="RelationFieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.ObjectNameConstraint"
+                  id="org.imogene.model.validation.constraints.ObjectNameConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Object Name"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+               <target
+                     class="FieldGroup">
+               </target>
+               <target
+                     class="FieldEntity">
+               </target>
+               <target
+                     class="EnumValue">
+               </target>
+               <target
+                     class="EnumValue">
+               </target>
+               <target
+                     class="Role">
+               </target>
+               <target
+                     class="Project">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.CommonFieldsConstraint"
+                  id="org.imogene.model.validation.constraints.CommonFieldsConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="CommonFields validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="RelationFieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateNameEntityFieldConstraint"
+                  id="org.imogene.model.validation.constraints.DuplicateNameEntityFieldConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate entity and field name validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateShortNameEntityField"
+                  id="org.imogene.model.validation.constraints.DuplicateShortNameEntityField"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate short name between entity and field validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateEntityName"
+                  id="org.imogene.model.validation.constraints.DuplicateEntityName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate entity name validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="Project">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateEntityShortName"
+                  id="org.imogene.model.validation.constraints.DuplicateEntityShortName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate entity shortname validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="Project">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateFieldName"
+                  id="org.imogene.model.validation.constraints.DuplicateFieldName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate field name validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateFieldShortName"
+                  id="org.imogene.model.validation.constraints.DuplicateFieldShortName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate field shortname validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateGroupName"
+                  id="org.imogene.model.validation.constraints.DuplicateGroupName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate group name validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateGroupShortName"
+                  id="org.imogene.model.validation.constraints.DuplicateGroupShortName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate group shortname validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateNameEnumValue"
+                  id="org.imogene.model.validation.constraints.DuplicateNameEnumValue"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate name in EnumValue validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="EnumField">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.BadCompositionConstraint"
+                  id="org.imogene.model.validation.constraints.BadCompositionConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Compositioin validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="MainRelationFieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.CheckReservedCardEntityName"
+                  id="org.imogene.model.validation.constraints.CheckReservedCardEntityName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Reserved entity name validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.CheckReservedFieldEntityName"
+                  id="org.imogene.model.validation.constraints.CheckReservedFieldEntityName"
+                  lang="Java"
+                  mode="Batch"
+                  name="Reserved field entity name validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="FieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DefaultValueFormatConstraint"
+                  id="org.imogene.model.validation.constraints.DefaultValueFormatConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Field defaultvalue value format"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="FieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.MinValueFormatConstraint"
+                  id="org.imogene.model.validation.constraints.MinValueFormatConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Field min value format"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="FieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.MaxValueFormatConstraint"
+                  id="org.imogene.model.validation.constraints.MaxValueFormatConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Field max value format"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="FieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DependencyFieldValueFormatConstraint"
+                  id="org.imogene.model.validation.constraints.DependencyFieldValueFormatConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="DependencyFieldValue value format"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="FieldDependentVisibility">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.DuplicateValueEnumValue"
+                  id="org.imogene.model.validation.constraints.DuplicateValueEnumValue"
+                  lang="Java"
+                  mode="Batch"
+                  name="Duplicate value in EnumValue validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="EnumField">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.CheckIsoCode"
+                  id="org.imogene.model.validation.constraints.CheckIsoCode"
+                  lang="Java"
+                  mode="Batch"
+                  name="Iso code validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="Project">
+               </target>
+               <target
+                     class="CardEntity">
+               </target>
+               <target
+                     class="FieldGroup">
+               </target>
+               <target
+                     class="FieldEntity">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.ValidationRuleConstraint"
+                  id="org.imogene.model.validation.constraints.ValidationRuleConstraint"
+                  lang="Java"
+                  mode="Batch"
+                  name="Validation Rule validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="StringField">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.CheckActorFields"
+                  id="org.imogene.model.validation.constraints.CheckActorFields"
+                  lang="Java"
+                  mode="Batch"
+                  name="Admin fields validation for actors"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="Actor">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.TextFieldValidation"
+                  id="org.imogene.model.validation.constraints.TextFieldValidation"
+                  lang="Java"
+                  mode="Batch"
+                  name="TextField validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="TextField">
+               </target>
+            </constraint>
+            <constraint
+                  class="org.imogene.model.validation.constraints.ColumnFieldsValidation"
+                  id="org.imogene.model.validation.constraints.ColumnFieldsValidation"
+                  lang="Java"
+                  mode="Batch"
+                  name="Column fields validation"
+                  severity="ERROR"
+                  statusCode="201">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="CardEntity">
+               </target>
+            </constraint>
+         </constraints>
+      </constraintProvider>
+   </extension>
+</plugin>
