@@ -17,7 +17,7 @@
     <context:annotation-config/>
     
 	<!-- Properties placeholder -->
-	<bean id="propertyConfigurer" class="org.imogene.sync.client.config.MyPropertyPlaceholderConfigurer" factory-method="getInstance" />
+	<bean id="propertyConfigurer" class="org.imogene.client.config.MyPropertyPlaceholderConfigurer" factory-method="getInstance" />
 
 	<!--  Encryption system initialization -->
 	<bean id="encryptionKeyProvider" class="org.imogene.lib.sync.client.encryption.DefaultSecretKeyProvider"/>	
@@ -77,7 +77,7 @@
 	«ENDFOREACH»
 
 	<!-- Initialize the Synchronizer -->
-	<bean id="synchronizer" class="org.imogene.sync.client.jobs.SynchronizerImpl">
+	<bean id="synchronizer" class="org.imogene.client.jobs.SynchronizerImpl">
 	    <property name="directoryPath" value="${sync.file.directory}" />
 	    <property name="dataManager" ref="dataHandlerManager" />
 	    <property name="serializer" ref="xmlSerializer" />

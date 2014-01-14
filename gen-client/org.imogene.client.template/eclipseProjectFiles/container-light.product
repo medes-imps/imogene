@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Imogene Rcp" uid="org.imogene.client.product" id="org.imogene.client.imogenedemo.product" application="org.imogene.client.imogenedemo.application" version="2.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="%modelName%" uid="org.imogene.client.%modelName%.product" id="org.imogene.client.%modelName%.product" application="org.imogene.client.%modelName%.application" version="2.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/testclient/icons/about_image.png"/>
+      <image path="/%projectName%/icons/about_image.png"/>
       <text>
-         %productAbout
+		%modelName% application based on Eclipse Platform\n\
+		\n\
+		Version: 2.0.0\n\
+		\n\
+		Welcome to the %modelName% application based on Eclipse Product Configuration. \n\
+		A light weight server and a web application are encapsulated in it with customized branding elements.\n\
+		\n\
+		This product is developed by MEDES-IMPS\n\
       </text>
    </aboutInfo>
 
@@ -21,18 +28,18 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/testclient/icons/laboratory-16x16.png" i32="/testclient/icons/laboratory-32x32.png" i48="/testclient/icons/laboratory-48x48.png" i64="/testclient/icons/laboratory-64x64.png" i128="/testclient/icons/laboratory-128x128.png"/>
+   <windowImages i16="/%projectName%/icons/laboratory-16x16.png" i32="/%projectName%/icons/laboratory-32x32.png" i48="/%projectName%/icons/laboratory-48x48.png" i64="/%projectName%/icons/laboratory-64x64.png" i128="/%projectName%/icons/laboratory-128x128.png"/>
 
    <splash
-      location="org.imogene.client.imogenedemo"
+      location="org.imogene.client.%modelName%"
       startupProgressRect="0,280,455,15"
       startupMessageRect="7,220,441,20"
       startupForegroundColor="C8D5EA" />
-   <launcher name="imogene">
-      <linux icon="/testclient/icons/laboratory.xpm"/>
+   <launcher name="%modelName%">
+      <linux icon="/%projectName%/icons/laboratory.xpm"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/testclient/icons/laboratory.ico"/>
+         <ico path="/%projectName%/icons/laboratory.ico"/>
          <bmp/>
       </win>
    </launcher>
@@ -137,6 +144,7 @@
       <plugin id="org.eclipse.ui.intro"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.imogene.client.core"/>
+      <plugin id="org.imogene.client.%modelName%"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
       <plugin id="org.slf4j.log4j"/>

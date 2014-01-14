@@ -15,7 +15,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.imogene.client.imogenedemo.application"
+            application="org.imogene.client.%modelName%.application"
             description="%productAbout"
             name="Imogene Rcp">
          <property
@@ -56,7 +56,7 @@
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.imogene.client.bugreport.BugReportHandler"
-            id="org.imogene.command.reportBug"
+            id="org.imogene.client.command.reportBug"
             name="%bugreport.command">
       </command>
    </extension>
@@ -64,7 +64,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.imogene.client.bugreport.BugReportPreferencePage"
-            id="org.imogene.rcp.container.bugreport.BugReportPreferencePage"
+            id="org.imogene.client.bugreport.BugReportPreferencePage"
             name="%bugreport.name">
       </page>
       <page
@@ -113,8 +113,8 @@
             allPopups="false"
             locationURI="menu:help?before=additions">
          <command
-               commandId="org.imogene.command.reportBug"
-               id="org.imogene.command.reportBug"
+               commandId="org.imogene.client.command.reportBug"
+               id="org.imogene.client.command.reportBug"
                mnemonic="%bugreport.mnemonic"
                style="push">
          </command>

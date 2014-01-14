@@ -40,7 +40,7 @@ public class Activator extends AbstractUIPlugin implements IPropertyChangeListen
 	private static final String JDBC_URL_PARAM = "jdbc.url"; //$NON-NLS-1$
 	private static final String SYNC_DIR_PARAM = "sync.file.directory"; //$NON-NLS-1$
 
-	public static final String PLUGIN_ID = "org.imogene.client"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.imogene.client.%modelName%%"; //$NON-NLS-1$
 
 	private static Activator plugin;
 

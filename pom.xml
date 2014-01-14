@@ -60,7 +60,7 @@
 			<modules>
 				<module>dev-libs/org.imogene.lib.common</module>
 				<module>dev-libs/org.imogene.lib.encryption</module>
-                <module>dev-libs/org.imogene.lib.push</module>
+				<module>dev-libs/org.imogene.lib.push</module>
 				<module>dev-libs/org.imogene.lib.sync.common</module>
 				<module>dev-libs/org.imogene.lib.sync.client</module>
 				<module>dev-libs/org.imogene.lib.sync.server</module>

@@ -17,13 +17,13 @@ public class BugReportPreferenceInitializer extends AbstractPreferenceInitialize
 		preferences.setDefault(IBugReportConstants.LOG_WEBAPP, true);
 		preferences.setDefault(IBugReportConstants.LOG_MAX_FILES, 1);
 
-		preferences.setDefault(IBugReportConstants.SMTP_DESTINATION, "support@i-mogene.org"); //$NON-NLS-1$
+		preferences.setDefault(IBugReportConstants.SMTP_DESTINATION, "support@myapplication.org"); //$NON-NLS-1$
 		preferences.setDefault(IBugReportConstants.SMTP_AUTH, true);
 		preferences.setDefault(IBugReportConstants.SMTP_HOST, "smtp.gmail.com"); //$NON-NLS-1$
 		preferences.setDefault(IBugReportConstants.SMTP_PORT, 587);
 		preferences.setDefault(IBugReportConstants.SMTP_TLS, true);
-		preferences.setDefault(IBugReportConstants.SMTP_USER, "imogene.medes@gmail.com"); //$NON-NLS-1$
-		preferences.setDefault(IBugReportConstants.SMTP_PASSWORD, "epidefender"); //$NON-NLS-1$
+		preferences.setDefault(IBugReportConstants.SMTP_USER, "anemail@gmail.com"); //$NON-NLS-1$
+		preferences.setDefault(IBugReportConstants.SMTP_PASSWORD, "apassword"); //$NON-NLS-1$
 	}
 
 }

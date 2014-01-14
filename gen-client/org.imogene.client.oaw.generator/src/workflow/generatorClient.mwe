@@ -134,6 +134,7 @@
 	<!-- ======================================================================================================================== -->
 		
 	<!-- MANIFEST.MF class -->
+<!--	
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
@@ -141,6 +142,6 @@
 		</metaModel>
 		<expand value='template::client::plugin::manifest_mf::generate("${modelName}") FOR project' />
 		<genPath value="${home-gen}" />		
-	</component>
+	</component> -->
 	
 </workflow>
