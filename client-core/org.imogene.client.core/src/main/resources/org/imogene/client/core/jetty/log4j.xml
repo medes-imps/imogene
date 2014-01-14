@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- rolling file appender -->
+	<appender name="basefile" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="${jetty.home}/logs/jetty.log" />
+		<param name="MaxFileSize" value="100KB" />
+		<!-- Keep one backup file -->
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd-MMM-yyyy HH:mm:ss} %-5p %c %x - %m%n" />
+		</layout>
+	</appender>
+	
+	<!-- jetty logger -->
+	<logger name="org.eclipse.jetty" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="basefile" />
+	</logger>
+	
+	<!-- default logger -->
+	<root>
+		<priority value="info" />
+		<appender-ref ref="basefile" />
+	</root>
+
+</log4j:configuration>

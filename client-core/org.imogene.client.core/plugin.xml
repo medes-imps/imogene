@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.imogene.client.core.jetty.webapps" name="Web applications" schema="schema/org.imogene.client.core.jetty.webapps.exsd"/>
+   <extension-point id="org.imogene.client.core.jetty.servlets" name="Http servlet" schema="schema/org.imogene.client.core.jetty.servlets.exsd"/>
+
+</plugin>
