@@ -192,10 +192,10 @@
 	<target name="checkCompilationResults" if="compilation.error.occured">
 		<echo file="${compilation.problem.marker}" message="org.imogene.client.core_1.0.0${line.separator}compilation.error.occured=${compilation.error.occured}"/>
 		<eclipse.logCompileError bundle="org.imogene.client.core_1.0.0" log="${compilation.prereq.log}">
-			<include name="/home/julien/git/imogene/client-core/org.apache.derby/compilation.problem"/>
-			<include name="${pluginTemp}/org.apache.derby_1.0.0/compilation.problem"/>
 			<include name="/home/julien/git/imogene/client-core/org.slf4j.log4j/compilation.problem"/>
 			<include name="${pluginTemp}/org.slf4j.log4j_2.0.0/compilation.problem"/>
+			<include name="/home/julien/git/imogene/client-core/org.apache.derby/compilation.problem"/>
+			<include name="${pluginTemp}/org.apache.derby_1.0.0/compilation.problem"/>
 		</eclipse.logCompileError>
 	</target>
 
