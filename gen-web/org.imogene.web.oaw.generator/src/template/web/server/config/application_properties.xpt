@@ -16,6 +16,10 @@ jdbc.username=«jdbcLogin»
 jdbc.password=«jdbcPassword»
 hibernate.dialect=«hibernateDialect»
 
+# The binary path 
+# WARNING : On windows, please use '/' in place of '\'
+binary.path=«binariesPath»
+
 # Notification properties
 notifier.server=«notifierUrl»
 «ENDIF-»
