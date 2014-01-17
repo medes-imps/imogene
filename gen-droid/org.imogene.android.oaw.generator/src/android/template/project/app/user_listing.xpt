@@ -48,7 +48,7 @@ import org.imogene.android.«projectName.toLowerCase()».database.sqlite.«name.toF
 «ENDDEFINE»
 
 «DEFINE importEntity(String projectName) FOR Actor-»
-import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
+import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
 «ENDDEFINE»
 
 

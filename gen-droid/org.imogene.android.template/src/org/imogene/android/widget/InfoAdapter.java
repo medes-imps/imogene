@@ -3,7 +3,7 @@ package org.imogene.android.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.imogene.android.domain.ImogBean;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.template.R;
 import org.imogene.android.util.FormatHelper;
 

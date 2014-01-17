@@ -12,19 +12,15 @@ import greendroid.widget.NormalActionBarItem;
 import java.util.ArrayList;
 
 import org.imogene.android.app.GeneralSettings;
-import org.imogene.android.domain.ImogHelper;
-import org.imogene.android.domain.ImogHelper.EntityInfo;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.entity.ImogHelper.EntityInfo;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.widget.ThemaExpandableListAdapter;
-«FOREACH entities AS entity-»
-«IF entity.topLevel || entity.directAccess.size > 0-»
-import org.imogene.android.«name.toLowerCase()».entities.«entity.name.toFirstUpper()»;
-«ENDIF-»
-«IF entity.directAccess.size > 0-»
-import org.imogene.android.«name.toLowerCase()».roles.«entity.name.toFirstUpper()»Roles;
-«ENDIF-»
-«ENDFOREACH-»
 import org.imogene.android.«name.toLowerCase()».R;
+«FOREACH entities AS entity-»
+import org.imogene.android.«name.toLowerCase()».domain.«entity.name.toFirstUpper()»;
+«ENDFOREACH-»
+import org.imogene.android.«name.toLowerCase()».security.AccessPolicy;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -154,25 +150,23 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
 		«FOREACH themas AS thema-»
 		ArrayList<EntityInfo> thema«thema.name.toFirstUpper()-» = new ArrayList<EntityInfo>();
 		«ENDFOREACH-»
+		
+		AccessPolicy policy = AccessPolicy.getPolicy(this);
 
 		«FOREACH entities AS entity-»
-		«IF entity.topLevel || entity.directAccess.size > 0-»
-			«IF entity.directAccess.size > 0-»
-			if («entity.name.toFirstUpper()»Roles.directAccess(this)) {
-			«ENDIF-»
-			getContentResolver().registerContentObserver(«entity.name.toFirstUpper()».Columns.CONTENT_URI, true, mObserver);
-			«IF isInMiscellaneousThema(themas, entity)-»
-			themaMiscellaneous.add(ImogHelper.getEntityInfo(«entity.name.toFirstUpper()».class));
-			«ELSE-»
-			«FOREACH themas AS thema-»
+		«IF entity.topLevel-»
+			if (policy.canDirectAccess«entity.name.toFirstUpper()»()) {
+				getContentResolver().registerContentObserver(«entity.name.toFirstUpper()».Columns.CONTENT_URI, true, mObserver);
+				«IF isInMiscellaneousThema(themas, entity)-»
+				themaMiscellaneous.add(ImogHelper.getEntityInfo(«entity.name.toFirstUpper()».class));
+				«ELSE-»
+				«FOREACH themas AS thema-»
 				«IF thema.entities.contains(entity)-»
 				thema«thema.name.toFirstUpper()».add(ImogHelper.getEntityInfo(«entity.name.toFirstUpper()».class));
 				«ENDIF-»
-			«ENDFOREACH-»
-			«ENDIF-»
-			«IF entity.directAccess.size > 0-»
+				«ENDFOREACH-»
+				«ENDIF-»
 			}
-			«ENDIF-»
 		«ENDIF-»
 		«ENDFOREACH-»
 		

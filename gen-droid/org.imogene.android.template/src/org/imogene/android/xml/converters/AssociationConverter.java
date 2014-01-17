@@ -2,7 +2,7 @@ package org.imogene.android.xml.converters;
 
 import java.io.IOException;
 
-import org.imogene.android.domain.ImogBean;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.xml.mapper.Mapper;
 import org.xmlpull.v1.XmlPullParser;

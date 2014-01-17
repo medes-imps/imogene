@@ -1,6 +1,6 @@
 package org.imogene.android.widget.field.view;
 
-import org.imogene.android.domain.LocalizedText;
+import org.imogene.android.common.entity.LocalizedText;
 import org.imogene.android.template.R;
 
 import android.content.Context;

@@ -271,25 +271,14 @@
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
 	
-	<!-- ===== Roles ===== -->
-	<!-- Roles for project -->
+	<!-- ===== Access Policy ===== -->
+	<!-- Access Policy for the project -->
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
-		<expand value='android::template::project::roles::project_roles::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>
-	
-	<!-- Roles for each entities -->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
-			<metaModelFile value="${imogeneMetaModel}" />
-		</metaModel>
-		<expand value='android::template::project::roles::entity_roles::generate(project.name) FOREACH project.entities' />
+		<expand value='android::template::project::security::access_policy::generate FOR project' />
 		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -339,7 +328,7 @@
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
-		<expand value='android::template::project::entities::entity_java::generate(project.name, "${modelName}") FOREACH project.entities' />
+		<expand value='android::template::project::domain::entity_java::generate(project.name, "${modelName}") FOREACH project.entities' />
 		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -350,7 +339,7 @@
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
-		<expand value='android::template::project::entities::localized_text::generate(project.name) FOR project' />
+		<expand value='android::template::project::domain::localized_text::generate(project.name) FOR project' />
 		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>
@@ -361,7 +350,7 @@
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
-		<expand value='android::template::project::entities::project_entity_helper::generate FOR project' />
+		<expand value='android::template::project::domain::project_entity_helper::generate FOR project' />
 		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
 	</component>

@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.imogene.android.common.entity.GpsLocation;
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.domain.GpsLocation;
-import org.imogene.android.domain.ImogBean;
-import org.imogene.android.domain.ImogHelper;
 import org.imogene.android.util.content.ContentUrisUtils;
 
 import android.content.Context;

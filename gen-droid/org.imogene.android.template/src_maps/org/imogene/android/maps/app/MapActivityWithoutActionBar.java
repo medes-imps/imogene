@@ -3,10 +3,10 @@ package org.imogene.android.maps.app;
 import java.util.ArrayList;
 
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.domain.ImogBean;
 import org.imogene.android.maps.os.OverlayLoader;
 import org.imogene.android.maps.os.OverlayLoader.OnOverlaysLoadedListener;
 import org.imogene.android.maps.widget.BalloonView;

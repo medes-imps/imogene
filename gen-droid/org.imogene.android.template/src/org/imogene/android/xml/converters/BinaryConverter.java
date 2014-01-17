@@ -3,8 +3,8 @@ package org.imogene.android.xml.converters;
 import java.io.IOException;
 import java.util.Date;
 
-import org.imogene.android.domain.Binary;
-import org.imogene.android.domain.BinaryFile;
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.binary.BinaryFile;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;

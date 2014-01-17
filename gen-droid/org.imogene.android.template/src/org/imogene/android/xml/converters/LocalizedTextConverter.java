@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.imogene.android.domain.LocalizedText;
+import org.imogene.android.common.entity.LocalizedText;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;

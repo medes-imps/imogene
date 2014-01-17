@@ -1,0 +1,131 @@
+«IMPORT core»
+«DEFINE generate FOR Project »
+«FILE "/" + name.toLowerCase() + "/security/AccessPolicy.java"-»
+package org.imogene.android.«name.toLowerCase()».security;
+
+import java.util.List;
+
+import org.imogene.android.common.entity.ImogActorImpl;
+import org.imogene.android.common.model.CardEntity;
+import org.imogene.android.common.model.FieldGroup;
+import org.imogene.android.common.profile.EntityProfile;
+import org.imogene.android.common.profile.FieldGroupProfile;
+import org.imogene.android.common.profile.Profile;
+
+import android.content.Context;
+
+public class AccessPolicy {
+
+	«FOREACH entities AS e-»
+	private boolean canCreate«e.name.toFirstUpper()» = true;
+	private boolean canDelete«e.name.toFirstUpper()» = true;
+	private boolean canDirectAccess«e.name.toFirstUpper()» = true;
+	private boolean canExport«e.name.toFirstUpper()» = true;
+	«FOREACH e.groups AS g-»
+	private boolean canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	private boolean canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	private boolean canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()» = true;
+	«ENDFOREACH-»
+	«ENDFOREACH-»
+	
+	private static AccessPolicy sPolicy;
+	
+	public static synchronized AccessPolicy getPolicy(Context context) {
+		if (sPolicy == null) {
+			sPolicy = new AccessPolicy(context);
+		}
+		return sPolicy;
+	}
+	
+	private AccessPolicy(Context context) {
+		List<Profile> profiles = Profile.fromUris(actor.getProfiles());
+		if (profiles != null) {
+			for (Profile profile : profiles) {
+				List<EntityProfile> entityProfiles = EntityProfile.fromUris(profile.getEntityProfiles());
+				if (entityProfiles != null) {
+					for (EntityProfile entityProfile : entityProfiles) {
+						String id = CardEntity.fromUri(entityProfile.getEntity()).getId();
+						«FOREACH entities AS e SEPARATOR " else "-»
+						if ("«e.name.toLowerCase()»".equals(id)) {
+							if (entityProfile.getCreate() != null) {
+								canCreate«e.name.toFirstUpper()» &= entityProfile.getCreate();
+							}
+							if (entityProfile.getDelete() != null) {
+								canDelete«e.name.toFirstUpper()» &= entityProfile.getDelete();
+							}
+							if (entityProfile.getDirectAccess() != null) {
+								canDirectAccess«e.name.toFirstUpper()» &= entityProfile.getDirectAccess();
+							}
+							if (entityProfile.getExport() != null) {
+								canExport«e.name.toFirstUpper()» &= entityProfile.getExport();
+							}
+						}
+						«ENDFOREACH-»
+					}
+				}
+				List<FieldGroupProfile> fieldGroupProfiles = FieldGroupProfile.fromUris(profile.getFieldGroupProfiles());
+				if (fieldGroupProfiles != null) {
+					for (FieldGroupProfile fieldGroupProfile : fieldGroupProfiles) {
+						String id = FieldGroup.fromUri(fieldGroupProfile.getFieldGroup()).getId();
+						«FOREACH entities.groups AS g SEPARATOR " else "-»
+						if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(id)) {
+							if (fieldGroupProfile.getRead() != null) {
+								canRead«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= fieldGroupProfile.getRead();
+							}
+							if (fieldGroupProfile.getWrite() != null) {
+								canWrite«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= fieldGroupProfile.getWrite();
+							}
+							if (fieldGroupProfile.getExport() != null) {
+								canExport«g.parentCard.name.toFirstUpper()»«g.name.toFirstUpper()» &= fieldGroupProfile.getExport();
+							}
+						}
+						«ENDFOREACH-»
+					}
+				}
+			}
+		}
+	}
+	
+	«FOREACH entities AS e-»
+	public boolean canRead«e.name.toFirstUpper()»() {
+		return «FOREACH e.groups AS g SEPARATOR ' || '»canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»«ENDFOREACH»;
+	}
+	
+	public boolean canEdit«e.name.toFirstUpper()»() {
+		return «FOREACH e.groups AS g SEPARATOR ' || '»canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()»«ENDFOREACH»;
+	}
+
+	public boolean canCreate«e.name.toFirstUpper()»() {
+		return canCreate«e.name.toFirstUpper()»;
+	}
+
+	public boolean canDelete«e.name.toFirstUpper()»() {
+		return canDelete«e.name.toFirstUpper()»;
+	}
+
+	public boolean canDirectAccess«e.name.toFirstUpper()»() {
+		return canDirectAccess«e.name.toFirstUpper()»;
+	}
+
+	public boolean canExport«e.name.toFirstUpper()»() {
+		return canExport«e.name.toFirstUpper()»;
+	}
+
+	«FOREACH e.groups AS g-»
+	public boolean canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+
+	public boolean canEdit«e.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canWrite«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+
+	public boolean canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()»() {
+		return canExport«e.name.toFirstUpper()»«g.name.toFirstUpper()»;
+	}
+	«ENDFOREACH-»
+	«ENDFOREACH-»
+
+}
+«ENDFILE»
+«ENDDEFINE»

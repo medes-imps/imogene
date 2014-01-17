@@ -2,11 +2,11 @@ package org.imogene.android.widget.field.edit;
 
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.domain.ImogBean;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;

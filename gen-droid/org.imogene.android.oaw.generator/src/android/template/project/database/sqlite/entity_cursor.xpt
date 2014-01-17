@@ -15,16 +15,16 @@ import android.database.sqlite.SQLiteQuery;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.location.Location;
 import android.net.Uri;
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.entity.LocalizedText;
 import org.imogene.android.database.GeoreferencedCursor;
 import org.imogene.android.database.sqlite.ImogActorCursorImpl;
 import org.imogene.android.database.sqlite.ImogBeanCursorImpl;
 import org.imogene.android.database.sqlite.ImogEntityCursorImpl;
-import org.imogene.android.domain.Binary;
-import org.imogene.android.domain.LocalizedText;
 import org.imogene.android.util.FormatHelper;
 import org.imogene.android.util.field.EnumHelper;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
+import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
 «EXPAND organizeImports(projectName) FOREACH groups.fields-»
 
 public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(metaType)-»ImogActorCursorImpl«ELSE»«IF hasDynamicFields»ImogEntityCursorImpl«ELSE»ImogBeanCursorImpl«ENDIF»«ENDIF»
@@ -95,7 +95,7 @@ public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(meta
 «ENDDEFINE»
 
 «DEFINE organizeImports(String projectName) FOR RelationFieldEntity-»
-import org.imogene.android.«projectName.toLowerCase()-».entities.«entity.name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()-».domain.«entity.name.toFirstUpper()-»;
 «ENDDEFINE»
 
 

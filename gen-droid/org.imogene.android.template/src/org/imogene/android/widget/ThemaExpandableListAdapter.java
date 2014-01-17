@@ -2,10 +2,10 @@ package org.imogene.android.widget;
 
 import java.util.ArrayList;
 
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper.EntityInfo;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.domain.ImogBean;
-import org.imogene.android.domain.ImogHelper.EntityInfo;
 import org.imogene.android.template.R;
 
 import android.content.Context;

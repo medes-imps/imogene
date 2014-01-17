@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import org.imogene.android.Constants.Databases;
 import org.imogene.android.Constants.Paths;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.domain.ImogBean;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.util.content.ContentUrisUtils;
 

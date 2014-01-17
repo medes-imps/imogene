@@ -1,6 +1,6 @@
 package org.imogene.android.xml.converters;
 
-import org.imogene.android.domain.DynamicFieldTemplate;
+import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
 
 public class DynamicFieldTypeConverter extends AbstractSingleValueConverter {
 	

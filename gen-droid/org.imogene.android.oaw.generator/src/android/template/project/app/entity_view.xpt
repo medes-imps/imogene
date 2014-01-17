@@ -27,8 +27,8 @@ import android.view.ViewGroup;
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.ViewPagerIndicatorActivity;
+import org.imogene.android.common.dynamicfields.DynamicFieldManager;
 import org.imogene.android.database.ImogBeanObserver;
-import org.imogene.android.domain.DynamicFieldManager;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
@@ -58,14 +58,9 @@ import org.imogene.android.widget.field.view.RelationOneFieldView;
 import org.imogene.android.widget.field.view.TextFieldView;
 import org.imogene.android.widget.field.view.TimeFieldView;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()-»;
 «EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
-import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
-«IF getMoreFields(groups.fields).size > 0 -»
-«FOREACH getMoreFields(groups.fields) AS f-»
-import org.imogene.android.«projectName.toLowerCase()».roles.«f.entity.name.toFirstUpper()»Roles;
-«ENDFOREACH-»
-«ENDIF-»
+import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements
 		FieldContainer, OnClickListener {
@@ -80,9 +75,8 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	private ImogBeanObserver mContentObserver;
 	private Uri mUri;
 	
-	private boolean mCanDelete;
-	private boolean mCanModify;
-
+	private AccessPolicy mPolicy;
+	
 	private FieldManager mManager;
 	«IF hasDynamicFields-»
 	private DynamicFieldManager mDynamicFieldManager;
@@ -117,14 +111,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 			}
 		};
 		
-		«IF creators.size > 0-»
-		mCanDelete = «name.toFirstUpper()-»Roles.canCreate(this);
-		mCanModify = «name.toFirstUpper()-»Roles.canWrite(this);
-		«ELSE-»
-		boolean canWrite = «name.toFirstUpper()-»Roles.canWrite(this);
-		mCanDelete = canWrite;
-		mCanModify = canWrite;
-		«ENDIF-»
+		mPolicy = AccessPolicy.getPolicy(this);
 		
 		mManager = new FieldManager(this, 100);
 		«IF hasDynamicFields-»
@@ -143,7 +130,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH-»
 		
-		if (mCanModify) {
+		if (mPolicy.canEdit«name.toFirstUpper()»()) {
 			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
 				.setDrawable(R.drawable.ig_ic_title_edit), ACTIONBAR_EDIT_ID);
 		}
@@ -211,7 +198,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		«ENDIF-»
 		
 		«FOREACH groups AS group ITERATOR i-»
-		if («name.toFirstUpper()»Roles.canRead«group.name.toFirstUpper()»(this)) {
+		if (mPolicy.canRead«name.toFirstUpper()»«group.name.toFirstUpper()»()) {
 			boolean visible = false;
 			«FOREACH group.fields AS f-»
 			«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
@@ -266,23 +253,19 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.ig_menu_info_item, menu);
-		if (mCanDelete) {
+		if (mPolicy.canDelete«name.toFirstUpper()»()) {
 			getMenuInflater().inflate(R.menu.ig_menu_delete_item, menu);
 		}
 		getMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
 		boolean hasMoreMenu = false;
 		«IF getMoreFields(groups.fields).size > 0-»
 		«FOREACH getMoreFields(groups.fields) AS f-»
-		«IF f.entity.creators.size > 0-»
-		hasMoreMenu |= «f.entity.name.toFirstUpper()»Roles.canCreate(this);
-		«ELSE-»
-		hasMoreMenu |= «f.entity.name.toFirstUpper()»Roles.canWrite(this);
-		«ENDIF-»
+		hasMoreMenu |= mPolicy.canCreate«f.entity.name.toFirstUpper()»();
 		«ENDFOREACH-»
 		if (hasMoreMenu) {
 			getMenuInflater().inflate(R.menu.«name.toLowerCase()»_more_menu, menu.addSubMenu(R.string.ig_menu_actions).setIcon(android.R.drawable.ic_menu_more));
 			«FOREACH getMoreFields(groups.fields) AS f-»
-			menu.findItem(R.id.menu_action_new_«f.name.toLowerCase()»).setVisible(«f.entity.name.toFirstUpper()»Roles.canWrite(this));
+			menu.findItem(R.id.menu_action_new_«f.name.toLowerCase()»).setVisible(mPolicy.canCreate«f.entity.name.toFirstUpper()»());
 			«ENDFOREACH-»
 		}
 		«ENDIF-»

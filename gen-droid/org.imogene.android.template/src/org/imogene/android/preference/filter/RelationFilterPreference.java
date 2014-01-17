@@ -8,7 +8,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
-import org.imogene.android.domain.filters.RelationFilter;
+import org.imogene.android.common.filter.RelationFilter;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.util.ssl.SSLHttpClient;

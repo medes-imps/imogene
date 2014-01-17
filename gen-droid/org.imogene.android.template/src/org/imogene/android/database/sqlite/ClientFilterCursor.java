@@ -1,6 +1,6 @@
 package org.imogene.android.database.sqlite;
 
-import org.imogene.android.domain.ClientFilter;
+import org.imogene.android.common.filter.ClientFilter;
 
 import android.content.Context;
 import android.database.Cursor;

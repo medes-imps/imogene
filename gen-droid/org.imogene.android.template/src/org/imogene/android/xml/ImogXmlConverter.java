@@ -3,9 +3,9 @@ package org.imogene.android.xml;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import org.imogene.android.domain.ImogBean;
-import org.imogene.android.domain.ImogHelper;
-import org.imogene.android.domain.ImogHelper.ImogBeanCallback;
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
 import org.imogene.android.util.annotation.ReflectionUtils;
 import org.imogene.android.util.annotation.ReflectionUtils.FieldCallback;
 import org.imogene.android.xml.annotation.XmlAlias;

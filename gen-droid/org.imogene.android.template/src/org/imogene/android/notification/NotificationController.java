@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.entity.ImogHelper.EntityInfo;
+import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.domain.ImogBean;
-import org.imogene.android.domain.ImogHelper;
-import org.imogene.android.domain.ImogHelper.EntityInfo;
-import org.imogene.android.domain.ImogHelper.ImogBeanCallback;
 import org.imogene.android.sync.SynchronizationController;
 import org.imogene.android.sync.SynchronizationController.Status;
 import org.imogene.android.sync.SynchronizationListener;

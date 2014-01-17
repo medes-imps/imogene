@@ -12,13 +12,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Paths;
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.entity.SyncHistory;
+import org.imogene.android.common.filter.ClientFilter;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.domain.ClientFilter;
-import org.imogene.android.domain.ImogBean;
-import org.imogene.android.domain.ImogHelper;
-import org.imogene.android.domain.SyncHistory;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.util.Logger;

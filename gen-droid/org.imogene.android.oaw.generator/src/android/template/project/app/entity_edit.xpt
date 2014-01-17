@@ -29,8 +29,8 @@ import android.widget.Toast;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.ViewPagerIndicatorActivity;
-import org.imogene.android.domain.DynamicFieldInstance;
-import org.imogene.android.domain.DynamicFieldManager;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.android.common.dynamicfields.DynamicFieldManager;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.util.content.ContentUrisUtils;
@@ -60,9 +60,9 @@ import org.imogene.android.widget.field.edit.RelationOneFieldEdit;
 import org.imogene.android.widget.field.edit.TextFieldEdit;
 import org.imogene.android.widget.field.edit.TimeFieldEdit;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()-»;
 «EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
-import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity implements 
 		OnClickListener, FieldContainer, OnValueChangeListener {
@@ -89,6 +89,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	
 	private «name.toFirstUpper()» mEntity;
 	private Uri mUri;
+	private AccessPolicy mPolicy;
 	
 	private boolean mMarkAsRead = false;
 	
@@ -100,6 +101,8 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		IamLost.getInstance().add(getTitle().toString());
+		
+		mPolicy = AccessPolicy.getPolicy(this);
 		
 		«IF hasDynamicFields-»
 		SavedState state = (SavedState) getLastNonConfigurationInstance();
@@ -154,11 +157,11 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		ImogPagerAdapter adapter = new ImogPagerAdapter(this);
 		
 		«FOREACH groups AS group»
-		if («name.toFirstUpper()-»Roles.canRead«group.name.toFirstUpper()-»(this) ||
-			«name.toFirstUpper()-»Roles.canWrite«group.name.toFirstUpper()-»(this)) {
+		if (mPolicy.canRead«name.toFirstUpper()»«group.name.toFirstUpper()»() ||
+			mPolicy.canEdit«name.toFirstUpper()»«group.name.toFirstUpper()»()) {
 			adapter.addPage(R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group», R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»);
 
-			if (!«name.toFirstUpper()-»Roles.canWrite«group.name.toFirstUpper()-»(this)) {
+			if (!mPolicy.canEdit«name.toFirstUpper()»«group.name.toFirstUpper()»()) {
 				«FOREACH group.fields AS f-»
 				«f.name.toFirstLower()».setReadOnly(true);
 				«ENDFOREACH-»

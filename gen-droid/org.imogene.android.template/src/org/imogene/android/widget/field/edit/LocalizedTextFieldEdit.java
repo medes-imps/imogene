@@ -3,7 +3,7 @@ package org.imogene.android.widget.field.edit;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.imogene.android.domain.LocalizedText;
+import org.imogene.android.common.entity.LocalizedText;
 import org.imogene.android.template.R;
 import org.imogene.android.util.Arrays;
 

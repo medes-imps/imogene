@@ -16,10 +16,8 @@ public class Preferences {
 	public static final String ADMIN_PASSWORD = "adminPassword";
 	public static final String ADMIN_ROLES = "adminRoles";
 	public static final String CURRENT_LOGIN = "currentLogin";
-	public static final String CURRENT_ROLES = "currentRoles";
 	public static final String SYNC_LOGIN = "syncLogin";
 	public static final String SYNC_PASSWORD = "syncPassword";
-	public static final String SYNC_ROLES = "syncRoles";
 	public static final String SYNC_TERMINAL = "syncTerminal";
 	public static final String SYNC_SERVER = "syncServer";
 	public static final String SYNC_PERIOD = "syncPeriod";
@@ -159,14 +157,6 @@ public class Preferences {
 		setEncryptedString(SYNC_PASSWORD, value);
 	}
 
-	public String getSyncRoles() {
-		return mSharedPreferences.getString(SYNC_ROLES, null);
-	}
-
-	public void setSyncRoles(String value) {
-		mSharedPreferences.edit().putString(SYNC_ROLES, value).commit();
-	}
-
 	public boolean isMultiloginEnabled() {
 		return mSharedPreferences.getBoolean(MULTILOGIN_ENABLED, false);
 	}
@@ -190,23 +180,6 @@ public class Preferences {
 
 	public void clearCurrentLogin() {
 		mSharedPreferences.edit().remove(CURRENT_LOGIN).commit();
-	}
-
-	public String getCurrentRoles() {
-		if (isMultiloginEnabled()) {
-			String roles = mSharedPreferences.getString(CURRENT_ROLES, null);
-			return roles != null ? roles : getSyncRoles();
-		} else {
-			return getSyncRoles();
-		}
-	}
-
-	public void setCurrentRoles(String value) {
-		mSharedPreferences.edit().putString(CURRENT_ROLES, value).commit();
-	}
-
-	public void clearCurrentRoles() {
-		mSharedPreferences.edit().remove(CURRENT_ROLES).commit();
 	}
 
 	public boolean isSetAdmin() {

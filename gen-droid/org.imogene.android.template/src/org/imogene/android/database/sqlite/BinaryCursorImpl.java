@@ -2,9 +2,9 @@ package org.imogene.android.database.sqlite;
 
 import java.io.File;
 
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.binary.BinaryFile;
 import org.imogene.android.database.BinaryCursor;
-import org.imogene.android.domain.Binary;
-import org.imogene.android.domain.BinaryFile;
 
 import android.content.Context;
 import android.database.Cursor;

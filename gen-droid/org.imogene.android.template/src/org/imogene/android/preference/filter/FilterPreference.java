@@ -1,6 +1,6 @@
 package org.imogene.android.preference.filter;
 
-import org.imogene.android.domain.ClientFilter;
+import org.imogene.android.common.filter.ClientFilter;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 

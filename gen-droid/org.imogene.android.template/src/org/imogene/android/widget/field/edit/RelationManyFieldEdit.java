@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.domain.ImogBean;
 import org.imogene.android.util.Arrays;
 import org.imogene.android.util.content.IntentUtils;
 

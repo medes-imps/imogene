@@ -44,9 +44,9 @@ import org.imogene.android.widget.field.edit.RelationOneFieldEdit;
 import org.imogene.android.widget.field.edit.TextFieldEdit;
 import org.imogene.android.widget.field.edit.TimeFieldEdit;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()-»;
+import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()-»;
 «EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
-import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implements 
 		OnClickListener, FieldContainer, OnValueChangeListener {
@@ -63,6 +63,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	
 	private Uri mUri;
 	private boolean mMarkAsRead = false;
+	private AccessPolicy mPolicy;
 	
 	public «name.toFirstUpper()»Wizard() {
 		super(ActionBar.Type.Empty);
@@ -72,6 +73,8 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		IamLost.getInstance().add(getTitle().toString());
+		
+		mPolicy = AccessPolicy.getPolicy(this);
 		
 		Object entity = getLastNonConfigurationInstance();
 		if (entity != null && entity instanceof «name.toFirstUpper()») {
@@ -120,7 +123,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		«ENDFOREACH»
 		
 		«FOREACH groups AS group ITERATOR i-»
-		if (!«name.toFirstUpper()-»Roles.canWrite«group.name.toFirstUpper()-»(this)) {
+		if (!mPolicy.canEdit«name.toFirstUpper()»«group.name.toFirstUpper()»()) {
 			«FOREACH group.fields AS field»
 				flipper.removeView(«field.name.toFirstLower()»);
 			«ENDFOREACH»

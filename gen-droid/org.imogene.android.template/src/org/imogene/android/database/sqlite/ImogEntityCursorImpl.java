@@ -2,8 +2,8 @@ package org.imogene.android.database.sqlite;
 
 import java.util.List;
 
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.android.database.ImogEntityCursor;
-import org.imogene.android.domain.DynamicFieldInstance;
 
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;

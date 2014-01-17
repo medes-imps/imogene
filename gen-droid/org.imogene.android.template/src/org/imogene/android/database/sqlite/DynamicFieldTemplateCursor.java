@@ -1,7 +1,7 @@
 package org.imogene.android.database.sqlite;
 
-import org.imogene.android.domain.DynamicFieldTemplate;
-import org.imogene.android.domain.DynamicFieldTemplate.Type;
+import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.android.common.dynamicfields.DynamicFieldTemplate.Type;
 
 import android.content.Context;
 import android.database.Cursor;

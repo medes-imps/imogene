@@ -18,8 +18,8 @@ import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.ntp.NTPClock;
 import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
-import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»Helper;
-import org.imogene.android.«name.toLowerCase()».entities.«name.toFirstUpper()»LocalizedText;
+import org.imogene.android.«name.toLowerCase()».domain.«name.toFirstUpper()»Helper;
+import org.imogene.android.«name.toLowerCase()».domain.«name.toFirstUpper()»LocalizedText;
 
 @ReportsCrashes(
 		formKey = "dHczWFFCT2ZaTks1MWZoMXJZc0gxWHc6MQ", // google form on medes imps account
@@ -61,7 +61,9 @@ public class «name.toFirstUpper()»App extends GDApplication {
         if (!prefs.isSetAdmin()) {
         	prefs.setAdminLogin("admin");
         	prefs.setAdminPassword("epipassword");
+        	«REM»
 			prefs.setAdminRoles("«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»");
+			«ENDREM»
         }
         SynchronizationService.actionReschedule(this);
         NotificationController.getInstance(this).watchForMessages(true);

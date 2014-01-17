@@ -3,8 +3,8 @@ package org.imogene.android.preference.filter;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.imogene.android.domain.filters.DateFilter;
-import org.imogene.android.domain.filters.DateFilter.DateOperator;
+import org.imogene.android.common.filter.DateFilter;
+import org.imogene.android.common.filter.DateFilter.DateOperator;
 import org.imogene.android.template.R;
 import org.imogene.android.util.FormatHelper;
 

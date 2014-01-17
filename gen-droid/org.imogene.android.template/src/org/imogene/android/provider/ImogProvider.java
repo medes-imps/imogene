@@ -6,13 +6,18 @@ import java.io.IOException;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Paths;
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.android.common.entity.DefaultUser;
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.filter.ClientFilter;
+import org.imogene.android.common.model.CardEntity;
+import org.imogene.android.common.model.FieldGroup;
+import org.imogene.android.common.profile.EntityProfile;
+import org.imogene.android.common.profile.FieldGroupProfile;
+import org.imogene.android.common.profile.Profile;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.domain.Binary;
-import org.imogene.android.domain.ClientFilter;
-import org.imogene.android.domain.DefaultUser;
-import org.imogene.android.domain.DynamicFieldInstance;
-import org.imogene.android.domain.DynamicFieldTemplate;
-import org.imogene.android.domain.ImogBean;
 import org.imogene.android.maps.database.PreCache;
 import org.imogene.android.util.content.ContentUrisUtils;
 import org.imogene.android.util.file.FileUtils;
@@ -34,22 +39,42 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 
 	public static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
-	public static final int BINARIES = 1;
-	public static final int BINARIES_ID = 2;
-	public static final int CLIENT_FILTERS = 3;
-	public static final int CLIENT_FILTERS_ID = 4;
-	public static final int DEFAULTUSER = 5;
-	public static final int DEFAULTUSER_ID = 6;
-	public static final int DYNAMICFIELDTEMPLATE = 7;
-	public static final int DYNAMICFIELDTEMPLATE_ID = 8;
-	public static final int DYNAMICFIELDINSTANCE = 9;
-	public static final int DYNAMICFIELDINSTANCE_ID = 10;
-	public static final int PRECACHE_BOUNDS = 11;
-	public static final int PRECACHE_BOUNDS_ID = 12;
+	public static final int PROFILE = 1;
+	public static final int PROFILE_ID = 2;
+	public static final int ENTITYPROFILE = 3;
+	public static final int ENTITYPROFILE_ID = 4;
+	public static final int FIELDGROUPPROFILE = 5;
+	public static final int FIELDGROUPPROFILE_ID = 6;
+	public static final int CARDENTITY = 7;
+	public static final int CARDENTITY_ID = 8;
+	public static final int FIELDGROUP = 9;
+	public static final int FIELDGROUP_ID = 10;
+	public static final int BINARIES = 11;
+	public static final int BINARIES_ID = 12;
+	public static final int CLIENT_FILTERS = 13;
+	public static final int CLIENT_FILTERS_ID = 14;
+	public static final int DEFAULTUSER = 15;
+	public static final int DEFAULTUSER_ID = 16;
+	public static final int DYNAMICFIELDTEMPLATE = 17;
+	public static final int DYNAMICFIELDTEMPLATE_ID = 18;
+	public static final int DYNAMICFIELDINSTANCE = 19;
+	public static final int DYNAMICFIELDINSTANCE_ID = 20;
+	public static final int PRECACHE_BOUNDS = 21;
+	public static final int PRECACHE_BOUNDS_ID = 22;
 
 	protected static final int LAST_INDEX = PRECACHE_BOUNDS_ID;
 
 	static {
+		URI_MATCHER.addURI(Constants.AUTHORITY, Profile.Columns.TABLE_NAME, PROFILE);
+		URI_MATCHER.addURI(Constants.AUTHORITY, Profile.Columns.TABLE_NAME + "/*", PROFILE_ID);
+		URI_MATCHER.addURI(Constants.AUTHORITY, EntityProfile.Columns.TABLE_NAME, ENTITYPROFILE);
+		URI_MATCHER.addURI(Constants.AUTHORITY, EntityProfile.Columns.TABLE_NAME + "/*", ENTITYPROFILE_ID);
+		URI_MATCHER.addURI(Constants.AUTHORITY, FieldGroupProfile.Columns.TABLE_NAME, FIELDGROUPPROFILE);
+		URI_MATCHER.addURI(Constants.AUTHORITY, FieldGroupProfile.Columns.TABLE_NAME + "/*", FIELDGROUPPROFILE_ID);
+		URI_MATCHER.addURI(Constants.AUTHORITY, CardEntity.Columns.TABLE_NAME, CARDENTITY);
+		URI_MATCHER.addURI(Constants.AUTHORITY, CardEntity.Columns.TABLE_NAME + "/*", CARDENTITY_ID);
+		URI_MATCHER.addURI(Constants.AUTHORITY, FieldGroup.Columns.TABLE_NAME, FIELDGROUP);
+		URI_MATCHER.addURI(Constants.AUTHORITY, FieldGroup.Columns.TABLE_NAME + "/*", FIELDGROUP_ID);
 		URI_MATCHER.addURI(Constants.AUTHORITY, Binary.Columns.TABLE_NAME, BINARIES);
 		URI_MATCHER.addURI(Constants.AUTHORITY, Binary.Columns.TABLE_NAME + "/*", BINARIES_ID);
 		URI_MATCHER.addURI(Constants.AUTHORITY, ClientFilter.Columns.TABLE_NAME, CLIENT_FILTERS);
@@ -57,9 +82,11 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 		URI_MATCHER.addURI(Constants.AUTHORITY, DefaultUser.Columns.TABLE_NAME, DEFAULTUSER);
 		URI_MATCHER.addURI(Constants.AUTHORITY, DefaultUser.Columns.TABLE_NAME + "/*", DEFAULTUSER_ID);
 		URI_MATCHER.addURI(Constants.AUTHORITY, DynamicFieldInstance.Columns.TABLE_NAME, DYNAMICFIELDINSTANCE);
-		URI_MATCHER.addURI(Constants.AUTHORITY, DynamicFieldInstance.Columns.TABLE_NAME + "/*", DYNAMICFIELDINSTANCE_ID);
+		URI_MATCHER
+				.addURI(Constants.AUTHORITY, DynamicFieldInstance.Columns.TABLE_NAME + "/*", DYNAMICFIELDINSTANCE_ID);
 		URI_MATCHER.addURI(Constants.AUTHORITY, DynamicFieldTemplate.Columns.TABLE_NAME, DYNAMICFIELDTEMPLATE);
-		URI_MATCHER.addURI(Constants.AUTHORITY, DynamicFieldTemplate.Columns.TABLE_NAME + "/*", DYNAMICFIELDTEMPLATE_ID);
+		URI_MATCHER
+				.addURI(Constants.AUTHORITY, DynamicFieldTemplate.Columns.TABLE_NAME + "/*", DYNAMICFIELDTEMPLATE_ID);
 		URI_MATCHER.addURI(Constants.AUTHORITY, PreCache.Columns.TABLE_NAME, PRECACHE_BOUNDS);
 		URI_MATCHER.addURI(Constants.AUTHORITY, PreCache.Columns.TABLE_NAME + "/#", PRECACHE_BOUNDS_ID);
 	}
@@ -72,6 +99,41 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		int result = -1;
 		switch (URI_MATCHER.match(uri)) {
+		case PROFILE:
+			result = deleteMulti(Profile.Columns.TABLE_NAME, selection, selectionArgs);
+			break;
+		case PROFILE_ID:
+			String proId = uri.getLastPathSegment();
+			result = deleteSingle(Profile.Columns.TABLE_NAME, proId, selection, selectionArgs);
+			break;
+		case ENTITYPROFILE:
+			result = deleteMulti(EntityProfile.Columns.TABLE_NAME, selection, selectionArgs);
+			break;
+		case ENTITYPROFILE_ID:
+			String pro_entId = uri.getLastPathSegment();
+			result = deleteSingle(EntityProfile.Columns.TABLE_NAME, pro_entId, selection, selectionArgs);
+			break;
+		case FIELDGROUPPROFILE:
+			result = deleteMulti(FieldGroupProfile.Columns.TABLE_NAME, selection, selectionArgs);
+			break;
+		case FIELDGROUPPROFILE_ID:
+			String pro_grpId = uri.getLastPathSegment();
+			result = deleteSingle(FieldGroupProfile.Columns.TABLE_NAME, pro_grpId, selection, selectionArgs);
+			break;
+		case CARDENTITY:
+			result = deleteMulti(CardEntity.Columns.TABLE_NAME, selection, selectionArgs);
+			break;
+		case CARDENTITY_ID:
+			String sync_entId = uri.getLastPathSegment();
+			result = deleteSingle(CardEntity.Columns.TABLE_NAME, sync_entId, selection, selectionArgs);
+			break;
+		case FIELDGROUP:
+			result = deleteMulti(FieldGroup.Columns.TABLE_NAME, selection, selectionArgs);
+			break;
+		case FIELDGROUP_ID:
+			String grpId = uri.getLastPathSegment();
+			result = deleteSingle(FieldGroup.Columns.TABLE_NAME, grpId, selection, selectionArgs);
+			break;
 		case BINARIES:
 			result = deleteMultiBinary(Binary.Columns.TABLE_NAME, selection, selectionArgs);
 			break;
@@ -124,6 +186,26 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 	@Override
 	public String getType(Uri uri) {
 		switch (URI_MATCHER.match(uri)) {
+		case PROFILE:
+			return getVndDir() + "profile";
+		case PROFILE_ID:
+			return getVndItem() + "profile";
+		case ENTITYPROFILE:
+			return getVndDir() + "entityprofile";
+		case ENTITYPROFILE_ID:
+			return getVndItem() + "entityprofile";
+		case FIELDGROUPPROFILE:
+			return getVndDir() + "fieldgroupprofile";
+		case FIELDGROUPPROFILE_ID:
+			return getVndItem() + "fieldgroupprofile";
+		case CARDENTITY:
+			return getVndDir() + "cardentity";
+		case CARDENTITY_ID:
+			return getVndItem() + "cardentity";
+		case FIELDGROUP:
+			return getVndDir() + "fieldgroup";
+		case FIELDGROUP_ID:
+			return getVndItem() + "fieldgroup";
 		case BINARIES:
 			return getVndDir() + Binary.Columns.TABLE_NAME;
 		case BINARIES_ID:
@@ -167,6 +249,16 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		switch (URI_MATCHER.match(uri)) {
+		case PROFILE:
+			return insertInTable(Profile.Columns.TABLE_NAME, Profile.Columns.CONTENT_URI, values);
+		case ENTITYPROFILE:
+			return insertInTable(EntityProfile.Columns.TABLE_NAME, EntityProfile.Columns.CONTENT_URI, values);
+		case FIELDGROUPPROFILE:
+			return insertInTable(FieldGroupProfile.Columns.TABLE_NAME, FieldGroupProfile.Columns.CONTENT_URI, values);
+		case CARDENTITY:
+			return insertInTable(CardEntity.Columns.TABLE_NAME, CardEntity.Columns.CONTENT_URI, values);
+		case FIELDGROUP:
+			return insertInTable(FieldGroup.Columns.TABLE_NAME, FieldGroup.Columns.CONTENT_URI, values);
 		case BINARIES:
 			return insertInTableBinary(values);
 		case CLIENT_FILTERS:
@@ -174,9 +266,11 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 		case DEFAULTUSER:
 			return insertInTable(DefaultUser.Columns.TABLE_NAME, DefaultUser.Columns.CONTENT_URI, values);
 		case DYNAMICFIELDINSTANCE:
-			return insertInTable(DynamicFieldInstance.Columns.TABLE_NAME, DynamicFieldInstance.Columns.CONTENT_URI, values);
+			return insertInTable(DynamicFieldInstance.Columns.TABLE_NAME, DynamicFieldInstance.Columns.CONTENT_URI,
+					values);
 		case DYNAMICFIELDTEMPLATE:
-			return insertInTable(DynamicFieldTemplate.Columns.TABLE_NAME, DynamicFieldTemplate.Columns.CONTENT_URI, values);
+			return insertInTable(DynamicFieldTemplate.Columns.TABLE_NAME, DynamicFieldTemplate.Columns.CONTENT_URI,
+					values);
 		case PRECACHE_BOUNDS:
 			return insertInTableBase(PreCache.Columns.TABLE_NAME, PreCache.Columns.CONTENT_URI, values);
 		default:
@@ -189,6 +283,41 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 		SQLiteDatabase sqlDB = ImogOpenHelper.getHelper().getWritableDatabase();
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		switch (URI_MATCHER.match(uri)) {
+		case PROFILE:
+			qb.setTables(Profile.Columns.TABLE_NAME);
+			break;
+		case PROFILE_ID:
+			qb.setTables(Profile.Columns.TABLE_NAME);
+			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
+			break;
+		case ENTITYPROFILE:
+			qb.setTables(EntityProfile.Columns.TABLE_NAME);
+			break;
+		case ENTITYPROFILE_ID:
+			qb.setTables(EntityProfile.Columns.TABLE_NAME);
+			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
+			break;
+		case FIELDGROUPPROFILE:
+			qb.setTables(FieldGroupProfile.Columns.TABLE_NAME);
+			break;
+		case FIELDGROUPPROFILE_ID:
+			qb.setTables(FieldGroupProfile.Columns.TABLE_NAME);
+			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
+			break;
+		case CARDENTITY:
+			qb.setTables(CardEntity.Columns.TABLE_NAME);
+			break;
+		case CARDENTITY_ID:
+			qb.setTables(CardEntity.Columns.TABLE_NAME);
+			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
+			break;
+		case FIELDGROUP:
+			qb.setTables(FieldGroup.Columns.TABLE_NAME);
+			break;
+		case FIELDGROUP_ID:
+			qb.setTables(FieldGroup.Columns.TABLE_NAME);
+			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
+			break;
 		case BINARIES:
 			qb.setTables(Binary.Columns.TABLE_NAME);
 			break;
@@ -243,6 +372,41 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		int result = -1;
 		switch (URI_MATCHER.match(uri)) {
+		case PROFILE:
+			result = updateMulti(Profile.Columns.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case PROFILE_ID:
+			String proId = uri.getLastPathSegment();
+			result = updateSingle(Profile.Columns.TABLE_NAME, proId, values, selection, selectionArgs);
+			break;
+		case ENTITYPROFILE:
+			result = updateMulti(EntityProfile.Columns.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case ENTITYPROFILE_ID:
+			String pro_entId = uri.getLastPathSegment();
+			result = updateSingle(EntityProfile.Columns.TABLE_NAME, pro_entId, values, selection, selectionArgs);
+			break;
+		case FIELDGROUPPROFILE:
+			result = updateMulti(FieldGroupProfile.Columns.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case FIELDGROUPPROFILE_ID:
+			String pro_grpId = uri.getLastPathSegment();
+			result = updateSingle(FieldGroupProfile.Columns.TABLE_NAME, pro_grpId, values, selection, selectionArgs);
+			break;
+		case CARDENTITY:
+			result = updateMulti(CardEntity.Columns.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case CARDENTITY_ID:
+			String sync_entId = uri.getLastPathSegment();
+			result = updateSingle(CardEntity.Columns.TABLE_NAME, sync_entId, values, selection, selectionArgs);
+			break;
+		case FIELDGROUP:
+			result = updateMulti(FieldGroup.Columns.TABLE_NAME, values, selection, selectionArgs);
+			break;
+		case FIELDGROUP_ID:
+			String grpId = uri.getLastPathSegment();
+			result = updateSingle(FieldGroup.Columns.TABLE_NAME, grpId, values, selection, selectionArgs);
+			break;
 		case BINARIES:
 			result = updateMulti(Binary.Columns.TABLE_NAME, values, selection, selectionArgs);
 			break;
@@ -269,14 +433,16 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 			break;
 		case DYNAMICFIELDINSTANCE_ID:
 			String dynFieldInstanceId = uri.getLastPathSegment();
-			result = updateSingle(DynamicFieldInstance.Columns.TABLE_NAME, dynFieldInstanceId, values, selection, selectionArgs);
+			result = updateSingle(DynamicFieldInstance.Columns.TABLE_NAME, dynFieldInstanceId, values, selection,
+					selectionArgs);
 			break;
 		case DYNAMICFIELDTEMPLATE:
 			result = updateMulti(DynamicFieldTemplate.Columns.TABLE_NAME, values, selection, selectionArgs);
 			break;
 		case DYNAMICFIELDTEMPLATE_ID:
 			String dynFieldTemplateId = uri.getLastPathSegment();
-			result = updateSingle(DynamicFieldTemplate.Columns.TABLE_NAME, dynFieldTemplateId, values, selection, selectionArgs);
+			result = updateSingle(DynamicFieldTemplate.Columns.TABLE_NAME, dynFieldTemplateId, values, selection,
+					selectionArgs);
 			break;
 		case PRECACHE_BOUNDS:
 			result = updateMulti(PreCache.Columns.TABLE_NAME, values, selection, selectionArgs);
@@ -305,7 +471,8 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 
 	protected final int deleteMultiBinary(String tableName, String where, String[] whereArgs) {
 		SQLiteDatabase sqlDB = ImogOpenHelper.getHelper().getWritableDatabase();
-		Cursor cursor = sqlDB.query(tableName, new String[] { Binary.Columns.DATA }, where, whereArgs, null, null, null);
+		Cursor cursor = sqlDB
+				.query(tableName, new String[] { Binary.Columns.DATA }, where, whereArgs, null, null, null);
 		for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
 			String path = cursor.getString(0);
 			new File(path).delete();
@@ -379,8 +546,10 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 		return sqlDB.update(tableName, values, selection, selectionArgs);
 	}
 
-	protected final int updateSingle(String tableName, String id, ContentValues values, String selection, String[] selectionArgs) {
-		String where = ImogBean.Columns._ID + "='" + id + "'" + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
+	protected final int updateSingle(String tableName, String id, ContentValues values, String selection,
+			String[] selectionArgs) {
+		String where = ImogBean.Columns._ID + "='" + id + "'"
+				+ (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : "");
 		SQLiteDatabase sqlDB = ImogOpenHelper.getHelper().getWritableDatabase();
 		return sqlDB.update(tableName, values, where, selectionArgs);
 	}

@@ -2,7 +2,7 @@ package org.imogene.android.database;
 
 import java.util.Date;
 
-import org.imogene.android.domain.ImogBean;
+import org.imogene.android.common.entity.ImogBean;
 
 import android.content.Context;
 import android.database.Cursor;

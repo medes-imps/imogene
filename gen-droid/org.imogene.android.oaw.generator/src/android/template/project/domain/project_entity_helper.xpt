@@ -1,0 +1,106 @@
+«IMPORT core»
+«DEFINE generate FOR Project »
+«FILE "/" + name.toLowerCase() + "/domain/" + name.toFirstUpper() + "Helper.java"-»
+package org.imogene.android.«name.toLowerCase()».domain;
+
+import java.util.List;
+import java.util.Vector;
+
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.binary.BinaryFile;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.android.common.entity.DefaultUser;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.filter.ClientFilter;
+import org.imogene.android.common.model.CardEntity;
+import org.imogene.android.common.model.FieldGroup;
+import org.imogene.android.common.profile.EntityProfile;
+import org.imogene.android.common.profile.FieldGroupProfile;
+import org.imogene.android.common.profile.Profile;
+
+import android.content.Context;
+import android.net.Uri;
+
+public class «name.toFirstUpper()»Helper extends ImogHelper {
+
+	public static void init() {
+		if (sInstance == null) {
+			sInstance = new «name.toFirstUpper()»Helper();
+		}
+	}
+
+	@Override
+	public List<Uri> getAllUris() {
+		List<Uri> result = new Vector<Uri>();
+		result.add(Profile.Columns.CONTENT_URI);
+		result.add(EntityProfile.Columns.CONTENT_URI);
+		result.add(FieldGroupProfile.Columns.CONTENT_URI);
+		result.add(CardEntity.Columns.CONTENT_URI);
+		result.add(FieldGroup.Columns.CONTENT_URI);
+		result.add(Binary.Columns.CONTENT_URI);
+		result.add(ClientFilter.Columns.CONTENT_URI);
+		result.add(DefaultUser.Columns.CONTENT_URI);
+		result.add(DynamicFieldInstance.Columns.CONTENT_URI);
+		result.add(DynamicFieldTemplate.Columns.CONTENT_URI);
+		«FOREACH entities AS e -»
+		result.add(«e.name.toFirstUpper()».Columns.CONTENT_URI);
+		«ENDFOREACH-»
+		return result;
+	}
+	
+	@Override
+	public List<Uri> getHiddenUris(Context context) {
+		List<Uri> result = new Vector<Uri>();
+		«FOREACH entities AS e-»
+		«REM»
+		«IF !e.topLevel || e.directAccess.size > 0-»
+			«IF e.directAccess.size > 0-»
+			if (!«e.name.toFirstUpper()»Roles.directAccess(context))
+			«ENDIF-»
+			result.add(«e.name.toFirstUpper()».Columns.CONTENT_URI);
+		«ENDIF-»
+		«ENDREM»
+		«ENDFOREACH-»
+		return result;
+	}
+
+	@Override
+	public List<String> getAllTables() {
+		List<String> result = new Vector<String>();
+		result.add(Profile.Columns.TABLE_NAME);
+		result.add(EntityProfile.Columns.TABLE_NAME);
+		result.add(FieldGroupProfile.Columns.TABLE_NAME);
+		result.add(CardEntity.Columns.TABLE_NAME);
+		result.add(FieldGroup.Columns.TABLE_NAME);
+		result.add(Binary.Columns.TABLE_NAME);
+		result.add(ClientFilter.Columns.TABLE_NAME);
+		result.add(DefaultUser.Columns.TABLE_NAME);
+		result.add(DynamicFieldInstance.Columns.TABLE_NAME);
+		result.add(DynamicFieldTemplate.Columns.TABLE_NAME);
+		«FOREACH entities AS e -»
+		result.add(«e.name.toFirstUpper()».Columns.TABLE_NAME);
+		«ENDFOREACH-»
+		return result;
+	}
+	
+	@Override
+	public void doWithImogBeans(ImogBeanCallback callback) {
+		callback.doWith(Profile.class, Profile.Columns.CONTENT_URI);
+		callback.doWith(EntityProfile.class, EntityProfile.Columns.CONTENT_URI);
+		callback.doWith(FieldGroupProfile.class, FieldGroupProfile.Columns.CONTENT_URI);
+		callback.doWith(CardEntity.class, CardEntity.Columns.CONTENT_URI);
+		callback.doWith(FieldGroup.class, FieldGroup.Columns.CONTENT_URI);
+		callback.doWith(BinaryFile.class, Binary.Columns.CONTENT_URI);
+		callback.doWith(ClientFilter.class, ClientFilter.Columns.CONTENT_URI);
+		callback.doWith(DefaultUser.class, DefaultUser.Columns.CONTENT_URI);
+		callback.doWith(DynamicFieldInstance.class, DynamicFieldInstance.Columns.CONTENT_URI);
+		callback.doWith(DynamicFieldTemplate.class, DynamicFieldTemplate.Columns.CONTENT_URI);
+		«FOREACH entities AS e-»
+		callback.doWith(«e.name.toFirstUpper()».class, «e.name.toFirstUpper()».Columns.CONTENT_URI);
+		«ENDFOREACH-»
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

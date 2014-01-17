@@ -1,13 +1,19 @@
 package org.imogene.android.database.sqlite;
 
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.android.common.entity.DefaultUser;
+import org.imogene.android.common.entity.GpsLocation;
+import org.imogene.android.common.entity.ImogActor;
+import org.imogene.android.common.entity.SyncHistory;
+import org.imogene.android.common.filter.ClientFilter;
+import org.imogene.android.common.model.CardEntity;
+import org.imogene.android.common.model.FieldGroup;
+import org.imogene.android.common.profile.EntityProfile;
+import org.imogene.android.common.profile.FieldGroupProfile;
+import org.imogene.android.common.profile.Profile;
 import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.domain.Binary;
-import org.imogene.android.domain.ClientFilter;
-import org.imogene.android.domain.DefaultUser;
-import org.imogene.android.domain.DynamicFieldInstance;
-import org.imogene.android.domain.DynamicFieldTemplate;
-import org.imogene.android.domain.GpsLocation;
-import org.imogene.android.domain.SyncHistory;
 import org.imogene.android.maps.database.PreCache;
 import org.imogene.android.maps.database.sqlite.PreCacheCursor;
 import org.imogene.android.provider.ImogProvider;
@@ -19,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.provider.BaseColumns;
 
 public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 
@@ -36,14 +43,54 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 		return sInstance;
 	}
 
+	private static final String DATABASE_CREATE_PROFILE = "create table if not exists " + Profile.Columns.TABLE_NAME
+			+ " (" + Profile.Columns._ID + " text primary key, " + Profile.Columns.MODIFIED + " integer, "
+			+ Profile.Columns.MODIFIEDBY + " text, " + Profile.Columns.MODIFIEDFROM + " text, "
+			+ Profile.Columns.UPLOADDATE + " integer, " + Profile.Columns.CREATED + " integer, "
+			+ Profile.Columns.CREATEDBY + " text, " + Profile.Columns.FLAG_READ + " integer, " + Profile.Columns.NAME
+			+ " text, " + Profile.Columns.FLAG_SYNCHRONIZED + " integer);";
+	private static final String DATABASE_CREATE_ENTITYPROFILE = "create table if not exists "
+			+ EntityProfile.Columns.TABLE_NAME + " (" + EntityProfile.Columns._ID + " text primary key, "
+			+ EntityProfile.Columns.MODIFIED + " integer, " + EntityProfile.Columns.MODIFIEDBY + " text, "
+			+ EntityProfile.Columns.MODIFIEDFROM + " text, " + EntityProfile.Columns.UPLOADDATE + " integer, "
+			+ EntityProfile.Columns.CREATED + " integer, " + EntityProfile.Columns.CREATEDBY + " text, "
+			+ EntityProfile.Columns.FLAG_READ + " integer, " + EntityProfile.Columns.PROFILE + " text, "
+			+ EntityProfile.Columns.ENTITY + " text, " + EntityProfile.Columns.CREATE + " text, "
+			+ EntityProfile.Columns.DIRECTACCESS + " text, " + EntityProfile.Columns.DELETE + " text, "
+			+ EntityProfile.Columns.EXPORT + " text, " + EntityProfile.Columns.FLAG_SYNCHRONIZED + " integer);";
+	private static final String DATABASE_CREATE_FIELDGROUPPROFILE = "create table if not exists "
+			+ FieldGroupProfile.Columns.TABLE_NAME + " (" + FieldGroupProfile.Columns._ID + " text primary key, "
+			+ FieldGroupProfile.Columns.MODIFIED + " integer, " + FieldGroupProfile.Columns.MODIFIEDBY + " text, "
+			+ FieldGroupProfile.Columns.MODIFIEDFROM + " text, " + FieldGroupProfile.Columns.UPLOADDATE + " integer, "
+			+ FieldGroupProfile.Columns.CREATED + " integer, " + FieldGroupProfile.Columns.CREATEDBY + " text, "
+			+ FieldGroupProfile.Columns.FLAG_READ + " integer, " + FieldGroupProfile.Columns.PROFILE + " text, "
+			+ FieldGroupProfile.Columns.FIELDGROUP + " text, " + FieldGroupProfile.Columns.READ + " text, "
+			+ FieldGroupProfile.Columns.WRITE + " text, " + FieldGroupProfile.Columns.EXPORT + " text, "
+			+ FieldGroupProfile.Columns.FLAG_SYNCHRONIZED + " integer);";
+	private static final String DATABASE_CREATE_CARDENTITY = "create table if not exists "
+			+ CardEntity.Columns.TABLE_NAME + " (" + CardEntity.Columns._ID + " text primary key, "
+			+ CardEntity.Columns.MODIFIED + " integer, " + CardEntity.Columns.MODIFIEDBY + " text, "
+			+ CardEntity.Columns.MODIFIEDFROM + " text, " + CardEntity.Columns.UPLOADDATE + " integer, "
+			+ CardEntity.Columns.CREATED + " integer, " + CardEntity.Columns.CREATEDBY + " text, "
+			+ CardEntity.Columns.FLAG_READ + " integer, " + CardEntity.Columns.NAME + " text, "
+			+ CardEntity.Columns.FLAG_SYNCHRONIZED + " integer);";
+	private static final String DATABASE_CREATE_FIELDGROUP = "create table if not exists "
+			+ FieldGroup.Columns.TABLE_NAME + " (" + FieldGroup.Columns._ID + " text primary key, "
+			+ FieldGroup.Columns.MODIFIED + " integer, " + FieldGroup.Columns.MODIFIEDBY + " text, "
+			+ FieldGroup.Columns.MODIFIEDFROM + " text, " + FieldGroup.Columns.UPLOADDATE + " integer, "
+			+ FieldGroup.Columns.CREATED + " integer, " + FieldGroup.Columns.CREATEDBY + " text, "
+			+ FieldGroup.Columns.FLAG_READ + " integer, " + FieldGroup.Columns.NAME + " text, "
+			+ FieldGroup.Columns.ENTITY + " text, " + FieldGroup.Columns.FLAG_SYNCHRONIZED + " integer);";
+	private static final String DATABASE_CREATE_ACTOR_PROFILES = "create table if not exists "
+			+ ImogActor.Columns.TABLE_ACTOR_PROFILES + " (" + BaseColumns._ID + " integer primary key autoincrement, "
+			+ ImogActor.Columns.TABLE_NAME + " text not null, " + Profile.Columns.TABLE_NAME + " text not null);";
 	private static final String DATABASE_CREATE_DEFAULTUSER = "create table if not exists "
 			+ DefaultUser.Columns.TABLE_NAME + " (" + DefaultUser.Columns._ID + " text primary key, "
 			+ DefaultUser.Columns.MODIFIED + " integer, " + DefaultUser.Columns.MODIFIEDBY + " text, "
 			+ DefaultUser.Columns.MODIFIEDFROM + " text, " + DefaultUser.Columns.UPLOADDATE + " integer, "
 			+ DefaultUser.Columns.CREATED + " integer, " + DefaultUser.Columns.CREATEDBY + " text, "
 			+ DefaultUser.Columns.FLAG_READ + " integer, " + DefaultUser.Columns.LOGIN + " text, "
-			+ DefaultUser.Columns.PASSWORD + " blob, " + DefaultUser.Columns.ROLES + " text, "
-			+ DefaultUser.Columns.FLAG_SYNCHRONIZED + " integer);";
+			+ DefaultUser.Columns.PASSWORD + " blob, " + DefaultUser.Columns.FLAG_SYNCHRONIZED + " integer);";
 	private static final String DATABASE_CREATE_CLIENTFILTER = "create table if not exists "
 			+ ClientFilter.Columns.TABLE_NAME + " (" + ClientFilter.Columns._ID + " text primary key, "
 			+ ClientFilter.Columns.MODIFIED + " integer, " + ClientFilter.Columns.MODIFIEDBY + " text, "
@@ -115,6 +162,12 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		db.execSQL(DATABASE_CREATE_PROFILE);
+		db.execSQL(DATABASE_CREATE_ENTITYPROFILE);
+		db.execSQL(DATABASE_CREATE_FIELDGROUPPROFILE);
+		db.execSQL(DATABASE_CREATE_CARDENTITY);
+		db.execSQL(DATABASE_CREATE_FIELDGROUP);
+		db.execSQL(DATABASE_CREATE_ACTOR_PROFILES);
 		db.execSQL(DATABASE_CREATE_BINARIES);
 		db.execSQL(DATABASE_CREATE_CLIENTFILTER);
 		db.execSQL(DATABASE_CREATE_DEFAULTUSER);
@@ -132,6 +185,61 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 	public QueryBuilder queryBuilder(Uri uri) {
 		QueryBuilder builder = null;
 		switch (ImogProvider.URI_MATCHER.match(uri)) {
+		case ImogProvider.PROFILE:
+			builder = new QueryBuilder(this, Profile.Columns.TABLE_NAME);
+			builder.setCursorFactory(new ProfileCursor.Factory());
+			builder.setUri(uri);
+			return builder;
+		case ImogProvider.PROFILE_ID:
+			builder = new QueryBuilder(this, Profile.Columns.TABLE_NAME);
+			builder.setCursorFactory(new ProfileCursor.Factory());
+			builder.setUri(uri);
+			builder.where().idEq(uri.getLastPathSegment());
+			return builder;
+		case ImogProvider.ENTITYPROFILE:
+			builder = new QueryBuilder(this, EntityProfile.Columns.TABLE_NAME);
+			builder.setCursorFactory(new EntityProfileCursor.Factory());
+			builder.setUri(uri);
+			return builder;
+		case ImogProvider.ENTITYPROFILE_ID:
+			builder = new QueryBuilder(this, EntityProfile.Columns.TABLE_NAME);
+			builder.setCursorFactory(new EntityProfileCursor.Factory());
+			builder.setUri(uri);
+			builder.where().idEq(uri.getLastPathSegment());
+			return builder;
+		case ImogProvider.FIELDGROUPPROFILE:
+			builder = new QueryBuilder(this, FieldGroupProfile.Columns.TABLE_NAME);
+			builder.setCursorFactory(new FieldGroupProfileCursor.Factory());
+			builder.setUri(uri);
+			return builder;
+		case ImogProvider.FIELDGROUPPROFILE_ID:
+			builder = new QueryBuilder(this, FieldGroupProfile.Columns.TABLE_NAME);
+			builder.setCursorFactory(new FieldGroupProfileCursor.Factory());
+			builder.setUri(uri);
+			builder.where().idEq(uri.getLastPathSegment());
+			return builder;
+		case ImogProvider.CARDENTITY:
+			builder = new QueryBuilder(this, CardEntity.Columns.TABLE_NAME);
+			builder.setCursorFactory(new CardEntityCursor.Factory());
+			builder.setUri(uri);
+			return builder;
+		case ImogProvider.CARDENTITY_ID:
+			builder = new QueryBuilder(this, CardEntity.Columns.TABLE_NAME);
+			builder.setCursorFactory(new CardEntityCursor.Factory());
+			builder.setUri(uri);
+			builder.where().idEq(uri.getLastPathSegment());
+			return builder;
+		case ImogProvider.FIELDGROUP:
+			builder = new QueryBuilder(this, FieldGroup.Columns.TABLE_NAME);
+			builder.setCursorFactory(new FieldGroupCursor.Factory());
+			builder.setUri(uri);
+			return builder;
+		case ImogProvider.FIELDGROUP_ID:
+			builder = new QueryBuilder(this, FieldGroup.Columns.TABLE_NAME);
+			builder.setCursorFactory(new FieldGroupCursor.Factory());
+			builder.setUri(uri);
+			builder.where().idEq(uri.getLastPathSegment());
+			return builder;
 		case ImogProvider.BINARIES:
 			builder = new QueryBuilder(this, Binary.Columns.TABLE_NAME);
 			builder.setUri(uri);
@@ -225,6 +333,8 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 	public int delete(String tableName, String whereClause, String[] whereArgs) {
 		return getWritableDatabase().delete(tableName, whereClause, whereArgs);
 	}
+	
+	public abstract ImogActor loadActorById();
 
 	public Context getContext() {
 		return mContext;

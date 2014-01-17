@@ -238,7 +238,6 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 		if (roles != null) {
 			mPreferences.setSyncLogin(login);
 			mPreferences.setSyncPassword(password);
-			mPreferences.setSyncRoles(roles);
 			mPreferences.setSyncServer(server);
 			launchSntpOffsetTask();
 		} else {

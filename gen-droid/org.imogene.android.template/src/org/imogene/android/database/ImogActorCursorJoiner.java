@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.imogene.android.domain.ImogBean;
+import org.imogene.android.common.entity.ImogBean;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -20,20 +20,20 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	private final ArrayList<Join> mCursors = new ArrayList<Join>();
 
 	private int current = 0;
-	
+
 	@Override
 	public ImogBean newBean() {
 		return null;
 	}
-	
+
 	public boolean newCursor(ImogActorCursor cursor, Drawable drawable, Uri uri) {
 		return mCursors.add(new Join(cursor, uri, drawable));
 	}
-	
+
 	public Drawable getDrawable() {
 		return mCursors.get(current).drawable;
 	}
-	
+
 	public Uri getUri() {
 		return mCursors.get(current).uri;
 	}
@@ -49,8 +49,8 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	}
 
 	@Override
-	public String getRoles() {
-		return mCursors.get(current).cursor.getRoles();
+	public List<Uri> getProfiles() {
+		return mCursors.get(current).cursor.getProfiles();
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	public String getModifiedFrom() {
 		return mCursors.get(current).cursor.getModifiedFrom();
 	}
-	
+
 	@Override
 	public List<Uri> getDynamicFieldValues() {
 		return mCursors.get(current).cursor.getDynamicFieldValues();
@@ -151,8 +151,7 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	}
 
 	@Override
-	public int getColumnIndexOrThrow(String columnName)
-			throws IllegalArgumentException {
+	public int getColumnIndexOrThrow(String columnName) throws IllegalArgumentException {
 		return mCursors.get(current).cursor.getColumnIndexOrThrow(columnName);
 	}
 
@@ -341,13 +340,13 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 		for (Join join : mCursors)
 			join.cursor.unregisterDataSetObserver(observer);
 	}
-	
+
 	private static class Join {
-		
+
 		private final ImogActorCursor cursor;
 		private final Drawable drawable;
 		private final Uri uri;
-		
+
 		public Join(ImogActorCursor cursor, Uri uri, Drawable drawable) {
 			this.cursor = cursor;
 			this.drawable = drawable;

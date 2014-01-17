@@ -1,6 +1,6 @@
 package org.imogene.android.database.sqlite;
 
-import org.imogene.android.domain.DefaultUser;
+import org.imogene.android.common.entity.DefaultUser;
 
 import android.content.Context;
 import android.database.Cursor;

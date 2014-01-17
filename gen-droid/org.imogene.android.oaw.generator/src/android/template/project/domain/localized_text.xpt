@@ -1,0 +1,80 @@
+«IMPORT core»
+«DEFINE generate(String projectName) FOR Project»
+«FILE "/" + projectName.toLowerCase() + "/domain/" + name.toFirstUpper() + "LocalizedText.java"»
+package org.imogene.android.«projectName.toLowerCase()».domain;
+
+import android.text.TextUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.imogene.android.common.entity.LocalizedText;
+
+public class «name.toFirstUpper()»LocalizedText extends LocalizedText {
+
+	public static class Factory implements LocalizedTextFactory {
+		@Override
+		public LocalizedText newLocalizedText() {
+			return new «name.toFirstUpper()»LocalizedText();
+		}
+	}
+	
+	«FOREACH languages AS l-»
+	private String «l.name.toFirstLower()»;
+	«ENDFOREACH-»
+	
+	public static void init() {
+		LocalizedText.setFactory(new Factory());
+	}
+	
+	«FOREACH languages AS l-»
+	public void set«l.name.toFirstUpper()»(String value) {
+		«l.name.toFirstLower()» = value;
+	}
+	
+	public String get«l.name.toFirstUpper()»() {
+		return «l.name.toFirstLower()»;
+	}
+	«ENDFOREACH-»
+	
+	@Override
+	public String getValue(String iso) {
+		«FOREACH languages AS l SEPARATOR " else "-»
+		if ("«l.isoCode»".equals(iso)) {
+			return «l.name.toFirstLower()»;
+		}
+		«ENDFOREACH-»
+		return null;
+	}
+	
+	@Override
+	public void setValue(String iso, String value) {
+		«FOREACH languages AS l SEPARATOR " else "-»
+		if ("«l.isoCode»".equals(iso)) {
+			«l.name.toFirstLower()» = value;
+		}
+		«ENDFOREACH-»
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return «FOREACH languages AS l SEPARATOR " && "»TextUtils.isEmpty(«l.name.toFirstLower()»)«ENDFOREACH»;
+	}
+	
+	@Override
+	public boolean matches(String regex) {
+		return «FOREACH languages AS l SEPARATOR " && "»(TextUtils.isEmpty(«l.name.toFirstLower()») || «l.name.toFirstLower()».matches(regex))«ENDFOREACH»;
+	}
+	
+	@Override
+	public Map<String, String> getFieldAndValue() {
+		HashMap<String, String> result = new HashMap<String, String>();
+		«FOREACH languages AS l-»
+		result.put("«l.name.toFirstLower()»", «l.name.toFirstLower()»);
+		«ENDFOREACH-»
+		return result;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

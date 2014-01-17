@@ -2,8 +2,8 @@ package org.imogene.android.widget.field.view;
 
 import java.util.List;
 
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.domain.ImogBean;
 import org.imogene.android.template.R;
 import org.imogene.android.util.content.IntentUtils;
 

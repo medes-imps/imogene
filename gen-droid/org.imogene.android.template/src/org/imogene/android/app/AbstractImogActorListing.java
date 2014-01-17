@@ -29,13 +29,11 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 	private static final String EXTRA_DISPLAY = "AbstractUserListing_display";
 	private static final String EXTRA_LOGIN = "AbstractUserListing_login";
 	private static final String EXTRA_PASSWORD = "AbstractUserListing_password";
-	private static final String EXTRA_ROLES = "AbstractUserListing_roles";
 
 	private static final int DIALOG_PASSWORD_ID = 1;
 
 	private String display;
 	private String login;
-	private String roles;
 	private byte[] password;
 
 	@Override
@@ -52,7 +50,6 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		outState.putString(EXTRA_DISPLAY, display);
 		outState.putString(EXTRA_LOGIN, login);
 		outState.putByteArray(EXTRA_PASSWORD, password);
-		outState.putString(EXTRA_ROLES, roles);
 	}
 
 	@Override
@@ -60,7 +57,6 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		super.onRestoreInstanceState(state);
 		display = state.getString(EXTRA_DISPLAY);
 		login = state.getString(EXTRA_LOGIN);
-		roles = state.getString(EXTRA_ROLES);
 		password = state.getByteArray(EXTRA_PASSWORD);
 	}
 
@@ -71,7 +67,6 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		display = cursor.getUserDisplay(this);
 		login = cursor.getLogin();
 		password = cursor.getPassword();
-		roles = cursor.getRoles();
 		showDialog(DIALOG_PASSWORD_ID);
 	}
 
@@ -107,7 +102,6 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		if (validate(pwd)) {
 			Preferences prefs = Preferences.getPreferences(this);
 			prefs.setCurrentLogin(login);
-			prefs.setCurrentRoles(roles);
 			setResult(RESULT_OK);
 			finish();
 		} else {

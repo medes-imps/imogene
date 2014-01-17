@@ -9,7 +9,7 @@ import org.imogene.android.Constants;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.provider.ImogProvider;
 «FOREACH entities AS entity-»
-import org.imogene.android.«name.toLowerCase()».entities.«entity.name.toFirstUpper()»;
+import org.imogene.android.«name.toLowerCase()».domain.«entity.name.toFirstUpper()»;
 «ENDFOREACH-»
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
 

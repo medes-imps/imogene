@@ -13,8 +13,8 @@ import org.imogene.android.maps.app.MapActivityWithoutActionBar;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».entities.«name.toFirstUpper()»;
-import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
+import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,17 +25,13 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 	private static final int ACTIONBAR_SEARCH_ID = 2;
 	private static final int ACTIONBAR_SYNC_ID = 3;
 
-	private boolean mCanCreate;
+	private AccessPolicy mPolicy;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		«IF creators.size > 0-»
-		mCanCreate = «name.toFirstUpper()-»Roles.canCreate(this);
-		«ELSE-»
-		mCanCreate = «name.toFirstUpper()-»Roles.canWrite(this);
-		«ENDIF-»
+		mPolicy = AccessPolicy.getPolicy(this);
 		
 		Intent list = new Intent(this, «name.toFirstUpper()»List.class);
 		list.putExtras(getIntent());
@@ -46,7 +42,7 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 		map.putExtras(getIntent());
 		addTab("MAP", "Map", map);
 
-		if (mCanCreate) {
+		if (mPolicy.canCreate«name.toFirstUpper()»()) {
 			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
 				.setDrawable(R.drawable.ig_ic_title_add), ACTIONBAR_ADD_ID);
 		}

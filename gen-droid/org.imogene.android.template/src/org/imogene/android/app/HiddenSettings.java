@@ -4,8 +4,8 @@ import greendroid.app.GDPreferenceActivity;
 
 import java.util.UUID;
 
+import org.imogene.android.common.entity.SyncHistory;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.domain.SyncHistory;
 import org.imogene.android.preference.BaseDialogPreference;
 import org.imogene.android.preference.BaseDialogPreference.OnDialogCloseListener;
 import org.imogene.android.preference.Preferences;
