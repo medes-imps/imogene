@@ -1,12 +1,11 @@
 package org.imogene.android.database.sqlite.stmt;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.imogene.android.database.sqlite.ImogOpenHelper;
+import org.imogene.android.database.sqlite.stmt.query.ColumnNameOrRawSql;
 import org.imogene.android.database.sqlite.stmt.query.Database;
 import org.imogene.android.database.sqlite.stmt.query.OrderBy;
 
@@ -26,13 +25,9 @@ public class QueryBuilder extends StatementBuilder {
 
 	private boolean distinct;
 	private boolean selectIdColumn = true;
-	private List<String> selectColumnList;
-	private List<String> selectRawList;
+	private List<ColumnNameOrRawSql> selectList;
 	private List<OrderBy> orderByList;
-	private String orderByRaw;
-	private Object[] orderByArgs;
-	private List<String> groupByList;
-	private String groupByRaw;
+	private List<ColumnNameOrRawSql> groupByList;
 	private boolean isInnerQuery;
 	private boolean isCountOfQuery;
 	private boolean isMaxQuery;
@@ -46,8 +41,32 @@ public class QueryBuilder extends StatementBuilder {
 	private Uri uri;
 
 	public QueryBuilder(ImogOpenHelper helper, String tableName) {
-		super(tableName);
+		super(tableName, StatementType.SELECT);
 		this.helper = helper;
+	}
+
+	/**
+	 * Sets the cursor factory to be used for the query. You can use one factory for all queries on a database but it is
+	 * normally easier to specify the factory when doing this query.
+	 * 
+	 * @param factory The factory to use.
+	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 */
+	public QueryBuilder setCursorFactory(CursorFactory factory) {
+		this.factory = factory;
+		return this;
+	}
+
+	/**
+	 * Register to watch a content URI for changes. This can be the URI of a specific data row (for example,
+	 * "content://my_provider_type/23"), or a a generic URI for a content type.
+	 * 
+	 * @param uri The content URI to watch.
+	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 */
+	public QueryBuilder setUri(Uri uri) {
+		this.uri = uri;
+		return this;
 	}
 
 	/**
@@ -62,49 +81,41 @@ public class QueryBuilder extends StatementBuilder {
 
 	/**
 	 * Return the number of selected columns in the query.
-	 * 
-	 * @return Number of selected columns.
 	 */
 	int getSelectColumnCount() {
 		if (isCountOfQuery) {
 			return 1;
-		} else if (selectRawList != null && !selectRawList.isEmpty()) {
-			return selectRawList.size();
-		} else if (selectColumnList == null) {
+		} else if (selectList == null) {
 			return 0;
 		} else {
-			return selectColumnList.size();
+			return selectList.size();
 		}
 	}
 
 	/**
 	 * Return the selected columns in the query or an empty list if none were specified.
-	 * 
-	 * @return The list of selected columns.
 	 */
-	List<String> getSelectColumns() {
+	String getSelectColumnsAsString() {
 		if (isCountOfQuery) {
-			return Collections.singletonList("COUNT(*)");
-		} else if (selectRawList != null && !selectRawList.isEmpty()) {
-			return selectRawList;
-		} else if (selectColumnList == null) {
-			return Collections.emptyList();
+			return "COUNT(*)";
+		} else if (selectList == null) {
+			return "";
 		} else {
-			return selectColumnList;
+			return selectList.toString();
 		}
 	}
 
 	/**
 	 * Add columns to be returned by the SELECT query. If no columns are selected then all columns are returned by
-	 * default. For classes with id columns, the id column is added to the select list automatically.
+	 * default. For classes with id columns, the id column is added to the select list automagically. This can be called
+	 * multiple times to add more columns to select.
 	 * 
-	 * @param columns The columns to select.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * <p>
+	 * <b>WARNING:</b> If you specify any columns to return, then any foreign-collection fields will be returned as null
+	 * <i>unless</i> their {@link ForeignCollectionField#columnName()} is also in the list.
+	 * </p>
 	 */
 	public QueryBuilder selectColumns(String... columns) {
-		if (selectColumnList == null) {
-			selectColumnList = new ArrayList<String>();
-		}
 		for (String column : columns) {
 			addSelectColumnToList(column);
 		}
@@ -113,15 +124,9 @@ public class QueryBuilder extends StatementBuilder {
 
 	/**
 	 * Same as {@link #selectColumns(String...)} except the columns are specified as an iterable -- probably will be a
-	 * {@link Collection}.
-	 * 
-	 * @param columns The columns to select.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * {@link Collection}. This can be called multiple times to add more columns to select.
 	 */
 	public QueryBuilder selectColumns(Iterable<String> columns) {
-		if (selectColumnList == null) {
-			selectColumnList = new ArrayList<String>();
-		}
 		for (String column : columns) {
 			addSelectColumnToList(column);
 		}
@@ -129,60 +134,45 @@ public class QueryBuilder extends StatementBuilder {
 	}
 
 	/**
-	 * Add raw columns or aggregate functions (COUNT, MAX, ...) to the query.
-	 * 
-	 * @param The raw columns or aggregate functions to add.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * Add raw columns or aggregate functions (COUNT, MAX, ...) to the query. This will turn the query into something
+	 * only suitable for the {@link Dao#queryRaw(String, String...)} type of statement. This can be called multiple
+	 * times to add more columns to select.
 	 */
 	public QueryBuilder selectRaw(String... columns) {
-		if (selectRawList == null) {
-			selectRawList = new ArrayList<String>();
-		}
 		for (String column : columns) {
-			selectRawList.add(column);
+			addSelectToList(ColumnNameOrRawSql.withRawSql(column));
 		}
 		return this;
 	}
 
 	/**
-	 * Add "GROUP BY" clause to the SQL query statement. Use of this means that the resulting objects may not have a
-	 * valid ID column value so cannot be deleted or updated.
+	 * Add "GROUP BY" clause to the SQL query statement. This can be called multiple times to add additional "GROUP BY"
+	 * clauses.
 	 * 
-	 * @param The column name to group by.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * <p>
+	 * NOTE: Use of this means that the resulting objects may not have a valid ID column value so cannot be deleted or
+	 * updated.
+	 * </p>
 	 */
 	public QueryBuilder groupBy(String columnName) {
-		if (groupByList == null) {
-			groupByList = new ArrayList<String>();
-		}
-		groupByList.add(columnName);
-		selectIdColumn = false;
+		addGroupBy(ColumnNameOrRawSql.withColumnName(columnName));
 		return this;
 	}
 
 	/**
-	 * Add a raw SQL "GROUP BY" clause to the SQL query statement.
-	 * 
-	 * @param The raw SQL "GROUP BY" clause. This should not include the "GROUP BY".
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * Add a raw SQL "GROUP BY" clause to the SQL query statement. This should not include the "GROUP BY".
 	 */
 	public QueryBuilder groupByRaw(String rawSql) {
-		groupByRaw = rawSql;
+		addGroupBy(ColumnNameOrRawSql.withRawSql(rawSql));
 		return this;
 	}
 
 	/**
-	 * Add "ORDER BY" clause to the SQL query statement.
-	 * 
-	 * @param columnName The columns name to order by.
-	 * @param ascending {@code true} for ascending order, {@code false} otherwise.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * Add "ORDER BY" clause to the SQL query statement. This can be called multiple times to add additional "ORDER BY"
+	 * clauses. Ones earlier are applied first.
 	 */
 	public QueryBuilder orderBy(String columnName, boolean ascending) {
-		if (orderByList == null) {
-			orderByList = new ArrayList<OrderBy>();
-		}
-		orderByList.add(new OrderBy(columnName, ascending));
+		addOrderBy(new OrderBy(columnName, ascending));
 		return this;
 	}
 
@@ -190,10 +180,10 @@ public class QueryBuilder extends StatementBuilder {
 	 * Add raw SQL "ORDER BY" clause to the SQL query statement.
 	 * 
 	 * @param rawSql The raw SQL order by clause. This should not include the "ORDER BY".
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
 	 */
 	public QueryBuilder orderByRaw(String rawSql) {
-		return orderByRaw(rawSql, (Object[]) null);
+		addOrderBy(new OrderBy(rawSql, (Object[]) null));
+		return this;
 	}
 
 	/**
@@ -202,11 +192,9 @@ public class QueryBuilder extends StatementBuilder {
 	 * @param rawSql The raw SQL order by clause. This should not include the "ORDER BY".
 	 * @param args Optional arguments that correspond to any ? specified in the rawSql. Each of the arguments must have
 	 *        the sql-type set.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
 	 */
 	public QueryBuilder orderByRaw(String rawSql, Object... args) {
-		orderByRaw = rawSql;
-		orderByArgs = args;
+		addOrderBy(new OrderBy(rawSql, args));
 		return this;
 	}
 
@@ -240,7 +228,7 @@ public class QueryBuilder extends StatementBuilder {
 	 * @param startRow Row number to start the output.
 	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
 	 */
-	public QueryBuilder offset(Long startRow) throws SQLException {
+	public QueryBuilder offset(Long startRow) {
 		offset = startRow;
 		return this;
 	}
@@ -255,16 +243,6 @@ public class QueryBuilder extends StatementBuilder {
 	 */
 	public QueryBuilder setCountOf(boolean countOf) {
 		this.isCountOfQuery = countOf;
-		return this;
-	}
-
-	/**
-	 * Sets the count-of query flag using {@link #setCountOf(boolean)} to true.
-	 * 
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
-	 */
-	public QueryBuilder countOf() {
-		setCountOf(true);
 		return this;
 	}
 
@@ -292,53 +270,27 @@ public class QueryBuilder extends StatementBuilder {
 	}
 
 	/**
-	 * Sets the cursor factory to be used for the query. You can use one factory for all queries on a database but it is
-	 * normally easier to specify the factory when doing this query.
+	 * Join with another query builder. This will add into the SQL something close to " INNER JOIN other-table ...".
+	 * This allows you to link two tables that share a field of the same type. So even if there is NOT a foreign-object
+	 * relationship between the tables, you can JOIN them.
 	 * 
-	 * @param factory The factory to use.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * <p>
+	 * <b>NOTE:</b> This will do combine the WHERE statement of the two query builders with a SQL "AND".
+	 * </p>
 	 */
-	public QueryBuilder setCursorFactory(CursorFactory factory) {
-		this.factory = factory;
+	public QueryBuilder join(String localColumnName, String joinedColumnName, QueryBuilder joinedQueryBuilder) {
+		addJoinInfo(JoinType.INNER, localColumnName, joinedColumnName, joinedQueryBuilder, JoinWhereOperation.AND);
 		return this;
 	}
 
 	/**
-	 * Register to watch a content URI for changes. This can be the URI of a specific data row (for example,
-	 * "content://my_provider_type/23"), or a a generic URI for a content type.
-	 * 
-	 * @param uri The content URI to watch.
-	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 * Similar to {@link #join(String, String, QueryBuilder)} but allows you to specify the join type and the operation
+	 * used to combine the WHERE statements.
 	 */
-	public QueryBuilder setUri(Uri uri) {
-		this.uri = uri;
+	public QueryBuilder join(String localColumnName, String joinedColumnName, QueryBuilder joinedQueryBuilder,
+			JoinType type, JoinWhereOperation operation) {
+		addJoinInfo(type, localColumnName, joinedColumnName, joinedQueryBuilder, operation);
 		return this;
-	}
-
-	@Override
-	public void clear() {
-		super.clear();
-		distinct = false;
-		selectIdColumn = true;
-		selectColumnList = null;
-		selectRawList = null;
-		orderByList = null;
-		orderByRaw = null;
-		groupByList = null;
-		groupByRaw = null;
-		isInnerQuery = false;
-		isCountOfQuery = false;
-		isMaxQuery = false;
-		maxColumn = null;
-		having = null;
-		limit = null;
-		offset = null;
-		if (joinList != null) {
-			// help gc
-			joinList.clear();
-			joinList = null;
-		}
-		addTableName = false;
 	}
 
 	/**
@@ -429,6 +381,47 @@ public class QueryBuilder extends StatementBuilder {
 		}
 	}
 
+	/**
+	 * Sets the count-of query flag using {@link #setCountOf(boolean)} to true.
+	 * 
+	 * @return This QueryBuilder object to allow for chaining of calls to set methods.
+	 */
+	public QueryBuilder countOf() {
+		setCountOf(true);
+		return this;
+	}
+
+	@Override
+	public void clear() {
+		super.clear();
+		distinct = false;
+		selectIdColumn = true;
+		if (selectList != null) {
+			selectList.clear();
+			selectList = null;
+		}
+		if (orderByList != null) {
+			orderByList.clear();
+			orderByList = null;
+		}
+		if (groupByList != null) {
+			groupByList.clear();
+			groupByList = null;
+		}
+		isInnerQuery = false;
+		isCountOfQuery = false;
+		isMaxQuery = false;
+		maxColumn = null;
+		having = null;
+		limit = null;
+		offset = null;
+		if (joinList != null) {
+			joinList.clear();
+			joinList = null;
+		}
+		addTableName = false;
+	}
+
 	@Override
 	protected void appendStatementStart(StringBuilder sb, List<Object> argList) {
 		if (joinList == null) {
@@ -441,13 +434,12 @@ public class QueryBuilder extends StatementBuilder {
 			sb.append("DISTINCT ");
 		}
 		if (isCountOfQuery) {
+			type = StatementType.SELECT_LONG;
 			sb.append("COUNT(*) ");
 		} else if (isMaxQuery) {
 			Database.appendMaxQuery(sb, maxColumn);
-		} else if (selectRawList != null && !selectRawList.isEmpty()) {
-			appendSelectRaw(sb);
 		} else {
-			appendColumns(sb);
+			appendSelects(sb);
 		}
 		sb.append("FROM ");
 		Database.appendEscapedEntityName(sb, tableName);
@@ -468,7 +460,7 @@ public class QueryBuilder extends StatementBuilder {
 				if (first) {
 					operation = WhereOperation.FIRST;
 				} else {
-					operation = joinInfo.operation;
+					operation = joinInfo.operation.whereOperation;
 				}
 				first = joinInfo.queryBuilder.appendWhereStatement(sb, argList, operation);
 			}
@@ -493,6 +485,21 @@ public class QueryBuilder extends StatementBuilder {
 		return joinList != null;
 	}
 
+	private void addOrderBy(OrderBy orderBy) {
+		if (orderByList == null) {
+			orderByList = new ArrayList<OrderBy>();
+		}
+		orderByList.add(orderBy);
+	}
+
+	private void addGroupBy(ColumnNameOrRawSql groupBy) {
+		if (groupByList == null) {
+			groupByList = new ArrayList<ColumnNameOrRawSql>();
+		}
+		groupByList.add(groupBy);
+		selectIdColumn = false;
+	}
+
 	private void setAddTableName(boolean addTableName) {
 		this.addTableName = addTableName;
 		if (joinList != null) {
@@ -502,31 +509,34 @@ public class QueryBuilder extends StatementBuilder {
 		}
 	}
 
-	/*
-	 * private void addJoinInfo(String type, QueryBuilder joinedQueryBuilder) throws SQLException { JoinInfo joinInfo =
-	 * new JoinInfo(type, joinedQueryBuilder); matchJoinedFields(joinInfo, joinedQueryBuilder); if (joinList == null) {
-	 * joinList = new ArrayList<JoinInfo>(); } joinList.add(joinInfo); }
+	/**
+	 * Add join info to the query. This can be called multiple times to join with more than one table.
 	 */
-	/*
-	 * private void matchJoinedFields(JoinInfo joinInfo, QueryBuilder joinedQueryBuilder) throws SQLException { for
-	 * (FieldType fieldType : tableInfo.getFieldTypes()) { // if this is a foreign field and its foreign-id field is the
-	 * same // as the other's id FieldType foreignIdField = fieldType.getForeignIdField(); if (fieldType.isForeign() &&
-	 * foreignIdField.equals(joinedQueryBuilder.tableInfo.getIdField())) { joinInfo.localField = fieldType;
-	 * joinInfo.remoteField = foreignIdField; return; } } // if this other field is a foreign field and its foreign-id
-	 * field is // our id for (FieldType fieldType : joinedQueryBuilder.tableInfo.getFieldTypes()) { if
-	 * (fieldType.isForeign() && fieldType.getForeignIdField().equals(idField)) { joinInfo.localField = idField;
-	 * joinInfo.remoteField = fieldType; return; } }
-	 * 
-	 * throw new SQLException("Could not find a foreign " + tableInfo.getDataClass() + " field in " +
-	 * joinedQueryBuilder.tableInfo.getDataClass() + " or vice versa"); }
-	 */
+	private void addJoinInfo(JoinType type, String localColumnName, String joinedColumnName,
+			QueryBuilder joinedQueryBuilder, JoinWhereOperation operation) {
+		JoinInfo joinInfo = new JoinInfo(type, joinedQueryBuilder, operation);
+		joinInfo.localField = localColumnName;
+		joinInfo.remoteField = joinedColumnName;
+		if (joinList == null) {
+			joinList = new ArrayList<JoinInfo>();
+		}
+		joinList.add(joinInfo);
+	}
+
 	private void addSelectColumnToList(String columnName) {
-		selectColumnList.add(columnName);
+		addSelectToList(ColumnNameOrRawSql.withColumnName(columnName));
+	}
+
+	private void addSelectToList(ColumnNameOrRawSql select) {
+		if (selectList == null) {
+			selectList = new ArrayList<ColumnNameOrRawSql>();
+		}
+		selectList.add(select);
 	}
 
 	private void appendJoinSql(StringBuilder sb) {
 		for (JoinInfo joinInfo : joinList) {
-			sb.append(joinInfo.type).append(" JOIN ");
+			sb.append(joinInfo.type.sql).append(" JOIN ");
 			Database.appendEscapedEntityName(sb, joinInfo.queryBuilder.tableName);
 			sb.append(" ON ");
 			Database.appendEscapedEntityName(sb, tableName);
@@ -544,22 +554,12 @@ public class QueryBuilder extends StatementBuilder {
 		}
 	}
 
-	private void appendSelectRaw(StringBuilder sb) {
-		boolean first = true;
-		for (String column : selectRawList) {
-			if (first) {
-				first = false;
-			} else {
-				sb.append(", ");
-			}
-			sb.append(column);
-		}
-		sb.append(' ');
-	}
+	private void appendSelects(StringBuilder sb) {
+		// the default
+		type = StatementType.SELECT;
 
-	private void appendColumns(StringBuilder sb) {
 		// if no columns were specified then * is the default
-		if (selectColumnList == null) {
+		if (selectList == null) {
 			if (addTableName) {
 				Database.appendEscapedEntityName(sb, tableName);
 				sb.append('.');
@@ -575,26 +575,39 @@ public class QueryBuilder extends StatementBuilder {
 		} else {
 			hasId = false;
 		}
-		for (String columnName : selectColumnList) {
+		for (ColumnNameOrRawSql select : selectList) {
+			if (select.getRawSql() != null) {
+				// if any are raw-sql then that's our type
+				type = StatementType.SELECT_RAW;
+				if (first) {
+					first = false;
+				} else {
+					sb.append(", ");
+				}
+				sb.append(select.getRawSql());
+				continue;
+			}
 			if (first) {
 				first = false;
 			} else {
 				sb.append(',');
 			}
-			appendColumnName(sb, columnName);
-			if (BaseColumns._ID.equals(columnName)) {
+			appendColumnName(sb, select.getColumnName());
+			if (BaseColumns._ID.equals(select.getColumnName())) {
 				hasId = true;
 			}
 		}
 
-		// we have to add the idField even if it isn't in the columnNameSet
-		if (!hasId && selectIdColumn) {
-			if (!first) {
-				sb.append(',');
+		if (type != StatementType.SELECT_RAW) {
+			// we have to add the idField even if it isn't in the columnNameSet
+			if (!hasId && selectIdColumn) {
+				if (!first) {
+					sb.append(',');
+				}
+				appendColumnName(sb, BaseColumns._ID);
 			}
-			appendColumnName(sb, BaseColumns._ID);
+			sb.append(' ');
 		}
-		sb.append(' ');
 	}
 
 	private void appendLimit(StringBuilder sb) {
@@ -624,32 +637,30 @@ public class QueryBuilder extends StatementBuilder {
 			for (JoinInfo joinInfo : joinList) {
 				if (joinInfo.queryBuilder != null && joinInfo.queryBuilder.hasGroupStuff()) {
 					joinInfo.queryBuilder.appendGroupBys(sb, first);
+					first = false;
 				}
 			}
 		}
 	}
 
 	private boolean hasGroupStuff() {
-		return ((groupByList != null && !groupByList.isEmpty()) || groupByRaw != null);
+		return (groupByList != null && !groupByList.isEmpty());
 	}
 
 	private void appendGroupBys(StringBuilder sb, boolean first) {
 		if (first) {
 			sb.append("GROUP BY ");
 		}
-		if (groupByRaw != null) {
-			if (!first) {
+		for (ColumnNameOrRawSql groupBy : groupByList) {
+			if (first) {
+				first = false;
+			} else {
 				sb.append(',');
 			}
-			sb.append(groupByRaw);
-		} else {
-			for (String columnName : groupByList) {
-				if (first) {
-					first = false;
-				} else {
-					sb.append(',');
-				}
-				appendColumnName(sb, columnName);
+			if (groupBy.getRawSql() == null) {
+				appendColumnName(sb, groupBy.getColumnName());
+			} else {
+				sb.append(groupBy.getRawSql());
 			}
 		}
 		sb.append(' ');
@@ -669,42 +680,40 @@ public class QueryBuilder extends StatementBuilder {
 			for (JoinInfo joinInfo : joinList) {
 				if (joinInfo.queryBuilder != null && joinInfo.queryBuilder.hasOrderStuff()) {
 					joinInfo.queryBuilder.appendOrderBys(sb, first, argList);
+					first = false;
 				}
 			}
 		}
 	}
 
 	private boolean hasOrderStuff() {
-		return ((orderByList != null && !orderByList.isEmpty()) || orderByRaw != null);
+		return (orderByList != null && !orderByList.isEmpty());
 	}
 
 	private void appendOrderBys(StringBuilder sb, boolean first, List<Object> argList) {
 		if (first) {
 			sb.append("ORDER BY ");
 		}
-		if (orderByRaw != null) {
-			if (!first) {
+		for (OrderBy orderBy : orderByList) {
+			if (first) {
+				first = false;
+			} else {
 				sb.append(',');
 			}
-			sb.append(orderByRaw);
-			if (orderByArgs != null) {
-				for (Object arg : orderByArgs) {
-					argList.add(arg);
-				}
-			}
-		} else {
-			for (OrderBy orderBy : orderByList) {
-				if (first) {
-					first = false;
-				} else {
-					sb.append(',');
-				}
+			if (orderBy.getRawSql() == null) {
 				appendColumnName(sb, orderBy.getColumnName());
 				if (orderBy.isAscending()) {
 					// here for documentation purposes, ASC is the default
 					// sb.append(" ASC");
 				} else {
 					sb.append(" DESC");
+				}
+			} else {
+				sb.append(orderBy.getRawSql());
+				if (orderBy.getOrderByArgs() != null) {
+					for (Object arg : orderBy.getOrderByArgs()) {
+						argList.add(arg);
+					}
 				}
 			}
 		}
@@ -729,13 +738,13 @@ public class QueryBuilder extends StatementBuilder {
 	 * Encapsulates our join information.
 	 */
 	private class JoinInfo {
-		final String type;
+		final JoinType type;
 		final QueryBuilder queryBuilder;
 		String localField;
 		String remoteField;
-		WhereOperation operation;
+		JoinWhereOperation operation;
 
-		public JoinInfo(String type, QueryBuilder queryBuilder, WhereOperation operation) {
+		public JoinInfo(JoinType type, QueryBuilder queryBuilder, JoinWhereOperation operation) {
 			this.type = type;
 			this.queryBuilder = queryBuilder;
 			this.operation = operation;
@@ -757,6 +766,61 @@ public class QueryBuilder extends StatementBuilder {
 			queryBuilder.appendStatementString(sb, argList);
 		}
 
+	}
+
+	/**
+	 * Type of the JOIN that we are adding.
+	 * 
+	 * <p>
+	 * <b>NOTE:</b> RIGHT and FULL JOIN SQL commands are not supported because we are only returning objects from the
+	 * "left" table.
+	 */
+	public enum JoinType {
+		/**
+		 * The most common type of join.
+		 * "An SQL INNER JOIN return all rows from multiple tables where the join condition is met."
+		 * 
+		 * <p>
+		 * See <a href="http://www.w3schools.com/sql/sql_join.asp" >SQL JOIN</a>
+		 * </p>
+		 */
+		INNER("INNER"),
+		/**
+		 * "The LEFT JOIN keyword returns all rows from the left table (table1), with the matching rows in the right
+		 * table (table2). The result is NULL in the right side when there is no match."
+		 * 
+		 * <p>
+		 * See: <a href="http://www.w3schools.com/sql/sql_join_left.asp" >LEFT JOIN SQL docs</a>
+		 * </p>
+		 */
+		LEFT("LEFT"),
+		// end
+		;
+
+		private String sql;
+
+		private JoinType(String sql) {
+			this.sql = sql;
+		}
+	}
+
+	/**
+	 * When we are combining WHERE statements from the two joined query-builders, this determines the operator to use to
+	 * do so.
+	 */
+	public enum JoinWhereOperation {
+		/** combine the two WHERE parts of the JOINed queries with an AND */
+		AND(WhereOperation.AND),
+		/** combine the two WHERE parts of the JOINed queries with an OR */
+		OR(WhereOperation.OR),
+		// end
+		;
+
+		private WhereOperation whereOperation;
+
+		private JoinWhereOperation(WhereOperation whereOperation) {
+			this.whereOperation = whereOperation;
+		}
 	}
 
 }

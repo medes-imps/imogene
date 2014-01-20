@@ -12,12 +12,17 @@ import java.util.List;
 public abstract class StatementBuilder {
 
 	protected final String tableName;
+	protected StatementType type;
 	protected boolean addTableName;
 
 	protected Where where = null;
 
-	public StatementBuilder(String tableName) {
+	public StatementBuilder(String tableName, StatementType type) {
 		this.tableName = tableName;
+		this.type = type;
+		if (!type.isOkForStatementBuilder()) {
+			throw new IllegalStateException("Building a statement from a " + type + " statement is not allowed");
+		}
 	}
 
 	/**
@@ -131,6 +136,62 @@ public abstract class StatementBuilder {
 	 */
 	protected boolean shouldPrependTableNameToColumns() {
 		return false;
+	}
+
+	/**
+	 * Return the type of the statement.
+	 */
+	StatementType getType() {
+		return type;
+	}
+
+	/**
+	 * Types of statements that we are building.
+	 */
+	public static enum StatementType {
+		/** SQL statement in the form of SELECT ... */
+		SELECT(true, true, false, false),
+		/** SQL statement in the form of SELECT COUNT(*)... or something */
+		SELECT_LONG(true, true, false, false),
+		/** SQL statement in the form of SELECT... with aggregate functions or something */
+		SELECT_RAW(true, true, false, false),
+		/** SQL statement in the form of UPDATE ... */
+		UPDATE(true, false, true, false),
+		/** SQL statement in the form of DELETE ... */
+		DELETE(true, false, true, false),
+		/** SQL statement in the form of CREATE TABLE, ALTER TABLE, or something returning the number of rows affected */
+		EXECUTE(false, false, false, true),
+		// end
+		;
+
+		private final boolean okForStatementBuilder;
+		private final boolean okForQuery;
+		private final boolean okForUpdate;
+		private final boolean okForExecute;
+
+		private StatementType(boolean okForStatementBuilder, boolean okForQuery, boolean okForUpdate,
+				boolean okForExecute) {
+			this.okForStatementBuilder = okForStatementBuilder;
+			this.okForQuery = okForQuery;
+			this.okForUpdate = okForUpdate;
+			this.okForExecute = okForExecute;
+		}
+
+		public boolean isOkForStatementBuilder() {
+			return okForStatementBuilder;
+		}
+
+		public boolean isOkForQuery() {
+			return okForQuery;
+		}
+
+		public boolean isOkForUpdate() {
+			return okForUpdate;
+		}
+
+		public boolean isOkForExecute() {
+			return okForExecute;
+		}
 	}
 
 	/**
