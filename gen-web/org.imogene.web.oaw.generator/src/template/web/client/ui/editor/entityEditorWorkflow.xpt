@@ -209,7 +209,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		
 		/* get the «name.toFirstUpper()» instance from database */
 		Request<«name.toFirstUpper()»Proxy> fetchRequest = request.findById(entityId);
-		«EXPAND fetchRelatedEntities FOREACH groups.fields»
+		«EXPAND fetchRelatedEntities(null) FOREACH groups.fields»
 		«IF hasDynamicFields-»
 		fetchRequest.with("dynamicFieldValues.fieldTemplate.templateCreator.roles");
 		«ENDIF -»
@@ -435,60 +435,54 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 «ENDFILE»
 «ENDDEFINE»
 
-
 «REM» Fetch the related entities «ENDREM»
-«DEFINE fetchRelatedEntities FOR FieldEntity-»«ENDDEFINE»
-«DEFINE fetchRelatedEntities FOR TextField-»
-	«IF this.translatable-»
-				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR TextField-»
+«IF translatable-»
+	«IF parents == null-»
+	fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+	«ELSE-»
+	fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 	«ENDIF-»
-«ENDDEFINE»
-«DEFINE fetchRelatedEntities FOR BinaryField-»
-				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
-«ENDDEFINE»
-«DEFINE fetchRelatedEntities FOR GeoField-»
-				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
-«ENDDEFINE»
-«DEFINE fetchRelatedEntities FOR RelationFieldEntity-»
-		fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
-		«IF isSimpleRelationFieldPresent(this.entity.mainFields)-»
-			«FOREACH this.entity.mainFields AS mf-»		
-				«EXPAND fetchRelatedEntitiesWithMainFields(this) FOR mf-»
-			«ENDFOREACH-»	
-		«ENDIF-»
-		«FOREACH entity.mainFields AS nf-»
-			«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
-			fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
-			«ENDIF-»
-		«ENDFOREACH-»				
-		«IF relationHierarchicalFilter!=null && this.relationHierarchicalFilter.size==2 -»
-		«IF this.relationHierarchicalFilter.get(0).cardinality == -1 || this.relationHierarchicalFilter.get(0).cardinality >1 -» 
-			«EXPAND fetchRelatedEntitiesWithHierarchicalFields(this) FOR this.relationHierarchicalFilter.get(1)-»
-		«ENDIF-»
-		«ENDIF-»
-		«IF nestedForm-»
-			«FOREACH this.entity.nestedFields AS nf-»
-				«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
-				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
-				«ENDIF-»
-			«ENDFOREACH-»
-		«ENDIF-»		
-«ENDDEFINE»
-
-«REM» If the related entity has relation fields in its mainfields, fetch the corresponding entity «ENDREM»
-«DEFINE fetchRelatedEntitiesWithMainFields(RelationFieldEntity parent) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE fetchRelatedEntitiesWithMainFields(RelationFieldEntity parent) FOR RelationFieldEntity-»
-«IF this.cardinality==1-»
-fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR parent».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ENDIF-»
 «ENDDEFINE»
 
-«REM» If the related entity has relation fields in its mainfields, fetch the corresponding entity «ENDREM»
-«DEFINE fetchRelatedEntitiesWithHierarchicalFields(RelationFieldEntity parent) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE fetchRelatedEntitiesWithHierarchicalFields(RelationFieldEntity parent) FOR RelationFieldEntity-»
-// Field «parent.name.toFirstLower()» depends on the value of field «parent.relationHierarchicalFilter.get(0).name.toFirstLower()»
-fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR parent».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR BinaryField-»
+«IF parents == null-»
+fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ELSE-»
+fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDIF-»
 «ENDDEFINE»
+
+«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR GeoField-»
+«IF parents == null-»
+fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ELSE-»
+fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR RelationFieldEntity-»
+«IF parents == null-»
+	fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+	«IF nestedForm-»
+	«EXPAND fetchRelatedEntities({this}) FOREACH entity.nestedFields-»
+	«ELSE-»
+	«EXPAND fetchRelatedEntities({this}) FOREACH entity.mainFields-»
+	«ENDIF-»
+	«IF relationHierarchicalFilter.size == 2 && relationHierarchicalFilter.get(0).cardinality != 1-»
+	// Field «name.toFirstLower()» depends on the value of field «relationHierarchicalFilter.get(0).name.toFirstLower()»
+	«EXPAND fetchRelatedEntities({this}) FOR relationHierarchicalFilter.get(1)-»
+	«ENDIF-»
+«ELSE-»
+	fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+	«LET (List[RelationFieldEntity]) {} AS mylist»
+	«EXPAND fetchRelatedEntities(mylist.addAll(parents).add(this)) FOREACH entity.mainFields-»
+	«ENDLET»
+«ENDIF-»
+«ENDDEFINE»
+
 
 «REM» imports for relation with cardinality 1 «ENDREM»
 «DEFINE importForRelation(String projectName) FOR FieldEntity -»«ENDDEFINE»

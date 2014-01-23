@@ -1050,6 +1050,9 @@ public class ImogeneEditor
 				setPageText(pageIndex, "AllItems");
 			}
 			
+			// Create a page for the descriptions
+			// TODO make it work one day
+			/* 
 			{
 				ViewerPane viewerPane =
 					new ViewerPane(getSite().getPage(), ImogeneEditor.this) {
@@ -1076,6 +1079,7 @@ public class ImogeneEditor
 				int pageIndex = addPage(viewerPane.getControl());
 				setPageText(pageIndex, "Descriptions");
 			}
+			*/
 
 			getSite().getShell().getDisplay().asyncExec
 				(new Runnable() {
