@@ -100,14 +100,6 @@ public class MedooAndroidGenHelper {
 		return true;
 	}
 
-	public static boolean hasQRCode(Project project) {
-		for (CardEntity entity : project.getEntities()) {
-			if (entity.isDisplayQRCode())
-				return true;
-		}
-		return false;
-	}
-
 	public static List<FieldEntity> getMainFields(CardEntity entity) {
 		ArrayList<FieldEntity> main = new ArrayList<FieldEntity>();
 		for (FieldEntity field : entity.getMainFields())

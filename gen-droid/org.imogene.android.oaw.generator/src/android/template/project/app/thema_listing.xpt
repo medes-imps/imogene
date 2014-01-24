@@ -86,9 +86,6 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.ig_menu_thema_listing, menu);
-	    «IF hasQRCode(this)-»
-		menu.findItem(R.id.ig_menu_search).setVisible(true);
-		«ENDIF-»
 		«IF multilogin-»
 		menu.findItem(R.id.ig_menu_change_user).setVisible(true).setIntent(new Intent(this, MultiUserListing.class));
 		«ENDIF-»

@@ -26,8 +26,6 @@ boolean hasMiscellaneousThema(List[CardEntity] entities, List[Thema] themas) :
 boolean isInMiscellaneousThema(List[Thema] themas, CardEntity entity) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.isInMiscellaneousThema(java.util.List, org.imogene.model.core.CardEntity);
   
-boolean hasQRCode(Project project) :
-  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasQRCode(org.imogene.model.core.Project);
   
 List[FieldEntity] getMainFields(CardEntity entity) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getMainFields(org.imogene.model.core.CardEntity);
