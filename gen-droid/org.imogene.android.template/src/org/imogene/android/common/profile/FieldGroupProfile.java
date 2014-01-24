@@ -29,9 +29,9 @@ public class FieldGroupProfile extends ImogBeanImpl {
 
 		public static final String PROFILE = "profile";
 		public static final String FIELDGROUP = "fieldGroup";
-		public static final String READ = "read";
-		public static final String WRITE = "write";
-		public static final String EXPORT = "export";
+		public static final String READ = "canRead";
+		public static final String WRITE = "canWrite";
+		public static final String EXPORT = "canExport";
 	}
 
 	public static FieldGroupProfile fromUri(Uri uri) {

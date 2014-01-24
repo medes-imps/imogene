@@ -29,10 +29,10 @@ public class EntityProfile extends ImogBeanImpl {
 
 		public static final String PROFILE = "profile";
 		public static final String ENTITY = "entity";
-		public static final String CREATE = "create";
-		public static final String DIRECTACCESS = "directAccess";
-		public static final String DELETE = "delete";
-		public static final String EXPORT = "export";
+		public static final String CREATE = "canCreate";
+		public static final String DIRECTACCESS = "canDirectAccess";
+		public static final String DELETE = "canDelete";
+		public static final String EXPORT = "canExport";
 	}
 
 	public static EntityProfile fromUri(Uri uri) {
