@@ -80,7 +80,6 @@ public class CardEntityItemProvider
 			addSortFieldsPropertyDescriptor(object);
 			addActorFilterFieldsPropertyDescriptor(object);
 			addColorPropertyDescriptor(object);
-			addDisplayQRCodePropertyDescriptor(object);
 			addClientPeriodFilterablePropertyDescriptor(object);
 			addGeoreferencedPropertyDescriptor(object);
 			addRdfSubjectPropertyDescriptor(object);
@@ -334,28 +333,6 @@ public class CardEntityItemProvider
 	}
 
 	/**
-	 * This adds a property descriptor for the Display QR Code feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addDisplayQRCodePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_CardEntity_DisplayQRCode_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_CardEntity_DisplayQRCode_feature", "_UI_CardEntity_type"),
-				 ImogenePackage.Literals.CARD_ENTITY__DISPLAY_QR_CODE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
 	 * This adds a property descriptor for the Client Period Filterable feature.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -522,7 +499,7 @@ public class CardEntityItemProvider
 	 * This returns CardEntity.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object) {
@@ -561,7 +538,6 @@ public class CardEntityItemProvider
 			case ImogenePackage.CARD_ENTITY__ICON:
 			case ImogenePackage.CARD_ENTITY__TOP_LEVEL:
 			case ImogenePackage.CARD_ENTITY__COLOR:
-			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 			case ImogenePackage.CARD_ENTITY__RDF_PREDICATE:
 			case ImogenePackage.CARD_ENTITY__HAS_DYNAMIC_FIELDS:

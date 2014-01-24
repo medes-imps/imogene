@@ -574,7 +574,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getCardEntity_DisplayQRCode() {
+	public EAttribute getCardEntity_ClientPeriodFilterable() {
 		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(13);
 	}
 
@@ -583,17 +583,8 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getCardEntity_ClientPeriodFilterable() {
-		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(14);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getCardEntity_Georeferenced() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(15);
+		return (EReference)cardEntityEClass.getEStructuralFeatures().get(14);
 	}
 
 	/**
@@ -602,7 +593,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EReference getCardEntity_RdfSubject() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(16);
+		return (EReference)cardEntityEClass.getEStructuralFeatures().get(15);
 	}
 
 	/**
@@ -611,7 +602,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EAttribute getCardEntity_RdfPredicate() {
-		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(17);
+		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(16);
 	}
 
 	/**
@@ -620,7 +611,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EReference getCardEntity_NestedFields() {
-		return (EReference)cardEntityEClass.getEStructuralFeatures().get(18);
+		return (EReference)cardEntityEClass.getEStructuralFeatures().get(17);
 	}
 
 	/**
@@ -629,7 +620,7 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 	 * @generated
 	 */
 	public EAttribute getCardEntity_HasDynamicFields() {
-		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(19);
+		return (EAttribute)cardEntityEClass.getEStructuralFeatures().get(18);
 	}
 
 	/**
@@ -1744,7 +1735,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		createEReference(cardEntityEClass, CARD_ENTITY__SORT_FIELDS);
 		createEReference(cardEntityEClass, CARD_ENTITY__ACTOR_FILTER_FIELDS);
 		createEAttribute(cardEntityEClass, CARD_ENTITY__COLOR);
-		createEAttribute(cardEntityEClass, CARD_ENTITY__DISPLAY_QR_CODE);
 		createEAttribute(cardEntityEClass, CARD_ENTITY__CLIENT_PERIOD_FILTERABLE);
 		createEReference(cardEntityEClass, CARD_ENTITY__GEOREFERENCED);
 		createEReference(cardEntityEClass, CARD_ENTITY__RDF_SUBJECT);
@@ -1983,7 +1973,6 @@ public class ImogenePackageImpl extends EPackageImpl implements ImogenePackage {
 		initEReference(getCardEntity_SortFields(), this.getFieldEntity(), null, "sortFields", null, 0, -1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCardEntity_ActorFilterFields(), this.getActorFilter(), null, "actorFilterFields", null, 0, -1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCardEntity_Color(), ecorePackage.getEString(), "color", "", 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getCardEntity_DisplayQRCode(), ecorePackage.getEBoolean(), "DisplayQRCode", "false", 1, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCardEntity_ClientPeriodFilterable(), ecorePackage.getEBoolean(), "clientPeriodFilterable", "false", 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCardEntity_Georeferenced(), this.getGeoField(), null, "georeferenced", null, 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCardEntity_RdfSubject(), this.getRelationFieldEntity(), null, "rdfSubject", null, 0, 1, CardEntity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

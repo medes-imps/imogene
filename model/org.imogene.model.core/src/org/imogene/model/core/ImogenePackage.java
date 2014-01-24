@@ -447,22 +447,13 @@ public interface ImogenePackage extends EPackage {
 	int CARD_ENTITY__COLOR = 12;
 
 	/**
-	 * The feature id for the '<em><b>Display QR Code</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CARD_ENTITY__DISPLAY_QR_CODE = 13;
-
-	/**
 	 * The feature id for the '<em><b>Client Period Filterable</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__CLIENT_PERIOD_FILTERABLE = 14;
+	int CARD_ENTITY__CLIENT_PERIOD_FILTERABLE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Georeferenced</b></em>' reference.
@@ -471,7 +462,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__GEOREFERENCED = 15;
+	int CARD_ENTITY__GEOREFERENCED = 14;
 
 	/**
 	 * The feature id for the '<em><b>Rdf Subject</b></em>' reference.
@@ -480,7 +471,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__RDF_SUBJECT = 16;
+	int CARD_ENTITY__RDF_SUBJECT = 15;
 
 	/**
 	 * The feature id for the '<em><b>Rdf Predicate</b></em>' attribute.
@@ -489,7 +480,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__RDF_PREDICATE = 17;
+	int CARD_ENTITY__RDF_PREDICATE = 16;
 
 	/**
 	 * The feature id for the '<em><b>Nested Fields</b></em>' reference list.
@@ -498,7 +489,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__NESTED_FIELDS = 18;
+	int CARD_ENTITY__NESTED_FIELDS = 17;
 
 	/**
 	 * The feature id for the '<em><b>Has Dynamic Fields</b></em>' attribute.
@@ -507,7 +498,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY__HAS_DYNAMIC_FIELDS = 19;
+	int CARD_ENTITY__HAS_DYNAMIC_FIELDS = 18;
 
 	/**
 	 * The number of structural features of the '<em>Card Entity</em>' class.
@@ -516,7 +507,7 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CARD_ENTITY_FEATURE_COUNT = 20;
+	int CARD_ENTITY_FEATURE_COUNT = 19;
 
 	/**
 	 * The meta object id for the '{@link org.imogene.model.core.impl.PhoneFieldImpl <em>Phone Field</em>}' class.
@@ -4308,15 +4299,6 @@ public interface ImogenePackage extends EPackage {
 	int ACTOR__COLOR = CARD_ENTITY__COLOR;
 
 	/**
-	 * The feature id for the '<em><b>Display QR Code</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ACTOR__DISPLAY_QR_CODE = CARD_ENTITY__DISPLAY_QR_CODE;
-
-	/**
 	 * The feature id for the '<em><b>Client Period Filterable</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5060,17 +5042,6 @@ public interface ImogenePackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCardEntity_Color();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.imogene.model.core.CardEntity#isDisplayQRCode <em>Display QR Code</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Display QR Code</em>'.
-	 * @see org.imogene.model.core.CardEntity#isDisplayQRCode()
-	 * @see #getCardEntity()
-	 * @generated
-	 */
-	EAttribute getCardEntity_DisplayQRCode();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.imogene.model.core.CardEntity#isClientPeriodFilterable <em>Client Period Filterable</em>}'.
@@ -6528,14 +6499,6 @@ public interface ImogenePackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CARD_ENTITY__COLOR = eINSTANCE.getCardEntity_Color();
-
-		/**
-		 * The meta object literal for the '<em><b>Display QR Code</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CARD_ENTITY__DISPLAY_QR_CODE = eINSTANCE.getCardEntity_DisplayQRCode();
 
 		/**
 		 * The meta object literal for the '<em><b>Client Period Filterable</b></em>' attribute feature.

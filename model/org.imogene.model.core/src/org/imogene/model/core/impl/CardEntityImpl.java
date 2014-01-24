@@ -52,7 +52,6 @@ import org.imogene.model.core.RelationFieldEntity;
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getSortFields <em>Sort Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getActorFilterFields <em>Actor Filter Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getColor <em>Color</em>}</li>
- *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#isDisplayQRCode <em>Display QR Code</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#isClientPeriodFilterable <em>Client Period Filterable</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getGeoreferenced <em>Georeferenced</em>}</li>
  *   <li>{@link org.imogene.model.core.impl.CardEntityImpl#getRdfSubject <em>Rdf Subject</em>}</li>
@@ -251,26 +250,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 	 * @ordered
 	 */
 	protected String color = COLOR_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #isDisplayQRCode() <em>Display QR Code</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isDisplayQRCode()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final boolean DISPLAY_QR_CODE_EDEFAULT = false;
-
-	/**
-	 * The cached value of the '{@link #isDisplayQRCode() <em>Display QR Code</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isDisplayQRCode()
-	 * @generated
-	 * @ordered
-	 */
-	protected boolean displayQRCode = DISPLAY_QR_CODE_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isClientPeriodFilterable() <em>Client Period Filterable</em>}' attribute.
@@ -587,27 +566,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isDisplayQRCode() {
-		return displayQRCode;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDisplayQRCode(boolean newDisplayQRCode) {
-		boolean oldDisplayQRCode = displayQRCode;
-		displayQRCode = newDisplayQRCode;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE, oldDisplayQRCode, displayQRCode));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public boolean isClientPeriodFilterable() {
 		return clientPeriodFilterable;
 	}
@@ -819,8 +777,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 				return getActorFilterFields();
 			case ImogenePackage.CARD_ENTITY__COLOR:
 				return getColor();
-			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
-				return isDisplayQRCode();
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				return isClientPeriodFilterable();
 			case ImogenePackage.CARD_ENTITY__GEOREFERENCED:
@@ -895,9 +851,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 			case ImogenePackage.CARD_ENTITY__COLOR:
 				setColor((String)newValue);
 				return;
-			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
-				setDisplayQRCode((Boolean)newValue);
-				return;
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				setClientPeriodFilterable((Boolean)newValue);
 				return;
@@ -968,9 +921,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 			case ImogenePackage.CARD_ENTITY__COLOR:
 				setColor(COLOR_EDEFAULT);
 				return;
-			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
-				setDisplayQRCode(DISPLAY_QR_CODE_EDEFAULT);
-				return;
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				setClientPeriodFilterable(CLIENT_PERIOD_FILTERABLE_EDEFAULT);
 				return;
@@ -1027,8 +977,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 				return actorFilterFields != null && !actorFilterFields.isEmpty();
 			case ImogenePackage.CARD_ENTITY__COLOR:
 				return COLOR_EDEFAULT == null ? color != null : !COLOR_EDEFAULT.equals(color);
-			case ImogenePackage.CARD_ENTITY__DISPLAY_QR_CODE:
-				return displayQRCode != DISPLAY_QR_CODE_EDEFAULT;
 			case ImogenePackage.CARD_ENTITY__CLIENT_PERIOD_FILTERABLE:
 				return clientPeriodFilterable != CLIENT_PERIOD_FILTERABLE_EDEFAULT;
 			case ImogenePackage.CARD_ENTITY__GEOREFERENCED:
@@ -1065,8 +1013,6 @@ public class CardEntityImpl extends EObjectImpl implements CardEntity {
 		result.append(topLevel);
 		result.append(", color: ");
 		result.append(color);
-		result.append(", DisplayQRCode: ");
-		result.append(displayQRCode);
 		result.append(", clientPeriodFilterable: ");
 		result.append(clientPeriodFilterable);
 		result.append(", rdfPredicate: ");

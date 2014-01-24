@@ -30,7 +30,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.imogene.model.core.CardEntity#getSortFields <em>Sort Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getActorFilterFields <em>Actor Filter Fields</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getColor <em>Color</em>}</li>
- *   <li>{@link org.imogene.model.core.CardEntity#isDisplayQRCode <em>Display QR Code</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#isClientPeriodFilterable <em>Client Period Filterable</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getGeoreferenced <em>Georeferenced</em>}</li>
  *   <li>{@link org.imogene.model.core.CardEntity#getRdfSubject <em>Rdf Subject</em>}</li>
@@ -310,33 +309,6 @@ public interface CardEntity extends EObject {
 	 * @generated
 	 */
 	void setColor(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Display QR Code</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Display QR Code</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Display QR Code</em>' attribute.
-	 * @see #setDisplayQRCode(boolean)
-	 * @see org.imogene.model.core.ImogenePackage#getCardEntity_DisplayQRCode()
-	 * @model default="false" required="true"
-	 * @generated
-	 */
-	boolean isDisplayQRCode();
-
-	/**
-	 * Sets the value of the '{@link org.imogene.model.core.CardEntity#isDisplayQRCode <em>Display QR Code</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Display QR Code</em>' attribute.
-	 * @see #isDisplayQRCode()
-	 * @generated
-	 */
-	void setDisplayQRCode(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Client Period Filterable</b></em>' attribute.
