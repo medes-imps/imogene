@@ -42,17 +42,9 @@ boolean isAdminOrNotifField(FieldEntity field, List adminFields, List notifInfos
 List[FieldEntity] getAdministrationColumnFields(Actor actor) :
  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getAdministrationColumnFields(org.imogene.model.core.Actor);
    
-    	// An extension that gets the fields for actor administration (admin or notif fields)
-List[FieldEntity] getAdministrationFields(Actor actor) :
- 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getAdministrationFields(org.imogene.model.core.Actor);
-  
      	// An extension that gets the fields for actor administration (admin or notif fields)
 String getFirstActorName(List entities) :
  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getFirstActorName(java.util.List);
- 
-      	// An extension that gets the visible fields
-List getVisibleFields(CardEntity entity) :
- 	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.getVisibleFields(org.imogene.model.core.CardEntity);
  
      // An extension that tells if a field is an adminField or a notifField.
 boolean isEntityVisibilityParameter(FieldEntity field, List cardFields) :

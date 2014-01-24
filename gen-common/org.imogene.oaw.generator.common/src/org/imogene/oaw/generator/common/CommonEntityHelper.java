@@ -184,26 +184,6 @@ public class CommonEntityHelper
 	 * @param fields
 	 * @return
 	 */
-	public static boolean hasTranslatableEntityInRelationFields(List<FieldEntity> fields)
-    {
-        for (FieldEntity f:fields) {
-        	
-            if (f instanceof RelationFieldEntity) {
-            	RelationFieldEntity rf = (RelationFieldEntity) f;
-            	for(FieldGroup group: rf.getEntity().getGroups()) {
-            		if (isTranslatableFieldPresent(group.getFields()))
-            			return true;
-            	}
-            }
-        }
-        return false;
-	}
-	
-	/**
-	 * 
-	 * @param fields
-	 * @return
-	 */
 	public static boolean hasNestedFormWithCardN(List<FieldEntity> fields)
     {
         for (FieldEntity f:fields) {
@@ -382,28 +362,6 @@ public class CommonEntityHelper
 	}
 	
 	/**
-	 * Returns the list of fields for actor administration
-	 * Administration or Notification fields
-	 */	
-	public static List<FieldEntity> getAdministrationFields(Actor actor){
-		
-		List<FieldEntity> adminFields = actor.getAdminFields();
-		List<NotificationInfo> notifInfos = actor.getNotificationInfos();
-		List<FieldEntity> administrationFields = new Vector<FieldEntity>();		
-
-		for (Iterator<FieldGroup> it1 = actor.getGroups().iterator(); it1.hasNext();) {
-			FieldGroup currentGroup = (FieldGroup) it1.next();
-			for (Iterator<FieldEntity> it2 = currentGroup.getFields().iterator(); it2.hasNext();) {
-				FieldEntity currentField = (FieldEntity) it2.next();
-				if (isAdminOrNotifField(currentField,adminFields,notifInfos)) {
-					administrationFields.add(currentField);
-				}
-			}									
-		}						
-		return 	administrationFields;	
-	}
-	
-	/**
 	 * Returns the name of the first Actor of a CardEntity list
 	 */	
 	public static String getFirstActorName(List<CardEntity> entities){
@@ -414,26 +372,6 @@ public class CommonEntityHelper
 		}					
 		return 	null;	
 	}
-	
-	/**
-	 * Returns the list of visible fields (isHidden==false) for a card entity
-	 */		
-	public static List<FieldEntity> getVisibleFields(CardEntity entity) {
-
-		List<FieldEntity> visibleFields = new Vector<FieldEntity>();		
-
-		for (Iterator<FieldGroup> it1 = entity.getGroups().iterator(); it1.hasNext();) {
-			FieldGroup currentGroup = (FieldGroup) it1.next();
-			for (Iterator<FieldEntity> it2 = currentGroup.getFields().iterator(); it2.hasNext();) {
-				FieldEntity currentField = (FieldEntity) it2.next();
-				if (!currentField.isHidden()) {
-					visibleFields.add(currentField);
-				}
-			}									
-		}						
-		return 	visibleFields;	
-	}	
-	
 	
 	/**
 	 * Compares one field with a field list to see if the field is used as a condition for the visibility of one of the fields of the list
