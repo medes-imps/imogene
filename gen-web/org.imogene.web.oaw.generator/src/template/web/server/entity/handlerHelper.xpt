@@ -1,0 +1,50 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt» 
+«EXTENSION template::CommonEntityUtilExt» 
+
+
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+ "/server/handler/HandlerHelper.java"»
+package org.imogene.«projectName.toLowerCase()».server.handler;
+
+import org.imogene.lib.common.entity.ImogBean;
+«FOREACH entities AS e-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
+«ENDFOREACH-»
+
+public class HandlerHelper {
+
+	«FOREACH entities AS e-»
+	private «e.name.toFirstUpper()»Handler «e.name.toFirstLower()»Handler;
+	«ENDFOREACH-»
+	
+	public void delete(ImogBean bean) {
+		«FOREACH entities AS e SEPARATOR " else "»
+		if (bean instanceof «e.name.toFirstUpper()») {
+			«e.name.toFirstLower()»Handler.delete((«e.name.toFirstUpper()») bean);
+		}
+		«ENDFOREACH»
+	}
+	
+	public void save(ImogBean bean, boolean isNew) {
+		«FOREACH entities AS e SEPARATOR " else "»
+		if (bean instanceof «e.name.toFirstUpper()») {
+			«e.name.toFirstLower()»Handler.save((«e.name.toFirstUpper()») bean, isNew);
+		}
+		«ENDFOREACH»
+	}
+	
+	«FOREACH entities AS e-»
+	/**
+	 * Setter for bean injection
+	 * @param handler the «e.name.toFirstUpper()» Handler
+	 */
+	public void set«e.name.toFirstUpper()»Handler(«e.name.toFirstUpper()»Handler handler) {
+		this.«e.name.toFirstLower()»Handler = handler;
+	}
+	«ENDFOREACH-»
+}
+
+
+«ENDFILE»
+«ENDDEFINE»

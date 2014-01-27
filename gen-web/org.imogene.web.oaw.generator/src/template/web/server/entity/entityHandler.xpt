@@ -5,7 +5,6 @@
 
 «DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
 «FILE projectName.toLowerCase()+ "/server/handler/" + this.name.toFirstUpper() + "Handler.java"»
-«LET "admin" AS adminType-»
 package org.imogene.«projectName.toLowerCase()».server.handler;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogDisjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
@@ -37,9 +37,9 @@ import org.imogene.web.server.handler.DynamicFieldTemplateHandler;
 «ENDIF-»
 «EXPAND importsForFilterFields(projectName) FOR this -»
 «EXPAND importsForRelation(projectName) FOREACH groups.fields-»
-«EXPAND importForeignKeyCard(this,projectName) FOR this.eContainer-»
+«EXPAND importForeignKeyCardReference(this,projectName) FOREACH ((Project) eContainer).entities.groups.fields-»
 import org.springframework.transaction.annotation.Transactional;
-«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 import org.imogene.admin.server.security.SecurityUtils;
 «ENDIF-»
 
@@ -56,8 +56,7 @@ public class «name.toFirstUpper()»Handler {
 	/* BinaryDao for Binary Deletion */
 	private BinaryDao<Binary> binaryDao;
 	«ENDIF-»
-	«EXPAND declareDaoForForeignKeyDeletion(this) FOR this.eContainer-»		
-	«EXPAND declareHandlerForRelation(projectName) FOREACH groups.fields-»
+	«EXPAND declareDaoForForeignKey(this) FOREACH ((Project) eContainer).entities.groups.fields-»		
 	«IF hasDynamicFields -»
 	/* Handlers for dynamic field management */
 	private DynamicFieldInstanceHandler dynamicFieldValuesHandler;
@@ -65,8 +64,8 @@ public class «name.toFirstUpper()»Handler {
 	«ENDIF-»
 	
 	private ImogBeanFilter filter;
-	
 	private SystemUtil systemUtil;
+	private HandlerHelper handlerHelper;
 	
 	/**
 	 * Loads the entity with the specified id
@@ -87,14 +86,29 @@ public class «name.toFirstUpper()»Handler {
 	public «name.toFirstUpper()» getById(String entityId) {
 		return dao.getById(entityId);
 	}
-
+	
+	«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 	/**
 	 * Saves or updates the entity
 	 * @param entity the entity to be saved or updated
 	 * @param isNew true if it is a new entity added for the first time.
 	 */	
 	@Transactional
-	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+	public void save(«name.toFirstUpper()» entity, boolean isNew) {
+		save(entity, isNew, false);
+	}	
+	«ENDIF»
+
+	/**
+	 * Saves or updates the entity
+	 * @param entity the entity to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 «IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
+	 * @param passwordChanged true if the password has changed
+	 «ENDIF-»
+	 */	
+	@Transactional
+	«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 	public void save(«name.toFirstUpper()» entity, boolean isNew, boolean passwordChanged) {	
 	«ELSE-»
 	public void save(«name.toFirstUpper()» entity, boolean isNew) {	
@@ -110,7 +124,7 @@ public class «name.toFirstUpper()»Handler {
 		
 		if (entity != null) {
 		
-			«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+			«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 			if(passwordChanged)
 				entity.setPassword(SecurityUtils.passwordHashAsBase64(entity.getPassword(), entity.getLogin()));
 			«ENDIF-»		
@@ -146,8 +160,18 @@ public class «name.toFirstUpper()»Handler {
 			«EXPAND removeFromParent FOREACH groups.fields-»	
 		
 			dao.saveOrUpdate(entity, isNew);				
-		}			
+		}
 	}
+	
+	/**
+	 * Saves or updates the bean
+	 * @param entity the bean to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	@Transactional
+	public void save(ImogBean entity, boolean isNew) {
+		handlerHelper.save(entity, isNew);
+	}	
 	
 	/**
 	 * Lists the entities of type «name.toFirstUpper()»
@@ -423,14 +447,21 @@ public class «name.toFirstUpper()»Handler {
 	public void delete(«name.toFirstUpper()» entity) {
 	
 	   	«IF isBinaryFieldPresent(this.groups.fields) -»
-   			«FOREACH this.groups.fields AS f-»
-				«EXPAND deleteAttachedBinaries FOR f-»
-			«ENDFOREACH-»
+			«EXPAND deleteAttachedBinaries FOREACH groups.fields-»
 		«ENDIF-»
 	   
-	   «EXPAND deleteForeignKeyReference(this) FOR this.eContainer-»   
+	   «EXPAND deleteRelationFieldCard1Reference(this) FOREACH ((Project) eContainer).entities.groups.fields-»   
 	
 		dao.delete(entity);
+	}
+	
+	/**
+	 * Removes the specified bean from the database 
+	 * @param entity The bean to be deleted
+	 */
+	@Transactional
+	public void delete(ImogBean entity) {
+		handlerHelper.delete(entity);
 	}
 
 	/**
@@ -438,9 +469,7 @@ public class «name.toFirstUpper()»Handler {
 	 */	
 	@Transactional(readOnly = true)
 	public List<«name.toFirstUpper()»> listForCsv(String sortProperty, boolean sortOrder 
-		«FOREACH columnFields AS c ITERATOR iter -»
-		«EXPAND declareSearchParameter((Project)this.eContainer, "") FOR c-»
-		«ENDFOREACH -»	
+		«EXPAND declareSearchParameter((Project)this.eContainer, "") FOREACH columnFields-»
 		) {	
 	
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
@@ -472,13 +501,11 @@ public class «name.toFirstUpper()»Handler {
 	 * Creates a junction based on the filter field declarations, for the current actor.
 	 * @param actor the current actor
 	 */
-	 private ImogJunction createFilterJuntion(ImogActor actor){
-	 	ImogConjunction filterConjunction = new ImogConjunction();
-	 	«EXPAND handleFilterField(this.name) FOREACH this.actorFilterFields -»
-	 	return filterConjunction;
-	 } 
-	 
-	 «EXPAND methodsForRelation(applicationType, adminType) FOREACH groups.fields-»
+	private ImogJunction createFilterJuntion(ImogActor actor){
+		ImogConjunction filterConjunction = new ImogConjunction();
+		«EXPAND handleFilterField(this.name) FOREACH this.actorFilterFields -»
+		return filterConjunction;
+	} 
 	 
 	«IF hasDynamicFields -»
 	/**
@@ -535,6 +562,15 @@ public class «name.toFirstUpper()»Handler {
 		this.systemUtil = systemUtil;
 	}
 	
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param helper
+	 */
+	public void setHandlerHelper(HandlerHelper helper) {
+		this.handlerHelper = helper;
+	}
+	
 	«IF isBinaryFieldPresent(this.groups.fields) -»
 	/**
 	 * Setter for bean injection
@@ -578,11 +614,9 @@ public class «name.toFirstUpper()»Handler {
     «ENDIF-»
     «ENDFOREACH»
 	
-	«EXPAND setDaoForForeignKeyDeletion(this) FOR this.eContainer-»
+	«EXPAND setDaoForForeignKey(this) FOREACH ((Project) eContainer).entities.groups.fields-»
 	
-	«EXPAND setHandlerForRelation FOREACH groups.fields-»
 }
-«ENDLET-»
 «ENDFILE»
 «ENDDEFINE»
 
@@ -596,47 +630,6 @@ public class «name.toFirstUpper()»Handler {
 «DEFINE importsForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE importsForRelation(String projectName) FOR RelationFieldEntity»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirstUpper()»;
-«ENDDEFINE»
-
-«DEFINE declareHandlerForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE declareHandlerForRelation(String projectName) FOR RelationFieldEntity»
-private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
-«ENDDEFINE»
-
-«DEFINE methodsForRelation(String applicationType, String adminType) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE methodsForRelation(String applicationType, String adminType) FOR RelationFieldEntity»
-	/**
-	 * Saves entity of type «entity.name.toFirstUpper()»
-	 * @param entity the «entity.name.toFirstUpper()» to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void save«name.toFirstUpper()»(«entity.name.toFirstUpper()» entity, boolean isNew) {
-		
-		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(entity.metaType)-»
-		«name.toFirstLower()»Handler.save(entity, isNew, false);	
-		«ELSE-»
-		«name.toFirstLower()»Handler.save(entity, isNew);
-		«ENDIF-»	
-	}
-	
-	/**
-	 * Deletes entity of type «entity.name.toFirstUpper()»
-	 * @param toDelete the «entity.name.toFirstUpper()» to be deleted
-	 */
-	public void delete«name.toFirstUpper()»(«entity.name.toFirstUpper()» toDelete) {
-		«name.toFirstLower()»Handler.delete(toDelete);
-	}
-«ENDDEFINE»
-
-«DEFINE setHandlerForRelation FOR FieldEntity-»«ENDDEFINE»
-«DEFINE setHandlerForRelation FOR RelationFieldEntity»
-	/**
-	 * Setter for bean injection
-	 * @param «name.toFirstLower()»Handler the «entity.name.toFirstUpper()» Handler
-	 */
-	public void set«name.toFirstUpper()»Handler(«entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler) {
-		this.«name.toFirstLower()»Handler = «name.toFirstLower()»Handler;
-	}
 «ENDDEFINE»
 
 «REM» no affection possible from the reverse side of a one-to-one relation«ENDREM»
@@ -730,16 +723,6 @@ private «entity.name.toFirstUpper()»Handler «name.toFirstLower()»Handler;
 
 «REM» ------------------------------------------ 
       Imports classes for foreign key deletion
-------------------------------------------------«ENDREM»
-«DEFINE importForeignKeyCard(CardEntity cardEntity, String projectName) FOR emf::EObject-»
-«ENDDEFINE»
-«DEFINE importForeignKeyCard(CardEntity cardEntity, String projectName) FOR Project-»
-		«FOREACH entities AS e-»				
-			 «FOREACH e.groups.fields AS field-»		 
-			 	«EXPAND importForeignKeyCardReference(cardEntity,projectName) FOR field-»
-			«ENDFOREACH-» 	   	   
-	    «ENDFOREACH-»
-«ENDDEFINE»
 «REM» ------------------------------------------------«ENDREM»
 «DEFINE importForeignKeyCardReference(CardEntity cardEntity, String projectName) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE importForeignKeyCardReference(CardEntity cardEntity, String projectName) FOR RelationFieldEntity-»
@@ -755,15 +738,6 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 
 «REM» ------------------------------------------ 
       Declare DAO for foreign key deletion
-------------------------------------------------«ENDREM»
-«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
-«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR Project-»
-		«FOREACH entities AS e-»		
-			 «FOREACH e.groups.fields AS field-»
-			 	«EXPAND declareDaoForForeignKey(cardEntity) FOR field-»
-			«ENDFOREACH-» 	   	   
-	    «ENDFOREACH-»	    
-«ENDDEFINE»
 «REM» ------------------------------------------------«ENDREM»
 «DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR RelationFieldEntity-»
@@ -779,15 +753,6 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 
 «REM» ------------------------------------------ 
       Set DAO for foreign key deletion
-------------------------------------------------«ENDREM»
-«DEFINE setDaoForForeignKeyDeletion(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
-«DEFINE setDaoForForeignKeyDeletion(CardEntity cardEntity) FOR Project-»
-		«FOREACH entities AS e-»		
-			 «FOREACH e.groups.fields AS field-»
-			 	«EXPAND setDaoForForeignKey(cardEntity) FOR field-»
-			«ENDFOREACH-» 	   	   
-	    «ENDFOREACH-»	    
-«ENDDEFINE»
 «REM» ------------------------------------------------«ENDREM»
 «DEFINE setDaoForForeignKey(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE setDaoForForeignKey(CardEntity cardEntity) FOR RelationFieldEntity-»
@@ -808,17 +773,7 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 
 «REM» ------------------------------------------ 
       Delete foreign key references
-------------------------------------------------«ENDREM»
-«DEFINE deleteForeignKeyReference(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
-«DEFINE deleteForeignKeyReference(CardEntity cardEntity) FOR Project-»
-		«FOREACH entities AS e-»		
-			 «FOREACH e.groups.fields AS field-»
-			 	«EXPAND deleteRelationFieldCard1Reference(cardEntity) FOR field-»
-			«ENDFOREACH-» 	   	   
-	    «ENDFOREACH-»    
-«ENDDEFINE»
 «REM» ------------------------------------------------«ENDREM»
-
 «DEFINE deleteRelationFieldCard1Reference(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE deleteRelationFieldCard1Reference(CardEntity cardEntity) FOR RelationFieldEntity-»
 «IF cardEntity.name==this.entity.name -»	
@@ -850,9 +805,9 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 		{
 			for («this.parentGroup.parentCard.name.toFirstUpper()» foreignEntity: resultFor«this.parentGroup.parentCard.name»«this.name»)
 			{
-	           	foreignEntity.setModified(new Date());
-	           	foreignEntity.«EXPAND template::CommonFieldUtil::setterName FOR this-»(null);
-	           	«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.saveOrUpdate(foreignEntity, false);      
+	          	foreignEntity.setModified(new Date());
+	          	foreignEntity.«EXPAND template::CommonFieldUtil::setterName FOR this-»(null);
+	          	«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.saveOrUpdate(foreignEntity, false);      
         	}	
 		}
 «ENDDEFINE»
@@ -868,9 +823,9 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 		{
 			for («this.parentGroup.parentCard.name.toFirstUpper()» foreignEntity: resultFor«this.parentGroup.parentCard.name»«this.name»)
 			{
-	           	foreignEntity.setModified(new Date());
-	           	foreignEntity.removeFrom«EXPAND template::CommonFieldUtil::propertyName FOR this-»(entity);
-	           	«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.saveOrUpdate(foreignEntity, false);      
+	          	foreignEntity.setModified(new Date());
+	          	foreignEntity.removeFrom«EXPAND template::CommonFieldUtil::propertyName FOR this-»(entity);
+	          	«this.parentGroup.parentCard.name.toFirstLower()»«this.name.toFirstUpper()»Dao.saveOrUpdate(foreignEntity, false);      
         	}	
 		}
 «ENDDEFINE»
@@ -905,9 +860,7 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 «ENDDEFINE»
 «DEFINE declareSearchParameter(Project p, String property) FOR RelationFieldEntity-»
 	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
-	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND declareSearchParameter(p, property + name.toFirstLower() + "_") FOR f-»		
-	«ENDFOREACH-»
+	 	«EXPAND declareSearchParameter(p, property + name.toFirstLower() + "_") FOREACH entity.mainFields-»		
 	«ENDIF-»
 «ENDDEFINE»
 «DEFINE declareSearchParameter(Project p, String property) FOR BinaryField-»«ENDDEFINE»
@@ -989,9 +942,7 @@ import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.pare
 «ENDDEFINE»
 «DEFINE createSearchCriteria(Project p, String property) FOR RelationFieldEntity-»
 	«IF (cardinality == 1 && getOppositeCardinality(this)!=1) || (cardinality == 1 && MainRelationFieldEntity.isAssignableFrom(this.metaType))-»
-	«FOREACH entity.mainFields AS f-»
-	 	«EXPAND createSearchCriteria(p, property + name.toFirstLower() + "_") FOR f-»		
-	«ENDFOREACH-»
+	 	«EXPAND createSearchCriteria(p, property + name.toFirstLower() + "_") FOREACH entity.mainFields-»		
 	«ENDIF-»
 «ENDDEFINE»
 «DEFINE createSearchCriteria(Project p, String property) FOR BinaryField-»«ENDDEFINE»

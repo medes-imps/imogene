@@ -362,7 +362,16 @@
 		<expand value='template::web::server::entity::entityHandler::generate("${packageName}","${modelName}","${applicationType}") FOREACH project.entities' />
 		<genPath value="${home-gen}/src/main/java/${packagePath}" />
 		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
-	</component>	
+	</component>
+	
+	<!-- Server: Handler Helper  -->
+	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::server::entity::handlerHelper::generate("${packageName}","${modelName}") FOR project' />
+		<genPath value="${home-gen}/src/main/java/${packagePath}" />
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+	</component>
 	
 	<!-- Server: Locator  -->
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">

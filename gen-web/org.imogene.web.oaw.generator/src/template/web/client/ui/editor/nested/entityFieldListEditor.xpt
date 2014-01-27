@@ -246,7 +246,7 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 					if (Window.confirm(BaseNLS.constants().confirmation_delete())) {
 						«entity.name.toFirstUpper()»Proxy proxy = getProxy(subEditor.getIndex());
 						if(!subEditor.isNewProxy())
-							request.delete«name.toFirstUpper()»(proxy);
+							request.delete(proxy);
 						remove(subEditor.getIndex());
 						updateIndex();
 					}

@@ -4,8 +4,11 @@
 
 «DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
 «FILE projectName.toLowerCase()+ "/shared/request/" + this.name.toFirstUpper() + "Request.java"»
-«LET "admin" AS adminType-»
 package org.imogene.«projectName.toLowerCase()».shared.request;
+
+import com.google.web.bindery.requestfactory.shared.Request;
+import com.google.web.bindery.requestfactory.shared.RequestContext;
+import com.google.web.bindery.requestfactory.shared.Service;
 
 import java.util.List;
 import java.util.Set;
@@ -13,18 +16,12 @@ import java.util.Set;
 import org.imogene.«projectName.toLowerCase()».server.handler.«name.toFirstUpper()»Handler;
 import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
 import org.imogene.web.server.locator.SpringServiceLocator;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 «IF hasDynamicFields -»
 import org.imogene.web.shared.request.DynamicFieldsRequest;
 «ENDIF-»
-
-import com.google.web.bindery.requestfactory.shared.Request;
-import com.google.web.bindery.requestfactory.shared.RequestContext;
-import com.google.web.bindery.requestfactory.shared.Service;
-«EXPAND importForRelation(projectName) FOREACH groups.fields-»
-
-
 
 /**
  * Source of request objects for the «name.toFirstUpper()» Service.
@@ -35,11 +32,10 @@ public interface «name.toFirstUpper()»Request extends RequestContext«IF hasDynam
 
 	Request<«name.toFirstUpper()»Proxy> findById(String id);
 
-	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-	Request<Void> save(«name.toFirstUpper()»Proxy c, boolean isNew, boolean passwordChanged);	
-	«ELSE-»
 	Request<Void> save(«name.toFirstUpper()»Proxy c, boolean isNew);	
-	«ENDIF-»	
+	«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
+	Request<Void> save(«name.toFirstUpper()»Proxy c, boolean isNew, boolean passwordChanged);	
+	«ENDIF-»
 	
 	Request<List<«name.toFirstUpper()»Proxy>> list«name.toFirstUpper()»(String sortProperty, boolean sortOrder);
 	Request<List<«name.toFirstUpper()»Proxy>> list«name.toFirstUpper()»(int first, int max, String sortProperty, boolean sortOrder);
@@ -61,20 +57,8 @@ public interface «name.toFirstUpper()»Request extends RequestContext«IF hasDynam
 	Request<Void> delete(Set<«name.toFirstUpper()»Proxy> entities);
 	Request<Void> delete(«name.toFirstUpper()»Proxy entity);
 	
-	«EXPAND methodsForRelation FOREACH groups.fields-»
+	Request<Void> save(ImogBeanProxy entity, boolean isNew);
+	Request<Void> delete(ImogBeanProxy entity);
 }
-«ENDLET-»
 «ENDFILE»
-«ENDDEFINE»
-
-«REM» imports for relation with cardinality 1 «ENDREM»
-«DEFINE importForRelation(String projectName) FOR FieldEntity -»«ENDDEFINE»
-«DEFINE importForRelation(String projectName) FOR RelationFieldEntity -»
-import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
-«ENDDEFINE»
-
-«DEFINE methodsForRelation FOR FieldEntity-»«ENDDEFINE»
-«DEFINE methodsForRelation FOR RelationFieldEntity»
-	Request<Void> save«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy entity, boolean isNew);
-	Request<Void> delete«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy entity);
 «ENDDEFINE»

@@ -163,11 +163,17 @@
 		<property name="dynamicFieldValuesHandler" ref="dynamicFieldInstanceHandler" />
 		<property name="dynamicFieldTemplateHandler" ref="dynamicFieldTemplateHandler" />
 		«ENDIF-»
-		«EXPAND declareDaoForForeignKeyDeletion(e) FOR this-»
-		«EXPAND declareHandlerForRelation(projectName) FOREACH e.groups.fields-»
+		«EXPAND declareDaoForForeignKey(e) FOREACH entities.groups.fields-»
 		<property name="systemUtil" ref="systemUtil" />
+		<property name="handlerHelper" ref="handlerHelper" />
 	</bean>		
 	«ENDFOREACH -»
+	
+	<bean id="handlerHelper" class="org.imogene.«projectName.toLowerCase()».server.handler.HandlerHelper">
+		«FOREACH entities AS e-»
+		<property name="«e.name.toFirstLower()»Handler" ref="«e.name.toFirstLower()»Handler" />
+		«ENDFOREACH-»
+	</bean>
 	
 	«IF embedded == "true"-»
 	<bean id="systemUtil" class="org.imogene.web.server.util.impl.SystemUtilEmbeddedImpl" />
@@ -185,29 +191,9 @@
 «ENDDEFINE»
 
 
-«REM» Set actor dao «ENDREM»
-«DEFINE actorHandlder FOR CardEntity -»«ENDDEFINE»
-«DEFINE actorHandlder FOR Actor -»
-		<property name="«name.toFirstLower()»Handler" ref="«name.toFirstLower()»Handler"/>
-«ENDDEFINE»
-
-
-«DEFINE declareHandlerForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE declareHandlerForRelation(String projectName) FOR RelationFieldEntity-»
-		<property name="«name.toFirstLower()»Handler" ref="«entity.name.toFirstLower()»Handler" />
-«ENDDEFINE»
-
 «REM» ------------------------------------------ 
       Declare DAO for foreign key deletion
 ------------------------------------------------«ENDREM»
-«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR emf::EObject-»«ENDDEFINE»
-«DEFINE declareDaoForForeignKeyDeletion(CardEntity cardEntity) FOR Project-»
-		«FOREACH entities AS e-»		
-			 «FOREACH e.groups.fields AS field-»
-			 	«EXPAND declareDaoForForeignKey(cardEntity) FOR field-»
-			«ENDFOREACH-» 	   	   
-	    «ENDFOREACH-»	    
-«ENDDEFINE»
 «REM» ------------------------------------------------«ENDREM»
 «DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR FieldEntity-»«ENDDEFINE»
 «DEFINE declareDaoForForeignKey(CardEntity cardEntity) FOR RelationFieldEntity-»

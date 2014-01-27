@@ -11,12 +11,14 @@
 	xmlns:imo1='urn:import:org.imogene.web.client.ui.field.relation.single'
 	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.relation.multi'
 	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group"
-	«IF isTranslatableFieldPresent(nestedFields)-»
 	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary"
+	«IF isTranslatableFieldPresent(nestedFields)-»
 	xmlns:imo5="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.field">
-	«ELSE -»
-	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary">		
 	«ENDIF -»
+	«IF isMultiRelationFieldPresent(groups.fields)-»
+	xmlns:imo6="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.editor.nested"
+	«ENDIF-»
+	>
 
 	<ui:style>
 		.imogene-form {
