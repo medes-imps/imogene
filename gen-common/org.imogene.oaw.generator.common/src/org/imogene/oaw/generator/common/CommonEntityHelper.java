@@ -249,14 +249,8 @@ public class CommonEntityHelper
             	RelationFieldEntity rf = (RelationFieldEntity) f;
             		if (rf.isNestedForm()) {
             			CardEntity relatedEntity = rf.getEntity();
-            			if(relatedEntity.getNestedFields()!=null && relatedEntity.getNestedFields().size()>0) {
-            				System.out.println("----------------------- has nested fields");
-            				
-            				
-            				System.out.println("------------------------ size: " + relatedEntity.getNestedFields().size());
-            				
+            			if(relatedEntity.getNestedFields()!=null && relatedEntity.getNestedFields().size()>0)
             				return true;
-            			}
             		}
             }
         }
