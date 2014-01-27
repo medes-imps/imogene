@@ -84,6 +84,14 @@ boolean hasNestedFormWithCardN(List fields) :
 boolean hasNestedForm(List fields) :
   	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasNestedForm(java.util.List);
   	
+  	  	// An extension to get the presence of a nested form whose related entity has nested fields
+boolean hasNestedFormWithNestedFields(List fields) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasNestedFormWithNestedFields(java.util.List);
+  	
+  	  	// An extension to get the presence of a nested form whose related entity does not have any nested fields
+boolean hasNestedFormWithoutNestedFields(List fields) :
+  	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasNestedFormWithoutNestedFields(java.util.List);
+  	
   	  	// An extension to get the presence of a dynamic fields form in a list of cardentity
 boolean hasDynamicFields(List entities) :
   	JAVA org.imogene.oaw.generator.common.CommonEntityHelper.hasDynamicFields(java.util.List);

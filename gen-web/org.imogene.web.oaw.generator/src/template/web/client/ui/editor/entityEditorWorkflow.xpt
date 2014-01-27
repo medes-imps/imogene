@@ -467,7 +467,11 @@ fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonF
 «IF parents == null-»
 	fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 	«IF nestedForm-»
-	«EXPAND fetchRelatedEntities({this}) FOREACH entity.nestedFields-»
+		«IF entity.nestedFields != null && entity.nestedFields.size > 0 -»
+			«EXPAND fetchRelatedEntities({this}) FOREACH entity.nestedFields-»
+		«ELSE-»
+			«EXPAND fetchRelatedEntities({this}) FOREACH entity.groups.fields-»
+		«ENDIF-»
 	«ELSE-»
 	«EXPAND fetchRelatedEntities({this}) FOREACH entity.mainFields-»
 	«ENDIF-»
@@ -599,7 +603,11 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirst
 		«IF cardinality==1-»
 		«entity.name.toFirstUpper()»Proxy «name.toFirstLower()» = current.«EXPAND template::CommonFieldUtil::getterName FOR this»();
 		if(«name.toFirstLower()»!=null) {
-			«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.nestedFields-»
+			«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»
+				«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.nestedFields-»
+			«ELSE-»
+				«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.groups.fields-»
+			«ENDIF-»
 		}		
 		«ELSE-»
 		List<«entity.name.toFirstUpper()»Proxy> «name.toFirstLower()» = current.«EXPAND template::CommonFieldUtil::getterName FOR this»();
