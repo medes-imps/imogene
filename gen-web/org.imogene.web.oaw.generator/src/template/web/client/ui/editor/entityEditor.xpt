@@ -821,6 +821,15 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		delegate.recordError(BaseNLS.messages().error_required(), null, "«name.toFirstLower()»");			
 	«ENDIF-»
 «ENDDEFINE»
+«DEFINE requiredField FOR RelationFieldEntity-»
+	«IF !nestedForm-»
+	«IF required-»
+	// «name.toFirstLower()» is a required field
+	if(«EXPAND template::CommonFieldUtil::propertyName FOR this».getValue()==null)
+		delegate.recordError(BaseNLS.messages().error_required(), null, "«name.toFirstLower()»");			
+	«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
 
 
 «DEFINE validationAnnotation FOR FieldEntity-»«ENDDEFINE»
@@ -1020,7 +1029,11 @@ import org.imogene.«projectName.toLowerCase()».client.ui.filter.«entity.name.toF
 import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
 «IF this.nestedForm -»
 	«IF cardinality == 1 -»
+		«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»
 import org.imogene.«projectName.toLowerCase()».client.ui.editor.nested.«entity.name.toFirstUpper()»EditorNestedForm;
+		«ELSE -»
+import org.imogene.«projectName.toLowerCase()».client.ui.editor.«entity.name.toFirstUpper()»Editor;		
+		«ENDIF-»
 	«ELSE -»
 import org.imogene.«projectName.toLowerCase()».client.ui.editor.nested.«parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor;
 import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.parentCard.name.toFirstUpper()»Request;

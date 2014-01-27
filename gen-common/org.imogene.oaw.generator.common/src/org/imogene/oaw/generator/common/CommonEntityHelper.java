@@ -238,6 +238,49 @@ public class CommonEntityHelper
 	
 	/**
 	 * 
+	 * @param fields
+	 * @return
+	 */
+	public static boolean hasNestedFormWithNestedFields(List<FieldEntity> fields)
+    {
+        for (FieldEntity f:fields) {
+        	
+            if (f instanceof RelationFieldEntity) {
+            	RelationFieldEntity rf = (RelationFieldEntity) f;
+            		if (rf.isNestedForm()) {
+            			CardEntity relatedEntity = rf.getEntity();
+            			if(relatedEntity.getNestedFields()!=null && relatedEntity.getNestedFields().size()>0) {
+            				System.out.println("----------------------- has nested fields");
+            				
+            				
+            				System.out.println("------------------------ size: " + relatedEntity.getNestedFields().size());
+            				
+            				return true;
+            			}
+            		}
+            }
+        }
+        return false;
+	}
+	
+	public static boolean hasNestedFormWithoutNestedFields(List<FieldEntity> fields)
+    {
+        for (FieldEntity f:fields) {
+        	
+            if (f instanceof RelationFieldEntity) {
+            	RelationFieldEntity rf = (RelationFieldEntity) f;
+            		if (rf.isNestedForm()) {
+            			CardEntity relatedEntity = rf.getEntity();
+            			if(relatedEntity.getNestedFields()==null || relatedEntity.getNestedFields().size()==0)
+            				return true;
+            		}
+            }
+        }
+        return false;
+	}
+	
+	/**
+	 * 
 	 * @param entities
 	 * @return
 	 */

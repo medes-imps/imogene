@@ -467,11 +467,20 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«ENDIF-»
 		«ENDIF-»
 		«IF nestedForm-»
-			«FOREACH this.entity.nestedFields AS nf-»
-				«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
-				fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
-				«ENDIF-»
-			«ENDFOREACH-»
+			«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»		
+				«FOREACH this.entity.nestedFields AS nf-»
+					«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
+					fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
+					«ENDIF-»
+				«ENDFOREACH-»
+			«ELSE-»
+				«FOREACH this.entity.groups.fields AS nf-»
+					«IF GeoField.isAssignableFrom(nf.metaType) || BinaryField.isAssignableFrom(nf.metaType) || (TextField.isAssignableFrom(nf.metaType) && ((TextField)nf).translatable) -»
+					fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
+					«ENDIF-»
+				«ENDFOREACH-»			
+			«ENDIF-»
+			
 		«ENDIF-»		
 «ENDDEFINE»
 
@@ -605,7 +614,11 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirst
 		«IF cardinality==1-»
 		«entity.name.toFirstUpper()»Proxy «name.toFirstLower()» = current.«EXPAND template::CommonFieldUtil::getterName FOR this»();
 		if(«name.toFirstLower()»!=null) {
-			«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.nestedFields-»
+			«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»
+				«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.nestedFields-»
+			«ELSE-»
+				«EXPAND createInstanceForNestedForm(name.toFirstLower()) FOREACH entity.groups.fields-»
+			«ENDIF-»
 		}		
 		«ELSE-»
 		List<«entity.name.toFirstUpper()»Proxy> «name.toFirstLower()» = current.«EXPAND template::CommonFieldUtil::getterName FOR this»();

@@ -15,8 +15,11 @@
 	«IF isTranslatableFieldPresent(groups.fields)-»
 	xmlns:imo5="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.field"
 	«ENDIF -»
-	«IF hasNestedForm(groups.fields)-»
-	xmlns:imo6="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.editor.nested"
+	«IF hasNestedFormWithNestedFields(groups.fields)-»
+	xmlns:imon1="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.editor.nested"
+	«ENDIF -»
+	«IF hasNestedFormWithoutNestedFields(groups.fields)-»
+	xmlns:imon2="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.editor"
 	«ENDIF -»
 	«IF hasDynamicFields-»
 	xmlns:imo7="urn:import:org.imogene.web.client.dynamicfields.ui.field"

@@ -30,7 +30,7 @@
 «DEFINE formFieldTypeDecXml FOR TextField»«IF this.translatable»imo5«ELSE»imo«ENDIF»«ENDDEFINE»
 «DEFINE formFieldTypeDecXml FOR BinaryField»imo4«ENDDEFINE»
 «DEFINE formFieldTypeDecXml FOR RelationFieldEntity -»
-«IF nestedForm -»imo6«ELSE -»
+«IF nestedForm -»«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»imon1«ELSE -»imon2«ENDIF -»«ELSE -»
 «IF cardinality == 1 -»imo1«ELSE -»imo2«ENDIF -»
 «ENDIF -»
 «ENDDEFINE»
@@ -57,7 +57,11 @@
 «DEFINE formFieldType FOR RelationFieldEntity -»
 	«IF cardinality == 1 -»
 		«IF nestedForm -»
+			«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»
 		«entity.name.toFirstUpper()»EditorNestedForm
+			«ELSE -»
+		«entity.name.toFirstUpper()»Editor	
+			«ENDIF-»		
 		«ELSE -»
 		ImogSingleRelationBox<«entity.name.toFirstUpper()-»Proxy>
 		«ENDIF -»
@@ -90,7 +94,7 @@
 «DEFINE formFieldTypeXml FOR FloatField»ImogDoubleBox«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR GeoField»ImogGeoBox«ENDDEFINE»
 «DEFINE formFieldTypeXml FOR RelationFieldEntity -»
-«IF cardinality == 1 -»«IF nestedForm -»«entity.name.toFirstUpper()»EditorNestedForm«ELSE -»ImogSingleRelationBox«ENDIF -»
+«IF cardinality == 1 -»«IF nestedForm -»«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»«entity.name.toFirstUpper()»EditorNestedForm«ELSE -»«entity.name.toFirstUpper()»Editor«ENDIF -»«ELSE -»ImogSingleRelationBox«ENDIF -»
 «ELSE -»«IF nestedForm -»«parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»ListEditor«ELSE -»ImogMultiRelationBox«ENDIF -»
 «ENDIF -»
 «ENDDEFINE»
