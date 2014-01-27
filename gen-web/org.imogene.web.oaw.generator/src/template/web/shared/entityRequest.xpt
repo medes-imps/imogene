@@ -7,7 +7,6 @@
 package org.imogene.«projectName.toLowerCase()».shared.request;
 
 import com.google.web.bindery.requestfactory.shared.Request;
-import com.google.web.bindery.requestfactory.shared.RequestContext;
 import com.google.web.bindery.requestfactory.shared.Service;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import org.imogene.web.server.locator.SpringServiceLocator;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 «IF hasDynamicFields -»
 import org.imogene.web.shared.request.DynamicFieldsRequest;
 «ENDIF-»
@@ -28,7 +28,7 @@ import org.imogene.web.shared.request.DynamicFieldsRequest;
  * @author Medes-IMPS
  */
 @Service(value= «name.toFirstUpper()»Handler.class, locator = SpringServiceLocator.class)
-public interface «name.toFirstUpper()»Request extends RequestContext«IF hasDynamicFields», DynamicFieldsRequest«ENDIF»{
+public interface «name.toFirstUpper()»Request extends ImogEntityRequest«IF hasDynamicFields», DynamicFieldsRequest«ENDIF»{
 
 	Request<«name.toFirstUpper()»Proxy> findById(String id);
 

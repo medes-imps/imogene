@@ -36,6 +36,7 @@ import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.panel.WrapperPanel;
 import org.imogene.web.client.util.NumericUtil;
 import org.imogene.web.client.util.DateUtil;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -202,7 +203,14 @@ public class «name.toFirstUpper()»EditorNestedForm extends Composite implements 
 		if (!AccessManager.canEdit«name.toFirstUpper()»«f.parentGroup.name.toFirstUpper()»())	
 			«EXPAND template::CommonFieldUtil::propertyName FOR f».setVisible(false);
 		«ENDFOREACH»	
-	}	
+	}
+
+	/**
+	 * Sets the Request Context for the List Editors
+	 */	
+	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
+		«EXPAND setRequestContextForListEditors FOREACH groups.fields-»
+	}
 	
 	/**
 	 * Manages editor updates when a field value changes
@@ -336,4 +344,13 @@ public class «name.toFirstUpper()»EditorNestedForm extends Composite implements 
 «ENDLET-»
 «ENDFILE»
 «ENDIF-»
+«ENDDEFINE»
+
+
+«REM»  «ENDREM»
+«DEFINE setRequestContextForListEditors FOR FieldEntity -»«ENDDEFINE»
+«DEFINE setRequestContextForListEditors FOR RelationFieldEntity -»
+«IF (cardinality ==-1 || cardinality>1) && nestedForm-»
+	«EXPAND template::CommonFieldUtil::propertyName FOR this».setRequestContextForListEditors(ctx);	
+«ENDIF -»
 «ENDDEFINE»

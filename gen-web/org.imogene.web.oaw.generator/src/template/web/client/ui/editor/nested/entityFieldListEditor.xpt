@@ -28,6 +28,7 @@ import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.shared.proxy.GeoFieldProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Ignore;
@@ -62,7 +63,7 @@ public class 厚arentGroup.parentCard.name.toFirstUpper()賓name.toFirstUpper()腿i
 	private 前ntity.name.toFirstUpper()腿istEditorSource editorSource;
 	private ListEditor<前ntity.name.toFirstUpper()與roxy, 前ntity.name.toFirstUpper()聚ditorNestedRow> editor;
 	//private ListEditor<前ntity.name.toFirstUpper()與roxy, 前ntity.name.toFirstUpper()聚ditorNestedForm> editor;
-	private 厚arentGroup.parentCard.name.toFirstUpper()舞equest request;
+	private ImogEntityRequest request;
 
 
 	@UiField(provided = true)
@@ -191,7 +192,7 @@ public class 厚arentGroup.parentCard.name.toFirstUpper()賓name.toFirstUpper()腿i
 	}
 
 
-	public void setRequestContext(厚arentGroup.parentCard.name.toFirstUpper()舞equest ctx) {
+	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
 		this.request = ctx;
 	}
 

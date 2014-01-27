@@ -4,7 +4,6 @@
 
 «DEFINE generate(String packageName, String projectName, String applicationType) FOR CardEntity»
 «FILE projectName.toLowerCase()+ "/client/ui/workflow/" + this.name.toFirstUpper() + "EditorWorkflow.java"»
-«LET "admin" AS adminType-»
 package org.imogene.«projectName.toLowerCase()».client.ui.workflow;
 
 import java.util.Date;
@@ -22,8 +21,7 @@ import org.imogene.«projectName.toLowerCase()».client.AccessManager;
 import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»Renderer;
 import org.imogene.«projectName.toLowerCase()».client.ui.editor.«name.toFirstUpper()»Editor;
 import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
-import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
-import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.*;
 import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»EntryPoint;
@@ -51,10 +49,6 @@ import com.google.web.bindery.requestfactory.shared.BaseProxy;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.ServerFailure;
-
-«EXPAND importForRelation(projectName) FOREACH groups.fields-»
-
-
 
 /**
  * Worflow that manages the life of a «name.toFirstUpper()»Proxy in the UI
@@ -185,14 +179,12 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		current = new«name.toFirstUpper()»;
 		editorDriver.edit(current, request);
 		
-		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);
 		«IF hasDynamicFields-»
 		/* get the list of Dynamic Field Templates for this type of entity */
 		getDynamicFieldTemplates();
-		«ENDIF -» 
-		«ENDIF -»		
+		«ENDIF -»
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
 		«EXPAND manageHierarchicalLists(true) FOREACH groups.fields-»
@@ -213,7 +205,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«IF hasDynamicFields-»
 		fetchRequest.with("dynamicFieldValues.fieldTemplate.templateCreator.roles");
 		«ENDIF -»
-		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 			fetchRequest.with("profiles");
 			fetchRequest.with("synchronizables");
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
@@ -247,10 +239,9 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«EXPAND createInstance FOREACH groups.fields-»
 		
 		editor.setEditedValue(current);
-		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
+
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);	 
-		«ENDIF -»			
 		
 		editorDriver.edit(current, request);
 		«IF hasDynamicFields-»
@@ -261,7 +252,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
-		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 		editor.updateIdLink(current.getId());	
 		editor.setCurrentLogin();	
 		«ENDIF -»
@@ -350,7 +341,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«ENDIF-»
 		
 		editor.validateFields();		
-		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 		boolean passwordValid = editor.validatePasword();
 		editor.validateLoginWithPassword();
 		«ENDIF-»
@@ -363,7 +354,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 			return;
 		}
 		
-		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
+		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 		Request<Void> saveRequest = null;
 		if(passwordValid && editor.passwordChanged())
 			saveRequest = request.save(current, isNew, true);
@@ -431,7 +422,6 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 	«EXPAND setterForRelation FOREACH groups.fields-»	
 
 }
-«ENDLET-»
 «ENDFILE»
 «ENDDEFINE»
 
@@ -487,18 +477,6 @@ fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonF
 «ENDIF-»
 «ENDDEFINE»
 
-
-«REM» imports for relation with cardinality 1 «ENDREM»
-«DEFINE importForRelation(String projectName) FOR FieldEntity -»«ENDDEFINE»
-«DEFINE importForRelation(String projectName) FOR RelationFieldEntity -»
-«IF cardinality == 1 -»
-import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
-«ELSE -»
-	«IF this.nestedForm -»
-import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;	
-	«ENDIF-»
-«ENDIF -»
-«ENDDEFINE»
 
 «REM» setters for relation with cardinality 1 «ENDREM»
 «DEFINE setterForRelation FOR FieldEntity -»«ENDDEFINE»
@@ -570,7 +548,11 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirst
 		«entity.name.toFirstUpper()»Proxy new«name.toFirstUpper()» = request.create(«entity.name.toFirstUpper()»Proxy.class);
 		new«name.toFirstUpper()».setId(ImogKeyGenerator.generateKeyId("«entity.shortName»"));
 		«IF nestedForm-»
-			«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH entity.nestedFields»
+			«IF entity.nestedFields.size > 0-»
+				«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH entity.nestedFields»
+			«ELSE-»
+				«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH entity.groups.fields»
+			«ENDIF-»
 		«ENDIF-»
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
 	«ELSE-»

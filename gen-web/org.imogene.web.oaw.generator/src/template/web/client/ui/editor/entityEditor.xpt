@@ -36,6 +36,7 @@ import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.panel.WrapperPanel;
 import org.imogene.web.client.util.NumericUtil;
 import org.imogene.web.client.util.DateUtil;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -54,7 +55,6 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 «IF hasDynamicFields-»
 import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»FormTypes;
-import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
 import org.imogene.web.client.dynamicfields.ui.field.DynamicFieldBox;
 import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
 «ENDIF-»
@@ -394,19 +394,15 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«ENDIF-»
 	}
 	
-	«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
 	/**
 	 * Sets the Request Context for the List Editors
 	 */	
-	public void setRequestContextForListEditors(«name.toFirstUpper()»Request ctx) {
-		«IF hasNestedFormWithCardN(this.groups.fields)-»
+	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
 		«EXPAND setRequestContextForListEditors FOREACH groups.fields-»
-		«ENDIF -»
 		«IF hasDynamicFields-»
 		dynamicFieldValues.setRequestContext(ctx);
-		«ENDIF -»		
+		«ENDIF -»
 	}		 
-	«ENDIF -»		
 	
 	/**
 	 * Manages editor updates when a field value changes
@@ -1248,8 +1244,8 @@ import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.paren
 «REM»  «ENDREM»
 «DEFINE setRequestContextForListEditors FOR FieldEntity -»«ENDDEFINE»
 «DEFINE setRequestContextForListEditors FOR RelationFieldEntity -»
-«IF (cardinality ==-1 || cardinality>1) && nestedForm-»
-		«EXPAND template::CommonFieldUtil::propertyName FOR this».setRequestContext(ctx);	
+«IF nestedForm-»
+	«EXPAND template::CommonFieldUtil::propertyName FOR this».setRequestContextForListEditors(ctx);	
 «ENDIF -»
 «ENDDEFINE»
 
