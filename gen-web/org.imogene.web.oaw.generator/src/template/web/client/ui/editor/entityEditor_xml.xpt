@@ -42,7 +42,7 @@
 			margin-left: 10px;
 		}
 		
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.dependentVisibility {
 				margin-left: 20px;
 				font-style: italic;

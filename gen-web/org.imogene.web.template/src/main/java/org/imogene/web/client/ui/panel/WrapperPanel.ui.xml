@@ -15,7 +15,7 @@
 			
 		}
 		
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.imogene-TableHeader {
 				width: 99%;
 				height: 46px;
@@ -44,7 +44,7 @@
 			margin-right: 5px;
 		}
 
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.headerWidgetPanel {
 				margin-right: 5px;
 			}

@@ -3,7 +3,7 @@
 
 	<ui:style src="../../css/ImogCss.css">
 
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.mainPanel {
 				float: left;
 				width: 200px; 
@@ -109,7 +109,7 @@
 			font-size: 12px;
 		}
 
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.innerPanel {
 				margin-right: 4px;
 				margin-left: 4px;

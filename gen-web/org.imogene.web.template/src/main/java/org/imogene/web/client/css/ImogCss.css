@@ -32,7 +32,7 @@
 	border-color: PanelBorder;
 }
 
-@if user.agent ie6 ie8 {
+@if user.agent ie6 ie8 ie9 {
 	.imogenePanel {
 		color: TextColor;	
 		background-color: PanelBackground;

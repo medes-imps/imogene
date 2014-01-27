@@ -41,7 +41,7 @@
 			width: 80px;
 		}	
 
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.icon {
 				height: 32px;
 				margin-left: 2px;
@@ -52,7 +52,7 @@
 			}
 		}
 
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.topPanel-space {
 				margin-left: 10px;
 				margin-right: 4px;
