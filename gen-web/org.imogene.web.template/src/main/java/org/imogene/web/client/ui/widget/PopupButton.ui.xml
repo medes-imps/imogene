@@ -17,7 +17,7 @@
 			padding: 0 8px;
 		}		
 		
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.popupButtonStyle {
 				color: #444;
 				background-image: linear-gradient(top, whiteSmoke, #F1F1F1);

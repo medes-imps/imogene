@@ -13,7 +13,7 @@
 			height: 100%;
 		}
 
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.imogene-FormMetadata {
 				height: 22px;
 				margin-left: 10px;
@@ -43,7 +43,7 @@
 			font-size: 11px;
 		}
 		
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.imogene-Form-button {
 				margin-top: 5px;
 				margin-bottom: 5px;

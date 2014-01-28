@@ -12,6 +12,12 @@
 	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.relation.multi'
 	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group"
 	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary"
+	«IF hasNestedFormWithNestedFields(nestedFields)-»
+	xmlns:imon1="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.editor.nested"
+	«ENDIF -»
+	«IF hasNestedFormWithoutNestedFields(nestedFields)-»
+	xmlns:imon2="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.editor"
+	«ENDIF -»		
 	«IF isTranslatableFieldPresent(nestedFields)-»
 	xmlns:imo5="urn:import:org.imogene.«projectName.toLowerCase()».client.ui.field">
 	«ENDIF -»
