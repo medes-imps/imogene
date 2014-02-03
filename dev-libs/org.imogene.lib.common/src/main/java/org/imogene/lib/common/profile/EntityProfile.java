@@ -1,6 +1,7 @@
 package org.imogene.lib.common.profile;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,20 +23,24 @@ public class EntityProfile extends ImogBeanImpl {
 
 	/* Description group fields */
 
-	@ManyToOne(cascade=CascadeType.DETACH)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "entityProfilesProfile_id")
 	private Profile profile;
 
-	@ManyToOne(cascade=CascadeType.DETACH)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	private CardEntity entity;
 
-	private Boolean canCreate;
+	@Column(name = "imogcreate")
+	private Boolean create;
 
-	private Boolean canDirectAccess;
+	@Column(name = "imogdriectaccess")
+	private Boolean directAccess;
 
-	private Boolean canDelete;
+	@Column(name = "imogdelete")
+	private Boolean delete;
 
-	private Boolean canExport;
+	@Column(name = "imogexport")
+	private Boolean export;
 
 	/**
 	 * Constructor
@@ -62,35 +67,35 @@ public class EntityProfile extends ImogBeanImpl {
 	}
 
 	public Boolean getCreate() {
-		return canCreate;
+		return create;
 	}
 
 	public void setCreate(Boolean value) {
-		canCreate = value;
+		create = value;
 	}
 
 	public Boolean getDirectAccess() {
-		return canDirectAccess;
+		return directAccess;
 	}
 
 	public void setDirectAccess(Boolean value) {
-		canDirectAccess = value;
+		directAccess = value;
 	}
 
 	public Boolean getDelete() {
-		return canDelete;
+		return delete;
 	}
 
 	public void setDelete(Boolean value) {
-		canDelete = value;
+		delete = value;
 	}
 
 	public Boolean getExport() {
-		return canExport;
+		return export;
 	}
 
 	public void setExport(Boolean value) {
-		canExport = value;
+		export = value;
 	}
 
 }

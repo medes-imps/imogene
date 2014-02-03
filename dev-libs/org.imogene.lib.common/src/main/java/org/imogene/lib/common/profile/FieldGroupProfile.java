@@ -1,6 +1,7 @@
 package org.imogene.lib.common.profile;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,18 +23,21 @@ public class FieldGroupProfile extends ImogBeanImpl {
 
 	/* Description group fields */
 
-	@ManyToOne(cascade=CascadeType.DETACH)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "fieldGroupProfilesProfile_id")
 	private Profile profile;
 
-	@ManyToOne(cascade=CascadeType.DETACH)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	private FieldGroup fieldGroup;
 
-	private Boolean canRead;
+	@Column(name = "imogread")
+	private Boolean read;
 
-	private Boolean canWrite;
+	@Column(name = "imogwrite")
+	private Boolean write;
 
-	private Boolean canExport;
+	@Column(name = "imogexport")
+	private Boolean export;
 
 	/**
 	 * Constructor
@@ -60,27 +64,27 @@ public class FieldGroupProfile extends ImogBeanImpl {
 	}
 
 	public Boolean getRead() {
-		return canRead;
+		return read;
 	}
 
 	public void setRead(Boolean value) {
-		canRead = value;
+		read = value;
 	}
 
 	public Boolean getWrite() {
-		return canWrite;
+		return write;
 	}
 
 	public void setWrite(Boolean value) {
-		canWrite = value;
+		write = value;
 	}
 
 	public Boolean getExport() {
-		return canExport;
+		return export;
 	}
 
 	public void setExport(Boolean value) {
-		canExport = value;
+		export = value;
 	}
 
 }
