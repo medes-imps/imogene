@@ -127,13 +127,14 @@ public class «name.toFirstUpper()» extends
 	
 	@Override
 	protected final void addValues(Context context, ContentValues values) {
+		super.addValues(context, values);
 		«EXPAND commit FOREACH groups.fields-»
 	}
 	
 	@Override
 	protected final void postCommit(Context context) {
-		«EXPAND postCommit FOREACH groups.fields-»
 		super.postCommit(context);
+		«EXPAND postCommit FOREACH groups.fields-»
 	}
 	
 	public final void reset() {

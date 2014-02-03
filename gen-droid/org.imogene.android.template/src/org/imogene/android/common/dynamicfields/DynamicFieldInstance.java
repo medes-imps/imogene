@@ -90,6 +90,7 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 
 	@Override
 	protected final void addValues(Context context, ContentValues values) {
+		super.addValues(context, values);
 		if (fieldTemplate != null) {
 			values.put(Columns.FIELDTEMPLATE, fieldTemplate.getLastPathSegment());
 		} else {
@@ -97,10 +98,6 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 		}
 
 		values.put(Columns.FIELDVALUE, fieldValue);
-	}
-
-	@Override
-	protected final void postCommit(Context context) {
 	}
 
 	@Override

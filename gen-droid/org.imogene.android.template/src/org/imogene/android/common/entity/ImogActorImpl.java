@@ -14,7 +14,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor {
 
@@ -76,14 +75,14 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 
 	@Override
 	protected void addValues(Context context, ContentValues values) {
-		if (!TextUtils.isEmpty(login) && password != null && password.length > 0) {
-			values.put(ImogActor.Columns.LOGIN, login);
-			values.put(ImogActor.Columns.PASSWORD, password);
-		}
+		super.addValues(context, values);
+		values.put(ImogActor.Columns.LOGIN, login);
+		values.put(ImogActor.Columns.PASSWORD, password);
 	}
 
 	@Override
 	protected void postCommit(Context context) {
+		super.postCommit(context);
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(ImogActor.Columns.TABLE_ACTOR_PROFILES);
 		builder.where().eq(ImogActor.Columns.TABLE_NAME, getId());
 		builder.delete();
@@ -95,7 +94,6 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 				ImogOpenHelper.getHelper().insert(ImogActor.Columns.TABLE_ACTOR_PROFILES, v);
 			}
 		}
-		super.postCommit(context);
 	}
 
 	@Override

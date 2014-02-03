@@ -80,11 +80,6 @@ public class CardEntity extends ImogBeanImpl {
 	}
 
 	@Override
-	protected final void postCommit(Context context) {
-		super.postCommit(context);
-	}
-
-	@Override
 	public final void reset() {
 		name = null;
 	}

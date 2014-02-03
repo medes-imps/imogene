@@ -170,11 +170,6 @@ public class EntityProfile extends ImogBeanImpl {
 	}
 
 	@Override
-	protected final void postCommit(Context context) {
-		super.postCommit(context);
-	}
-
-	@Override
 	public final void reset() {
 		profile = null;
 		entity = null;

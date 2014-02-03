@@ -132,6 +132,7 @@ public class Profile extends ImogBeanImpl {
 
 	@Override
 	protected final void postCommit(Context context) {
+		super.postCommit(context);
 
 		{
 			ContentValues v = new ContentValues();
@@ -159,7 +160,6 @@ public class Profile extends ImogBeanImpl {
 			}
 		}
 
-		super.postCommit(context);
 	}
 
 	@Override

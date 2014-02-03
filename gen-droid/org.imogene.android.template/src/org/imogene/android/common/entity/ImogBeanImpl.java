@@ -179,13 +179,10 @@ public abstract class ImogBeanImpl implements ImogBean {
 	}
 
 	protected void postCommit(Context context) {
-		Preferences prefs = Preferences.getPreferences(context);
-		if (prefs.isSyncOnSaveEnabled() && prefs.getSyncTerminal().equals(modifiedFrom)) {
-			SynchronizationService.actionCheck(context);
-		}
 	}
 
-	protected abstract void addValues(Context context, ContentValues values);
+	protected void addValues(Context context, ContentValues values) {
+	}
 
 	protected Uri saveOrUpdate(Context context, Uri contentUri) {
 		preCommit(context);
@@ -217,6 +214,11 @@ public abstract class ImogBeanImpl implements ImogBean {
 		}
 
 		postCommit(context);
+
+		Preferences prefs = Preferences.getPreferences(context);
+		if (prefs.isSyncOnSaveEnabled() && prefs.getSyncTerminal().equals(modifiedFrom)) {
+			SynchronizationService.actionCheck(context);
+		}
 
 		return uri;
 	}

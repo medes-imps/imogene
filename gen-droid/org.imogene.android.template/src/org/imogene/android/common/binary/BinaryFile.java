@@ -110,6 +110,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 
 	@Override
 	protected void addValues(Context context, ContentValues values) {
+		super.addValues(context, values);
 		values.put(Binary.Columns.CONTENT_TYPE, contentType);
 		values.put(Binary.Columns.FILE_NAME, fileName);
 		values.put(Binary.Columns.LENGTH, length);

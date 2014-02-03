@@ -290,10 +290,6 @@ public class DynamicFieldTemplate extends ImogBeanImpl {
 	}
 
 	@Override
-	protected final void postCommit(Context context) {
-	}
-
-	@Override
 	public final void reset() {
 		fieldName = null;
 		fieldType = null;

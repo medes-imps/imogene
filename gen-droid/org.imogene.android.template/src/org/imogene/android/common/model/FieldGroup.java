@@ -97,11 +97,6 @@ public class FieldGroup extends ImogBeanImpl {
 	}
 
 	@Override
-	protected final void postCommit(Context context) {
-		super.postCommit(context);
-	}
-
-	@Override
 	public final void reset() {
 		name = null;
 		entity = null;

@@ -333,8 +333,6 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 	public int delete(String tableName, String whereClause, String[] whereArgs) {
 		return getWritableDatabase().delete(tableName, whereClause, whereArgs);
 	}
-	
-	public abstract ImogActor loadActorById();
 
 	public Context getContext() {
 		return mContext;
