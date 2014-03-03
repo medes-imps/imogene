@@ -581,7 +581,11 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirst
 		«entity.name.toFirstUpper()»Proxy new«name.toFirstUpper()» = request.create(«entity.name.toFirstUpper()»Proxy.class);
 		new«name.toFirstUpper()».setId(ImogKeyGenerator.generateKeyId("«entity.shortName»"));
 		«IF nestedForm-»
+			«IF entity.nestedFields!=null && entity.nestedFields.size>0 -»
 			«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH entity.nestedFields»
+			«ELSE -»
+				«EXPAND defaultValue("new" + name.toFirstUpper()) FOREACH entity.groups.fields»	
+			«ENDIF-»		
 		«ENDIF-»
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
 	«ELSE-»

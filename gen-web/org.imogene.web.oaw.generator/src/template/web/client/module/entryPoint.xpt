@@ -25,6 +25,7 @@ import org.imogene.«projectName.toLowerCase()».client.ui.panel.HomePanel;
 import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
 
 import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.HistoryBackEvent;
 import org.imogene.web.client.event.LogoutEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.dynamicfields.ui.renderer.DynFieldsRenderer;
@@ -114,6 +115,8 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	/* timer to check session validity */
 	private Timer sessionTimer;
 
+	private int historyCount = 0;
+
 	@UiField
 	VerticalPanel mainPanel;
 	@UiField
@@ -179,7 +182,6 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	protected void displayApplication(ImogActorProxy actor) {
 		
 		registrations.add(History.addValueChangeHandler(this));
-		//History.fireCurrentHistoryState();
 		
 		RootPanel.get("loadingWrapper").setVisible(false);
 			
@@ -202,6 +204,9 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		
 		// add handlers
 		setHandlers();
+		
+		// throw the current history token
+		History.fireCurrentHistoryState();		
 	}
 	
 	/**
@@ -357,6 +362,19 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 			}
 		}));
 		
+		registrations.add(eventBus.addHandler(HistoryBackEvent.TYPE, new HistoryBackEvent.Handler() {
+
+			@Override
+			public void onHistoryBackRequest() {
+				if (historyCount > 1) {
+					History.back();
+					historyCount--;
+				} else {
+					History.newItem("");
+				}
+			}
+		}));
+		
 		«IF !applicationType.matches(adminType)-»	
 			«EXPAND setHandlers FOREACH entities»			
 		«ELSE-»
@@ -456,10 +474,15 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
 		
+		historyCount++;
 		String token = event.getValue();
 		EntityToken entityToken = TokenHelper.getToken(token);
 		
 		if (entityToken != null) {
+
+			if (entityToken.getType().equals(TokenHelper.TK_CLASSIC)) {
+				eventBus.fireEvent(new GoHomeEvent());
+			}		
 		
 		«IF !applicationType.matches(adminType)-»	
 			«EXPAND setOnValueChange FOREACH entities»			

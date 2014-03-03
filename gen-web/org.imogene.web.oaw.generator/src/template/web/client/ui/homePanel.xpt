@@ -16,6 +16,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -31,6 +32,7 @@ import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.event.GoHomeEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.client.util.TokenHelper;
 
 «FOREACH this.entities AS e-»
 «IF e.topLevel || !e.directAccess.isEmpty-»
@@ -394,7 +396,7 @@ public class HomePanel extends Composite {
 			«name.toFirstLower()».setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new Create«name.toFirstUpper()»Event(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/«name.toLowerCase()»/", true);
 				}
 			});
 		}
@@ -406,7 +408,7 @@ public class HomePanel extends Composite {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new List«name.toFirstUpper()»Event());
+					History.newItem(TokenHelper.TK_LIST + "/«name.toLowerCase()»/", true);
 				}
 			});
 			«name.toFirstLower()».setSearchClickHandler(new ClickHandler() {
@@ -414,7 +416,7 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = «name.toFirstLower()».getSearchValue();
 					if(searchValue!=null && !searchValue.isEmpty())
-						eventBus.fireEvent(new List«name.toFirstUpper()»Event(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/«name.toLowerCase()»/searchValue", true);
 				}
 			});	
 		}

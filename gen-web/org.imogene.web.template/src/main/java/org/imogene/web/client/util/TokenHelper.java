@@ -11,13 +11,14 @@ public class TokenHelper {
 	public static String TK_NEW = "new";
 	public static String TK_XLS = "xls";
 	
+	public static String TK_CLASSIC = "classic";
 
 	public static EntityToken getToken(String token) {
 		String[] params = token.split("/");
 		if (params.length == 0)
 			return null;
 		else {
-			if ((params[0].equals("view") || params[0].equals("edit")) && params.length == 3) {
+			if ((params[0].equals("view") || params[0].equals("edit") || params[0].equals("list")) && params.length == 3) {
 				return new EntityToken(params[0], params[1], params[2]);
 
 			} else if ((params[0].equals("new") || params[0].equals("list") || params[0].equals("xls")) && params.length == 2) {
@@ -28,6 +29,9 @@ public class TokenHelper {
 
 			} else if (params[0].equals("specific") && params.length == 3) {
 				return new EntityToken(params[2], params[2], "");
+
+			} else if (params[0].equals(TK_CLASSIC)) {
+				return new EntityToken(TK_CLASSIC, TK_CLASSIC, "");
 
 			} else {
 				return null;

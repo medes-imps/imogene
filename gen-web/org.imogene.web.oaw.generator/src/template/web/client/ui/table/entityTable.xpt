@@ -30,6 +30,7 @@ import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.DateUtil;
+import org.imogene.web.client.util.TokenHelper;
 import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»BirtConstants;
 
 import com.google.gwt.cell.client.TextCell;
@@ -41,6 +42,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.requestfactory.shared.Receiver;
@@ -100,7 +102,8 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 
 	@Override
 	protected GwtEvent<?> getViewEvent(«name.toFirstUpper()»Proxy value) {
-		return new View«name.toFirstUpper()»Event(value.getId());
+		History.newItem(TokenHelper.TK_VIEW + "/«name.toLowerCase()»/" + value.getId(), true);
+		return null;
 	}
 	
 	@Override
@@ -122,7 +125,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 		if (AccessManager.canCreateForm("«name.toLowerCase()»") && AccessManager.canEditForm("«name.toLowerCase()»")) {
 			Command command = new Command() {
 				public void execute() {
-					requestFactory.getEventBus().fireEvent(new Create«name.toFirstUpper()»Event());
+					History.newItem(TokenHelper.TK_NEW + "/«name.toLowerCase()»/", true);
 				}
 			};
 			return command;

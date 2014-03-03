@@ -61,6 +61,9 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	private boolean isLocked = false;
 	private String popupTitle = "";
 	private boolean hideButtons = false;
+	private boolean hideAffectButton = false;
+	private boolean hideClearButton = false;
+	private boolean hideCreateButton = false;
 	private boolean notifyChanges = false;
 	
 	/* listbox selected values */
@@ -90,7 +93,9 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	Image addImage;
 	@UiField
 	@com.google.gwt.editor.client.Editor.Ignore
-	Image clearImage;	
+	Image clearImage;
+
+	
 	
 	
 	public ImogMultiRelationBox(ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer, boolean hideButtons) {
@@ -353,14 +358,15 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 		if(edited) {
 			if(!isLocked) {
 				
-				affectImage.setVisible(true);
+				if(!hideAffectButton)
+					affectImage.setVisible(true);
 				
-				if(!canCreateEntity || hideButtons)
+				if(!canCreateEntity || hideButtons || hideCreateButton)
 					addImage.setVisible(false);
 				else
 					addImage.setVisible(true);
 				
-				if(!isEmpty)
+				if(!isEmpty && !hideClearButton)
 					clearImage.setVisible(true);
 				else
 					clearImage.setVisible(false);
@@ -386,6 +392,18 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	public void hideButtons(boolean hideButtons) {
 		this.hideButtons = hideButtons;
 		setButtonVisibility();
+	}
+	
+	public void setHideAffectButton(boolean hideAffectButton) {
+		this.hideAffectButton = hideAffectButton;
+	}
+	
+	public void setHideClearButton(boolean hideClearButton) {
+		this.hideClearButton = hideClearButton;
+	}
+	
+	public void setHideCreateButton(boolean hideCreateButton) {
+		this.hideCreateButton = hideCreateButton;
 	}
 
 	
@@ -438,5 +456,7 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 		registrations.clear();
 		super.onUnload();
 	}
+
+
 
 }

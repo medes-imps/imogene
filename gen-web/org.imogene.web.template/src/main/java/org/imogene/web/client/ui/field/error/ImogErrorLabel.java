@@ -45,6 +45,22 @@ public class ImogErrorLabel extends Composite {
 		errorDisplayed = true;		
 	}
 	
+	public void showError(String error) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n").append(error);
+
+		if (sb.length() == 0) {
+			errorLabel.setInnerText("");
+			errorLabel.getStyle().setDisplay(Display.NONE);
+			return;
+		}
+
+		errorLabel.setInnerText(sb.substring(1));
+		errorLabel.getStyle().setDisplay(Display.INLINE_BLOCK);
+		errorDisplayed = true;		
+	}
+	
 	public void hideErrors() {
 		if(errorDisplayed) {
 			errorLabel.setInnerText(null);
