@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.imogene.web.client.css.ImogResources;
 import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.HistoryBackEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.util.DateUtil;
@@ -124,7 +125,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 	 */
 	private void properties() {
 
-		layout.setCellHeight(metaInfoPanel, "22px");
+		// layout.setCellHeight(metaInfoPanel, "22px");
 		metaInfoPanel.setSpacing(0);
 		
 		saveButton.setStyleName(imogResources.imogStyle().imogButton());
@@ -237,15 +238,12 @@ public abstract class EditorWorkflowComposite extends Composite {
 		if (bean.getCreated() != null && bean.getCreatedBy() != null) {
 			String created = DateUtil.getDate(bean.getCreated());
 			String creator = bean.getCreatedBy();
-			createUpdate = BaseNLS.messages().form_metadata_creation(created,
-					creator);
+			createUpdate = BaseNLS.messages().form_metadata_creation(created, creator);
 		}
-		if (bean.getModified() != null
-				&& bean.getModifiedBy() != null) {
+		if (bean.getModified() != null && bean.getModifiedBy() != null) {
 			String modified = DateUtil.getDate(bean.getModified());
 			String modifier = bean.getModifiedBy();
-			modifUpdate = BaseNLS.messages().form_metadata_modification(
-					modified, modifier);
+			modifUpdate = BaseNLS.messages().form_metadata_modification(modified, modifier);
 		}
 		if (bean.getId() != null) {
 			idUpdate = BaseNLS.messages().form_metadata_id(bean.getId());
@@ -264,7 +262,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 		if(parent!=null)
 			parent.hide();
 		else {
-			eventBus.fireEvent(closeEvent);
+			eventBus.fireEvent(new HistoryBackEvent());
 		}
 	}
 	

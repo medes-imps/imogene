@@ -179,12 +179,14 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		current = new«name.toFirstUpper()»;
 		editorDriver.edit(current, request);
 		
+		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);
 		«IF hasDynamicFields-»
 		/* get the list of Dynamic Field Templates for this type of entity */
 		getDynamicFieldTemplates();
-		«ENDIF -»
+		«ENDIF -» 
+		«ENDIF -»		
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
 		«EXPAND manageHierarchicalLists(true) FOREACH groups.fields-»
@@ -239,9 +241,10 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«EXPAND createInstance FOREACH groups.fields-»
 		
 		editor.setEditedValue(current);
-
+		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);	 
+		«ENDIF -»			
 		
 		editorDriver.edit(current, request);
 		«IF hasDynamicFields-»

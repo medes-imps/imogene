@@ -22,13 +22,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.web.bindery.event.shared.EventBus;
 
-public class ImogDateBox extends Composite implements ImogField<Date>,
-		LeafValueEditor<Date>, HasEditorErrors<Date>,
-		HasEditorDelegate<Date> {
+public class ImogDateBox extends Composite implements ImogField<Date>, LeafValueEditor<Date>, HasEditorErrors<Date>, HasEditorDelegate<Date> {
 
 	private static final Binder uiBinder = GWT.create(Binder.class);
 
@@ -60,6 +60,11 @@ public class ImogDateBox extends Composite implements ImogField<Date>,
 		dateBox.setFormat(new ImogDateFormat(DateUtil.getDateFormater()));
 	}
 	
+	public ImogDateBox(DateTimeFormat dateFormater) {
+		initWidget(uiBinder.createAndBindUi(this));
+		dateBox.setFormat(new ImogDateFormat(dateFormater));
+	}
+
 	/**
 	 * Constructor
 	 * Can be used when the box is not used as an editor but just as a widget
@@ -181,6 +186,13 @@ public class ImogDateBox extends Composite implements ImogField<Date>,
 		formatErrorIdentified = false;
 	}	
 
+	public Label getLabelWidget() {
+		return fieldBox.getLabelBox();
+	}
+
+	public TextBox getTextBox() {
+		return dateBox.getTextBox();
+	}
 
 	/**
 	 *

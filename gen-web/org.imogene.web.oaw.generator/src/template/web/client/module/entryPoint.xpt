@@ -46,6 +46,7 @@ import org.imogene.admin.client.ui.workflow.panel.ProfileFormPanel;
 import org.imogene.web.client.dynamicfields.ui.workflow.panel.DynamicFieldTemplateFormPanel;
 import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
 import org.imogene.web.client.event.GoHomeEvent;
+import org.imogene.web.client.event.HistoryBackEvent;
 import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
 import org.imogene.web.client.event.LogoutEvent;
 import org.imogene.web.client.event.ViewDynamicFieldTemplateEvent;
@@ -128,6 +129,8 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	
 	/* timer to check session validity */
 	private Timer sessionTimer;
+
+	private int historyCount = 0;
 
 	@UiField
 	VerticalPanel mainPanel;
@@ -221,6 +224,9 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		
 		// add handlers
 		setHandlers();
+		
+		// throw the current history token
+		History.fireCurrentHistoryState();		
 	}
 	
 	/**
@@ -373,6 +379,19 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(LogoutEvent.TYPE, new LogoutEvent.Handler() {
 			public void onLogout() {
 				logout();
+			}
+		}));
+		
+		registrations.add(eventBus.addHandler(HistoryBackEvent.TYPE, new HistoryBackEvent.Handler() {
+
+			@Override
+			public void onHistoryBackRequest() {
+				if (historyCount > 1) {
+					History.back();
+					historyCount--;
+				} else {
+					History.newItem("");
+				}
 			}
 		}));
 		
@@ -667,10 +686,15 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
 		
+		historyCount++;
 		String token = event.getValue();
 		EntityToken entityToken = TokenHelper.getToken(token);
 		
 		if (entityToken != null) {
+
+			if (entityToken.getType().equals(TokenHelper.TK_CLASSIC)) {
+				eventBus.fireEvent(new GoHomeEvent());
+			}		
 		
 		«IF !applicationType.matches(adminType)-»	
 			«EXPAND setOnValueChange FOREACH entities»			

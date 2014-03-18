@@ -255,4 +255,8 @@ public class DateUtil {
 	public static DateTimeFormat getDateFormater() {
 		return dateFormater;
 	}
+	
+	public static DateTimeFormat getDateTimeFormater() {
+		return dateTimeFormater;
+	}
 }
