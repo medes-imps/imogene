@@ -29,8 +29,8 @@ public class AddressFieldView extends BaseFieldView<String> implements OnQuickAc
 			final Context context = getContext();
 			mBar = new QuickActionBar(context) {
 				{
-					addQuickAction(new QuickAction(context, R.drawable.maps_navto, R.string.maps_navto));
-					addQuickAction(new QuickAction(context, R.drawable.maps_map, R.string.maps_show_on_map));
+					addQuickAction(new QuickAction(context, R.drawable.maps__navto, R.string.maps__navto));
+					addQuickAction(new QuickAction(context, R.drawable.maps__map, R.string.maps__show_on_map));
 
 					setOnQuickActionClickListener(AddressFieldView.this);
 				}

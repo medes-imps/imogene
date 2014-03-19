@@ -7,12 +7,12 @@ package org.imogene.android.«projectName.toLowerCase()».app;
 
 import android.os.Bundle;
 
-import greendroid.app.GDPreferenceActivity;
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
 
-public class «name.toFirstUpper()»FilterPreferenceScreen extends GDPreferenceActivity {
+public class «name.toFirstUpper()»FilterPreferenceScreen extends SherlockPreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

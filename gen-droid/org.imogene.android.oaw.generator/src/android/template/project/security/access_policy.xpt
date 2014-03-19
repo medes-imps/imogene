@@ -3,6 +3,8 @@
 «FILE "/" + name.toLowerCase() + "/security/AccessPolicy.java"-»
 package org.imogene.android.«name.toLowerCase()».security;
 
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogActor;
@@ -12,7 +14,6 @@ import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.preference.Preferences;
 «FOREACH entities AS entity-»
 «IF Actor.isAssignableFrom(entity.metaType)-»

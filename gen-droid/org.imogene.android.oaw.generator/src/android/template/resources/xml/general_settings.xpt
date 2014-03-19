@@ -8,20 +8,20 @@
 	<PreferenceCategory 
 		android:title="@string/ig_synchro_parameters">
 		«IF multilogin»
-		<org.imogene.android.preference.EncryptedPreference
+		<fr.medes.android.preference.EncryptedPreference
 			android:key="syncLogin"
 			android:title="@string/ig_sync_login_title" />
-		<org.imogene.android.preference.MyEditTextPreference 
+		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="syncRoles"
 			android:title="@string/ig_sync_roles_title"
 			android:shouldDisableView="false"
 			android:enabled="false" />
 		«ENDIF»
-		<org.imogene.android.preference.MyEditTextPreference
+		<fr.medes.android.preference.MyEditTextPreference
 			android:key="syncServer"
 			android:title="@string/ig_sync_server_title"
 			android:inputType="textUri" />
-		<org.imogene.android.preference.MyEditTextPreference 
+		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="syncTerminal"
 			android:title="@string/ig_sync_terminal_title"
 			android:shouldDisableView="false"
@@ -73,11 +73,11 @@
 			android:title="@string/ig_push_enabled_title"
 			android:summaryOn="@string/ig_push_enabled_summaryon"
 			android:summaryOff="@string/ig_push_enabled_summaryoff" />
-		<org.imogene.android.preference.MyEditTextPreference 
+		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="pushHost"
 			android:title="@string/ig_push_host_title"
 			android:inputType="textUri" />
-		<org.imogene.android.preference.MyEditTextPreference 
+		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="pushPort"
 			android:title="@string/ig_push_port_title"
 			android:inputType="number" />
@@ -90,7 +90,7 @@
 	</PreferenceCategory>
 	<PreferenceCategory 
 		android:title="@string/ig_update_parameters">
-		<org.imogene.android.preference.MyEditTextPreference
+		<fr.medes.android.preference.MyEditTextPreference
 			android:key="updateServer"
 			android:title="@string/ig_update_server_title"
 			android:inputType="textUri" />
@@ -106,10 +106,10 @@
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/ig_application_parameters">
-		<org.imogene.android.preference.EncryptedPreference
+		<fr.medes.android.preference.EncryptedPreference
 			android:key="«IF multilogin»currentLogin«ELSE»syncLogin«ENDIF»"
 			android:title="@string/ig_current_login_title" />
-		<org.imogene.android.preference.MyEditTextPreference 
+		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="«IF multilogin»currentRoles«ELSE»syncRoles«ENDIF»"
 			android:title="@string/ig_current_roles_title"
 			android:shouldDisableView="false"
@@ -142,7 +142,7 @@
     </PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/ig_about">
-		<org.imogene.android.preference.BaseDialogPreference
+		<fr.medes.android.preference.BaseDialogPreference
 			android:key="about"
 			android:title="@string/ig_about_title"
 			android:summary="@string/ig_about_summary"

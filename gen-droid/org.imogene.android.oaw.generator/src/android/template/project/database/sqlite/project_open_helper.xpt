@@ -5,9 +5,10 @@
 «FILE "/" + name.toLowerCase() + "/database/sqlite/" + name.toFirstUpper() + "OpenHelper.java"»
 package org.imogene.android.«name.toLowerCase()-».database.sqlite;
 
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+
 import org.imogene.android.Constants.Databases;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 «FOREACH entities AS entity-»
 import org.imogene.android.«name.toLowerCase()».domain.«entity.name.toFirstUpper()»;
 «ENDFOREACH-»

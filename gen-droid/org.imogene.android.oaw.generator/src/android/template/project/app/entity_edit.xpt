@@ -24,15 +24,16 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import fr.medes.android.app.ViewPagerIndicatorActivity;
+import fr.medes.android.util.content.ContentUrisUtils;
+
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.app.ViewPagerIndicatorActivity;
 import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.android.common.dynamicfields.DynamicFieldManager;
 import org.imogene.android.notification.NotificationController;
+import org.imogene.android.util.DatabaseUtils;
+import org.imogene.android.util.DialogFactory;
 import org.imogene.android.util.IamLost;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.database.DatabaseUtils;
-import org.imogene.android.util.dialog.DialogFactory;
 import org.imogene.android.widget.ErrorAdapter;
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.ImogPagerAdapter;

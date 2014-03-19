@@ -14,12 +14,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import fr.medes.android.util.content.ContentUrisUtils;
+
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.FieldFlipperActivity;
 import org.imogene.android.notification.NotificationController;
+import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.IamLost;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.database.DatabaseUtils;
 import org.imogene.android.widget.field.FieldFlipper;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.FieldContainer;

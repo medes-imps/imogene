@@ -9,7 +9,7 @@ import greendroid.widget.ActionBarItem;
 import greendroid.widget.NormalActionBarItem;
 
 import org.imogene.android.Constants.Categories;
-import org.imogene.android.maps.app.MapActivityWithoutActionBar;
+import org.imogene.android.app.MapActivityWithoutActionBar;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.«projectName.toLowerCase()».R;

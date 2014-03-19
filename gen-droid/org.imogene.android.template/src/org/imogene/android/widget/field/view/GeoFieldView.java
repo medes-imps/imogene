@@ -1,6 +1,5 @@
 package org.imogene.android.widget.field.view;
 
-import org.imogene.android.radar.app.RadarActivity;
 import org.imogene.android.template.R;
 
 import android.content.Context;
@@ -11,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import fr.medes.android.maps.MapsConstants;
 import fr.medes.android.maps.app.LocationViewer;
+import fr.medes.android.radar.app.RadarActivity;
 import fr.medes.android.util.FormatHelper;
 import fr.medes.android.widget.QuickAction;
 import fr.medes.android.widget.QuickActionBar;
@@ -42,9 +42,9 @@ public class GeoFieldView extends BaseFieldView<Location> implements OnQuickActi
 			final Context context = getContext();
 			mBar = new QuickActionBar(context) {
 				{
-					addQuickAction(new QuickAction(context, R.drawable.maps_navto, R.string.maps_navto));
-					addQuickAction(new QuickAction(context, R.drawable.maps_map, R.string.maps_show_on_map));
-					addQuickAction(new QuickAction(context, R.drawable.maps_radar, R.string.maps_navto_radar));
+					addQuickAction(new QuickAction(context, R.drawable.maps__navto, R.string.maps__navto));
+					addQuickAction(new QuickAction(context, R.drawable.maps__map, R.string.maps__show_on_map));
+					addQuickAction(new QuickAction(context, R.drawable.maps__radar, R.string.maps__navto_radar));
 
 					setOnQuickActionClickListener(GeoFieldView.this);
 				}

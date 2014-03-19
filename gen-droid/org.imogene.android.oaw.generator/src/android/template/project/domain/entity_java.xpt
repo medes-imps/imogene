@@ -14,10 +14,25 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.util.Tools;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlConverter;
+import fr.medes.android.xml.converters.BooleanConverter;
+import fr.medes.android.xml.converters.DateConverter;
+import fr.medes.android.xml.converters.EnumConverter;
+import fr.medes.android.xml.converters.EnumMultiConverter;
+import fr.medes.android.xml.converters.FloatConverter;
+import fr.medes.android.xml.converters.GpsConverter;
+import fr.medes.android.xml.converters.IntegerConverter;
+import fr.medes.android.xml.converters.StringConverter;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.imogene.android.Constants;
 import org.imogene.android.common.binary.BinaryFile;
 import org.imogene.android.common.entity.GpsLocation;
 import org.imogene.android.common.entity.ImogActor;
@@ -29,22 +44,9 @@ import org.imogene.android.common.entity.ImogEntityImpl;
 import org.imogene.android.common.entity.IsGeoreferenced;
 import org.imogene.android.common.entity.LocalizedText;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.util.Tools;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlConverter;
 import org.imogene.android.xml.converters.AssociationConverter;
-import org.imogene.android.xml.converters.BooleanConverter;
 import org.imogene.android.xml.converters.CollectionConverter;
-import org.imogene.android.xml.converters.DateConverter;
-import org.imogene.android.xml.converters.EnumConverter;
-import org.imogene.android.xml.converters.EnumMultiConverter;
-import org.imogene.android.xml.converters.FloatConverter;
-import org.imogene.android.xml.converters.GpsConverter;
-import org.imogene.android.xml.converters.IntegerConverter;
 import org.imogene.android.xml.converters.LocalizedTextConverter;
-import org.imogene.android.xml.converters.StringConverter;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».database.sqlite.«name.toFirstUpper()»Cursor;
 
@@ -58,7 +60,7 @@ public class «name.toFirstUpper()» extends
 		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor(«IF color.length > 0»"#«color»"«ELSE»"black"«ENDIF»));
 		public static final String TABLE_NAME = "«name.toLowerCase()»";
 		public static final String BEAN_TYPE = "«shortName»";
-		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 		public static final int DESC_SINGULAR = R.string.«name.toLowerCase()»_des_sg;
 		public static final int DESC_PLURAL = R.string.«name.toLowerCase()»_des_pl;
 		public static final int DRAWABLE = «IF icon.length > 0»R.drawable.«icon.split("\\.").get(0).toLowerCase()»«ELSE»R.drawable.ig_logo_android_s«ENDIF»;

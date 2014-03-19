@@ -8,7 +8,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/ig_screen_filters_title" >
 	
-	<org.imogene.android.preference.MyEditTextPreference 
+	<fr.medes.android.preference.MyEditTextPreference 
 		android:key="@string/ig_webservice_server_title"
 		android:title="@string/ig_webservice_server_title"
 		android:inputType="textUri"

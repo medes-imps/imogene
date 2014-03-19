@@ -7,7 +7,7 @@ package org.imogene.android.«name.toLowerCase()».app;
 
 import android.os.Bundle;
 
-import greendroid.app.GDPreferenceActivity;
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 import org.imogene.android.«name.toLowerCase()».R;
 «FOREACH entities AS e-»
@@ -16,7 +16,7 @@ import org.imogene.android.«name.toLowerCase()».roles.«e.name.toFirstUpper()»Rol
 «ENDIF-»
 «ENDFOREACH-»
 
-public class FilterPreferenceScreen extends GDPreferenceActivity {
+public class FilterPreferenceScreen extends SherlockPreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

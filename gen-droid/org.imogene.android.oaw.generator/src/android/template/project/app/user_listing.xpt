@@ -4,10 +4,11 @@
 «FILE "/" + name.toLowerCase() + "/app/MultiUserListing.java"»
 package org.imogene.android.«name.toLowerCase()-».app;
 
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+
 import org.imogene.android.app.AbstractImogActorListing;
 import org.imogene.android.database.ImogActorCursorJoiner;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 «EXPAND importCursor(name) FOREACH entities-»
 «EXPAND importEntity(name) FOREACH entities-»
 

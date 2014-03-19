@@ -3,17 +3,19 @@
 «FILE "/" + name.toLowerCase() + "/app/" + name.toFirstUpper() + "App.java"»
 package org.imogene.android.«name.toLowerCase()-».app;
 
-import android.app.Application;
+import fr.medes.android.app.AmlApplication;
+import fr.medes.android.database.sqlite.AmlOpenHelper;
 
 import java.util.UUID;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
-import org.imogene.android.util.ntp.NTPClock;
+import org.imogene.android.util.NTPClock;
 import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
 import org.imogene.android.«name.toLowerCase()».domain.«name.toFirstUpper()»Helper;
@@ -29,7 +31,7 @@ import org.imogene.android.«name.toLowerCase()».domain.«name.toFirstUpper()»Loca
 	    resDialogCommentPrompt = R.string.ig_crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
 	    resDialogOkToast = R.string.ig_crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
 )
-public class «name.toFirstUpper()»App extends Application {
+public class «name.toFirstUpper()»App extends AmlApplication {
 
 	@Override
 	public void onCreate() {
@@ -66,6 +68,11 @@ public class «name.toFirstUpper()»App extends Application {
         SynchronizationService.actionReschedule(this);
         NotificationController.getInstance(this).watchForMessages(true);
         NTPClock.getInstance(this).updateOffsetAsync();
+	}
+	
+	@Override
+	public AmlOpenHelper getOpenHelper() {
+		return ImogOpenHelper.getHelper();
 	}
 	
 }

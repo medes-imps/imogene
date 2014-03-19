@@ -203,12 +203,12 @@
 		</activity>
 		
         <activity
-            android:name="org.imogene.android.maps.app.MapActivityWithoutActionBar" />
+            android:name="org.imogene.android.app.MapActivityWithoutActionBar" />
             
         <activity 
-			android:name="org.imogene.android.maps.app.LocationFromSensor"
-			android:icon="@drawable/maps_gps"
-			android:label="@string/maps_gps"
+			android:name="fr.medes.android.maps.app.LocationFromSensor"
+			android:icon="@drawable/maps__gps"
+			android:label="@string/maps__gps"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
@@ -219,9 +219,9 @@
 		</activity>
 
 		<activity
-			android:name="org.imogene.android.maps.app.LocationFromBestAvailable"
-			android:icon="@drawable/maps_best"
-			android:label="@string/maps_best"
+			android:name="fr.medes.android.maps.app.LocationFromBestAvailable"
+			android:icon="@drawable/maps__best"
+			android:label="@string/maps__best"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
@@ -232,9 +232,9 @@
 		</activity>
 
 		<activity
-			android:name="org.imogene.android.maps.app.LocationFromNetwork"
-			android:icon="@drawable/maps_network"
-			android:label="@string/maps_network"
+			android:name="fr.medes.android.maps.app.LocationFromNetwork"
+			android:icon="@drawable/maps__network"
+			android:label="@string/maps__network"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
@@ -245,9 +245,9 @@
 		</activity>
 		
 		<activity
-			android:name="org.imogene.android.maps.app.LocationPicker"
-			android:icon="@drawable/maps_map"
-			android:label="@string/maps_map" >
+			android:name="fr.medes.android.maps.app.LocationPicker"
+			android:icon="@drawable/maps__map"
+			android:label="@string/maps__map" >
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -257,9 +257,9 @@
 		</activity>
 		
 		<activity
-			android:name="org.imogene.android.maps.app.EnterManualLocation"
-			android:icon="@drawable/maps_manual"
-			android:label="@string/maps_manual"
+			android:name="fr.medes.android.maps.app.EnterManualLocation"
+			android:icon="@drawable/maps__manual"
+			android:label="@string/maps__manual"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
@@ -270,14 +270,14 @@
 		</activity>
 		
 		<activity
-			android:name="org.imogene.android.maps.app.LocationViewer"
-			android:icon="@drawable/maps_map"
-			android:label="@string/maps_map" />
+			android:name="fr.medes.android.maps.app.LocationViewer"
+			android:icon="@drawable/maps__map"
+			android:label="@string/maps__map" />
 		
 		<activity
-			android:name="org.imogene.android.radar.app.RadarActivity"
-			android:icon="@drawable/maps_radar"
-			android:label="@string/maps_map"
+			android:name="fr.medes.android.radar.app.RadarActivity"
+			android:icon="@drawable/maps__radar"
+			android:label="@string/maps__map"
 			android:theme="@android:style/Theme.Black.NoTitleBar" />
 			
     	<activity
@@ -310,26 +310,26 @@
             android:exported="false" />
 		
 		<activity
-            android:name="org.imogene.android.maps.app.PreCacheMap"
-            android:label="@string/maps_offline_title"
+            android:name="fr.medes.android.maps.app.PreCacheMap"
+            android:label="@string/maps__offline_title"
             android:launchMode="singleTask" />
             
         <activity
-            android:name="org.imogene.android.maps.app.PreCacheList"
-            android:label="@string/maps_offline_title" />
+            android:name="fr.medes.android.maps.app.PreCacheList"
+            android:label="@string/maps__offline_title" />
             
         <activity
-            android:name="org.imogene.android.maps.offline.TileLoaderSettings"
-            android:label="@string/maps_offline_title"
+            android:name="fr.medes.android.maps.offline.TileLoaderSettings"
+            android:label="@string/maps__offline_title"
             android:theme="@android:style/Theme.Dialog" />
             
         <activity
-            android:name="org.imogene.android.maps.offline.TileLoaderActivity"
-            android:label="@string/maps_offline_title"
+            android:name="fr.medes.android.maps.offline.TileLoaderActivity"
+            android:label="@string/maps__offline_title"
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog" />
 
-        <service android:name="org.imogene.android.maps.offline.TileLoaderService" />
+        <service android:name="fr.medes.android.maps.offline.TileLoaderService" />
 		
 		<provider 
 			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
