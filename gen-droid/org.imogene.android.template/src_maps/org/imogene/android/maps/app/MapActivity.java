@@ -1,8 +1,5 @@
 package org.imogene.android.maps.app;
 
-import greendroid.app.GDActivity;
-import greendroid.widget.ActionBar;
-
 import org.imogene.android.maps.MapsConstants;
 import org.imogene.android.maps.ResourceProxyImpl;
 import org.imogene.android.maps.offline.TileLoaderSettings;
@@ -33,89 +30,79 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
-public class MapActivity extends GDActivity {
-	
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class MapActivity extends SherlockActivity {
+
 	private static final String EXTRA_SHOW_LOCATION = "SampleMapActivity_showLocation";
 	private static final String EXTRA_SHOW_COMPASS = "SampleMapActivity_showCompass";
-	
+
 	private static final String PREFERENCES_NAME = "name";
 	private static final String PREFERENCE_ZOOM_LEVEL = "zoomLevel";
 	private static final String PREFERENCE_SCROLL_X = "scrollX";
 	private static final String PREFERENCE_SCROLL_Y = "scrollY";
 	private static final String PREFERENCE_TILE_SOURCE = "tileSource";
-	
+
 	protected static final int DIALOG_MAPMODE_ID = 1;
-	
+
 	protected MapView mMapView;
 	protected ResourceProxy mResourceProxy;
-	
+
 	private MyLocationOverlay mLocationOverlay;
 	private LongClickableOverlay mLongClickableOverlay;
-	
+
 	private BalloonView mBalloonView;
-	
+
 	private SharedPreferences mPrefs;
-	
-	public MapActivity() {
-		super();
-	}
-	
-	public MapActivity(ActionBar.Type type) {
-		super(type);
-	}
-	
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// only do static initialisation if needed
 		if (CloudmadeUtil.getCloudmadeKey().length() == 0) {
 			CloudmadeUtil.retrieveCloudmadeKey(getApplicationContext());
 		}
-		
+
 		mPrefs = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
 
 		mResourceProxy = new ResourceProxyImpl(this);
-		
+
 		mMapView = new MapView(this, 256, mResourceProxy);
 		mMapView.setBuiltInZoomControls(true);
 		mMapView.setMultiTouchControls(true);
-		setActionBarContentView(
-				mMapView, 
-				new RelativeLayout.LayoutParams(
-						LayoutParams.FILL_PARENT,
-						LayoutParams.FILL_PARENT));
-		
+		setContentView(mMapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+
 		mMapView.getController().setZoom(mPrefs.getInt(PREFERENCE_ZOOM_LEVEL, 1));
 		mMapView.scrollTo(mPrefs.getInt(PREFERENCE_SCROLL_X, 0), mPrefs.getInt(PREFERENCE_SCROLL_Y, 0));
-		
+
 		mLocationOverlay = new MyLocationOverlay(getBaseContext(), mMapView, mResourceProxy);
 		mMapView.getOverlayManager().add(mLocationOverlay);
-		
+
 		if (isPrecachingEnabled()) {
 			mLongClickableOverlay = new LongClickableOverlay(this, mListener);
 			mMapView.getOverlayManager().add(mLongClickableOverlay);
 		}
-		
+
 		mMapView.setMapListener(mMapListener);
 	}
-	
+
 	public MapView getMapView() {
 		return mMapView;
 	}
-	
+
 	public ResourceProxy getResourceProxy() {
 		return mResourceProxy;
 	}
-	
+
 	public void autozoom(IGeoPoint point) {
 		mMapView.getController().animateTo(point);
 	}
-	
+
 	public boolean isPrecachingEnabled() {
 		return true;
 	}
-	
+
 	public void changeCompassState() {
 		if (mLocationOverlay.isCompassEnabled()) {
 			mLocationOverlay.disableCompass();
@@ -123,7 +110,7 @@ public class MapActivity extends GDActivity {
 			mLocationOverlay.enableCompass();
 		}
 	}
-	
+
 	public void changeMyLocationState() {
 		if (mLocationOverlay.isMyLocationEnabled()) {
 			mLocationOverlay.disableMyLocation();
@@ -133,14 +120,14 @@ public class MapActivity extends GDActivity {
 			Toast.makeText(this, R.string.maps_set_mode_show_me, Toast.LENGTH_LONG).show();
 		}
 	}
-	
+
 	public void changeConnectionState() {
 		final boolean useDataConnection = !mMapView.useDataConnection();
 		mMapView.setUseDataConnection(useDataConnection);
 		final int id = useDataConnection ? R.string.maps_set_mode_online : R.string.maps_set_mode_offline;
 		Toast.makeText(this, id, Toast.LENGTH_LONG).show();
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -150,7 +137,7 @@ public class MapActivity extends GDActivity {
 		mLocationOverlay.disableMyLocation();
 		mLocationOverlay.disableCompass();
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
@@ -161,7 +148,7 @@ public class MapActivity extends GDActivity {
 			mLocationOverlay.enableCompass();
 		}
 	}
-	
+
 	@Override
 	protected void onPause() {
 		final SharedPreferences.Editor edit = mPrefs.edit();
@@ -190,23 +177,19 @@ public class MapActivity extends GDActivity {
 	public boolean onTrackballEvent(final MotionEvent event) {
 		return mMapView.onTrackballEvent(event);
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DIALOG_MAPMODE_ID:
-			return new AlertDialog.Builder(this)
-			.setTitle(R.string.maps_map_mode)
-			.setSingleChoiceItems(
-					TileSourceUtil.readableTileSources(mResourceProxy),
-					-1,
-					mMapModeListener)
-			.create();
+			return new AlertDialog.Builder(this).setTitle(R.string.maps_map_mode)
+					.setSingleChoiceItems(TileSourceUtil.readableTileSources(mResourceProxy), -1, mMapModeListener)
+					.create();
 		default:
 			return super.onCreateDialog(id);
 		}
 	}
-	
+
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		switch (id) {
@@ -220,9 +203,9 @@ public class MapActivity extends GDActivity {
 		}
 		super.onPrepareDialog(id, dialog);
 	}
-	
+
 	private final DialogInterface.OnClickListener mMapModeListener = new DialogInterface.OnClickListener() {
-		
+
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			mMapView.setTileSource(TileSourceFactory.getTileSource(which));
@@ -230,7 +213,7 @@ public class MapActivity extends GDActivity {
 		}
 
 	};
-	
+
 	private final LongClickableOverlay.OnLongClickListener mListener = new LongClickableOverlay.OnLongClickListener() {
 
 		@Override
@@ -238,15 +221,14 @@ public class MapActivity extends GDActivity {
 			boolean isRecycled = true;
 			if (mBalloonView == null) {
 				mBalloonView = new BalloonView(MapActivity.this);
-				mBalloonView.setData(getString(R.string.maps_offline_title), getString(R.string.maps_offline_description));
+				mBalloonView.setData(getString(R.string.maps_offline_title),
+						getString(R.string.maps_offline_description));
 				mBalloonView.setOnClickListener(mBalloonClickListener);
 				isRecycled = false;
 			}
 
-			MapView.LayoutParams params = new MapView.LayoutParams(
-					MapView.LayoutParams.WRAP_CONTENT,
-					MapView.LayoutParams.WRAP_CONTENT, point,
-					MapView.LayoutParams.BOTTOM_CENTER, 0, 0);
+			MapView.LayoutParams params = new MapView.LayoutParams(MapView.LayoutParams.WRAP_CONTENT,
+					MapView.LayoutParams.WRAP_CONTENT, point, MapView.LayoutParams.BOTTOM_CENTER, 0, 0);
 
 			mBalloonView.setTag(point);
 			mBalloonView.setVisibility(View.VISIBLE);
@@ -261,7 +243,7 @@ public class MapActivity extends GDActivity {
 			return true;
 		}
 	};
-	
+
 	private final View.OnClickListener mBalloonClickListener = new View.OnClickListener() {
 
 		@Override
@@ -276,7 +258,7 @@ public class MapActivity extends GDActivity {
 		}
 
 	};
-	
+
 	private final MapListener mMapListener = new MapListener() {
 
 		@Override

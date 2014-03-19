@@ -1,8 +1,6 @@
 package org.imogene.android.app.setup;
 
-import greendroid.app.GDActivity;
-import greendroid.widget.ActionBar;
-
+import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
@@ -19,7 +17,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountCheckPassword extends GDActivity implements OnClickListener, TextWatcher {
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class AccountCheckPassword extends SherlockActivity implements OnClickListener, TextWatcher {
 
 	private static final int ERROR_DIALOG_ID = 1;
 
@@ -32,14 +32,10 @@ public class AccountCheckPassword extends GDActivity implements OnClickListener,
 	private Button mStartButton;
 	private Button mChangeUserView;
 
-	public AccountCheckPassword() {
-		super(ActionBar.Type.Empty);
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setActionBarContentView(R.layout.ig_account_check_shortpw);
+		setContentView(R.layout.ig_account_check_shortpw);
 
 		mShortpwView = (EditText) findViewById(R.id.ig_check_shortpw);
 		mStartButton = (Button) findViewById(R.id.ig_start);
@@ -99,7 +95,7 @@ public class AccountCheckPassword extends GDActivity implements OnClickListener,
 		case R.id.ig_start:
 			final String shortpw = Preferences.getPreferences(this).getShortPassword();
 			if (shortpw != null && shortpw.equals(mShortpwView.getText().toString())) {
-				Intent intent = new Intent(this, getGDApplication().getHomeActivityClass());
+				Intent intent = new Intent(this, ImogHelper.getInstance().getHomeActivityClass());
 				startActivity(intent);
 				finish();
 			} else {

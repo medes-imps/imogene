@@ -1,8 +1,5 @@
 package org.imogene.android.maps.app;
 
-import greendroid.widget.ActionBarItem;
-import greendroid.widget.NormalActionBarItem;
-
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.maps.MapsConstants;
 import org.imogene.android.maps.database.PreCache;
@@ -15,11 +12,14 @@ import org.osmdroid.util.GeoPoint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 public class PreCacheMap extends MapActivity {
 
 	private static final int ZOOM_FOR_PRECACHE = 11;
 
-	private static final int ACTIONBAR_MAPMODE_ID = 100;
+	private static final int MENU_MAPMODE_ID = 100;
 
 	private String mTileSource = null;
 
@@ -31,8 +31,6 @@ public class PreCacheMap extends MapActivity {
 			showPreCache(getIntent());
 		}
 
-		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_mapmode), ACTIONBAR_MAPMODE_ID);
 	}
 
 	@Override
@@ -69,10 +67,10 @@ public class PreCacheMap extends MapActivity {
 		final double south = intent.getDoubleExtra(MapsConstants.EXTRA_LAT_SOUTH, MapsConstants.DEFAULT_SOUTH);
 		final double west = intent.getDoubleExtra(MapsConstants.EXTRA_LON_WEST, MapsConstants.DEFAULT_WEST);
 
-		final GeoPoint center = new GeoPoint((north + south) / 2,	(east + west) / 2);
+		final GeoPoint center = new GeoPoint((north + south) / 2, (east + west) / 2);
 
 		mMapView.postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				mMapView.getController().setZoom(ZOOM_FOR_PRECACHE);
@@ -82,13 +80,20 @@ public class PreCacheMap extends MapActivity {
 	}
 
 	@Override
-	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, MENU_MAPMODE_ID, Menu.NONE, R.string.maps_map_mode).setIcon(R.drawable.ig_ic_title_mapmode)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case ACTIONBAR_MAPMODE_ID:
+		case MENU_MAPMODE_ID:
 			showDialog(DIALOG_MAPMODE_ID);
 			return true;
 		default:
-			return super.onHandleActionBarItemClick(item, position);
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

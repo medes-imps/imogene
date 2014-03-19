@@ -1,10 +1,5 @@
 package org.imogene.android.widget.field.view;
 
-import greendroid.widget.QuickAction;
-import greendroid.widget.QuickActionBar;
-import greendroid.widget.QuickActionWidget;
-import greendroid.widget.QuickActionWidget.OnQuickActionClickListener;
-
 import org.imogene.android.template.R;
 
 import android.content.Context;
@@ -13,6 +8,10 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.widget.QuickAction;
+import fr.medes.android.widget.QuickActionBar;
+import fr.medes.android.widget.QuickActionWidget;
+import fr.medes.android.widget.QuickActionWidget.OnQuickActionClickListener;
 
 public class AddressFieldView extends BaseFieldView<String> implements OnQuickActionClickListener {
 

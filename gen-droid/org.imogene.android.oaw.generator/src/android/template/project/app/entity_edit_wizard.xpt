@@ -4,8 +4,6 @@
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "Wizard.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
-import greendroid.widget.ActionBar;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -64,10 +62,6 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	private Uri mUri;
 	private boolean mMarkAsRead = false;
 	private AccessPolicy mPolicy;
-	
-	public «name.toFirstUpper()»Wizard() {
-		super(ActionBar.Type.Empty);
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

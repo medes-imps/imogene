@@ -5,10 +5,6 @@
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "Edit.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
-import greendroid.widget.ActionBar;
-import greendroid.widget.ActionBarItem;
-import greendroid.widget.NormalActionBarItem;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -22,10 +18,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.ViewPagerIndicatorActivity;
@@ -67,7 +64,7 @@ import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity implements 
 		OnClickListener, FieldContainer, OnValueChangeListener {
 
-	private static final int ACTIONBAR_SAVE_ID = 1;
+	private static final int MENU_SAVE_ID = Menu.FIRST;
 	
 	private static final int DIALOG_UNSAVED_ID = 1;
 	private static final int DIALOG_ERROR_ID = 2;
@@ -92,10 +89,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	private AccessPolicy mPolicy;
 	
 	private boolean mMarkAsRead = false;
-	
-	public «name.toFirstUpper()»Edit() {
-		super(ActionBar.Type.Empty);
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -179,9 +172,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		
 		getViewPager().setAdapter(adapter);
 		getViewPager().setOffscreenPageLimit(«groups.size - 1»);
-		
-		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_save), ACTIONBAR_SAVE_ID);
 	}
 	
 	@Override
@@ -232,31 +222,27 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	}
 	
 	@Override
-	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
-		switch (item.getItemId()) {
-		case ACTIONBAR_SAVE_ID:
-			save(false);
-			return true;
-		default:
-			return super.onHandleActionBarItemClick(item, position);
-		}
-	}
-	
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
-		return result;
+		menu.add(Menu.NONE, MENU_SAVE_ID, Menu.NONE, R.string.ig_menu_save)
+		.setIcon(R.drawable.ig_ic_title_save)
+		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
+
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.ig_menu_iamlost :
-				showDialog(DIALOG_IAMLOST_ID);
-				return true;
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.ig_menu_iamlost :
+			showDialog(DIALOG_IAMLOST_ID);
+			return true;
+		case MENU_SAVE_ID:
+			save(false);
+			return true;
+		default :
+			return super.onOptionsItemSelected(item);
 		}
 	}
 	

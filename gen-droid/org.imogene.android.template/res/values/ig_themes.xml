@@ -12,16 +12,7 @@
     </style>
 
     <!-- Variation on the Light theme that turns off the title -->
-    <style name="Theme.Imogene" parent="@style/Theme.GreenDroid.Light.NoTitleBar">
-        <item name="gdActionBarTitleColor">@color/ig_actionbar_text</item>
-        <item name="gdActionBarBackground">@drawable/ig_actionbar_compat_background</item>
-        <item name="gdActionBarDividerDrawable">@drawable/ig_actionbar_compat_separator</item>
-        <item name="gdActionBarDividerWidth">2px</item>
-        <item name="gdActionBarHomeDrawable">@drawable/ig_ic_title_home</item>
-        <item name="gdActionBarColorstripBackground">@drawable/ig_colorstrip</item>
-        
-        <item name="gdTabIndicatorStyle">@style/Imogene.Wizard.TabIndicator</item>
-        
+    <style name="Theme.Imogene" parent="@style/Theme.Sherlock.Light">
         <item name="igFieldLayoutHeight">wrap_content</item>
     </style>
 

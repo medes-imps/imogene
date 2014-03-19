@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <style name="Imogene.Wizard.TabIndicator" parent="@style/GreenDroid.Widget.TabIndicator">
+
+    <style name="Imogene" />
+
+    <style name="Imogene.Wizard" />
+
+    <style name="Imogene.Wizard.TabIndicator">
         <item name="android:layout_height">@dimen/ig_tab_height</item>
-    	<item name="android:layout_marginLeft">@dimen/ig_tab_side_padding</item>
-    	<item name="android:layout_marginRight">@dimen/ig_tab_side_padding</item>
-    	<item name="android:background">@drawable/ig_tab_indicator</item>
-    	<item name="android:textSize">@dimen/ig_text_size_small</item>
-    	<item name="android:textStyle">bold</item>
+        <item name="android:layout_marginLeft">@dimen/ig_tab_side_padding</item>
+        <item name="android:layout_marginRight">@dimen/ig_tab_side_padding</item>
+        <item name="android:background">@drawable/ig_tab_indicator</item>
+        <item name="android:textSize">@dimen/ig_text_size_small</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DashboardButton">

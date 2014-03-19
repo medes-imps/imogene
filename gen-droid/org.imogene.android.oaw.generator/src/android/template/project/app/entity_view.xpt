@@ -4,10 +4,6 @@
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "View.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
-import greendroid.widget.ActionBar;
-import greendroid.widget.ActionBarItem;
-import greendroid.widget.NormalActionBarItem;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -19,10 +15,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
@@ -65,8 +62,8 @@ import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements
 		FieldContainer, OnClickListener {
 
-	private static final int ACTIONBAR_EDIT_ID = 1;
-	private static final int ACTIONBAR_SYNC_ID = 2;
+	private static final int MENU_EDIT_ID = 1;
+	private static final int MENU_SYNC_ID = 2;
 
 	private static final int DIALOG_DELETE_ID = 1;
 	private static final int DIALOG_INFO_ID = 2;
@@ -91,10 +88,6 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity = null;
-	
-	public «name.toFirstUpper()»View() {
-		super(ActionBar.Type.Empty);
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,14 +122,6 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 			«EXPAND dependency FOREACH f.fieldDependentVisibility-»
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH-»
-		
-		if (mPolicy.canEdit«name.toFirstUpper()»()) {
-			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_edit), ACTIONBAR_EDIT_ID);
-		}
-
-		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
 		
 		mAdapter = new ImogPagerAdapter(this);
 		«FOREACH groups AS group-»
@@ -236,45 +221,47 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
     }
 	
 	@Override
-	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
-		switch (item.getItemId()) {
-		case ACTIONBAR_EDIT_ID:
-			startActivity(new Intent(Intent.ACTION_EDIT, mUri));
-			return true;
-		case ACTIONBAR_SYNC_ID:
-			SynchronizationService.actionCheck(this);
-			return true;
-		default:
-			return super.onHandleActionBarItemClick(item, position);
-		}
-	}
-	
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.ig_menu_info_item, menu);
-		if (mPolicy.canDelete«name.toFirstUpper()»()) {
-			getMenuInflater().inflate(R.menu.ig_menu_delete_item, menu);
+		if (mPolicy.canEdit«name.toFirstUpper()»()) {
+			menu.add(Menu.NONE, MENU_EDIT_ID, Menu.NONE, R.string.ig_menu_edit)
+			.setIcon(R.drawable.ig_ic_title_edit)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
-		getMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
+
+		menu.add(Menu.NONE, MENU_EDIT_ID, Menu.NONE, R.string.ig_menu_sync)
+			.setIcon(R.drawable.ig_ic_title_sync)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		getSupportMenuInflater().inflate(R.menu.ig_menu_info_item, menu);
+
+		if (mPolicy.canDelete«name.toFirstUpper()»()) {
+			getSupportMenuInflater().inflate(R.menu.ig_menu_delete_item, menu);
+		}
+		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
 		boolean hasMoreMenu = false;
 		«IF getMoreFields(groups.fields).size > 0-»
 		«FOREACH getMoreFields(groups.fields) AS f-»
 		hasMoreMenu |= mPolicy.canCreate«f.entity.name.toFirstUpper()»();
 		«ENDFOREACH-»
 		if (hasMoreMenu) {
-			getMenuInflater().inflate(R.menu.«name.toLowerCase()»_more_menu, menu.addSubMenu(R.string.ig_menu_actions).setIcon(android.R.drawable.ic_menu_more));
+			getSupportMenuInflater().inflate(R.menu.«name.toLowerCase()»_more_menu, menu.addSubMenu(R.string.ig_menu_actions).setIcon(android.R.drawable.ic_menu_more));
 			«FOREACH getMoreFields(groups.fields) AS f-»
 			menu.findItem(R.id.menu_action_new_«f.name.toLowerCase()»).setVisible(mPolicy.canCreate«f.entity.name.toFirstUpper()»());
 			«ENDFOREACH-»
 		}
 		«ENDIF-»
-		return result;
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case MENU_EDIT_ID:
+			startActivity(new Intent(Intent.ACTION_EDIT, mUri));
+			return true;
+		case MENU_SYNC_ID:
+			SynchronizationService.actionCheck(this);
+			return true;
 		case R.id.ig_menu_delete:
 			showDialog(DIALOG_DELETE_ID);
 			return true;

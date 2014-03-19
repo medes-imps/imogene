@@ -4,12 +4,11 @@
 «FILE "/" + name.toLowerCase() + "/app/" + name.toFirstUpper() + "Listing.java"-»
 package org.imogene.android.«name.toLowerCase()-».app;
 
-import greendroid.app.GDExpandableListActivity;
-import greendroid.widget.ActionBar;
-import greendroid.widget.ActionBarItem;
-import greendroid.widget.NormalActionBarItem;
-
 import java.util.ArrayList;
+
+import com.actionbarsherlock.app.SherlockExpandableListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import org.imogene.android.app.GeneralSettings;
 import org.imogene.android.common.entity.ImogHelper;
@@ -29,14 +28,13 @@ import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
 import android.view.View;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 
-public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
+public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity {
 
-	private	static final int ACTIONBAR_SYNC_ID = 1;
+	private	static final int MENU_SYNC_ID = 1;
 	
 	private static final int DIALOG_EXIT_ID = 1;
 	
@@ -56,19 +54,12 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
 		}
 	};
 	
-	public «name.toFirstUpper()»Listing() {
-		super(ActionBar.Type.Empty);
-	}
-	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		fillData();
-
-		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
 	}
 	
 	@Override
@@ -84,23 +75,26 @@ public class «name.toFirstUpper()»Listing extends GDExpandableListActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.ig_menu_thema_listing, menu);
+		menu.add(Menu.NONE, MENU_SYNC_ID, Menu.NONE, R.string.ig_menu_sync)
+		.setIcon(R.drawable.ig_ic_title_sync)
+		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		getSupportMenuInflater().inflate(R.menu.ig_menu_thema_listing, menu);
 		«IF multilogin-»
 		menu.findItem(R.id.ig_menu_change_user).setVisible(true).setIntent(new Intent(this, MultiUserListing.class));
 		«ENDIF-»
 		menu.findItem(R.id.ig_menu_preferences).setIntent(new Intent(this, GeneralSettings.class));
-		return result;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
-	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case ACTIONBAR_SYNC_ID:
+		case MENU_SYNC_ID :
 			SynchronizationService.actionCheck(this);
 			return true;
-		default:
-			return super.onHandleActionBarItemClick(item, position);
+		default :
+			return super.onOptionsItemSelected(item);
 		}
 	}
 	

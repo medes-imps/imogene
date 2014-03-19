@@ -217,6 +217,11 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	}
 
 	@Override
+	public int getType(int columnIndex) {
+		return mCursors.get(current).cursor.getType(columnIndex);
+	}
+
+	@Override
 	public boolean getWantsAllOnMoveCalls() {
 		return mCursors.get(current).cursor.getWantsAllOnMoveCalls();
 	}

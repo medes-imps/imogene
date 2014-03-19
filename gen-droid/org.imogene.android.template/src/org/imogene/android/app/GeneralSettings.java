@@ -1,7 +1,5 @@
 package org.imogene.android.app;
 
-import greendroid.app.GDPreferenceActivity;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,7 +45,9 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.text.TextUtils;
 
-public class GeneralSettings extends GDPreferenceActivity implements OnPreferenceChangeListener,
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
+public class GeneralSettings extends SherlockPreferenceActivity implements OnPreferenceChangeListener,
 		OnPreferenceClickListener {
 
 	private static final int DIALOG_DOWNLOAD_ID = 1;

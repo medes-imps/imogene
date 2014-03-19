@@ -26,6 +26,7 @@
     <string name="ig_menu_mark_all_as_read">"Mark all as read"</string>
     <string name="ig_menu_iamlost">"I am lost"</string>
     <string name="ig_menu_change_user">"Change user"</string>
+    <string name="ig_menu_autozoom">"Autozoom"</string>
     <string name="ig_menu_map">"Map"</string>
     <string name="ig_menu_info">Info.</string>
     <string name="ig_menu_logo">Imogene Android</string>

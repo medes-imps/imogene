@@ -18,6 +18,7 @@ import org.imogene.android.common.model.FieldGroup;
 import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
+import org.imogene.android.«name.toLowerCase()».app.«name.toFirstUpper()»Listing;
 
 import android.content.Context;
 import android.net.Uri;
@@ -28,6 +29,11 @@ public class «name.toFirstUpper()»Helper extends ImogHelper {
 		if (sInstance == null) {
 			sInstance = new «name.toFirstUpper()»Helper();
 		}
+	}
+
+	@Override
+	public Class<?> getHomeActivityClass() {
+		return «name.toFirstUpper()»Listing.class;
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package org.imogene.android.app.setup;
 
-import greendroid.app.GDActivity;
-import greendroid.widget.ActionBar;
-
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
@@ -27,7 +24,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountSetupBasics extends GDActivity implements OnClickListener, TextWatcher {
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class AccountSetupBasics extends SherlockActivity implements OnClickListener, TextWatcher {
 
 	private static final int DIALOG_SNTPING_ID = 1;
 	private static final int DIALOG_SNTP_FAILED_ID = 2;
@@ -56,15 +55,11 @@ public class AccountSetupBasics extends GDActivity implements OnClickListener, T
 
 	private TaskManager<AccountSetupBasics> mTaskManager;
 
-	public AccountSetupBasics() {
-		super(ActionBar.Type.Empty);
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setActionBarContentView(R.layout.ig_account_setup_basics);
+		setContentView(R.layout.ig_account_setup_basics);
 
 		mPreferences = Preferences.getPreferences(this);
 

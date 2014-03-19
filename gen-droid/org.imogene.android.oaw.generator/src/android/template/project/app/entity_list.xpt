@@ -4,11 +4,6 @@
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "List.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
-import greendroid.app.GDListActivity;
-import greendroid.widget.ActionBar;
-import greendroid.widget.ActionBarItem;
-import greendroid.widget.NormalActionBarItem;
-
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -20,13 +15,15 @@ import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
@@ -46,25 +43,25 @@ import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()»List extends GDListActivity implements View.OnClickListener {
+public class «name.toFirstUpper()»List extends SherlockListActivity implements View.OnClickListener {
 
-	private static final int ACTIONBAR_ADD_ID = 1;
-	private static final int ACTIONBAR_SEARCH_ID = 2;
-	private static final int ACTIONBAR_SYNC_ID = 3;
 
 	// Extras keys
 	private static final String EXTRA_CURRENT_URI = "AbstractEntityListing_currentUri";
 
 	// Options menu ids
-	private static final int MENU_MARK_ALL_AS_READ_ID = Menu.FIRST + 1;
-	private static final int MENU_SORT_BY_MODIFIED_ID = Menu.FIRST + 2;
+	private static final int MENU_ADD_ID = Menu.FIRST + 1;
+	private static final int MENU_SEARCH_ID = Menu.FIRST + 2;
+	private static final int MENU_SYNC_ID = Menu.FIRST + 3;
+	private static final int MENU_MARK_ALL_AS_READ_ID = Menu.FIRST + 4;
+	private static final int MENU_SORT_BY_MODIFIED_ID = Menu.FIRST + 5;
 	
 	private static final int MENU_SORT_BY_GROUP_ID = 1;
 	«FOREACH getMainFields(this) AS field ITERATOR i-»
-	private static final int MENU_SORT_BY_«field.name.toUpperCase()-»_ID = Menu.FIRST + «i.counter1 + 4-»;
+	private static final int MENU_SORT_BY_«field.name.toUpperCase()-»_ID = Menu.FIRST + «i.counter1 + 7-»;
 	«ENDFOREACH-»
 	«FOREACH secondaryFields AS field ITERATOR i-»
-	private static final int MENU_SORT_BY_«field.name.toUpperCase()-»_ID = Menu.FIRST + «i.counter1 + getMainFields(this).size + 4-»;
+	private static final int MENU_SORT_BY_«field.name.toUpperCase()-»_ID = Menu.FIRST + «i.counter1 + getMainFields(this).size + 7-»;
 	«ENDFOREACH-»
 	
 	// Context menu ids
@@ -93,13 +90,11 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 
 	private Uri mCurrentUri;
 	
-	public «name.toFirstUpper()»List() {
-		super(ActionBar.Type.Empty);
-	}
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.ig_list_content);
 		
 		mPolicy = AccessPolicy.getPolicy(this);
 		
@@ -125,8 +120,6 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 
 		boolean isMultiple = isMultipleSelection();
 
-		ensureLayout();
-		
 		TextView empty = (TextView) findViewById(R.id.ig_emptyText);
 		empty.setText(R.string.ig_noEntityHelpText);
 		
@@ -157,20 +150,8 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 
 		registerForContextMenu(getListView());
 		
-		if (isActionBarEnabled()) {
-			if (mPolicy.canCreate«name.toFirstUpper()»()) {
-				addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-					.setDrawable(R.drawable.ig_ic_title_add), ACTIONBAR_ADD_ID);
-			}
-		
-			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_search), ACTIONBAR_SEARCH_ID);
-				
-			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
-		} else {
-			getGDActionBar().setVisibility(View.GONE);
-			findViewById(R.id.gd_action_bar_colorstrip).setVisibility(View.GONE);
+		if (!isActionBarEnabled()) {
+			getSupportActionBar().hide();
 		}
 	}
 	
@@ -184,11 +165,6 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	protected void onPause() {
 		super.onPause();
 		adjustMessageNotification(false);
-	}
-	
-	@Override
-	public int createLayout() {
-		return R.layout.ig_list_content_empty;
 	}
 	
 	protected boolean isMultipleSelection() {
@@ -258,37 +234,26 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	}
 	
 	@Override
-	public boolean onHandleActionBarItemClick(ActionBarItem item, int position) {
-		switch (item.getItemId()) {
-		case ACTIONBAR_ADD_ID:
-			boolean wizard = Preferences.getPreferences(this).isWizardEnabled();
-			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
-			intent.putExtras(getIntent());
-			intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
-			if (Intent.ACTION_PICK.equals(getIntent().getAction())) {
-				startActivityForResult(intent, ACTIVITY_INSERT);
-			} else {
-				startActivity(intent);
-			}
-			return true;
-		case ACTIONBAR_SEARCH_ID:
-			startSearch(null, false, null, false);
-			return true;
-		case ACTIONBAR_SYNC_ID:
-			SynchronizationService.actionCheck(this);
-			return true;
-		default:
-			return super.onHandleActionBarItemClick(item, position);
+	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+		if (mPolicy.canCreate«name.toFirstUpper()»()) {
+			menu.add(Menu.NONE, MENU_ADD_ID, Menu.NONE, R.string.ig_menu_add)
+			.setIcon(R.drawable.ig_ic_title_add)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		menu.add(Menu.NONE, MENU_SEARCH_ID, Menu.NONE, android.R.string.search_go)
+			.setIcon(R.drawable.ig_ic_title_search)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
+		menu.add(Menu.NONE, MENU_SYNC_ID, Menu.NONE, R.string.ig_menu_sync)
+			.setIcon(R.drawable.ig_ic_title_sync)
+			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		menu.add(Menu.NONE, MENU_MARK_ALL_AS_READ_ID, Menu.NONE,
 				R.string.ig_menu_mark_all_as_read)
 				.setIcon(R.drawable.ig_ic_menu_mark);
 
-		getMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
+		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
 		
 		SubMenu subMenu = menu.addSubMenu(R.string.ig_menu_sort_by);
 		subMenu.setIcon(android.R.drawable.ic_menu_sort_by_size);
@@ -303,7 +268,7 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if («name.toFirstUpper()».Columns.MODIFIED.equals(mSortKey))
@@ -312,10 +277,27 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 		«EXPAND onPrepareMenu FOREACH secondaryFields»
 		return super.onPrepareOptionsMenu(menu);
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case MENU_ADD_ID:
+			boolean wizard = Preferences.getPreferences(this).isWizardEnabled();
+			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
+			intent.putExtras(getIntent());
+			intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
+			if (Intent.ACTION_PICK.equals(getIntent().getAction())) {
+				startActivityForResult(intent, ACTIVITY_INSERT);
+			} else {
+				startActivity(intent);
+			}
+			return true;
+		case MENU_SEARCH_ID:
+			startSearch(null, false, null, false);
+			return true;
+		case MENU_SYNC_ID:
+			SynchronizationService.actionCheck(this);
+			return true;
 		case R.id.ig_menu_iamlost:
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
@@ -337,7 +319,7 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -364,7 +346,7 @@ public class «name.toFirstUpper()»List extends GDListActivity implements View.On
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		Uri uri = ContentUrisUtils.withAppendedId(«name.toFirstUpper()-».Columns.CONTENT_URI, mAdapter.getItemStringId(info.position));

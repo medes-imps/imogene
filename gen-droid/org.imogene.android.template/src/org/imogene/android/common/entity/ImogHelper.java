@@ -49,6 +49,14 @@ public abstract class ImogHelper {
 	}
 
 	/**
+	 * Return the class of the home Activity. The home Activity is the main entrance point of your application. This is
+	 * usually where the dashboard/general menu is displayed.
+	 * 
+	 * @return The Class of the home Activity
+	 */
+	public abstract Class<?> getHomeActivityClass();
+
+	/**
 	 * Obtain a {@link List} of {@link ImogBean} uris of the whole application.
 	 * 
 	 * @return The list of uris.

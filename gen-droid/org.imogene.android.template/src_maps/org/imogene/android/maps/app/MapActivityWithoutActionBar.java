@@ -20,10 +20,11 @@ import org.osmdroid.views.overlay.OverlayItem;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class MapActivityWithoutActionBar extends MapActivity {
 
@@ -66,8 +67,7 @@ public class MapActivityWithoutActionBar extends MapActivity {
 		mLoader.setOnOverlaysLoadedListener(mLoaderListener);
 
 		// hide the action bar
-		getGDActionBar().setVisibility(View.GONE);
-		findViewById(R.id.gd_action_bar_colorstrip).setVisibility(View.GONE);
+		getSupportActionBar().hide();
 	}
 
 	@Override

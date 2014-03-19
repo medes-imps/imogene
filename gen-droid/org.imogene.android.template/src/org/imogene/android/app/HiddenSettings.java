@@ -1,7 +1,5 @@
 package org.imogene.android.app;
 
-import greendroid.app.GDPreferenceActivity;
-
 import java.util.UUID;
 
 import org.imogene.android.common.entity.SyncHistory;
@@ -22,7 +20,9 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.text.TextUtils;
 
-public class HiddenSettings extends GDPreferenceActivity implements OnDialogCloseListener, OnPreferenceClickListener,
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
+public class HiddenSettings extends SherlockPreferenceActivity implements OnDialogCloseListener, OnPreferenceClickListener,
 		OnPreferenceChangeListener {
 
 	private BaseDialogPreference mDeleteDatabase;

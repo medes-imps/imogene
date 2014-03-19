@@ -1,8 +1,6 @@
 package org.imogene.android.app.setup;
 
-import greendroid.app.GDActivity;
-import greendroid.widget.ActionBar;
-
+import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
@@ -19,7 +17,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountSetupShortPassword extends GDActivity implements OnClickListener, TextWatcher {
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class AccountSetupShortPassword extends SherlockActivity implements OnClickListener, TextWatcher {
 
 	private static final int ERROR_DIALOG_ID = 1;
 
@@ -32,14 +32,10 @@ public class AccountSetupShortPassword extends GDActivity implements OnClickList
 		fromActivity.startActivity(i);
 	}
 
-	public AccountSetupShortPassword() {
-		super(ActionBar.Type.Empty);
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setActionBarContentView(R.layout.ig_account_setup_short_password);
+		setContentView(R.layout.ig_account_setup_short_password);
 
 		mShortpwView = (EditText) findViewById(R.id.ig_account_shortpw);
 		mShortpwConfirmView = (EditText) findViewById(R.id.ig_account_shotpw_confirm);
@@ -107,7 +103,7 @@ public class AccountSetupShortPassword extends GDActivity implements OnClickList
 		String shortpwConfirm = mShortpwConfirmView.getText().toString();
 		if (shortpw != null && shortpw.equals(shortpwConfirm)) {
 			Preferences.getPreferences(this).setShortPassword(shortpw);
-			Intent intent = new Intent(this, getGDApplication().getHomeActivityClass());
+			Intent intent = new Intent(this, ImogHelper.getInstance().getHomeActivityClass());
 			startActivity(intent);
 			finish();
 		} else {

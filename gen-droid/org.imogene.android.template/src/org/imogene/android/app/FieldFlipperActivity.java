@@ -1,8 +1,5 @@
 package org.imogene.android.app;
 
-import greendroid.app.GDActivity;
-import greendroid.widget.ActionBar;
-
 import org.imogene.android.template.R;
 import org.imogene.android.widget.field.FieldFlipper;
 import org.imogene.android.widget.field.ImogBeanWizardView;
@@ -10,17 +7,11 @@ import org.imogene.android.widget.field.ImogBeanWizardView.OnFinishClickListener
 
 import android.os.Bundle;
 
-public class FieldFlipperActivity extends GDActivity implements OnFinishClickListener {
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class FieldFlipperActivity extends SherlockActivity implements OnFinishClickListener {
 	
 	private ImogBeanWizardView mWizard;
-	
-	public FieldFlipperActivity() {
-		super();
-	}
-	
-	public FieldFlipperActivity(ActionBar.Type type) {
-		super(type);
-	}
 	
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -34,7 +25,7 @@ public class FieldFlipperActivity extends GDActivity implements OnFinishClickLis
 	
 	private void ensureWizard() {
 		if (mWizard == null) {
-			setActionBarContentView(R.layout.ig_wizard_content);
+			setContentView(R.layout.ig_wizard_content);
 			mWizard = (ImogBeanWizardView) findViewById(R.id.ig_wizard);
 			mWizard.setup();
 			mWizard.setOnFinishClickListener(this);
