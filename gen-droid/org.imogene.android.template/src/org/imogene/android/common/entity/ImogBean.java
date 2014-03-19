@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 public interface ImogBean {
-	
+
 	public static interface Columns extends BaseColumns {
 		public static final String MODIFIED = "modified";
 		public static final String UPLOADDATE = "uploadDate";
@@ -17,12 +17,12 @@ public interface ImogBean {
 		public static final String CREATEDBY = "createdBy";
 		public static final String FLAG_READ = "flagRead";
 		public static final String FLAG_SYNCHRONIZED = "flagSynchronized";
-		
+
 		public static final String SYNC_SYSTEM = "sync-system";
 	}
-	
+
 	public String getId();
-	
+
 	public void setId(String id);
 
 	public Date getModified();
@@ -56,10 +56,10 @@ public interface ImogBean {
 	public boolean getFlagSynchronized();
 
 	public void setFlagSynchronized(boolean isSynchronized);
-	
+
 	public void prepareForSave(Context context);
-		
+
 	public Uri saveOrUpdate(Context context);
-	
+
 	public void reset();
 }

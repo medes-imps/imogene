@@ -14,23 +14,23 @@ import android.view.View;
 public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityResultListener {
 
 	private int mRequestCode;
-	
+
 	public BinaryFieldEdit(Context context) {
 		super(context, R.layout.ig_field_edit_buttons);
 		init();
 	}
-	
+
 	public BinaryFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.ig_field_edit_buttons);
 		init();
 	}
-	
+
 	private void init() {
 		findViewById(R.id.ig_acquire).setOnClickListener(this);
 		findViewById(R.id.ig_delete).setOnClickListener(this);
 		findViewById(R.id.ig_view).setOnClickListener(this);
 	}
-	
+
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
@@ -38,23 +38,23 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 		findViewById(R.id.ig_delete).setVisibility(readOnly ? View.GONE : View.VISIBLE);
 		findViewById(R.id.ig_view).setVisibility(readOnly ? View.GONE : View.VISIBLE);
 	}
-	
+
 	@Override
 	public void onAttachedToHierarchy(FieldManager manager) {
 		super.onAttachedToHierarchy(manager);
 		manager.registerOnActivityResultListener(this);
 		mRequestCode = manager.getNextId();
 	}
-	
+
 	protected int displayId() {
 		return R.string.ig_bin_binary;
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		return getValue() != null ? getResources().getString(displayId()) : getEmptyText();
 	}
-	
+
 	@Override
 	protected void onChangeValue() {
 		super.onChangeValue();
@@ -69,7 +69,7 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 			findViewById(R.id.ig_view).setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		switch (v.getId()) {
@@ -84,27 +84,27 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 			break;
 		}
 	}
-	
+
 	protected void acquire(int requestCode) {
 		Intent acquire = new Intent(Intent.ACTION_GET_CONTENT);
 		onCreateIntent(acquire);
 		getFieldManager().getActivity().startActivityForResult(acquire, mRequestCode);
 	}
-	
+
 	protected void onCreateIntent(Intent acquire) {
 		acquire.addCategory(Intent.CATEGORY_OPENABLE);
 		acquire.setType("*/*");
 	}
-	
+
 	protected void delete() {
 		setValue(null);
 	}
-	
+
 	protected void view() {
 		Intent show = new Intent(Intent.ACTION_VIEW, getValue());
 		getContext().startActivity(show);
 	}
-	
+
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
@@ -113,5 +113,5 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 		}
 		return false;
 	}
-	
+
 }

@@ -6,7 +6,6 @@ import java.util.Date;
 import org.imogene.android.common.filter.DateFilter;
 import org.imogene.android.common.filter.DateFilter.DateOperator;
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -24,9 +23,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import fr.medes.android.util.FormatHelper;
 
-public class DateFilterPreference extends FilterPreference<DateFilter> implements OnClickListener, OnLongClickListener, OnItemSelectedListener,
-		OnDateSetListener {
+public class DateFilterPreference extends FilterPreference<DateFilter> implements OnClickListener, OnLongClickListener,
+		OnItemSelectedListener, OnDateSetListener {
 
 	private int mPosition = 0;
 	private Date mEquals;
@@ -66,7 +66,8 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 			break;
 		case BETWEEN:
 			if (a != null && b != null)
-				return getContext().getString(R.string.ig_filter_date_between, FormatHelper.displayDate(a), FormatHelper.displayDate(b));
+				return getContext().getString(R.string.ig_filter_date_between, FormatHelper.displayDate(a),
+						FormatHelper.displayDate(b));
 			break;
 		case EQUAL:
 			if (e != null)
@@ -239,15 +240,15 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 		Calendar cal = Calendar.getInstance();
 		if (time != null)
 			cal.setTime(time);
-		((DatePickerDialog) dialog).updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+		((DatePickerDialog) dialog).updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+				cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 	@Override
 	protected Parcelable onSaveInstanceState() {
 		final Parcelable superState = super.onSaveInstanceState();
 		/*
-		 * if (isPersistent()) { // No need to save instance state since it's
-		 * persistent return superState; }
+		 * if (isPersistent()) { // No need to save instance state since it's persistent return superState; }
 		 */
 		final SavedState myState = new SavedState(superState);
 		myState.position = mPosition;

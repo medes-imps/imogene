@@ -10,7 +10,7 @@ public class SoundFieldView extends BinaryFieldView {
 	public SoundFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public int getDisplayId() {
 		return R.string.ig_bin_audio;

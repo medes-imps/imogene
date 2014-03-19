@@ -2,11 +2,10 @@ package org.imogene.android.widget.field.view;
 
 import java.util.Date;
 
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.field.FieldPattern;
-
 import android.content.Context;
 import android.util.AttributeSet;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.field.FieldPattern;
 
 public class DateTimeFieldView extends DefaultEntityView<Date> {
 

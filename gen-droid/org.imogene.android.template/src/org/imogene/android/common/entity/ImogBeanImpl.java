@@ -7,14 +7,14 @@ import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.util.BeanKeyGenerator;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.ntp.NTPClock;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlOmitField;
+import org.imogene.android.util.NTPClock;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlOmitField;
 
 public abstract class ImogBeanImpl implements ImogBean {
 

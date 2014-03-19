@@ -1,7 +1,7 @@
 package org.imogene.android.preference.filter;
 
-import org.imogene.android.common.filter.NumberFilter;
 import org.imogene.android.common.filter.ClientFilter.Creator;
+import org.imogene.android.common.filter.NumberFilter;
 import org.imogene.android.common.filter.NumberFilter.NumberOperator;
 import org.imogene.android.template.R;
 
@@ -13,20 +13,21 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public abstract class NumberFilterPreference<U extends Number, T extends NumberFilter<U>> extends FilterPreference<T> implements OnItemSelectedListener {
+public abstract class NumberFilterPreference<U extends Number, T extends NumberFilter<U>> extends FilterPreference<T>
+		implements OnItemSelectedListener {
 
 	public NumberFilterPreference(Context context, AttributeSet attrs, Creator<T> creator) {
 		super(context, attrs, creator);
 	}
-	
+
 	private Spinner spinner;
 	private TextView equals;
 	private TextView infimum;
 	private TextView supremum;
 	private View interval;
-	
+
 	protected abstract U parseNumber(String str);
-	
+
 	@Override
 	public CharSequence getSummary() {
 		NumberFilter<U> filter = getFilter();
@@ -54,49 +55,49 @@ public abstract class NumberFilterPreference<U extends Number, T extends NumberF
 		}
 		return getContext().getString(android.R.string.unknownName);
 	}
-	
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-    	super.onDialogClosed(positiveResult);
-        if (positiveResult) {
-        	T filter = getFilter();
-        	filter.setNumberOperator(NumberOperator.UNDEF);
-        	filter.setEqual(null);
-        	filter.setInfimum(null);
-        	filter.setSupremum(null);
-        	switch (spinner.getSelectedItemPosition()) {
-        	case 1:
-        		U eq = parseNumber(equals.getText().toString());
-        		if (eq != null) {
-        			filter.setNumberOperator(NumberOperator.EQUAL);
-        			filter.setEqual(eq);
-        		}
-        		break;
-        	case 2:
-        		U inf = parseNumber(infimum.getText().toString());
-        		U sup = parseNumber(supremum.getText().toString());
-        		if (inf != null && sup != null) {
-        			filter.setNumberOperator(NumberOperator.BETWEEN);
-        			filter.setInfimum(inf);
-        			filter.setSupremum(sup);
-        		} else if (inf != null) {
-        			filter.setNumberOperator(NumberOperator.INFIMUM);
-        			filter.setInfimum(inf);
-        		} else if (sup != null) {
-        			filter.setNumberOperator(NumberOperator.SUPREMUM);
-        			filter.setSupremum(sup);
-        		}
-        		break;
-        	}
-        	persistFilter();
-        }
-    }
+
+	@Override
+	protected void onDialogClosed(boolean positiveResult) {
+		super.onDialogClosed(positiveResult);
+		if (positiveResult) {
+			T filter = getFilter();
+			filter.setNumberOperator(NumberOperator.UNDEF);
+			filter.setEqual(null);
+			filter.setInfimum(null);
+			filter.setSupremum(null);
+			switch (spinner.getSelectedItemPosition()) {
+			case 1:
+				U eq = parseNumber(equals.getText().toString());
+				if (eq != null) {
+					filter.setNumberOperator(NumberOperator.EQUAL);
+					filter.setEqual(eq);
+				}
+				break;
+			case 2:
+				U inf = parseNumber(infimum.getText().toString());
+				U sup = parseNumber(supremum.getText().toString());
+				if (inf != null && sup != null) {
+					filter.setNumberOperator(NumberOperator.BETWEEN);
+					filter.setInfimum(inf);
+					filter.setSupremum(sup);
+				} else if (inf != null) {
+					filter.setNumberOperator(NumberOperator.INFIMUM);
+					filter.setInfimum(inf);
+				} else if (sup != null) {
+					filter.setNumberOperator(NumberOperator.SUPREMUM);
+					filter.setSupremum(sup);
+				}
+				break;
+			}
+			persistFilter();
+		}
+	}
 
 	@Override
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
 		spinner = ((Spinner) view.findViewById(R.id.ig_spinner));
-		
+
 		equals = (TextView) view.findViewById(R.id.ig_equals);
 		infimum = (TextView) view.findViewById(R.id.ig_infimum);
 		supremum = (TextView) view.findViewById(R.id.ig_supremum);

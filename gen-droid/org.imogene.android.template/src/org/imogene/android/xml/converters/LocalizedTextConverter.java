@@ -9,13 +9,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
+import fr.medes.android.xml.converters.AbstractFieldConverter;
+
 public class LocalizedTextConverter extends AbstractFieldConverter {
-	
+
 	@Override
 	public boolean canConvert(Class<?> clazz) {
 		return clazz.equals(LocalizedText.class);
 	}
-	
+
 	@Override
 	public Object parse(XmlPullParser parser) throws XmlPullParserException, IOException {
 		String tag = parser.getName();
@@ -25,7 +27,8 @@ public class LocalizedTextConverter extends AbstractFieldConverter {
 				String language = parser.getName();
 				String value = parser.nextText();
 				try {
-					Method m = text.getClass().getMethod("set" + language.substring(0, 1).toUpperCase() + language.substring(1), String.class);
+					Method m = text.getClass().getMethod(
+							"set" + language.substring(0, 1).toUpperCase() + language.substring(1), String.class);
 					m.invoke(text, value);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -34,9 +37,10 @@ public class LocalizedTextConverter extends AbstractFieldConverter {
 		}
 		return text;
 	}
-	
+
 	@Override
-	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException,
+			IOException {
 		LocalizedText text = (LocalizedText) obj;
 		Map<String, String> values = text.getFieldAndValue();
 		for (String language : values.keySet()) {

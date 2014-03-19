@@ -1,12 +1,12 @@
 package org.imogene.android.widget.field.view;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.Arrays;
-import org.imogene.android.util.field.EnumHelper;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import fr.medes.android.util.Arrays;
+import fr.medes.android.util.field.EnumHelper;
 
 public class EnumSingleFieldView extends DefaultEntityView<Integer> {
 

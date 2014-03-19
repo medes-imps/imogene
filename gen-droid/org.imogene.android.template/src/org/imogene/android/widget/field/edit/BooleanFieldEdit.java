@@ -19,14 +19,14 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 	public BooleanFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.ig_field_default);
 	}
-	
+
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
 		setOnClickListener(readOnly ? null : this);
 		setOnLongClickListener(readOnly ? null : this);
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		final Boolean bool = getValue();
@@ -37,13 +37,13 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 			return getEmptyText();
 		}
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String value) {
 		final Boolean b = getValue();
 		return b != null ? b.booleanValue() == Boolean.parseBoolean(value) : false;
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		showDialog(null);
@@ -56,7 +56,7 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 		builder.setNeutralButton(android.R.string.cut, this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
-	
+
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
@@ -73,5 +73,5 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 			break;
 		}
 	}
-	
+
 }

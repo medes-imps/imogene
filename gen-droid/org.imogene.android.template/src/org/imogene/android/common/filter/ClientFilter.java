@@ -1,17 +1,17 @@
 package org.imogene.android.common.filter;
 
+import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
-import org.imogene.android.common.entity.ImogBean.Columns;
 import org.imogene.android.database.sqlite.ClientFilterCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.annotation.XmlAlias;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.annotation.XmlAlias;
 
 @XmlAlias("org.imogene.lib.common.filter.ClientFilter")
 public class ClientFilter extends ImogBeanImpl {
@@ -19,7 +19,7 @@ public class ClientFilter extends ImogBeanImpl {
 	public static interface Columns extends ImogBean.Columns {
 		public static final String TABLE_NAME = "clientfilter";
 		public static final String TYPE = "CLTFIL";
-		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 
 		public static final String USERID = "userId";
 		public static final String TERMINALID = "terminalId";

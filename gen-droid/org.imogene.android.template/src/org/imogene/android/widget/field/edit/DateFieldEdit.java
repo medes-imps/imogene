@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.field.FieldPattern;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -14,6 +12,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.DatePicker;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.field.FieldPattern;
 
 public class DateFieldEdit extends DatesFieldEdit implements OnDateSetListener {
 

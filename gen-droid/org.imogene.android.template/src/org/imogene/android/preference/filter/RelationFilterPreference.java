@@ -11,7 +11,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.imogene.android.common.filter.RelationFilter;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.ssl.SSLHttpClient;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -32,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import fr.medes.android.util.ssl.SSLHttpClient;
 
 public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 

@@ -16,23 +16,23 @@ public class LocalizedTextFieldView extends BaseFieldView<LocalizedText> {
 	private final ViewFlipper mViewFlipper;
 	private final View mLeftView;
 	private final View mRightView;
-	
+
 	public LocalizedTextFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.ig_field_view_localized);
 		setClickable(false);
 		mViewFlipper = (ViewFlipper) findViewById(R.id.ig_flipper);
 		mLeftView = findViewById(R.id.ig_left);
 		mRightView = findViewById(R.id.ig_right);
-    	mLeftView.setOnClickListener(this);
-    	mRightView.setOnClickListener(this);
+		mLeftView.setOnClickListener(this);
+		mRightView.setOnClickListener(this);
 	}
-	
+
 	@Override
 	public void setValue(LocalizedText value) {
 		super.setValue(value);
 		init();
 	}
-	
+
 	private void init() {
 		mViewFlipper.removeAllViews();
 
@@ -40,10 +40,10 @@ public class LocalizedTextFieldView extends BaseFieldView<LocalizedText> {
 		if (value == null) {
 			return;
 		}
-		
+
 		String[] locales = getResources().getStringArray(R.array.languages_iso);
 		String[] display = getResources().getStringArray(R.array.languages_display);
-		
+
 		int size = 0;
 		for (int i = 0; i < locales.length; i++) {
 			String localized = value.getValue(locales[i]);
@@ -56,33 +56,33 @@ public class LocalizedTextFieldView extends BaseFieldView<LocalizedText> {
 				size++;
 			}
 		}
-		
-        if (size > 1) {
-        	mLeftView.setVisibility(View.VISIBLE);
-        	mRightView.setVisibility(View.VISIBLE);
-        } else {
-        	mLeftView.setVisibility(View.GONE);
-        	mRightView.setVisibility(View.GONE);
-        }
+
+		if (size > 1) {
+			mLeftView.setVisibility(View.VISIBLE);
+			mRightView.setVisibility(View.VISIBLE);
+		} else {
+			mLeftView.setVisibility(View.GONE);
+			mRightView.setVisibility(View.GONE);
+		}
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		LocalizedText value = getValue();
 		return value != null ? value.isEmpty() : true;
 	}
-	
+
 	@Override
 	protected String getFieldDisplay() {
 		return null;
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String dependencyValue) {
 		LocalizedText value = getValue();
 		return value != null ? value.matches(dependencyValue) : false;
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		switch (v.getId()) {
@@ -94,5 +94,5 @@ public class LocalizedTextFieldView extends BaseFieldView<LocalizedText> {
 			break;
 		}
 	}
-	
+
 }

@@ -13,9 +13,6 @@ import org.imogene.android.common.model.FieldGroup;
 import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.maps.database.PreCache;
-import org.imogene.android.maps.database.sqlite.PreCacheCursor;
 import org.imogene.android.provider.ImogProvider;
 
 import android.content.ContentValues;
@@ -23,11 +20,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import fr.medes.android.database.sqlite.AmlOpenHelper;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.maps.database.PreCache;
+import fr.medes.android.maps.database.sqlite.PreCacheCursor;
 
-public abstract class ImogOpenHelper extends SQLiteOpenHelper {
+public abstract class ImogOpenHelper extends AmlOpenHelper {
 
 	protected static volatile ImogOpenHelper sInstance;
 
@@ -153,11 +153,8 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 			+ " real, " + PreCache.Columns.SOUTH + " real, " + PreCache.Columns.WEST + " real, "
 			+ PreCache.Columns.ZOOM_MIN + " integer, " + PreCache.Columns.ZOOM_MAX + " integer);";
 
-	private final Context mContext;
-
 	public ImogOpenHelper(Context context, String name, CursorFactory factory, int version) {
 		super(context, name, factory, version);
-		mContext = context;
 	}
 
 	@Override
@@ -311,6 +308,7 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 		}
 	}
 
+	@Override
 	public Cursor query(Uri uri) {
 		return queryBuilder(uri).query();
 	}
@@ -332,10 +330,6 @@ public abstract class ImogOpenHelper extends SQLiteOpenHelper {
 
 	public int delete(String tableName, String whereClause, String[] whereArgs) {
 		return getWritableDatabase().delete(tableName, whereClause, whereArgs);
-	}
-
-	public Context getContext() {
-		return mContext;
 	}
 
 	protected void upgrade(SQLiteDatabase db, String table, String column, String type) {

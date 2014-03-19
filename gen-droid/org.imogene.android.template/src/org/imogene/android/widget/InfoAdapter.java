@@ -5,26 +5,23 @@ import java.util.HashMap;
 
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.widget.SimpleAdapter;
+import fr.medes.android.util.FormatHelper;
 
 public class InfoAdapter extends SimpleAdapter {
-	
+
 	private static final String INFO_DESC = "infoDesc";
 	private static final String INFO_VALUE = "infoValue";
-	
+
 	public InfoAdapter(Context context, ImogBean entity) {
-		super(
-				context,
-				buildInfo(context, entity),
-				R.layout.ig_dialog_list_item,
-				new String[]{INFO_DESC, INFO_VALUE},
-				new int[]{R.id.ig_dialog_item_title, R.id.ig_dialog_item_message});
+		super(context, buildInfo(context, entity), R.layout.ig_dialog_list_item,
+				new String[] { INFO_DESC, INFO_VALUE }, new int[] { R.id.ig_dialog_item_title,
+						R.id.ig_dialog_item_message });
 	}
-	
+
 	private static ArrayList<HashMap<String, String>> buildInfo(final Context context, final ImogBean entity) {
 		Resources res = context.getResources();
 		final ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();

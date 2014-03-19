@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.imogene.android.widget.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<fr.medes.android.widget.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -38,4 +38,4 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
-</org.imogene.android.widget.CheckedLinearLayout>
+</fr.medes.android.widget.CheckedLinearLayout>

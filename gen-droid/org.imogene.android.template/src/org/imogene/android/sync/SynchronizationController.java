@@ -18,12 +18,10 @@ import org.imogene.android.common.entity.SyncHistory;
 import org.imogene.android.common.filter.ClientFilter;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
-import org.imogene.android.util.Logger;
-import org.imogene.android.util.database.DatabaseUtils;
-import org.imogene.android.util.ntp.NTPClock;
+import org.imogene.android.util.DatabaseUtils;
+import org.imogene.android.util.NTPClock;
 import org.imogene.android.xml.ImogXmlConverter;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -36,6 +34,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.util.Xml;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.util.Logger;
 
 public class SynchronizationController implements Runnable {
 

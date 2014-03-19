@@ -5,13 +5,13 @@ import java.util.List;
 import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.ImogEntityCursor;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlConverter;
 import org.imogene.android.xml.converters.CollectionConverter;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlConverter;
 
 public abstract class ImogEntityImpl extends ImogBeanImpl implements ImogEntity {
 

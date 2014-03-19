@@ -3,11 +3,7 @@ package org.imogene.android.widget.field.edit;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.imogene.android.app.DateTimePickerDialog;
-import org.imogene.android.app.DateTimePickerDialog.OnDateTimeSetListener;
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.field.FieldPattern;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,6 +11,10 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
+import fr.medes.android.app.DateTimePickerDialog;
+import fr.medes.android.app.DateTimePickerDialog.OnDateTimeSetListener;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.field.FieldPattern;
 
 public class DateTimeFieldEdit extends DatesFieldEdit implements OnDateTimeSetListener {
 

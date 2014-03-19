@@ -11,16 +11,16 @@ public class VideoFieldEdit extends BinaryFieldEdit {
 	public VideoFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	protected int displayId() {
 		return R.string.ig_bin_video;
 	}
-	
+
 	@Override
 	protected void onCreateIntent(Intent acquire) {
 		acquire.setType("video/*");
-		//acquire.addCategory(Categories.CATERGORY_VIDEO_CAPTURE);
+		// acquire.addCategory(Categories.CATERGORY_VIDEO_CAPTURE);
 	}
-	
+
 }

@@ -10,19 +10,19 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockActivity;
 
 public class FieldFlipperActivity extends SherlockActivity implements OnFinishClickListener {
-	
+
 	private ImogBeanWizardView mWizard;
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		
+
 		ensureWizard();
-		
+
 		final int displayed = savedInstanceState.getInt("displayedChild");
 		mWizard.getFieldFlipper().setDisplayedChild(displayed);
 	}
-	
+
 	private void ensureWizard() {
 		if (mWizard == null) {
 			setContentView(R.layout.ig_wizard_content);
@@ -31,20 +31,19 @@ public class FieldFlipperActivity extends SherlockActivity implements OnFinishCl
 			mWizard.setOnFinishClickListener(this);
 		}
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		final int displayed = mWizard.getFieldFlipper().getDisplayedChild();
 		outState.putInt("displayedChild", displayed);
 	}
-	
-	
+
 	public ImogBeanWizardView getImogBeanWizardView() {
 		ensureWizard();
 		return mWizard;
 	}
-	
+
 	public FieldFlipper getFieldFlipper() {
 		ensureWizard();
 		return mWizard.getFieldFlipper();
@@ -52,7 +51,7 @@ public class FieldFlipperActivity extends SherlockActivity implements OnFinishCl
 
 	@Override
 	public void onFinishClick() {
-		
+
 	}
-	
+
 }

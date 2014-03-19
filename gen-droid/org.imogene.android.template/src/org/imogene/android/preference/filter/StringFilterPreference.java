@@ -29,14 +29,11 @@ public class StringFilterPreference extends FilterPreference<StringFilter> imple
 		StringOperator operator = filter.getStringOperator();
 		switch (operator) {
 		case CONTAINS:
-			return getContext().getString(R.string.ig_filter_string_contains,
-					filter.getFieldValue());
+			return getContext().getString(R.string.ig_filter_string_contains, filter.getFieldValue());
 		case EQUAL:
-			return getContext().getString(R.string.ig_filter_string_equal,
-					filter.getFieldValue());
+			return getContext().getString(R.string.ig_filter_string_equal, filter.getFieldValue());
 		case STARTWITH:
-			return getContext().getString(R.string.ig_filter_string_startwith,
-					filter.getFieldValue());
+			return getContext().getString(R.string.ig_filter_string_startwith, filter.getFieldValue());
 		}
 		return getContext().getString(android.R.string.unknownName);
 	}

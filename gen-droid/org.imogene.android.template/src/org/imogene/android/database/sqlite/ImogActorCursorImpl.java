@@ -13,28 +13,25 @@ import android.database.sqlite.SQLiteQuery;
 import android.net.Uri;
 
 public abstract class ImogActorCursorImpl extends ImogEntityCursorImpl implements ImogActorCursor {
-	
-	public ImogActorCursorImpl(SQLiteDatabase db, SQLiteCursorDriver driver,
-			String editTable, SQLiteQuery query) {
+
+	public ImogActorCursorImpl(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
 	}
-	
+
 	@Override
 	public final String getLogin() {
 		return getString(ImogActor.Columns.LOGIN);
 	}
-	
+
 	@Override
 	public final byte[] getPassword() {
 		return getBlob(ImogActor.Columns.PASSWORD);
 	}
-	
+
 	@Override
 	public final List<Uri> getProfiles() {
-		return getEntities(Profile.Columns.CONTENT_URI,
-				Profile.Columns.TABLE_NAME,
-				ImogActor.Columns.TABLE_ACTOR_PROFILES,
-				ImogActor.Columns.TABLE_NAME, Profile.Columns.TABLE_NAME);
+		return getEntities(Profile.Columns.CONTENT_URI, Profile.Columns.TABLE_NAME,
+				ImogActor.Columns.TABLE_ACTOR_PROFILES, ImogActor.Columns.TABLE_NAME, Profile.Columns.TABLE_NAME);
 	}
 
 	@Override

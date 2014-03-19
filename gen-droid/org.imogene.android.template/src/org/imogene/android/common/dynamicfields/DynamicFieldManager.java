@@ -13,14 +13,8 @@ import org.imogene.android.common.binary.BinaryFile;
 import org.imogene.android.common.entity.ImogEntity;
 import org.imogene.android.database.sqlite.DynamicFieldTemplateCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.database.sqlite.stmt.Where;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.Arrays;
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.field.EnumHelper;
 import org.imogene.android.widget.field.BaseField;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.edit.BarcodeFieldEdit;
@@ -52,6 +46,12 @@ import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.view.ViewGroup;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.database.sqlite.stmt.Where;
+import fr.medes.android.util.Arrays;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.util.field.EnumHelper;
 
 public class DynamicFieldManager implements OnValueChangeListener {
 

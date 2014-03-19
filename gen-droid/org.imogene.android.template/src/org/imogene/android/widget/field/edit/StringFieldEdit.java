@@ -9,12 +9,12 @@ import android.text.InputType;
 import android.util.AttributeSet;
 
 public abstract class StringFieldEdit<T> extends BaseFieldEdit<T> {
-	
+
 	private String[] mRegexs;
 	private int[] mRegexDisplayIds;
-	
+
 	private int mStringType;
-	
+
 	public StringFieldEdit(Context context, int layoutId) {
 		super(context, layoutId);
 	}
@@ -25,7 +25,7 @@ public abstract class StringFieldEdit<T> extends BaseFieldEdit<T> {
 		setStringType(a.getInt(R.styleable.StringFieldEdit_igStringType, InputType.TYPE_NULL));
 		a.recycle();
 	}
-	
+
 	@Override
 	public ErrorEntry getErrorEntry(int tag) {
 		ErrorEntry entry = super.getErrorEntry(tag);
@@ -36,23 +36,23 @@ public abstract class StringFieldEdit<T> extends BaseFieldEdit<T> {
 		}
 		return entry;
 	}
-	
+
 	public void setStringType(int stringType) {
 		mStringType = stringType;
 	}
-	
+
 	public int getStringType() {
 		return mStringType;
 	}
-	
+
 	public void setRegexs(String[] regexs) {
 		mRegexs = regexs;
 	}
-	
+
 	public String[] getRegexs() {
 		return mRegexs;
 	}
-	
+
 	public void setRegexDisplayIds(int[] regexDisplayIds) {
 		mRegexDisplayIds = regexDisplayIds;
 	}

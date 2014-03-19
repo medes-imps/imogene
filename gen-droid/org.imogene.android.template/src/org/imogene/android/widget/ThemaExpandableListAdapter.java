@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper.EntityInfo;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.template.R;
 
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 
 public final class ThemaExpandableListAdapter extends BaseExpandableListAdapter {
 

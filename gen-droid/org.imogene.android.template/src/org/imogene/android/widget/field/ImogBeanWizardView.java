@@ -26,7 +26,7 @@ public class ImogBeanWizardView extends RelativeLayout implements OnClickListene
 	private View mNext;
 	private View mPrevious;
 	private View mFinish;
-	
+
 	private TextView mConstraints;
 
 	public ImogBeanWizardView(Context context, AttributeSet attrs) {
@@ -40,7 +40,7 @@ public class ImogBeanWizardView extends RelativeLayout implements OnClickListene
 		mNext = findViewById(R.id.ig_next_field);
 		mPrevious = findViewById(R.id.ig_previous_field);
 		mFinish = findViewById(R.id.ig_finish);
-		
+
 		mConstraints = (TextView) findViewById(R.id.ig_constraints);
 
 		mNext.setOnClickListener(this);

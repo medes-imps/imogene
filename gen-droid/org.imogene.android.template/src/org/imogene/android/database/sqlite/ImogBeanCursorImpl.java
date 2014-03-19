@@ -5,12 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.imogene.android.Constants;
 import org.imogene.android.common.entity.GpsLocation;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.database.ImogBeanCursor;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.util.content.ContentUrisUtils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,6 +19,9 @@ import android.database.sqlite.SQLiteQuery;
 import android.location.Location;
 import android.net.Uri;
 import android.text.TextUtils;
+import fr.medes.android.database.sqlite.BaseCursor;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.util.content.ContentUrisUtils;
 
 public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanCursor {
 
@@ -91,7 +93,8 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 			builder.where().idEq(id).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 			long count = builder.queryForLong();
 			if (count == 1) {
-				return ContentUrisUtils.withAppendedId(ContentUrisUtils.buildUriForFragment(table), id);
+				return ContentUrisUtils.withAppendedId(
+						ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, table), id);
 			}
 		}
 		return null;
@@ -149,14 +152,15 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 		ArrayList<Uri> result = null;
 
 		ImogOpenHelper helper = ImogOpenHelper.getHelper();
-		
+
 		QueryBuilder subQueryBuilder = helper.queryBuilder(relTable);
 		subQueryBuilder.selectColumns(toKey);
 		subQueryBuilder.where().eq(fromKey, getId());
-		
+
 		QueryBuilder builder = helper.queryBuilder(table);
-		builder.selectColumns(new String[]{ImogBean.Columns._ID});
-		builder.where().in(ImogBean.Columns._ID, subQueryBuilder).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+		builder.selectColumns(new String[] { ImogBean.Columns._ID });
+		builder.where().in(ImogBean.Columns._ID, subQueryBuilder).and()
+				.ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 
 		Cursor c = builder.query();
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {

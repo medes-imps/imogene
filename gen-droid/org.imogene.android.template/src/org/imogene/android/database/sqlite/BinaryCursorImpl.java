@@ -16,20 +16,17 @@ import android.net.Uri;
 
 public class BinaryCursorImpl extends ImogBeanCursorImpl implements BinaryCursor {
 
-	public BinaryCursorImpl(SQLiteDatabase db, SQLiteCursorDriver driver,
-			String editTable, SQLiteQuery query) {
+	public BinaryCursorImpl(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
 	}
 
 	public static class Factory implements CursorFactory {
 		@Override
-		public Cursor newCursor(SQLiteDatabase db,
-				SQLiteCursorDriver masterQuery, String editTable,
-				SQLiteQuery query) {
+		public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery, String editTable, SQLiteQuery query) {
 			return new BinaryCursorImpl(db, masterQuery, editTable, query);
 		}
 	}
-	
+
 	@Override
 	public BinaryFile newBean() {
 		return new BinaryFile(this);

@@ -16,28 +16,30 @@ import fr.medes.android.widget.QuickActionWidget.OnQuickActionClickListener;
 public class AddressFieldView extends BaseFieldView<String> implements OnQuickActionClickListener {
 
 	private QuickActionBar mBar;
-	
+
 	public AddressFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.ig_field_default);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.ic_dialog_map);
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		if (mBar == null) {
 			final Context context = getContext();
-			mBar = new QuickActionBar(context) {{
-				addQuickAction(new QuickAction(context, R.drawable.maps_navto, R.string.maps_navto));
-				addQuickAction(new QuickAction(context, R.drawable.maps_map, R.string.maps_show_on_map));
-				
-				setOnQuickActionClickListener(AddressFieldView.this);
-			}};
+			mBar = new QuickActionBar(context) {
+				{
+					addQuickAction(new QuickAction(context, R.drawable.maps_navto, R.string.maps_navto));
+					addQuickAction(new QuickAction(context, R.drawable.maps_map, R.string.maps_show_on_map));
+
+					setOnQuickActionClickListener(AddressFieldView.this);
+				}
+			};
 		}
-		
+
 		mBar.show(this);
 	}
-	
+
 	@Override
 	public void onQuickActionClicked(QuickActionWidget widget, int position) {
 		switch (position) {
@@ -53,12 +55,12 @@ public class AddressFieldView extends BaseFieldView<String> implements OnQuickAc
 			break;
 		}
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		return TextUtils.isEmpty(getValue());
 	}
-	
+
 	@Override
 	protected String getFieldDisplay() {
 		return getValue();

@@ -11,12 +11,12 @@ public class SoundFieldEdit extends BinaryFieldEdit {
 	public SoundFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	protected int displayId() {
 		return R.string.ig_bin_audio;
 	}
-	
+
 	@Override
 	protected void onCreateIntent(Intent acquire) {
 		acquire.setType("audio/*");

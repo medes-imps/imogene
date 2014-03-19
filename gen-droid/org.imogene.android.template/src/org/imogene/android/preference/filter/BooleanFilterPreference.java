@@ -16,7 +16,7 @@ public class BooleanFilterPreference extends FilterPreference<BooleanFilter> {
 	public BooleanFilterPreference(Context context, AttributeSet attrs) {
 		super(context, attrs, BooleanFilter.FILTER_CREATOR);
 	}
-	
+
 	@Override
 	public CharSequence getSummary() {
 		Boolean value = getFilter().getValue();
@@ -26,12 +26,13 @@ public class BooleanFilterPreference extends FilterPreference<BooleanFilter> {
 		}
 		return getContext().getString(android.R.string.unknownName);
 	}
-	
+
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
 		super.onPrepareDialogBuilder(builder);
 		Boolean value = getFilter().getValue();
-		builder.setSingleChoiceItems(R.array.ig_select_yes_no, value != null ? (value.booleanValue() ? 0 : 1) : -1, null);
+		builder.setSingleChoiceItems(R.array.ig_select_yes_no, value != null ? (value.booleanValue() ? 0 : 1) : -1,
+				null);
 		builder.setNeutralButton(android.R.string.cut, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -41,7 +42,7 @@ public class BooleanFilterPreference extends FilterPreference<BooleanFilter> {
 			}
 		});
 	}
-	
+
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		super.onClick(dialog, which);
@@ -51,5 +52,5 @@ public class BooleanFilterPreference extends FilterPreference<BooleanFilter> {
 			persistFilter();
 		}
 	}
-	
+
 }

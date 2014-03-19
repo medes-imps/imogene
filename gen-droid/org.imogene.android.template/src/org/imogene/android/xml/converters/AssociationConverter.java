@@ -3,8 +3,6 @@ package org.imogene.android.xml.converters;
 import java.io.IOException;
 
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.mapper.Mapper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -14,6 +12,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.converters.AbstractFieldConverter;
+import fr.medes.android.xml.mapper.Mapper;
 
 public class AssociationConverter extends AbstractFieldConverter {
 
@@ -24,7 +25,7 @@ public class AssociationConverter extends AbstractFieldConverter {
 		this.context = context;
 		this.mapper = mapper;
 	}
-	
+
 	@Override
 	public boolean canConvert(Class<?> clazz) {
 		return clazz.equals(Uri.class);
@@ -44,7 +45,8 @@ public class AssociationConverter extends AbstractFieldConverter {
 		String id = parser.getAttributeValue(null, "id");
 
 		ContentResolver res = context.getContentResolver();
-		Cursor c = res.query(uri, new String[] { ImogBean.Columns._ID }, ImogBean.Columns._ID + "='" + id + "'", null, null);
+		Cursor c = res.query(uri, new String[] { ImogBean.Columns._ID }, ImogBean.Columns._ID + "='" + id + "'", null,
+				null);
 		if (c.getCount() != 1) {
 			c.close();
 			ContentValues values = new ContentValues();
@@ -60,7 +62,8 @@ public class AssociationConverter extends AbstractFieldConverter {
 	}
 
 	@Override
-	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException,
+			IOException {
 		Uri uri = (Uri) obj;
 		String packageName = mapper.serializeUri(uri);
 		serializer.startTag(null, packageName);

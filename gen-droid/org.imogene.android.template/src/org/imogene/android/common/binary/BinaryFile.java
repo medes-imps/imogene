@@ -8,11 +8,7 @@ import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.BinaryCursor;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.util.BeanKeyGenerator;
-import org.imogene.android.util.file.FileUtils;
-import org.imogene.android.util.file.MimeType;
-import org.imogene.android.util.ntp.NTPClock;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlConverter;
+import org.imogene.android.util.NTPClock;
 import org.imogene.android.xml.converters.ContentConverter;
 
 import android.content.ContentResolver;
@@ -20,6 +16,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import fr.medes.android.util.file.FileUtils;
+import fr.medes.android.util.file.MimeType;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlConverter;
 
 @XmlAlias("org.imogene.lib.common.binary.file.BinaryFile")
 public final class BinaryFile extends ImogBeanImpl implements Binary {

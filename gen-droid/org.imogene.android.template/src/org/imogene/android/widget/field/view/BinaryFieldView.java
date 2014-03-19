@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class BinaryFieldView extends BaseFieldView<Uri> {
-	
+
 	public BinaryFieldView(Context context) {
 		super(context, R.layout.ig_field_default);
 		init();
@@ -19,7 +19,7 @@ public class BinaryFieldView extends BaseFieldView<Uri> {
 		super(context, attrs, R.layout.ig_field_default);
 		init();
 	}
-	
+
 	private void init() {
 		setOnClickListener(this);
 	}
@@ -31,18 +31,17 @@ public class BinaryFieldView extends BaseFieldView<Uri> {
 			getContext().startActivity(intent);
 		}
 	}
-	
+
 	protected int getDisplayId() {
 		return R.string.ig_bin_binary;
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		if (getValue() != null) {
-			return getResources().getString(getDisplayId());			
+			return getResources().getString(getDisplayId());
 		}
 		return super.getFieldDisplay();
 	}
-	
 
 }

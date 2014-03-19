@@ -1,9 +1,8 @@
 package org.imogene.android.widget.field.view;
 
-import org.imogene.android.util.field.FieldPattern;
-
 import android.content.Context;
 import android.util.AttributeSet;
+import fr.medes.android.util.field.FieldPattern;
 
 public class IntegerFieldView extends NumberFieldView<Integer> {
 

@@ -1,8 +1,6 @@
 package org.imogene.android.widget.field.edit;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.field.FieldPattern;
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 
 import android.content.Context;
@@ -10,9 +8,11 @@ import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.AttributeSet;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.field.FieldPattern;
 
 public class FloatFieldEdit extends NumberFieldEdit<Float> {
-	
+
 	public FloatFieldEdit(Context context) {
 		super(context, R.layout.ig_field_edit_numeric);
 		setFocusable(false);
@@ -32,15 +32,14 @@ public class FloatFieldEdit extends NumberFieldEdit<Float> {
 			setMax(null);
 		}
 		a.recycle();
-		setFocusable(false);		
+		setFocusable(false);
 	}
-	
+
 	@Override
 	protected int getInputType() {
-		return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
-				| InputType.TYPE_NUMBER_FLAG_SIGNED;
+		return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED;
 	}
-	
+
 	@Override
 	public boolean isValid() {
 		final Float value = getValue();
@@ -57,7 +56,7 @@ public class FloatFieldEdit extends NumberFieldEdit<Float> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public ErrorEntry getErrorEntry(int tag) {
 		ErrorEntry entry = super.getErrorEntry(tag);
@@ -71,7 +70,7 @@ public class FloatFieldEdit extends NumberFieldEdit<Float> {
 		}
 		return entry;
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String value) {
 		final Float f = getValue();

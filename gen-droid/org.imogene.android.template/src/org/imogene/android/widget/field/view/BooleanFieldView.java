@@ -10,11 +10,11 @@ public class BooleanFieldView extends DefaultEntityView<Boolean> {
 	public BooleanFieldView(Context context) {
 		super(context);
 	}
-	
+
 	public BooleanFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		final Boolean bool = getValue();
@@ -24,7 +24,7 @@ public class BooleanFieldView extends DefaultEntityView<Boolean> {
 		}
 		return super.getFieldDisplay();
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String value) {
 		final Boolean b = getValue();

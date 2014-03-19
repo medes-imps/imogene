@@ -1,10 +1,7 @@
 package org.imogene.android.widget.field.view;
 
-import org.imogene.android.maps.MapsConstants;
-import org.imogene.android.maps.app.LocationViewer;
 import org.imogene.android.radar.app.RadarActivity;
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,15 +9,18 @@ import android.location.Location;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.maps.MapsConstants;
+import fr.medes.android.maps.app.LocationViewer;
+import fr.medes.android.util.FormatHelper;
 import fr.medes.android.widget.QuickAction;
 import fr.medes.android.widget.QuickActionBar;
 import fr.medes.android.widget.QuickActionWidget;
 import fr.medes.android.widget.QuickActionWidget.OnQuickActionClickListener;
 
 public class GeoFieldView extends BaseFieldView<Location> implements OnQuickActionClickListener {
-	
+
 	private QuickActionBar mBar;
-	
+
 	public GeoFieldView(Context context) {
 		super(context, R.layout.ig_field_default);
 		init();
@@ -30,28 +30,30 @@ public class GeoFieldView extends BaseFieldView<Location> implements OnQuickActi
 		super(context, attrs, R.layout.ig_field_default);
 		init();
 	}
-	
+
 	private void init() {
 		setOnClickListener(this);
 		setIconId(android.R.drawable.ic_dialog_map);
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		if (mBar == null) {
 			final Context context = getContext();
-			mBar = new QuickActionBar(context) {{
-				addQuickAction(new QuickAction(context, R.drawable.maps_navto, R.string.maps_navto));
-				addQuickAction(new QuickAction(context, R.drawable.maps_map, R.string.maps_show_on_map));
-				addQuickAction(new QuickAction(context, R.drawable.maps_radar, R.string.maps_navto_radar));
-				
-				setOnQuickActionClickListener(GeoFieldView.this);
-			}};
+			mBar = new QuickActionBar(context) {
+				{
+					addQuickAction(new QuickAction(context, R.drawable.maps_navto, R.string.maps_navto));
+					addQuickAction(new QuickAction(context, R.drawable.maps_map, R.string.maps_show_on_map));
+					addQuickAction(new QuickAction(context, R.drawable.maps_radar, R.string.maps_navto_radar));
+
+					setOnQuickActionClickListener(GeoFieldView.this);
+				}
+			};
 		}
-		
+
 		mBar.show(this);
 	}
-	
+
 	@Override
 	public void onQuickActionClicked(QuickActionWidget widget, int position) {
 		Location location = getValue();
@@ -76,7 +78,7 @@ public class GeoFieldView extends BaseFieldView<Location> implements OnQuickActi
 			break;
 		}
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		final Location location = getValue();

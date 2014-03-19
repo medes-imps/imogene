@@ -9,6 +9,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
+import fr.medes.android.xml.converters.Converter;
+import fr.medes.android.xml.converters.ConverterLookup;
+
 public class BinaryConverter implements Converter {
 
 	private ConverterLookup lookup;
@@ -31,8 +34,8 @@ public class BinaryConverter implements Converter {
 	}
 
 	@Override
-	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException,
-			IllegalStateException, IOException {
+	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException,
+			IOException {
 		Binary binary = (Binary) obj;
 
 		// id

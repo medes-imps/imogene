@@ -5,9 +5,7 @@ import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.template.R;
-import org.imogene.android.util.ntp.NTPClock;
-import org.imogene.android.util.os.BaseAsyncTask;
-import org.imogene.android.util.os.TaskManager;
+import org.imogene.android.util.NTPClock;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockActivity;
+
+import fr.medes.android.os.BaseAsyncTask;
 
 public class AccountSetupBasics extends SherlockActivity implements OnClickListener, TextWatcher {
 

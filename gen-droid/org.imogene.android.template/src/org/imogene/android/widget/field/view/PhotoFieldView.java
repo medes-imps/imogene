@@ -6,7 +6,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 public class PhotoFieldView extends BinaryFieldView {
-	
+
 	public PhotoFieldView(Context context) {
 		super(context);
 	}
@@ -14,7 +14,7 @@ public class PhotoFieldView extends BinaryFieldView {
 	public PhotoFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public int getDisplayId() {
 		return R.string.ig_bin_photo;

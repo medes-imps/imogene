@@ -1,16 +1,16 @@
 package org.imogene.android.common.entity;
 
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.provider.BaseColumns;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 
 public class GpsLocation extends Location {
-	
+
 	public static class Columns implements BaseColumns {
 		public static final String TABLE_NAME = "gpslocation";
 
@@ -27,10 +27,10 @@ public class GpsLocation extends Location {
 		public static final String HASBEARING = "hasbearing";
 		public static final String HASSPEED = "hasspeed";
 	}
-	
+
 	public static GpsLocation getLocation(Context context, long _id) {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(Columns.TABLE_NAME);
-		builder.where().eq(Columns._ID,_id);
+		builder.where().eq(Columns._ID, _id);
 		Cursor c = builder.query();
 		GpsLocation result = null;
 		if (c.moveToFirst()) {
@@ -39,23 +39,24 @@ public class GpsLocation extends Location {
 		c.close();
 		return result;
 	}
-	
+
 	public static long saveLocation(Context context, Location location) {
-		if (location == null) return -1;
-		
+		if (location == null)
+			return -1;
+
 		if (location instanceof GpsLocation) {
 			return ((GpsLocation) location).saveOrUpdate(context);
 		} else {
 			return new GpsLocation(location).saveOrUpdate(context);
 		}
 	}
-	
+
 	private long _id = -1;
 
 	public GpsLocation(Location l) {
 		super(l);
 	}
-	
+
 	protected GpsLocation(Cursor c) {
 		super("cursor");
 		_id = c.getLong(c.getColumnIndexOrThrow(Columns._ID));
@@ -68,7 +69,7 @@ public class GpsLocation extends Location {
 		setSpeed(c.getFloat(c.getColumnIndexOrThrow(Columns.SPEED)));
 		setTime(c.getLong(c.getColumnIndexOrThrow(Columns.TIME)));
 	}
-	
+
 	public long saveOrUpdate(Context context) {
 		ContentValues values = new ContentValues();
 		values.put(Columns.ACCURACY, getAccuracy());

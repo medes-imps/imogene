@@ -8,9 +8,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.imogene.android.app.MyProgressDialog.Formatter;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.maps.MapsConstants;
 import org.imogene.android.maps.database.PreCache;
 import org.imogene.android.maps.database.sqlite.PreCacheCursor;
@@ -19,11 +17,6 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.push.PushService;
 import org.imogene.android.sync.SynchronizationService;
 import org.imogene.android.template.R;
-import org.imogene.android.update.MarketApp;
-import org.imogene.android.util.file.FileUtils;
-import org.imogene.android.util.os.BaseAsyncTask;
-import org.imogene.android.util.os.Locker;
-import org.imogene.android.util.os.TaskManager;
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 
 import android.app.Dialog;
@@ -46,6 +39,14 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.text.TextUtils;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
+import fr.medes.android.app.MyProgressDialog;
+import fr.medes.android.app.MyProgressDialog.Formatter;
+import fr.medes.android.app.WakefulIntentService;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.os.BaseAsyncTask;
+import fr.medes.android.update.MarketApp;
+import fr.medes.android.util.file.FileUtils;
 
 public class GeneralSettings extends SherlockPreferenceActivity implements OnPreferenceChangeListener,
 		OnPreferenceClickListener {

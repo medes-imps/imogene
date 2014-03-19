@@ -9,10 +9,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import org.imogene.android.Constants.Paths;
-import org.imogene.android.media.SingleMediaScanner;
-import org.imogene.android.media.SingleMediaScanner.SingleMediaListener;
 import org.imogene.android.template.R;
-import org.imogene.android.util.file.FileUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,6 +17,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import fr.medes.android.media.SingleMediaScanner;
+import fr.medes.android.media.SingleMediaScanner.SingleMediaListener;
+import fr.medes.android.util.file.FileUtils;
 
 public class VideoCapture extends Activity implements SingleMediaListener {
 

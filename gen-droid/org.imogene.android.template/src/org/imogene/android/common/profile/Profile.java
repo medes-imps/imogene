@@ -3,14 +3,11 @@ package org.imogene.android.common.profile;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.ProfileCursor;
-import org.imogene.android.util.Tools;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlConverter;
 import org.imogene.android.xml.converters.CollectionConverter;
 
 import android.content.ContentValues;
@@ -19,6 +16,10 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import fr.medes.android.util.Tools;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlConverter;
 
 @XmlAlias("org.imogene.lib.common.profile.Profile")
 public class Profile extends ImogBeanImpl {
@@ -27,7 +28,7 @@ public class Profile extends ImogBeanImpl {
 		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor("black"));
 		public static final String TABLE_NAME = "profile";
 		public static final String BEAN_TYPE = "PRO";
-		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 
 		public static final String NAME = "name";
 		public static final String ENTITYPROFILES = "entityProfiles";

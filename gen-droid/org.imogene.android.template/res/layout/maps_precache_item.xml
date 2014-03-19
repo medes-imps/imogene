@@ -35,7 +35,7 @@
         android:layout_height="fill_parent"
         android:background="?android:attr/listDivider" />
 
-    <org.imogene.android.view.DontPressWithParentImageView
+    <fr.medes.android.view.DontPressWithParentImageView
         android:id="@android:id/icon"
         android:layout_width="?android:attr/listPreferredItemHeight"
         android:layout_height="fill_parent"

@@ -11,20 +11,17 @@ import android.database.sqlite.SQLiteQuery;
 
 public class ClientFilterCursor extends ImogBeanCursorImpl {
 
-	public ClientFilterCursor(SQLiteDatabase db, SQLiteCursorDriver driver,
-			String editTable, SQLiteQuery query) {
+	public ClientFilterCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
 	}
 
 	public static class Factory implements CursorFactory {
 		@Override
-		public Cursor newCursor(SQLiteDatabase db,
-				SQLiteCursorDriver masterQuery, String editTable,
-				SQLiteQuery query) {
+		public Cursor newCursor(SQLiteDatabase db, SQLiteCursorDriver masterQuery, String editTable, SQLiteQuery query) {
 			return new ClientFilterCursor(db, masterQuery, editTable, query);
 		}
 	}
-	
+
 	@Override
 	public ClientFilter newBean() {
 		return new ClientFilter(this);
@@ -33,24 +30,31 @@ public class ClientFilterCursor extends ImogBeanCursorImpl {
 	public final String getUserId() {
 		return getString(ClientFilter.Columns.USERID);
 	}
+
 	public final String getTerminalId() {
 		return getString(ClientFilter.Columns.TERMINALID);
 	}
+
 	public final String getCardEntity() {
 		return getString(ClientFilter.Columns.CARDENTITY);
 	}
+
 	public final String getEntityField() {
 		return getString(ClientFilter.Columns.ENTITYFIELD);
 	}
+
 	public final String getOperator() {
 		return getString(ClientFilter.Columns.OPERATOR);
 	}
+
 	public final String getFieldValue() {
 		return getString(ClientFilter.Columns.FIELDVALUE);
 	}
+
 	public final String getDisplay() {
 		return getString(ClientFilter.Columns.DISPLAY);
 	}
+
 	public final Boolean getIsNew() {
 		return getAsBoolean(ClientFilter.Columns.ISNEW);
 	}

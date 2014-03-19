@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.UUID;
 
 import org.imogene.android.Constants.Paths;
-import org.imogene.android.media.SingleMediaScanner;
-import org.imogene.android.media.SingleMediaScanner.SingleMediaListener;
 import org.imogene.android.template.R;
 
 import android.app.Activity;
@@ -14,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import fr.medes.android.media.SingleMediaScanner;
+import fr.medes.android.media.SingleMediaScanner.SingleMediaListener;
 
 public class ImageCapture extends Activity implements SingleMediaListener {
 
@@ -37,19 +37,19 @@ public class ImageCapture extends Activity implements SingleMediaListener {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPath));
 		startActivityForResult(intent, ACTIVITY_IMAGE_CAPTURE);
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putString("ImageCapture_path", mPath.getAbsolutePath());
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		mPath = new File(savedInstanceState.getString("ImageCapture_path"));
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ACTIVITY_IMAGE_CAPTURE && resultCode == RESULT_OK) {

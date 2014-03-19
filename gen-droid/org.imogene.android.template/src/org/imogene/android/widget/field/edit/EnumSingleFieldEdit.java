@@ -1,8 +1,6 @@
 package org.imogene.android.widget.field.edit;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.Arrays;
-import org.imogene.android.util.field.EnumHelper;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -11,17 +9,19 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.util.Arrays;
+import fr.medes.android.util.field.EnumHelper;
 
 public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements DialogInterface.OnClickListener {
-	
+
 	private String[] mItems;
 	private int[] mItemsValues;
-	
+
 	public EnumSingleFieldEdit(Context context) {
 		super(context, R.layout.ig_field_default);
 		setValue(-1);
 	}
-	
+
 	public EnumSingleFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.ig_field_default);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EnumField, 0, 0);
@@ -30,22 +30,22 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 		a.recycle();
 		setValue(-1);
 	}
-	
+
 	public void setItems(String[] items) {
 		mItems = items;
 		mItemsValues = Arrays.defaultIntArray(items.length);
 	}
-	
+
 	public void setItemsValues(int[] itemsValues) {
 		mItemsValues = itemsValues;
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		final Integer i = getValue();
 		return i == null || i == -1;
 	}
-	
+
 	@Override
 	public boolean isValid() {
 		Integer value = getValue();
@@ -54,14 +54,14 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
 		setOnClickListener(readOnly ? null : this);
 		setOnLongClickListener(readOnly ? null : this);
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		final Integer value = getValue();
@@ -76,7 +76,7 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 			}
 		}
 	}
-	
+
 	@Override
 	public Integer getValue() {
 		final Integer superValue = super.getValue();
@@ -85,16 +85,16 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 		}
 		return superValue;
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String value) {
 		final Integer i = getValue();
 		if (i == null)
 			return false;
-		
+
 		return i.toString().matches(value);
 	}
-	
+
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
 		int checkedItem = -1;
@@ -106,12 +106,12 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 		builder.setNeutralButton(android.R.string.cut, this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}
-	
+
 	@Override
 	public void dispatchClick(View v) {
 		showDialog(null);
 	}
-	
+
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
@@ -126,5 +126,5 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 			break;
 		}
 	}
-	
+
 }

@@ -3,10 +3,8 @@ package org.imogene.android.widget.field.edit;
 import java.util.ArrayList;
 
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.database.sqlite.stmt.Where;
 import org.imogene.android.template.R;
-import org.imogene.android.util.Arrays;
-import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.IntentUtils;
 import org.imogene.android.widget.field.ConstraintBuilder;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
@@ -20,6 +18,8 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
+import fr.medes.android.database.sqlite.stmt.Where;
+import fr.medes.android.util.Arrays;
 
 public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements OnActivityResultListener {
 

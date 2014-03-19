@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.imogene.android.database.ImogActorCursorJoiner;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.encryption.EncryptionManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,6 +22,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import fr.medes.android.util.encryption.EncryptionManager;
 
 public abstract class AbstractImogActorListing extends ListActivity implements OnClickListener {
 
@@ -114,8 +114,7 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 	}
 
 	private boolean validate(String pwd) {
-		return pwd != null ? Arrays.equals(EncryptionManager.getInstance(this).encrypt(pwd.getBytes()), password)
-				: false;
+		return pwd != null ? Arrays.equals(EncryptionManager.getInstance().encrypt(pwd.getBytes()), password) : false;
 	}
 
 	protected abstract ImogActorCursorJoiner getCursor();

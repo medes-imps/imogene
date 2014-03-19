@@ -3,11 +3,11 @@ package org.imogene.android.preference;
 import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
-import org.imogene.android.util.encryption.EncryptionManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import fr.medes.android.util.encryption.EncryptionManager;
 
 public class Preferences {
 
@@ -54,7 +54,7 @@ public class Preferences {
 
 	private Preferences(Context context) {
 		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		mEncryptionManager = EncryptionManager.getInstance(context);
+		mEncryptionManager = EncryptionManager.getInstance();
 	}
 
 	/**

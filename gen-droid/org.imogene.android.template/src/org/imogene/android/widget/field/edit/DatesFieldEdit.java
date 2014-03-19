@@ -10,32 +10,32 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public abstract class DatesFieldEdit extends BaseFieldEdit<Date> implements DialogFactory {
-	
+
 	private Date min;
 	private Date max;
-	
+
 	public DatesFieldEdit(Context context) {
 		super(context, R.layout.ig_field_default);
 		setDialogFactory(this);
 	}
-	
+
 	public DatesFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.ig_field_default);
 		setDialogFactory(this);
 	}
-	
+
 	public void setMin(Date min) {
 		this.min = min;
 	}
-	
+
 	public Date getMin() {
 		return min;
 	}
-	
+
 	public void setMax(Date max) {
 		this.max = max;
 	}
-	
+
 	public Date getMax() {
 		return max;
 	}
@@ -54,17 +54,17 @@ public abstract class DatesFieldEdit extends BaseFieldEdit<Date> implements Dial
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
 		setOnClickListener(readOnly ? null : this);
 		setOnLongClickListener(readOnly ? null : this);
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		showDialog(null);
 	}
-	
+
 }

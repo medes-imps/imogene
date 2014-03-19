@@ -18,9 +18,6 @@ import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.maps.database.PreCache;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.util.file.FileUtils;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -34,6 +31,9 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import fr.medes.android.maps.database.PreCache;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.util.file.FileUtils;
 
 public abstract class ImogProvider extends ContentProvider implements OpenableColumns {
 

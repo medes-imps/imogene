@@ -58,7 +58,6 @@
     <string name="ig_obtaining_roles">Connecting to the distant server...</string>
     <string name="ig_obtaining_roles_failed">"Identification failed ! Check login, password and server settings. Do you wish to try again ?"</string>
     <string name="ig_dialog_quit">"Exit Imogene android application ?"</string>
-    <string name="ig_location_format">"Lat %1$.3f ; Lon %2$.3f"</string>
     <string name="ig_iamlost_title">"I am lost !"</string>
 
     <!-- Synchronization messages -->
@@ -119,30 +118,11 @@
     <!-- Dynamic Fields -->
     <string name="ig_dynamic_field_group">Dynamic fields</string>
     
-    <!-- Date Time Picker Dialog -->
-    <string name="ig_switchDateTime">"Switch to date/time"</string>
-
-    <!-- Geo Picker Dialog -->
-    <string name="ig_dialog_geopicker_title">"Coordinates"</string>
-    <string name="ig_latitude">"Latitude"</string>
-    <string name="ig_longitude">"Longitude"</string>
-    <string name="ig_geo_format">"Decimal"</string>
-    <string name="ig_east">"East"</string>
-    <string name="ig_west">"West"</string>
-    <string name="ig_north">"North"</string>
-    <string name="ig_south">"South"</string>
-    
     <!-- Crash report messages -->
     <string name="ig_crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
     <string name="ig_crash_dialog_title">CrashTest has crashed</string>
     <string name="ig_crash_dialog_text">An unexpected error occurred forcing the application to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="ig_crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="ig_crash_dialog_ok_toast">Thank you !</string>
-
-    <!-- NOT TRANSLATABLE -->
-    <!-- Geo Picker Dialog -->
-    <string name="ig_degrees_unit" translatable="false">°</string>
-    <string name="ig_minutes_unit" translatable="false">"'"</string>
-    <string name="ig_seconds_unit" translatable="false">"''"</string>
 
 </resources>

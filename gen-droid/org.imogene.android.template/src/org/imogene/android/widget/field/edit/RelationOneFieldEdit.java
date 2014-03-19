@@ -5,8 +5,6 @@ import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.database.sqlite.stmt.Where;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
@@ -18,6 +16,8 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Toast;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.database.sqlite.stmt.Where;
 
 public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnActivityResultListener {
 

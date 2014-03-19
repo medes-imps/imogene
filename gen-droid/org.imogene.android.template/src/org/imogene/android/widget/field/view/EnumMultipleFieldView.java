@@ -3,12 +3,12 @@ package org.imogene.android.widget.field.view;
 import java.util.Arrays;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.field.EnumHelper;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import fr.medes.android.util.field.EnumHelper;
 
 public class EnumMultipleFieldView extends DefaultEntityView<boolean[]> {
 

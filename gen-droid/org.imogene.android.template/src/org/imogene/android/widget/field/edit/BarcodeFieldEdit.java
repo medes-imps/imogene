@@ -2,7 +2,7 @@ package org.imogene.android.widget.field.edit;
 
 import org.imogene.android.Constants.Intents;
 import org.imogene.android.template.R;
-import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.IntentUtils;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
 
@@ -15,9 +15,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivityResultListener {
-	
+
 	private int mRequestCode;
-	
+
 	public BarcodeFieldEdit(Context context) {
 		super(context, R.layout.ig_field_edit_buttons);
 		init();
@@ -27,18 +27,18 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 		super(context, attrs, R.layout.ig_field_edit_buttons);
 		init();
 	}
-	
+
 	private void init() {
 		findViewById(R.id.ig_acquire).setOnClickListener(this);
 		findViewById(R.id.ig_delete).setOnClickListener(this);
 		findViewById(R.id.ig_view).setOnClickListener(this);
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		return TextUtils.isEmpty(getValue());
 	}
-	
+
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
@@ -46,20 +46,20 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 		findViewById(R.id.ig_delete).setVisibility(readOnly ? View.GONE : View.VISIBLE);
 		findViewById(R.id.ig_view).setVisibility(readOnly ? View.GONE : View.VISIBLE);
 	}
-	
+
 	@Override
 	public void onAttachedToHierarchy(FieldManager manager) {
 		super.onAttachedToHierarchy(manager);
 		manager.registerOnActivityResultListener(this);
 		mRequestCode = manager.getNextId();
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String value) {
 		final String str = getValue();
 		return str != null ? str.matches(value) : false;
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		final String value = getValue();
@@ -69,7 +69,7 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 			return value;
 		}
 	}
-	
+
 	@Override
 	protected void onChangeValue() {
 		super.onChangeValue();
@@ -84,7 +84,7 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 			findViewById(R.id.ig_view).setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		switch (v.getId()) {
@@ -107,7 +107,7 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 		builder.setMessage(getValue());
 		builder.setPositiveButton(android.R.string.ok, null);
 	}
-	
+
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
@@ -116,5 +116,5 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 		}
 		return false;
 	}
-	
+
 }

@@ -10,12 +10,10 @@ import org.imogene.android.common.entity.ImogHelper.EntityInfo;
 import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 import org.imogene.android.sync.SynchronizationController;
 import org.imogene.android.sync.SynchronizationController.Status;
 import org.imogene.android.sync.SynchronizationListener;
 import org.imogene.android.template.R;
-import org.imogene.android.util.content.ContentUrisUtils;
 
 import android.accounts.Account;
 import android.app.Notification;
@@ -37,6 +35,8 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.SparseArray;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.util.content.ContentUrisUtils;
 
 public class NotificationController {
 

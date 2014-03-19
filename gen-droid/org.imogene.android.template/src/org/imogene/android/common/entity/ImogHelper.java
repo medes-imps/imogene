@@ -2,11 +2,10 @@ package org.imogene.android.common.entity;
 
 import java.util.List;
 
-import org.imogene.android.util.annotation.ReflectionUtils;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import fr.medes.android.util.annotation.ReflectionUtils;
 
 /**
  * Application helper for {@link ImogBean} entities.

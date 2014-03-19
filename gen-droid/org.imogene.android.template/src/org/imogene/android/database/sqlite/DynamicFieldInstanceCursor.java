@@ -37,7 +37,7 @@ public class DynamicFieldInstanceCursor extends ImogBeanCursorImpl {
 	public final String getFieldValue() {
 		return getString(DynamicFieldInstance.Columns.FIELDVALUE);
 	}
-	
+
 	public final Uri getFormInstance() {
 		return getEntity(getString(DynamicFieldInstance.Columns.FORMINSTANCE));
 	}

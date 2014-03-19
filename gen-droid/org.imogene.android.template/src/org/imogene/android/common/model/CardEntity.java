@@ -1,12 +1,10 @@
 package org.imogene.android.common.model;
 
+import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.CardEntityCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.util.Tools;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.annotation.XmlAlias;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +12,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import fr.medes.android.util.Tools;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.annotation.XmlAlias;
 
 @XmlAlias("org.imogene.lib.common.model.CardEntity")
 public class CardEntity extends ImogBeanImpl {
@@ -22,7 +23,7 @@ public class CardEntity extends ImogBeanImpl {
 		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor("black"));
 		public static final String TABLE_NAME = "cardentity";
 		public static final String BEAN_TYPE = "SYNC_ENT";
-		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 
 		public static final String NAME = "name";
 	}

@@ -1,29 +1,30 @@
 package org.imogene.android.common.filter;
 
 import org.imogene.android.database.sqlite.ClientFilterCursor;
-import org.imogene.android.util.FormatHelper;
+
+import fr.medes.android.util.FormatHelper;
 
 public class BooleanFilter extends ClientFilter {
-	
+
 	public static final Creator<BooleanFilter> FILTER_CREATOR = new DefaultCreator<BooleanFilter>() {
 		@Override
 		protected BooleanFilter newFilter() {
 			return new BooleanFilter();
 		}
-		
+
 		@Override
 		protected BooleanFilter newFilter(ClientFilterCursor c) {
 			return new BooleanFilter(c);
 		}
 	};
-	
+
 	private Boolean mValue;
-	
+
 	private BooleanFilter(ClientFilterCursor c) {
 		super(c);
 		init();
 	}
-	
+
 	private BooleanFilter() {
 		super();
 		init();
@@ -35,7 +36,7 @@ public class BooleanFilter extends ClientFilter {
 		else
 			mValue = null;
 	}
-	
+
 	@Override
 	protected void preCommit() {
 		super.preCommit();
@@ -47,11 +48,11 @@ public class BooleanFilter extends ClientFilter {
 			setFieldValue(null);
 		}
 	}
-	
+
 	public Boolean getValue() {
 		return mValue;
 	}
-	
+
 	public void setValue(Boolean value) {
 		mValue = value;
 	}

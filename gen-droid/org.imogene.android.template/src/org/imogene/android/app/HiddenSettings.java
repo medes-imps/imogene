@@ -4,13 +4,10 @@ import java.util.UUID;
 
 import org.imogene.android.common.entity.SyncHistory;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.preference.BaseDialogPreference;
-import org.imogene.android.preference.BaseDialogPreference.OnDialogCloseListener;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
-import org.imogene.android.util.database.DatabaseUtils;
-import org.imogene.android.util.ntp.NTPClock;
-import org.imogene.android.util.os.BaseAsyncTask;
+import org.imogene.android.util.DatabaseUtils;
+import org.imogene.android.util.NTPClock;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -22,8 +19,12 @@ import android.text.TextUtils;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
-public class HiddenSettings extends SherlockPreferenceActivity implements OnDialogCloseListener, OnPreferenceClickListener,
-		OnPreferenceChangeListener {
+import fr.medes.android.os.BaseAsyncTask;
+import fr.medes.android.preference.BaseDialogPreference;
+import fr.medes.android.preference.BaseDialogPreference.OnDialogCloseListener;
+
+public class HiddenSettings extends SherlockPreferenceActivity implements OnDialogCloseListener,
+		OnPreferenceClickListener, OnPreferenceChangeListener {
 
 	private BaseDialogPreference mDeleteDatabase;
 	private BaseDialogPreference mDeleteSyncHistory;

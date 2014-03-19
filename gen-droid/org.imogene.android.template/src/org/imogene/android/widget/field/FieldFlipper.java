@@ -9,22 +9,22 @@ import android.view.ViewGroup;
 import android.widget.ViewFlipper;
 
 public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListener {
-	
+
 	public interface Controller {
-		
-		public void onFieldChanged();		
+
+		public void onFieldChanged();
 	}
-	
+
 	private Controller mController;
 
 	public FieldFlipper(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	public void setController(Controller controller) {
 		mController = controller;
 	}
-	
+
 	@Override
 	public void addView(View child, int index, ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
@@ -33,7 +33,7 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 			field.registerDependent(this, null);
 		}
 	}
-	
+
 	@Override
 	public void setDisplayedChild(int whichChild) {
 		super.setDisplayedChild(whichChild);
@@ -41,7 +41,7 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 			mController.onFieldChanged();
 		}
 	}
-	
+
 	@Override
 	public void showNext() {
 		if (hasNext()) {
@@ -55,7 +55,7 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 			}
 		}
 	}
-	
+
 	@Override
 	public void showPrevious() {
 		if (hasPrevious()) {
@@ -69,11 +69,11 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 			}
 		}
 	}
-	
+
 	public BaseFieldEdit<?> getCurrentField() {
 		return (BaseFieldEdit<?>) getCurrentView();
 	}
-	
+
 	public boolean hasNext() {
 		final int count = getChildCount();
 		final int displayed = getDisplayedChild();
@@ -87,7 +87,7 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 		}
 		return false;
 	}
-	
+
 	public boolean hasPrevious() {
 		final int displayed = getDisplayedChild();
 		for (int i = 0; i < displayed; i++) {
@@ -100,17 +100,17 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void onDependencyChanged() {
 		if (mController != null) {
 			mController.onFieldChanged();
 		}
 	}
-	
+
 	@Override
 	public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
-		
+
 	}
 
 }

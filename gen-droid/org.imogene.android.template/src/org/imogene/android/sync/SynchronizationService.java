@@ -3,7 +3,6 @@ package org.imogene.android.sync;
 import org.imogene.android.Constants;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationController.Status;
-import org.imogene.android.util.Logger;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -13,6 +12,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
+import fr.medes.android.util.Logger;
 
 public class SynchronizationService extends Service {
 

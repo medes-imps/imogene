@@ -2,18 +2,17 @@ package org.imogene.android.widget.field.view;
 
 import java.util.Date;
 
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.field.FieldPattern;
-
 import android.content.Context;
 import android.util.AttributeSet;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.field.FieldPattern;
 
 public class TimeFieldView extends DefaultEntityView<Date> {
 
 	public TimeFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public String getFieldDisplay() {
 		final Date time = getValue();
@@ -22,7 +21,7 @@ public class TimeFieldView extends DefaultEntityView<Date> {
 		}
 		return super.getFieldDisplay();
 	}
-	
+
 	@Override
 	public boolean matchesDependencyValue(String value) {
 		final Date date = getValue();

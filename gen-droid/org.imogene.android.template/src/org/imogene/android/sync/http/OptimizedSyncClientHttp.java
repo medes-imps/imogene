@@ -21,8 +21,9 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.SynchronizationException;
-import org.imogene.android.util.file.FileUtils;
-import org.imogene.android.util.ssl.SSLHttpClient;
+
+import fr.medes.android.util.file.FileUtils;
+import fr.medes.android.util.ssl.SSLHttpClient;
 
 public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 

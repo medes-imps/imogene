@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.database.sqlite.stmt.Where;
-import org.imogene.android.util.Arrays;
-import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.IntentUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,20 +13,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.database.sqlite.stmt.Where;
+import fr.medes.android.util.Arrays;
 
 public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
-	
+
 	public RelationManyFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setValue(new ArrayList<Uri>());
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		final List<Uri> list = getValue();
 		return list == null || list.size() == 0;
 	}
-	
+
 	@Override
 	public boolean isValid() {
 		if (isRequired()) {
@@ -37,7 +37,7 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void setContentUri(Uri contentUri) {
 		mContentUri = contentUri;
@@ -53,16 +53,16 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 			return getEmptyText();
 		}
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		if (isReadOnly()) {
 			final List<Uri> list = getValue();
-			
+
 			if (list == null || list.size() == 0) {
 				return;
 			}
-			
+
 			final int size = list.size();
 			if (size == 1) {
 				getContext().startActivity(new Intent(Intent.ACTION_VIEW, list.get(0)));
@@ -81,24 +81,25 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 		}
 		super.dispatchClick(v);
 	}
-	
+
 	@Override
 	protected void onPrepareIntent(Intent intent) {
 		final List<Uri> list = getValue();
-		if (list!= null && !list.isEmpty()) {
+		if (list != null && !list.isEmpty()) {
 			intent.putParcelableArrayListExtra(Extras.EXTRA_SELECTED, Arrays.asArrayList(list));
 		}
 		intent.putExtra(Extras.EXTRA_MULTIPLE, true);
 	}
-	
+
 	@Override
 	protected Where onPrepareWhere() {
 		if (mHasReverse && mOppositeCardinality == 1) {
-			return new Where().eq(mOppositeRelationField, getFieldManager().getId()).or().isNull(mOppositeRelationField);
+			return new Where().eq(mOppositeRelationField, getFieldManager().getId()).or()
+					.isNull(mOppositeRelationField);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Where onCreateConstraint(String column) {
 		final List<Uri> uris = getValue();
@@ -122,5 +123,5 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 		}
 		return false;
 	}
-	
+
 }

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.mapper.Mapper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -16,6 +14,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.converters.AbstractFieldConverter;
+import fr.medes.android.xml.mapper.Mapper;
 
 public class CollectionConverter extends AbstractFieldConverter {
 
@@ -41,7 +42,8 @@ public class CollectionConverter extends AbstractFieldConverter {
 			Uri uri = mapper.realUri(parser.getName());
 			if (uri != null) {
 				String id = parser.getAttributeValue(null, "id");
-				Cursor c = res.query(uri, new String[] { ImogBean.Columns._ID }, ImogBean.Columns._ID + "='" + id + "'", null, null);
+				Cursor c = res.query(uri, new String[] { ImogBean.Columns._ID },
+						ImogBean.Columns._ID + "='" + id + "'", null, null);
 				if (c.getCount() != 1) {
 					c.close();
 					ContentValues values = new ContentValues();
@@ -68,7 +70,8 @@ public class CollectionConverter extends AbstractFieldConverter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException,
+			IOException {
 		serializer.startTag(null, "collection");
 		List<Uri> uris = (List<Uri>) obj;
 		for (Uri uri : uris) {

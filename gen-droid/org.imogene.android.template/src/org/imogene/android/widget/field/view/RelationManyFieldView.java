@@ -3,9 +3,8 @@ package org.imogene.android.widget.field.view;
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.database.sqlite.stmt.Where;
 import org.imogene.android.template.R;
-import org.imogene.android.util.content.IntentUtils;
+import org.imogene.android.util.IntentUtils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +13,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.database.sqlite.stmt.Where;
 
 public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
-	
+
 	private final int displayId;
-	
+
 	private Uri contentUri;
 
 	public RelationManyFieldView(Context context, AttributeSet attrs) {
@@ -29,11 +29,11 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);
 	}
-	
+
 	public void setContentUri(Uri uri) {
 		contentUri = uri;
 	}
-	
+
 	public void setDrawable(Drawable drawable) {
 		final View color = findViewById(R.id.ig_color);
 		if (color != null) {
@@ -56,15 +56,15 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 		}
 		return super.getFieldDisplay();
 	}
-	
+
 	@Override
 	protected void dispatchClick(View v) {
 		final List<Uri> list = getValue();
-		
+
 		if (list == null || list.size() == 0) {
 			return;
 		}
-		
+
 		final int size = list.size();
 		if (size == 1) {
 			getContext().startActivity(new Intent(Intent.ACTION_VIEW, list.get(0)));

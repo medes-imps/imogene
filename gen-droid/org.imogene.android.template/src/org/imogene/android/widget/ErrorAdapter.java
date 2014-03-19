@@ -19,8 +19,7 @@ public class ErrorAdapter extends BaseAdapter {
 
 	public ErrorAdapter(Context context, ArrayList<ErrorEntry> data) {
 		mData = data;
-		mInflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -40,12 +39,10 @@ public class ErrorAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return createViewFromResource(position, convertView, parent,
-				R.layout.ig_dialog_list_item);
+		return createViewFromResource(position, convertView, parent, R.layout.ig_dialog_list_item);
 	}
 
-	private View createViewFromResource(int position, View convertView,
-			ViewGroup parent, int resource) {
+	private View createViewFromResource(int position, View convertView, ViewGroup parent, int resource) {
 		View v;
 		if (convertView == null) {
 			v = mInflater.inflate(resource, parent, false);
@@ -60,10 +57,8 @@ public class ErrorAdapter extends BaseAdapter {
 
 	private void bindView(int position, View view) {
 		final ErrorEntry entry = mData.get(position);
-		final TextView titleView = (TextView) view
-				.findViewById(R.id.ig_dialog_item_title);
-		final TextView messageView = (TextView) view
-				.findViewById(R.id.ig_dialog_item_message);
+		final TextView titleView = (TextView) view.findViewById(R.id.ig_dialog_item_title);
+		final TextView messageView = (TextView) view.findViewById(R.id.ig_dialog_item_message);
 
 		titleView.setText(entry.title);
 
@@ -86,49 +81,48 @@ public class ErrorAdapter extends BaseAdapter {
 			}
 		}
 	}
-	
+
 	public static class ErrorEntry {
-		
+
 		private int tag;
 		private View field;
 		private CharSequence title;
 		private ArrayList<String> messages;
-		
+
 		public void setTag(int tag) {
 			this.tag = tag;
 		}
-		
+
 		public int getTag() {
 			return tag;
 		}
-		
+
 		public void setField(View field) {
 			this.field = field;
 		}
-		
+
 		public View getField() {
 			return field;
 		}
-		
+
 		public void setTitle(CharSequence title) {
 			this.title = title;
 		}
-		
+
 		public CharSequence getTitle() {
 			return title;
 		}
-		
+
 		public ArrayList<String> getMessages() {
 			return messages;
 		}
-		
+
 		public void addMessage(String message) {
 			if (messages == null) {
 				messages = new ArrayList<String>();
 			}
 			messages.add(message);
 		}
-		
+
 	}
 }
-

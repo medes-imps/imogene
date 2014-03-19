@@ -3,12 +3,12 @@ package org.imogene.android.common.entity;
 import java.util.UUID;
 
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.BaseColumns;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 
 public class SyncHistory {
 

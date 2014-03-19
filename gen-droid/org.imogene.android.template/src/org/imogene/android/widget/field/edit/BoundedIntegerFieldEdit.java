@@ -1,7 +1,6 @@
 package org.imogene.android.widget.field.edit;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.field.FieldPattern;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -14,9 +13,10 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import fr.medes.android.util.field.FieldPattern;
 
-public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements
-		DialogInterface.OnClickListener, OnSeekBarChangeListener {
+public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements DialogInterface.OnClickListener,
+		OnSeekBarChangeListener {
 
 	private SeekBar mSeekBar;
 	private TextView mTextView;
@@ -67,8 +67,7 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements
 
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
-		View view = LayoutInflater.from(getContext()).inflate(
-				R.layout.ig_field_edit_integer_bounded, null);
+		View view = LayoutInflater.from(getContext()).inflate(R.layout.ig_field_edit_integer_bounded, null);
 
 		mTextView = (TextView) view.findViewById(R.id.ig_display_value);
 
@@ -93,7 +92,7 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements
 
 		view.findViewById(R.id.ig_increase).setOnClickListener(listener);
 		view.findViewById(R.id.ig_decrease).setOnClickListener(listener);
-		
+
 		final Integer value = getValue();
 		if (value != null) {
 			mSeekBar.setProgress(getValue() - mMin);
@@ -125,8 +124,7 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements
 	}
 
 	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromUser) {
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		mTextView.setText(String.format(mFormat, (progress + mMin)));
 	}
 

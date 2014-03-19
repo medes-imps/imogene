@@ -8,7 +8,6 @@ import java.net.Socket;
 import org.imogene.android.Constants;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
-import org.imogene.android.util.ssl.TrustAllSSLSocketFactory;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -23,6 +22,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import fr.medes.android.util.ssl.TrustAllSSLSocketFactory;
 
 /**
  * 

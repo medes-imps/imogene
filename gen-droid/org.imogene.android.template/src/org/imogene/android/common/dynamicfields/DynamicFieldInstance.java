@@ -1,17 +1,18 @@
 package org.imogene.android.common.dynamicfields;
 
+import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.DynamicFieldInstanceCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.util.content.ContentUrisUtils;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlOmitField;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlOmitField;
 
 @XmlAlias("org.imogene.lib.common.dynamicfields.DynamicFieldInstance")
 public class DynamicFieldInstance extends ImogBeanImpl {
@@ -19,7 +20,7 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 	public static interface Columns extends ImogBean.Columns {
 		public static final String TABLE_NAME = "dynamicfieldinstance";
 		public static final String BEAN_TYPE = "DFI";
-		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(TABLE_NAME);
+		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 
 		public static final String FIELDTEMPLATE = "fieldTemplate";
 		public static final String FIELDVALUE = "fieldValue";

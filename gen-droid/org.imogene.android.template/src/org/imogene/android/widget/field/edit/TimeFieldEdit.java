@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.imogene.android.template.R;
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.field.FieldPattern;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -14,6 +12,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.TimePicker;
+import fr.medes.android.util.FormatHelper;
+import fr.medes.android.util.field.FieldPattern;
 
 public class TimeFieldEdit extends DatesFieldEdit implements OnTimeSetListener {
 
@@ -58,8 +58,7 @@ public class TimeFieldEdit extends DatesFieldEdit implements OnTimeSetListener {
 		if (time != null) {
 			cal.setTime(time);
 		}
-		return new TimePickerDialog(getContext(), this, cal.get(Calendar.HOUR_OF_DAY),
-				cal.get(Calendar.MINUTE), false);
+		return new TimePickerDialog(getContext(), this, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
 	}
 
 	@Override

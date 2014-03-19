@@ -6,38 +6,38 @@ import java.lang.reflect.Field;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
-import org.imogene.android.util.annotation.ReflectionUtils;
-import org.imogene.android.util.annotation.ReflectionUtils.FieldCallback;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlConverter;
-import org.imogene.android.xml.converters.Converter;
-import org.imogene.android.xml.converters.ConverterLookup;
-import org.imogene.android.xml.mapper.ClassMapper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.content.Context;
 import android.net.Uri;
+import fr.medes.android.util.annotation.ReflectionUtils;
+import fr.medes.android.util.annotation.ReflectionUtils.FieldCallback;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlConverter;
+import fr.medes.android.xml.converters.Converter;
+import fr.medes.android.xml.converters.ConverterLookup;
+import fr.medes.android.xml.mapper.ClassMapper;
 
 public class ImogXmlConverter {
 
 	private Context context;
 	private ConverterLookup lookup;
 	private ClassMapper mapper = new ClassMapper();
-	
+
 	public ImogXmlConverter(Context context) {
 		this.context = context;
-		lookup = new DefaultConverterLookup(context, mapper);
+		lookup = new ImogConverterLookup(context, mapper);
 		ImogHelper.getInstance().doWithImogBeans(new ImogBeanCallback() {
-			
+
 			@Override
 			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
 				processAnnotations(clazz, uri);
 			}
 		});
 	}
-	
+
 	public void processAnnotations(Class<?> type) {
 		XmlAlias alias = type.getAnnotation(XmlAlias.class);
 		if (alias != null) {
@@ -56,7 +56,8 @@ public class ImogXmlConverter {
 		}
 	}
 
-	public void serialize(final XmlSerializer serializer, Object object) throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(final XmlSerializer serializer, Object object) throws IllegalArgumentException,
+			IllegalStateException, IOException {
 		serializer.startTag(null, mapper.serializedClass(object.getClass()));
 		Converter converter = lookup.lookupConverterForType(object.getClass());
 		if (converter != null) {
@@ -86,19 +87,19 @@ public class ImogXmlConverter {
 			if (bean == null) {
 				continue;
 			}
-			
+
 			bean.reset();
 			bean.setFlagRead(false);
 			bean.setFlagSynchronized(true);
-			
+
 			parse(parser, bean);
-			
+
 			bean.saveOrUpdate(context);
 			count++;
 		}
 		return count;
 	}
-	
+
 	public void parse(XmlPullParser parser, Object obj) throws XmlPullParserException, IOException {
 		String elementName = parser.getName();
 		while (parser.next() != XmlPullParser.END_TAG || !elementName.equals(parser.getName())) {
@@ -129,7 +130,7 @@ public class ImogXmlConverter {
 				if (value != null) {
 					parse(parser, value);
 				}
-				continue;				
+				continue;
 			}
 
 			Converter fc = null;
@@ -138,7 +139,7 @@ public class ImogXmlConverter {
 			if (converter != null) {
 				fc = lookup.lookupConverterOfType(converter.value());
 				if (fc != null) {
-					fc.setInteger(converter.integer());					
+					fc.setInteger(converter.integer());
 				}
 			} else {
 				fc = lookup.lookupConverterForType(field.getType());
@@ -146,11 +147,11 @@ public class ImogXmlConverter {
 			if (fc == null) {
 				continue;
 			}
-			
+
 			if (obj instanceof ImogBean) {
 				fc.setString(((ImogBean) obj).getId());
 			}
-						
+
 			Object value = fc.parse(parser);
 			field.setAccessible(true);
 			try {
@@ -188,11 +189,11 @@ public class ImogXmlConverter {
 			} else {
 				fc = lookup.lookupConverterForType(field.getType());
 			}
-			
+
 			if (fc == null) {
 				return;
 			}
-			
+
 			if (object instanceof ImogBean) {
 				fc.setString(((ImogBean) object).getId());
 			}
@@ -209,9 +210,9 @@ public class ImogXmlConverter {
 			if (value == null) {
 				return;
 			}
-			
+
 			String elementMember = mapper.serializedMember(object.getClass(), fieldName);
-			
+
 			try {
 				serializer.startTag(null, elementMember);
 				fc.serialize(serializer, value);

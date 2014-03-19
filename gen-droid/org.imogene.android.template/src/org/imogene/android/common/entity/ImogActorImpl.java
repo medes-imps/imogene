@@ -5,15 +5,15 @@ import java.util.List;
 import org.imogene.android.common.profile.Profile;
 import org.imogene.android.database.ImogActorCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.database.sqlite.stmt.QueryBuilder;
-import org.imogene.android.xml.annotation.XmlAlias;
-import org.imogene.android.xml.annotation.XmlConverter;
 import org.imogene.android.xml.converters.CollectionConverter;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.xml.annotation.XmlAlias;
+import fr.medes.android.xml.annotation.XmlConverter;
 
 public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor {
 

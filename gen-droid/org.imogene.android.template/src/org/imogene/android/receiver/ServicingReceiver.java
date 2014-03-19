@@ -5,12 +5,12 @@ import org.imogene.android.app.HiddenSettings;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.push.PushService;
 import org.imogene.android.sync.SynchronizationService;
-import org.imogene.android.util.FormatHelper;
-import org.imogene.android.util.ntp.NTPClock;
+import org.imogene.android.util.NTPClock;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import fr.medes.android.util.FormatHelper;
 
 public class ServicingReceiver extends BroadcastReceiver {
 
