@@ -23,8 +23,7 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 	private static final String MATCH = "org.imogene.android.template.R";
 
 	@Override
-	public void onPostGeneration(GenerationManager manager)
-			throws CoreException {
+	public void onPostGeneration(GenerationManager manager) throws CoreException {
 		deleteUselessStuff(manager);
 		replaceImportResources(manager);
 	}
@@ -41,9 +40,7 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 	private void replaceImportResources(GenerationManager manager) throws CoreException {
 		ImogeneModelNature mmn = (ImogeneModelNature) manager.getSelectedProject().getNature(ImogeneModelNature.ID);
 
-		IFolder[] sourceFolders = new IFolder[] { 
-				manager.getGeneratedProject().getFolder("src"),
-				manager.getGeneratedProject().getFolder("src_maps")};
+		IFolder[] sourceFolders = new IFolder[] { manager.getGeneratedProject().getFolder("src") };
 
 		String replace = "org.imogene.android." + getProjectName(mmn).toLowerCase() + ".R";
 		for (IFolder folder : sourceFolders) {
@@ -57,7 +54,7 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 				process(f, replace);
 			return;
 		}
-		
+
 		try {
 			replace(file, MATCH, replace);
 		} catch (IOException e) {
@@ -65,27 +62,28 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void replace(File file, String regex, String replacement) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = "", oldtext = "";
-        while((line = reader.readLine()) != null) {
-            oldtext += line + "\r\n";
-        }
-        reader.close();
-        // replace a word in a file
-        String newtext = oldtext.replaceAll(regex, replacement);
-       
-        FileWriter writer = new FileWriter(file);
-        writer.write(newtext);writer.close();
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = "", oldtext = "";
+		while ((line = reader.readLine()) != null) {
+			oldtext += line + "\r\n";
+		}
+		reader.close();
+		// replace a word in a file
+		String newtext = oldtext.replaceAll(regex, replacement);
+
+		FileWriter writer = new FileWriter(file);
+		writer.write(newtext);
+		writer.close();
 	}
-	
+
 	public String getProjectName(ImogeneModelNature imn) {
-        String fullPath = imn.getModelFile().getFullPath().toPortableString();
-        URI resourceURI = URI.createPlatformResourceURI(fullPath, true);
-        Resource r = new ResourceSetImpl().getResource(resourceURI, true);
-        Project model = (Project) r.getContents().get(0);
-        return model.getName();
+		String fullPath = imn.getModelFile().getFullPath().toPortableString();
+		URI resourceURI = URI.createPlatformResourceURI(fullPath, true);
+		Resource r = new ResourceSetImpl().getResource(resourceURI, true);
+		Project model = (Project) r.getContents().get(0);
+		return model.getName();
 	}
 
 }

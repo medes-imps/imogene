@@ -17,13 +17,16 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.database.sqlite.stmt.Where;
@@ -44,7 +47,7 @@ import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()»List extends SherlockListActivity implements View.OnClickListener {
+public class «name.toFirstUpper()»List extends SherlockListActivity implements View.OnClickListener, OnNavigationListener {
 
 
 	// Extras keys
@@ -55,15 +58,6 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	private static final int MENU_SEARCH_ID = Menu.FIRST + 2;
 	private static final int MENU_SYNC_ID = Menu.FIRST + 3;
 	private static final int MENU_MARK_ALL_AS_READ_ID = Menu.FIRST + 4;
-	private static final int MENU_SORT_BY_MODIFIED_ID = Menu.FIRST + 5;
-	
-	private static final int MENU_SORT_BY_GROUP_ID = 1;
-	«FOREACH getMainFields(this) AS field ITERATOR i-»
-	private static final int MENU_SORT_BY_«field.name.toUpperCase()-»_ID = Menu.FIRST + «i.counter1 + 7-»;
-	«ENDFOREACH-»
-	«FOREACH secondaryFields AS field ITERATOR i-»
-	private static final int MENU_SORT_BY_«field.name.toUpperCase()-»_ID = Menu.FIRST + «i.counter1 + getMainFields(this).size + 7-»;
-	«ENDFOREACH-»
 	
 	// Context menu ids
 	private static final int CMENU_DELETE_ID = Menu.FIRST;
@@ -151,8 +145,16 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 
 		registerForContextMenu(getListView());
 		
+		SpinnerAdapter adapter = ArrayAdapter.createFromResource(
+			this, 
+			R.array.«name.toLowerCase()»_sortby,
+			android.R.layout.simple_spinner_dropdown_item);
+		
+		final ActionBar actionBar = getSupportActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		actionBar.setListNavigationCallbacks(adapter, this);
 		if (!isActionBarEnabled()) {
-			getSupportActionBar().hide();
+			actionBar.hide();
 		}
 	}
 	
@@ -235,6 +237,27 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	}
 	
 	@Override
+	public boolean onNavigationItemSelected(int position, long itemId) {
+		switch (position) {
+		case 0:
+			mSortKey = «name.toFirstUpper()».Columns.MODIFIED;
+			mAscending = false;
+			requery();
+			return true;
+		«LET (Collection[FieldEntity]) {} AS list-»
+		«FOREACH list.addAll(getMainFields(this).addAll(secondaryFields)) AS f ITERATOR iter-»
+		case «iter.counter1»:
+			mSortKey = «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR f»;
+			mAscending = false;
+			requery();
+			return true;
+		«ENDFOREACH-»
+		«ENDLET-»
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		if (mPolicy.canCreate«name.toFirstUpper()»()) {
 			menu.add(Menu.NONE, MENU_ADD_ID, Menu.NONE, R.string.ig_menu_add)
@@ -255,30 +278,10 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 				.setIcon(R.drawable.ig_ic_menu_mark);
 
 		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
-		
-		SubMenu subMenu = menu.addSubMenu(R.string.ig_menu_sort_by);
-		subMenu.setIcon(android.R.drawable.ic_menu_sort_by_size);
-
-		subMenu.add(MENU_SORT_BY_GROUP_ID, MENU_SORT_BY_MODIFIED_ID, Menu.NONE,
-				R.string.ig_menu_sort_by_modified);
-
-		«EXPAND addSortMenu FOREACH getMainFields(this)»
-		«EXPAND addSortMenu FOREACH secondaryFields»
-
-		subMenu.setGroupCheckable(MENU_SORT_BY_GROUP_ID, true, true);
 
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		if («name.toFirstUpper()».Columns.MODIFIED.equals(mSortKey))
-			menu.findItem(MENU_SORT_BY_MODIFIED_ID).setChecked(true);
-		«EXPAND onPrepareMenu FOREACH getMainFields(this)»
-		«EXPAND onPrepareMenu FOREACH secondaryFields»
-		return super.onPrepareOptionsMenu(menu);
-	}
-	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -305,17 +308,6 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		case MENU_MARK_ALL_AS_READ_ID:
 			DatabaseUtils.markRead(getContentResolver(), «name.toFirstUpper()».Columns.CONTENT_URI, true);
 			return true;
-		case MENU_SORT_BY_MODIFIED_ID:
-			if («name.toFirstUpper()».Columns.MODIFIED.equals(mSortKey)) {
-				mAscending = !mAscending;
-			} else {
-				mSortKey = «name.toFirstUpper()».Columns.MODIFIED;
-				mAscending = false;
-			}
-			requery();
-			return true;
-		«EXPAND onOptionItemSelected FOREACH getMainFields(this)»
-		«EXPAND onOptionItemSelected FOREACH secondaryFields»
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -448,24 +440,3 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 «ENDDEFINE»
 
 
-«DEFINE addSortMenu FOR FieldEntity-»
-subMenu.add(MENU_SORT_BY_GROUP_ID, MENU_SORT_BY_«name.toUpperCase()-»_ID, Menu.NONE, R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»);
-«ENDDEFINE»
-
-
-«DEFINE onPrepareMenu FOR FieldEntity-»
-if («EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this».equals(mSortKey))
-	menu.findItem(MENU_SORT_BY_«name.toUpperCase()-»_ID).setChecked(true);
-«ENDDEFINE»
-
-«DEFINE onOptionItemSelected FOR FieldEntity-»
-case MENU_SORT_BY_«name.toUpperCase()-»_ID:
-	if («EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this».equals(mSortKey)) {
-		mAscending = !mAscending;
-	} else {
-		mSortKey = «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»;
-		mAscending = false;
-	}
-	requery();
-	return true;
-«ENDDEFINE»

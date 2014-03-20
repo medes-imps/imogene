@@ -1,14 +1,17 @@
 «IMPORT core»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
 «DEFINE generate FOR Project »
 «FILE 'values/arrays.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
 	<!-- arrays for each EnumField -->
-	«EXPAND getArray FOREACH entities.groups.fields-»
+	«EXPAND getArray(null) FOREACH entities.groups.fields-»
 	
 	<!-- values arrays for each EnumField -->
 	«EXPAND getValuesArray FOREACH entities.groups.fields-»
+	
+	«EXPAND getSortByArray(null) FOREACH entities-»
 	
 	<!-- Available languages iso codes -->
 	<string-array name="languages_iso">
@@ -36,21 +39,11 @@
 	<!-- arrays for each EnumField -->
 	«EXPAND getArray(iso) FOREACH entities.groups.fields-»
 	
+	«EXPAND getSortByArray(iso) FOREACH entities-»
 </resources>
 «ENDFILE»
 «ENDLET»
 «ENDFOREACH»
-«ENDDEFINE»
-
-«DEFINE getArray FOR FieldEntity-»
-«ENDDEFINE»
-
-«DEFINE getArray FOR EnumField-»
-	<string-array name="«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»">
-	«FOREACH enumValues AS enum-»
-		<item>"«enum.name-»"</item>
-	«ENDFOREACH-»
-	</string-array>
 «ENDDEFINE»
 
 
@@ -82,10 +75,33 @@
 	</string-array>
 «ENDDEFINE»
 
+
+
+«DEFINE getSortByArray(String isoCode) FOR CardEntity-»
+	<!-- Sort by for «name»-->
+	<string-array name="«name.toLowerCase()»_sortby">
+		<item>@string/ig_modified</item>
+		«FOREACH getMainFields(this) AS mainField-»
+		<item>«EXPAND getDescription(isoCode) FOR mainField»</item>
+		«ENDFOREACH-»
+		«FOREACH secondaryFields AS secondaryField-»
+		<item>«EXPAND getDescription(isoCode) FOR secondaryField»</item>
+		«ENDFOREACH-»
+	</string-array>
+«ENDDEFINE»
+
+
+
+
+«REM»Get Descriptions for a given iso code«ENDREM»
 «DEFINE getDescription(String isoCode) FOR EnumValue-»
 «LET descriptions.locale.indexOf(isoCode) AS isoPos-»
-«IF (isoPos != -1)-»«descriptions.get(isoPos).display-»
-«ELSE»«name-»
-«ENDIF-»
+«IF (isoPos != -1)-»«descriptions.get(isoPos).display-»«ELSE»«name-»«ENDIF-»
+«ENDLET-»
+«ENDDEFINE»
+
+«DEFINE getDescription(String isoCode) FOR FieldEntity-»
+«LET descriptions.locale.indexOf(isoCode) AS isoPos-»
+«IF (isoPos != -1)-»«descriptions.get(isoPos).display-»«ELSE»«name-»«ENDIF-»
 «ENDLET-»
 «ENDDEFINE»
