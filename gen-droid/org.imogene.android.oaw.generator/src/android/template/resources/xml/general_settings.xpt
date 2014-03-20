@@ -99,9 +99,6 @@
 			android:title="@string/ig_update_available_title"
 			android:summary="@string/ig_update_available_summary_disabled"
 			android:enabled="false" >
-			<intent
-                android:targetClass="org.imogene.android.update.UpdateActivity"
-                android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
         </Preference>
 	</PreferenceCategory>
 	<PreferenceCategory
@@ -136,7 +133,7 @@
         	android:summary="@string/ig_precache_computing_summary" >
         	
         	<intent
-            	android:targetClass="org.imogene.android.maps.app.PreCacheList"
+            	android:targetClass="fr.medes.android.maps.app.PreCacheList"
             	android:targetPackage="org.imogene.android.«name.toLowerCase()»" />
     	</Preference>
     </PreferenceCategory>

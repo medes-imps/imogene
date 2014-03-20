@@ -213,8 +213,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="org.imogene.map.«name.toLowerCase()».category.GPS" />
-				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+				<category android:name="fr.medes.android.maps.category.GPS" />
+				<data android:mimeType="vnd.fr.medes.android.maps/coordinates" />
 			</intent-filter>
 		</activity>
 
@@ -226,8 +226,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="org.imogene.map.«name.toLowerCase()».category.BEST" />
-				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+				<category android:name="fr.medes.android.maps.category.BEST" />
+				<data android:mimeType="vnd.fr.medes.android.maps/coordinates" />
 			</intent-filter>
 		</activity>
 
@@ -239,8 +239,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="org.imogene.map.«name.toLowerCase()».category.NETWORK" />
-				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+				<category android:name="fr.medes.android.maps.category.NETWORK" />
+				<data android:mimeType="vnd.fr.medes.android.maps/coordinates" />
 			</intent-filter>
 		</activity>
 		
@@ -251,8 +251,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="org.imogene.map.«name.toLowerCase()».category.MAP" />
-				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+				<category android:name="fr.medes.android.maps.category.MAP" />
+				<data android:mimeType="vnd.fr.medes.android.maps/coordinates" />
 			</intent-filter>
 		</activity>
 		
@@ -264,8 +264,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="org.imogene.map.«name.toLowerCase()».category.MANUAL" />
-				<data android:mimeType="vnd.imogene.«name.toLowerCase()».maps/coordinates" />
+				<category android:name="fr.medes.android.maps.category.MANUAL" />
+				<data android:mimeType="vnd.fr.medes.android.maps/coordinates" />
 			</intent-filter>
 		</activity>
 		
@@ -332,8 +332,8 @@
         <service android:name="fr.medes.android.maps.offline.TileLoaderService" />
 		
 		<provider 
-			android:authorities="org.imogene.android.«name.toLowerCase()».entity" 
-			android:name=".provider.«name.toFirstUpper()-»Provider"
+			android:authorities="fr.medes.android.maps;org.imogene.android.«name.toLowerCase()».entity" 
+			android:name=".provider.«name.toFirstUpper()»Provider"
 			android:exported="true" />
 	</application>
 	

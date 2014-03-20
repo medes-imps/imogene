@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import fr.medes.android.maps.MapsConstants;
 import fr.medes.android.maps.database.PreCache;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.util.file.FileUtils;
@@ -87,8 +88,8 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 		URI_MATCHER.addURI(Constants.AUTHORITY, DynamicFieldTemplate.Columns.TABLE_NAME, DYNAMICFIELDTEMPLATE);
 		URI_MATCHER
 				.addURI(Constants.AUTHORITY, DynamicFieldTemplate.Columns.TABLE_NAME + "/*", DYNAMICFIELDTEMPLATE_ID);
-		URI_MATCHER.addURI(Constants.AUTHORITY, PreCache.Columns.TABLE_NAME, PRECACHE_BOUNDS);
-		URI_MATCHER.addURI(Constants.AUTHORITY, PreCache.Columns.TABLE_NAME + "/#", PRECACHE_BOUNDS_ID);
+		URI_MATCHER.addURI(MapsConstants.AUTHORITY, PreCache.Columns.TABLE_NAME, PRECACHE_BOUNDS);
+		URI_MATCHER.addURI(MapsConstants.AUTHORITY, PreCache.Columns.TABLE_NAME + "/#", PRECACHE_BOUNDS_ID);
 	}
 
 	protected abstract String getVndDir();

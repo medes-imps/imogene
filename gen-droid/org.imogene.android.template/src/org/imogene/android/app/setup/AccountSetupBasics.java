@@ -14,6 +14,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.SherlockActivity;
 
 import fr.medes.android.os.BaseAsyncTask;
+import fr.medes.android.os.BaseAsyncTask.Callback;
 
 public class AccountSetupBasics extends SherlockActivity implements OnClickListener, TextWatcher {
 
@@ -53,7 +55,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 
 	private Preferences mPreferences;
 
-	private TaskManager<AccountSetupBasics> mTaskManager;
+	private RetainObject retain;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,11 +89,18 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			mPasswordView.setText(null);
 		}
 
-		mTaskManager = (TaskManager<AccountSetupBasics>) getLastNonConfigurationInstance();
-		if (mTaskManager == null) {
-			mTaskManager = new TaskManager<AccountSetupBasics>();
+		retain = (RetainObject) getLastNonConfigurationInstance();
+		if (retain == null) {
+			retain = new RetainObject();
 		}
-		mTaskManager.attach(this);
+
+		if (retain.authenticationTask != null) {
+			retain.authenticationTask.setCallback(mAuthenticationCallback);
+		}
+
+		if (retain.sntpOffsetTask != null) {
+			retain.sntpOffsetTask.setCallback(mSntpOffsetCallback);
+		}
 	}
 
 	@Override
@@ -102,8 +111,20 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		mTaskManager.detach();
-		return mTaskManager;
+		return retain;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		if (retain.authenticationTask != null) {
+			retain.authenticationTask.setCallback(null);
+		}
+
+		if (retain.sntpOffsetTask != null) {
+			retain.sntpOffsetTask.setCallback(null);
+		}
 	}
 
 	@Override
@@ -210,27 +231,46 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		String serverUrl = mServerView.getText().toString();
 		String terminal = mPreferences.getSyncTerminal();
 		boolean httpAuthentication = mPreferences.isHttpAuthenticationEnabled();
-		mTaskManager.execute(1, new AuthenticationTask(serverUrl, login, password, terminal, httpAuthentication));
+		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password, terminal, httpAuthentication);
+		retain.authenticationTask.setCallback(mAuthenticationCallback);
+		retain.authenticationTask.execute();
 	}
 
 	private void launchSntpOffsetTask() {
-		mTaskManager.execute(2, new SntpOffsetTask(this), mPreferences.getNtpHost());
+		retain.sntpOffsetTask = new SntpOffsetTask(this);
+		retain.sntpOffsetTask.setCallback(mSntpOffsetCallback);
+		retain.sntpOffsetTask.execute(mPreferences.getNtpHost());
 	}
 
 	private void onSntpOffsetUpdated(Boolean success) {
 		dismissDialog(DIALOG_SNTPING_ID);
+
+		if (retain.sntpOffsetTask != null) {
+			retain.sntpOffsetTask.setCallback(null);
+			retain.sntpOffsetTask = null;
+		}
+
 		if (success != null && success) {
 			AccountSetupShortPassword.actionNewShortPassword(this);
 			finish();
 		} else {
 			showDialog(DIALOG_SNTP_FAILED_ID);
 		}
-		mTaskManager.remove(2);
+
 	}
 
-	private void onRolesReceived(String server, String login, String password, String roles) {
+	private void onRolesReceived(String roles) {
 		dismissDialog(DIALOG_AUTHING_ID);
+
+		if (retain.authenticationTask != null) {
+			retain.authenticationTask.setCallback(null);
+			retain.authenticationTask = null;
+		}
+
 		if (roles != null) {
+			String login = mLoginView.getText().toString();
+			String password = mPasswordView.getText().toString();
+			String server = mServerView.getText().toString();
 			mPreferences.setSyncLogin(login);
 			mPreferences.setSyncPassword(password);
 			mPreferences.setSyncServer(server);
@@ -238,14 +278,72 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		} else {
 			showDialog(DIALOG_AUTH_FAILED_ID);
 		}
-		mTaskManager.remove(1);
+
 	}
 
 	private static final boolean required(EditText editText) {
 		return editText.getText() != null && editText.getText().length() != 0;
 	}
 
-	private static class SntpOffsetTask extends BaseAsyncTask<AccountSetupBasics, String, Void, Boolean> {
+	private final Callback<String, Void, Boolean> mSntpOffsetCallback = new Callback<String, Void, Boolean>() {
+
+		@Override
+		public void onAttachedToTask(Status status, Boolean result) {
+			if (status == Status.FINISHED) {
+				onSntpOffsetUpdated(result);
+			}
+		}
+
+		@Override
+		public void onCancelled() {
+		}
+
+		@Override
+		public void onPostExecute(Boolean result) {
+			onSntpOffsetUpdated(result);
+		}
+
+		@Override
+		public void onPreExecute() {
+			showDialog(DIALOG_SNTPING_ID);
+		}
+
+		@Override
+		public void onProgressUpdate(Void... values) {
+		}
+
+	};
+
+	private final Callback<Void, Void, String> mAuthenticationCallback = new Callback<Void, Void, String>() {
+
+		@Override
+		public void onAttachedToTask(Status status, String result) {
+			if (status == Status.FINISHED) {
+				onRolesReceived(result);
+			}
+		}
+
+		@Override
+		public void onCancelled() {
+		}
+
+		@Override
+		public void onPostExecute(String result) {
+			onRolesReceived(result);
+		}
+
+		@Override
+		public void onPreExecute() {
+			showDialog(DIALOG_AUTHING_ID);
+		}
+
+		@Override
+		public void onProgressUpdate(Void... values) {
+		}
+
+	};
+
+	private static class SntpOffsetTask extends BaseAsyncTask<String, Void, Boolean> {
 
 		private final Context context;
 
@@ -254,27 +352,13 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		}
 
 		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.showDialog(DIALOG_SNTPING_ID);
-			}
-		}
-
-		@Override
 		protected Boolean doInBackground(String... params) {
 			return NTPClock.getInstance(context).updateOffsetSync(params[0]);
 		}
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.onSntpOffsetUpdated(result);
-			}
-		}
 	}
 
-	private static class AuthenticationTask extends BaseAsyncTask<AccountSetupBasics, Void, Void, String> {
+	private static class AuthenticationTask extends BaseAsyncTask<Void, Void, String> {
 
 		private String server;
 		private String login;
@@ -289,13 +373,6 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			this.password = password;
 			this.terminal = terminal;
 			this.httpAuthentication = httpAuthentication;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.showDialog(DIALOG_AUTHING_ID);
-			}
 		}
 
 		@Override
@@ -318,13 +395,10 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			return null;
 		}
 
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.onRolesReceived(server, login, password, result);
-			}
-		}
 	}
 
+	private static class RetainObject {
+		private AuthenticationTask authenticationTask;
+		private SntpOffsetTask sntpOffsetTask;
+	}
 }

@@ -10,6 +10,7 @@ import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.NTPClock;
 
 import android.content.Context;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -20,6 +21,7 @@ import android.text.TextUtils;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 import fr.medes.android.os.BaseAsyncTask;
+import fr.medes.android.os.BaseAsyncTask.Callback;
 import fr.medes.android.preference.BaseDialogPreference;
 import fr.medes.android.preference.BaseDialogPreference.OnDialogCloseListener;
 
@@ -56,8 +58,9 @@ public class HiddenSettings extends SherlockPreferenceActivity implements OnDial
 		mSyncTerminal.setOnDialogCloseListener(this);
 
 		mSntpOffsetTask = (SntpOffsetTask) getLastNonConfigurationInstance();
+
 		if (mSntpOffsetTask != null) {
-			mSntpOffsetTask.setCallback(this);
+			mSntpOffsetTask.setCallback(mSntpOffsetCallback);
 		}
 
 		updateNtpOffsetVisibility();
@@ -67,8 +70,16 @@ public class HiddenSettings extends SherlockPreferenceActivity implements OnDial
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		mSntpOffsetTask.setCallback(null);
 		return mSntpOffsetTask;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		if (mSntpOffsetTask != null) {
+			mSntpOffsetTask.setCallback(null);
+		}
 	}
 
 	@Override
@@ -130,14 +141,49 @@ public class HiddenSettings extends SherlockPreferenceActivity implements OnDial
 	}
 
 	private void executeNtpOffsetUpdate() {
-		if (mSntpOffsetTask == null || mSntpOffsetTask.isFinished()) {
+		if (mSntpOffsetTask == null) {
 			mSntpOffsetTask = new SntpOffsetTask(this);
-			mSntpOffsetTask.setCallback(this);
+			mSntpOffsetTask.setCallback(mSntpOffsetCallback);
 			mSntpOffsetTask.execute(mNtpHost.getText());
 		}
 	}
 
-	private static class SntpOffsetTask extends BaseAsyncTask<HiddenSettings, String, Void, Boolean> {
+	private final Callback<String, Void, Boolean> mSntpOffsetCallback = new Callback<String, Void, Boolean>() {
+
+		@Override
+		public void onAttachedToTask(Status status, Boolean result) {
+			if (status == Status.FINISHED) {
+				onPostExecute(result);
+			}
+		}
+
+		@Override
+		public void onCancelled() {
+		}
+
+		@Override
+		public void onPostExecute(Boolean result) {
+			mNtpOffset.setEnabled(true);
+			updateNtpOffsetSummary();
+
+			if (mSntpOffsetTask != null) {
+				mSntpOffsetTask.setCallback(null);
+				mSntpOffsetTask = null;
+			}
+		}
+
+		@Override
+		public void onPreExecute() {
+			mNtpOffset.setEnabled(false);
+		}
+
+		@Override
+		public void onProgressUpdate(Void... values) {
+		}
+
+	};
+
+	private static class SntpOffsetTask extends BaseAsyncTask<String, Void, Boolean> {
 
 		private final Context context;
 
@@ -146,25 +192,10 @@ public class HiddenSettings extends SherlockPreferenceActivity implements OnDial
 		}
 
 		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.mNtpOffset.setEnabled(false);
-			}
-		}
-
-		@Override
 		protected Boolean doInBackground(String... params) {
 			return NTPClock.getInstance(context).updateOffsetSync(params[0]);
 		}
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.mNtpOffset.setEnabled(true);
-				callback.updateNtpOffsetSummary();
-			}
-		}
 	}
 
 }

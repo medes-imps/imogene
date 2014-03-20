@@ -1,10 +1,12 @@
 «IMPORT core»
 «DEFINE generate(boolean multilogin) FOR Project»
 «FILE "/" + name.toLowerCase() + "/app/" + name.toFirstUpper() + "App.java"»
-package org.imogene.android.«name.toLowerCase()-».app;
+package org.imogene.android.«name.toLowerCase()».app;
 
 import fr.medes.android.app.AmlApplication;
 import fr.medes.android.database.sqlite.AmlOpenHelper;
+import fr.medes.android.util.encryption.DESedeProvider;
+import fr.medes.android.util.encryption.EncryptionManager;
 
 import java.util.UUID;
 
@@ -42,6 +44,8 @@ public class «name.toFirstUpper()»App extends AmlApplication {
 		«name.toFirstUpper()»OpenHelper.init(this);
 		«name.toFirstUpper()»Helper.init();
 		«name.toFirstUpper()»LocalizedText.init();
+
+		EncryptionManager.getInstance().setProxy(new DESedeProvider(this, R.raw.ig_encryption));
 
 		Preferences prefs = Preferences.getPreferences(this);
 		if (prefs.getSyncTerminal() == null) {

@@ -1,12 +1,6 @@
 package org.imogene.android.app;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
@@ -19,12 +13,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -45,7 +40,9 @@ import fr.medes.android.maps.database.PreCache;
 import fr.medes.android.maps.database.sqlite.PreCacheCursor;
 import fr.medes.android.maps.offline.TileLoaderService;
 import fr.medes.android.os.BaseAsyncTask;
+import fr.medes.android.update.CheckUpdateTask;
 import fr.medes.android.update.MarketApp;
+import fr.medes.android.util.file.DownloadFileTask;
 import fr.medes.android.util.file.FileUtils;
 
 public class GeneralSettings extends SherlockPreferenceActivity implements OnPreferenceChangeListener,
@@ -68,7 +65,7 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	private MyProgressDialog mProgressDialog;
 	private MarketApp mMarketApp;
 
-	private TaskManager<GeneralSettings> mTaskManager;
+	private RetainObject retain;
 
 	private final ContentObserver mPrecacheAreaObserver = new ContentObserver(new Handler()) {
 
@@ -112,12 +109,31 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 		mContentResolver.registerContentObserver(PreCache.Columns.CONTENT_URI, true, mPrecacheAreaObserver);
 
 		boolean init = false;
-		mTaskManager = (TaskManager<GeneralSettings>) getLastNonConfigurationInstance();
-		if (mTaskManager == null) {
-			mTaskManager = new TaskManager<GeneralSettings>();
+		retain = (RetainObject) getLastNonConfigurationInstance();
+		if (retain == null) {
+			retain = new RetainObject();
 			init = true;
 		}
-		mTaskManager.attach(this);
+
+		if (retain.checkUpdateTask != null) {
+			retain.checkUpdateTask.setCallback(mCheckUpdateCallback);
+		}
+
+		if (retain.downloadFileTask != null) {
+			retain.downloadFileTask.setCallback(mDownloadFileCallback);
+		}
+
+		if (retain.clearCacheTask != null) {
+			retain.clearCacheTask.setCallback(mClearCacheCallback);
+		}
+
+		if (retain.updateCacheSizeTask != null) {
+			retain.updateCacheSizeTask.setCallback(mUpdateCacheSizeCallback);
+		}
+
+		if (retain.updatePrecacheAreaTask != null) {
+			retain.updatePrecacheAreaTask.setCallback(mUpdatePrecacheAreaCallback);
+		}
 
 		if (init) {
 			executeUpdateCacheSize();
@@ -129,14 +145,33 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		mTaskManager.detach();
-		return mTaskManager;
+		return retain;
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		mContentResolver.unregisterContentObserver(mPrecacheAreaObserver);
+
+		if (retain.checkUpdateTask != null) {
+			retain.checkUpdateTask.setCallback(null);
+		}
+
+		if (retain.downloadFileTask != null) {
+			retain.downloadFileTask.setCallback(null);
+		}
+
+		if (retain.clearCacheTask != null) {
+			retain.clearCacheTask.setCallback(null);
+		}
+
+		if (retain.updateCacheSizeTask != null) {
+			retain.updateCacheSizeTask.setCallback(null);
+		}
+
+		if (retain.updatePrecacheAreaTask != null) {
+			retain.updatePrecacheAreaTask.setCallback(null);
+		}
 	}
 
 	@Override
@@ -195,7 +230,24 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 					return String.format("%s / %s", readableProgress, readableMax);
 				}
 			});
-			mProgressDialog.setCancelable(false);
+			mProgressDialog.setCancelable(true);
+			mProgressDialog.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					if (retain.downloadFileTask != null) {
+						retain.downloadFileTask.cancel(true);
+					}
+				}
+			});
+			mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel),
+					new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
 			return mProgressDialog;
 		default:
 			return super.onCreateDialog(id);
@@ -232,30 +284,44 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	}
 
 	private void executeAutomaticCache() {
-		mTaskManager.execute(1, new AutomaticCacheTask(this));
+		retain.automaticCacheTask = new AutomaticCacheTask(this);
+		retain.automaticCacheTask.execute();
 	}
 
 	private void executeUpdateCacheSize() {
-		mTaskManager.execute(2, new UpdateCacheSizeTask());
+		retain.updateCacheSizeTask = new UpdateCacheSizeTask();
+		retain.updateCacheSizeTask.setCallback(mUpdateCacheSizeCallback);
+		retain.updateCacheSizeTask.execute();
 	}
 
 	private void executeClearCache() {
-		mTaskManager.execute(3, new ClearCacheTask());
+		retain.clearCacheTask = new ClearCacheTask();
+		retain.clearCacheTask.setCallback(mClearCacheCallback);
+		retain.clearCacheTask.execute();
 	}
 
 	private void executeUpdatePrecacheArea() {
-		mTaskManager.execute(4, new UpdatePrecacheAreaTask());
+		retain.updatePrecacheAreaTask = new UpdatePrecacheAreaTask();
+		retain.updatePrecacheAreaTask.setCallback(mUpdatePrecacheAreaCallback);
+		retain.updatePrecacheAreaTask.execute();
 	}
 
 	private void executeCheckUpdate(String url) {
 		if (TextUtils.isEmpty(url)) {
 			return;
 		}
-		mTaskManager.execute(5, new CheckUpdateTask(), url, getPackageName());
+		retain.checkUpdateTask = new CheckUpdateTask();
+		retain.checkUpdateTask.setCallback(mCheckUpdateCallback);
+		retain.checkUpdateTask.execute(url, getPackageName());
 	}
 
 	private void executeUpdateApplication() {
-		mTaskManager.execute(6, new DownloadFileTask(), mUpdateServer.getText(), mMarketApp.getFile());
+		String server = mUpdateServer.getText();
+		String url = server + (server.endsWith("/") ? "" : "/") + "apk/" + retain.marketApp.getFile();
+		File dir = new File(Environment.getExternalStorageDirectory(), retain.marketApp.getFile());
+		retain.downloadFileTask = new DownloadFileTask();
+		retain.downloadFileTask.setCallback(mDownloadFileCallback);
+		retain.downloadFileTask.execute(url, dir.getPath());
 	}
 
 	private void updatePushEnabledVisibility() {
@@ -286,8 +352,14 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	}
 
 	private void setUpdateAvailable(MarketApp app) {
-		mMarketApp = app;
-		if (app != null && isUpdatable(app.getPackage(), app.getVersionCode())) {
+		retain.marketApp = app;
+
+		if (retain.checkUpdateTask != null) {
+			retain.checkUpdateTask.setCallback(null);
+			retain.checkUpdateTask = null;
+		}
+
+		if (app != null && app.isUpdatable(this)) {
 			mUpdateAvailable.setEnabled(true);
 			mUpdateAvailable.setSummary(R.string.ig_update_available_summary_enabled);
 		} else {
@@ -296,31 +368,17 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 		}
 	}
 
-	private boolean isUpdatable(String packageName, int versionCode) {
-		PackageManager pm = getPackageManager();
-		try {
-			PackageInfo info = pm.getPackageInfo(packageName, 0);
-			if (info.versionCode < versionCode) {
-				return true;
-			}
-		} catch (NameNotFoundException e) {
-		}
-		return false;
-	}
+	private void applicationReceived(File result) {
+		dismissDialog(DIALOG_DOWNLOAD_ID);
 
-	private void incrementProgressBy(int diff) {
-		if (mProgressDialog != null) {
-			mProgressDialog.incrementProgressBy(diff);
+		if (retain.downloadFileTask != null) {
+			retain.downloadFileTask.setCallback(null);
+			retain.downloadFileTask = null;
 		}
-	}
 
-	private void applicationReceived(File file) {
-		if (mProgressDialog != null) {
-			mProgressDialog.dismiss();
-		}
-		if (file != null) {
+		if (result != null) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+			intent.setDataAndType(Uri.fromFile(result), "application/vnd.android.package-archive");
 			startActivity(intent);
 		}
 	}
@@ -329,7 +387,123 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 		return FileUtils.getDirectorySize(OpenStreetMapTileProviderConstants.TILE_PATH_BASE);
 	}
 
-	private static class AutomaticCacheTask extends BaseAsyncTask<GeneralSettings, Void, Void, Void> {
+	private final BaseCallback<Void, Void, Long> mUpdateCacheSizeCallback = new BaseCallback<Void, Void, Long>() {
+
+		@Override
+		public void onAttachedToTask(Status status, Long result) {
+			if (status == Status.FINISHED) {
+				setCacheSizeSummary(result);
+			}
+		}
+
+		@Override
+		public void onPostExecute(Long result) {
+			setCacheSizeSummary(result);
+		}
+
+	};
+
+	// ////////////////////
+	// Calbacks
+	// ////////////////////
+
+	private final BaseCallback<Void, Void, Long> mClearCacheCallback = new BaseCallback<Void, Void, Long>() {
+
+		@Override
+		public void onAttachedToTask(Status status, Long result) {
+			if (status == Status.FINISHED) {
+				onPostExecute(result);
+			} else if (status == Status.RUNNING) {
+				setCacheSizeEnabled(false);
+			}
+		}
+
+		@Override
+		public void onPostExecute(Long result) {
+			setCacheSizeEnabled(true);
+			setCacheSizeSummary(result);
+		}
+
+		@Override
+		public void onPreExecute() {
+			setCacheSizeEnabled(false);
+		}
+
+	};
+
+	private final BaseCallback<Void, Void, Integer> mUpdatePrecacheAreaCallback = new BaseCallback<Void, Void, Integer>() {
+
+		@Override
+		public void onAttachedToTask(Status status, Integer result) {
+			if (status == Status.FINISHED) {
+				setPrecacheAreaSummary(result);
+			}
+		}
+
+		@Override
+		public void onPostExecute(Integer result) {
+			setPrecacheAreaSummary(result);
+		}
+	};
+
+	private final BaseCallback<String, Void, MarketApp> mCheckUpdateCallback = new BaseCallback<String, Void, MarketApp>() {
+
+		@Override
+		public void onAttachedToTask(android.os.AsyncTask.Status status, MarketApp result) {
+			if (status == Status.FINISHED) {
+				setUpdateAvailable(result);
+			}
+		}
+
+		@Override
+		public void onPreExecute() {
+			setCheckUpdateEnabled(false);
+		}
+
+		@Override
+		public void onPostExecute(MarketApp result) {
+			setUpdateAvailable(result);
+		}
+	};
+
+	private final BaseCallback<String, Integer, File> mDownloadFileCallback = new BaseCallback<String, Integer, File>() {
+
+		@Override
+		public void onAttachedToTask(Status status, File file) {
+			if (status == Status.FINISHED) {
+				// may not have been detached if no callback was registered when task ended.
+				onPostExecute(file);
+			} else if (status == Status.RUNNING) {
+				mUpdateAvailable.setEnabled(false);
+			}
+		}
+
+		@Override
+		public void onCancelled() {
+			applicationReceived(null);
+		}
+
+		@Override
+		public void onPostExecute(File result) {
+			applicationReceived(result);
+		}
+
+		@Override
+		public void onPreExecute() {
+			showDialog(DIALOG_DOWNLOAD_ID);
+		}
+
+		@Override
+		public void onProgressUpdate(Integer... values) {
+			mProgressDialog.setProgress(values[0]);
+		}
+	};
+
+	// ////////////////////
+	// Classes
+	// ////////////////////
+
+	private static class AutomaticCacheTask extends BaseAsyncTask<Void, Void, Void> {
 
 		private final Context mContext;
 
@@ -358,31 +532,16 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 	}
 
-	private static class UpdateCacheSizeTask extends BaseAsyncTask<GeneralSettings, Void, Void, Long> {
+	private static class UpdateCacheSizeTask extends BaseAsyncTask<Void, Void, Long> {
 
 		@Override
 		protected Long doInBackground(Void... params) {
 			return blockingCacheSize();
 		}
 
-		@Override
-		public void onPostExecute(Long result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.setCacheSizeSummary(result);
-			}
-		}
-
 	}
 
-	private static class ClearCacheTask extends BaseAsyncTask<GeneralSettings, Void, Void, Long> {
-
-		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.setCacheSizeEnabled(false);
-			}
-		}
+	private static class ClearCacheTask extends BaseAsyncTask<Void, Void, Long> {
 
 		@Override
 		protected Long doInBackground(Void... params) {
@@ -390,17 +549,9 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 			return blockingCacheSize();
 		}
 
-		@Override
-		protected void onPostExecute(Long result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.setCacheSizeEnabled(true);
-				callback.setCacheSizeSummary(result);
-			}
-		}
 	}
 
-	private static class UpdatePrecacheAreaTask extends BaseAsyncTask<GeneralSettings, Void, Void, Integer> {
+	private static class UpdatePrecacheAreaTask extends BaseAsyncTask<Void, Void, Integer> {
 
 		@Override
 		protected Integer doInBackground(Void... params) {
@@ -409,131 +560,39 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 			return (int) builder.queryForLong();
 		}
 
-		@Override
-		protected void onPostExecute(Integer result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.setPrecacheAreaSummary(result);
-			}
-		}
-
 	}
 
-	private static class CheckUpdateTask extends BaseAsyncTask<GeneralSettings, String, Void, MarketApp> {
-
-		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.setCheckUpdateEnabled(false);
-			}
-		}
-
-		@Override
-		protected MarketApp doInBackground(String... params) {
-			String server = params[0];
-			String packageName = params[1];
-			String url = server + (server.endsWith("/") ? "" : "/") + "package/" + packageName + ".xml";
-			try {
-				return MarketApp.Parser.parse((InputStream) new URL(url).getContent());
-			} catch (Exception e) {
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(MarketApp result) {
-			super.onPostExecute(result);
-			if (callback != null) {
-				callback.setUpdateAvailable(result);
-			}
-		}
-
+	private static class RetainObject {
+		private CheckUpdateTask checkUpdateTask;
+		private DownloadFileTask downloadFileTask;
+		private UpdatePrecacheAreaTask updatePrecacheAreaTask;
+		private ClearCacheTask clearCacheTask;
+		private AutomaticCacheTask automaticCacheTask;
+		private UpdateCacheSizeTask updateCacheSizeTask;
+		private MarketApp marketApp;
 	}
 
-	private static class DownloadFileTask extends BaseAsyncTask<GeneralSettings, String, Integer, File> {
-
-		private final Locker mLocker = new Locker();
-		private boolean installed = false;
+	private static class BaseCallback<Params, Progress, Result> implements
+			BaseAsyncTask.Callback<Params, Progress, Result> {
 
 		@Override
-		protected void onPreExecute() {
-			if (callback != null) {
-				callback.showDialog(DIALOG_DOWNLOAD_ID);
-			}
+		public void onAttachedToTask(Status status, Result result) {
 		}
 
 		@Override
-		protected File doInBackground(String... params) {
-			try {
-				String server = params[0];
-				String fileName = params[1];
-				String urlString = server + (server.endsWith("/") ? "" : "/") + "apk/" + fileName;
-				URL url = new URL(urlString);
-				URLConnection connection = url.openConnection();
-				connection.connect();
-				// this will be useful so that you can show a tipical 0-100%
-				// progress bar
-
-				// download the file
-				File dir = new File(Environment.getExternalStorageDirectory(), "imogenemarket");
-				dir.mkdirs();
-				File file = new File(dir, fileName);
-				if (file.exists()) {
-					file.delete();
-				}
-				file.createNewFile();
-				InputStream input = new BufferedInputStream(url.openStream());
-				OutputStream output = new FileOutputStream(file);
-
-				byte data[] = new byte[1024];
-
-				int count;
-				int bigCount = 0;
-				while ((count = input.read(data)) != -1) {
-					if (isCancelled()) {
-						break;
-					}
-					bigCount += count;
-					if (!mLocker.isLocked()) {
-						// publishing the progress....
-						publishProgress(bigCount);
-						bigCount = 0;
-						mLocker.lock();
-					}
-					// publishing the progress....
-					output.write(data, 0, count);
-				}
-				mLocker.cancel();
-				publishProgress(bigCount);
-
-				output.flush();
-				output.close();
-				input.close();
-				if (isCancelled()) {
-					file.delete();
-					return null;
-				}
-				return file;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
+		public void onCancelled() {
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... values) {
-			if (callback != null) {
-				callback.incrementProgressBy(values[0]);
-			}
+		public void onPostExecute(Result result) {
 		}
 
 		@Override
-		protected void onPostExecute(File result) {
-			super.onPostExecute(result);
-			if (callback != null && !installed) {
-				callback.applicationReceived(result);
-				installed = true;
-			}
+		public void onPreExecute() {
+		}
+
+		@Override
+		public void onProgressUpdate(Progress... values) {
 		}
 
 	}
