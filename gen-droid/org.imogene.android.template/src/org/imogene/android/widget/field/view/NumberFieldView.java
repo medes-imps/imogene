@@ -17,7 +17,7 @@ public class NumberFieldView<T extends Number> extends DefaultEntityView<T> {
 	public NumberFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
-		format = a.getString(R.styleable.NumberField_igFormat);
+		format = a.getString(R.styleable.NumberField_format);
 		a.recycle();
 	}
 

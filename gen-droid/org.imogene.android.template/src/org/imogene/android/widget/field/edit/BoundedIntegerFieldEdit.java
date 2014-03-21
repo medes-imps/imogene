@@ -28,9 +28,9 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 	public BoundedIntegerFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_default);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
-		setMin(a.getInt(R.styleable.NumberField_igIntMin, 0));
-		setMax(a.getInt(R.styleable.NumberField_igIntMax, 100));
-		mFormat = a.getString(R.styleable.NumberField_igFormat);
+		setMin(a.getInt(R.styleable.NumberField_intMin, 0));
+		setMax(a.getInt(R.styleable.NumberField_intMax, 100));
+		mFormat = a.getString(R.styleable.NumberField_format);
 		a.recycle();
 	}
 

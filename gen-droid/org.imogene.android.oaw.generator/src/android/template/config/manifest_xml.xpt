@@ -260,7 +260,7 @@
 			android:name="fr.medes.android.maps.app.EnterManualLocation"
 			android:icon="@drawable/maps__manual"
 			android:label="@string/maps__manual"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+			android:theme="@style/Theme.Imogene.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />

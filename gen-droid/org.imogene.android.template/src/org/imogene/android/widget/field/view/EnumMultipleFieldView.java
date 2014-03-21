@@ -22,8 +22,8 @@ public class EnumMultipleFieldView extends DefaultEntityView<boolean[]> {
 	public EnumMultipleFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EnumField, 0, 0);
-		mItems = getResources().getStringArray(a.getResourceId(R.styleable.EnumField_igItems, 0));
-		mItemsValues = getResources().getIntArray(a.getResourceId(R.styleable.EnumField_igItemsValues, 0));
+		mItems = getResources().getStringArray(a.getResourceId(R.styleable.EnumField_items, 0));
+		mItemsValues = getResources().getIntArray(a.getResourceId(R.styleable.EnumField_itemsValues, 0));
 		a.recycle();
 	}
 

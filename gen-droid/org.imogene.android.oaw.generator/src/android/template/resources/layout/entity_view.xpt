@@ -52,9 +52,9 @@
 <org.imogene.android.widget.field.view.«EXPAND class FOR this-»
 	style="@style/BaseField"
 	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
-	app:igDependent="«fieldDependentVisibility.size > 0»"
-	app:igHidden="«hidden»"
-	app:igTitle="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+	app:dependent="«fieldDependentVisibility.size > 0»"
+	app:hidden="«hidden»"
+	app:title="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
 	«EXPAND specificAttributes FOR this-»
 />
 «ENDDEFINE»
@@ -105,32 +105,32 @@
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR TextField-»
-app:igStringType="string"
+app:stringType="string"
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR AddressField-»
-app:igStringType="address"
+app:stringType="address"
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR PhoneField-»
-app:igStringType="address"
+app:stringType="address"
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR TextAreaField-»
-app:igStringType="address"
+app:stringType="address"
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR NumericField-»
-app:igFormat="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format"
+app:format="@string/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format"
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR EnumField-»
-app:igItems="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
-app:igItemsValues="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values"
+app:items="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
+app:itemsValues="@array/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values"
 «ENDDEFINE»
 
 «DEFINE specificAttributes FOR RelationFieldEntity-»
 «IF cardinality != 1»
-app:igDisplay="@plurals/«entity.name.toLowerCase()-»_display"
+app:display="@plurals/«entity.name.toLowerCase()-»_display"
 «ENDIF»
 «ENDDEFINE»

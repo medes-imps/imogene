@@ -4,7 +4,7 @@
     <!-- XML files to generate -->
     <item name="general_settings" type="xml"/>
     <item name="hidden_settings" type="xml"/>
-    
+
     <!-- Arrays to generate -->
     <item name="languages_iso" type="array"/>
     <item name="languages_display" type="array"/>

@@ -29,7 +29,7 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 		super(context, attrs, R.layout.imog__field_edit_buttons);
 		init();
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GeoFieldEdit, 0, 0);
-		mProvider = a.getInt(R.styleable.GeoFieldEdit_igGeoType, -1);
+		mProvider = a.getInt(R.styleable.GeoFieldEdit_geoType, -1);
 		a.recycle();
 	}
 

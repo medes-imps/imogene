@@ -24,14 +24,14 @@ public class DateFieldEdit extends DatesFieldEdit implements OnDateSetListener {
 	public DateFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DatesFieldEdit, 0, 0);
-		if (a.hasValue(R.styleable.DatesFieldEdit_igDateMin)) {
-			String date = a.getString(R.styleable.DatesFieldEdit_igDateMin);
+		if (a.hasValue(R.styleable.DatesFieldEdit_dateMin)) {
+			String date = a.getString(R.styleable.DatesFieldEdit_dateMin);
 			setMin(FormatHelper.readDate(date));
 		} else {
 			setMin(null);
 		}
-		if (a.hasValue(R.styleable.DatesFieldEdit_igDateMax)) {
-			String date = a.getString(R.styleable.DatesFieldEdit_igDateMax);
+		if (a.hasValue(R.styleable.DatesFieldEdit_dateMax)) {
+			String date = a.getString(R.styleable.DatesFieldEdit_dateMax);
 			setMax(FormatHelper.readDate(date));
 		} else {
 			setMax(null);

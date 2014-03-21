@@ -27,8 +27,8 @@ public abstract class FilterPreference<T extends ClientFilter> extends DialogPre
 		super(context, attrs);
 
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FilterPreference, 0, 0);
-		mCardEntity = a.getString(R.styleable.FilterPreference_igFilterEntity);
-		mEntityField = a.getString(R.styleable.FilterPreference_igFilterField);
+		mCardEntity = a.getString(R.styleable.FilterPreference_filterEntity);
+		mEntityField = a.getString(R.styleable.FilterPreference_filterField);
 		a.recycle();
 
 		Preferences prefs = Preferences.getPreferences(context);

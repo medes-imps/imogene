@@ -28,14 +28,14 @@
 
     <style name="BaseField">
         <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">?attr/igFieldLayoutHeight</item>
+        <item name="android:layout_height">?attr/fieldLayoutHeight</item>
         <item name="android:orientation">vertical</item>
         <item name="android:focusable">true</item>
     </style>
 
     <style name="FieldDefault">
         <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">?attr/igFieldLayoutHeight</item>
+        <item name="android:layout_height">?attr/fieldLayoutHeight</item>
         <item name="android:background">@android:drawable/list_selector_background</item>
         <item name="android:duplicateParentState">true</item>
         <item name="android:gravity">center_vertical</item>

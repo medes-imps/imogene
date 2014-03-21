@@ -24,7 +24,7 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 	public RelationManyFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_relation);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
-		displayId = a.getResourceId(R.styleable.RelationField_igDisplay, 0);
+		displayId = a.getResourceId(R.styleable.RelationField_display, 0);
 		a.recycle();
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);

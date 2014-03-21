@@ -54,10 +54,10 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		super(context, attrs);
 		init(context, layoutId);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BaseField, 0, 0);
-		setEmptyText(a.getResourceId(R.styleable.BaseField_igEmptyText, R.string.imog__select));
-		setTitle(a.getResourceId(R.styleable.BaseField_igTitle, android.R.string.unknownName));
-		setDependent(a.getBoolean(R.styleable.BaseField_igDependent, false));
-		setHidden(a.getBoolean(R.styleable.BaseField_igHidden, false));
+		setEmptyText(a.getResourceId(R.styleable.BaseField_emptyText, R.string.imog__select));
+		setTitle(a.getResourceId(R.styleable.BaseField_title, android.R.string.unknownName));
+		setDependent(a.getBoolean(R.styleable.BaseField_dependent, false));
+		setHidden(a.getBoolean(R.styleable.BaseField_hidden, false));
 		a.recycle();
 	}
 

@@ -33,7 +33,7 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 		manager.getGeneratedProject().getFolder(path).delete(true, true, null);
 		path = new Path("res/drawable/small");
 		manager.getGeneratedProject().getFolder(path).delete(true, true, null);
-		path = new Path("res/values/ig_togen.xml");
+		path = new Path("res/values/imog__togen.xml");
 		manager.getGeneratedProject().getFile(path).delete(true, null);
 	}
 

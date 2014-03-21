@@ -21,13 +21,13 @@ public class FloatFieldEdit extends NumberFieldEdit<Float> {
 	public FloatFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_edit_numeric);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
-		if (a.hasValue(R.styleable.NumberField_igFloatMin)) {
-			setMin(a.getFloat(R.styleable.NumberField_igFloatMin, 0));
+		if (a.hasValue(R.styleable.NumberField_floatMin)) {
+			setMin(a.getFloat(R.styleable.NumberField_floatMin, 0));
 		} else {
 			setMin(null);
 		}
-		if (a.hasValue(R.styleable.NumberField_igFloatMax)) {
-			setMax(a.getFloat(R.styleable.NumberField_igFloatMax, 0));
+		if (a.hasValue(R.styleable.NumberField_floatMax)) {
+			setMax(a.getFloat(R.styleable.NumberField_floatMax, 0));
 		} else {
 			setMax(null);
 		}

@@ -54,8 +54,8 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 	public RelationFilterPreference(Context context, AttributeSet attrs) {
 		super(context, attrs, RelationFilter.FILTER_CREATOR);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationFilterPreference, 0, 0);
-		mEntityWs = a.getString(R.styleable.RelationFilterPreference_igFilterEntityws);
-		mHierarchicalField = a.getString(R.styleable.RelationFilterPreference_igFilterHierarchicalField);
+		mEntityWs = a.getString(R.styleable.RelationFilterPreference_filterEntityws);
+		mHierarchicalField = a.getString(R.styleable.RelationFilterPreference_filterHierarchicalField);
 		a.recycle();
 		mAdapter = new MyAdapter(context, android.R.layout.select_dialog_multichoice);
 

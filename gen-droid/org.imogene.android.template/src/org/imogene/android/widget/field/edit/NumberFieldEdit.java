@@ -22,7 +22,7 @@ public abstract class NumberFieldEdit<T extends Number> extends BaseFieldEdit<T>
 	public NumberFieldEdit(Context context, AttributeSet attrs, int layoutId) {
 		super(context, attrs, layoutId);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
-		setUnit(a.getResourceId(R.styleable.NumberField_igUnit, -1));
+		setUnit(a.getResourceId(R.styleable.NumberField_unit, -1));
 		a.recycle();
 	}
 

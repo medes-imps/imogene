@@ -50,10 +50,10 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	public RelationFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_relation);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
-		mHasReverse = a.getBoolean(R.styleable.RelationField_igHasReverse, false);
-		mDisplayId = a.getResourceId(R.styleable.RelationField_igDisplay, 0);
-		mOppositeCardinality = a.getInt(R.styleable.RelationField_igOppositeCardinality, 0);
-		mType = a.getInt(R.styleable.RelationField_igRelationType, 0);
+		mHasReverse = a.getBoolean(R.styleable.RelationField_hasReverse, false);
+		mDisplayId = a.getResourceId(R.styleable.RelationField_display, 0);
+		mOppositeCardinality = a.getInt(R.styleable.RelationField_oppositeCardinality, 0);
+		mType = a.getInt(R.styleable.RelationField_relationType, 0);
 		a.recycle();
 		setOnClickListener(this);
 	}

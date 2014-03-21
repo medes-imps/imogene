@@ -49,9 +49,9 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		super(context, attrs, layoutId);
 		init();
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BaseFieldEdit, 0, 0);
-		setHelpId(a.getResourceId(R.styleable.BaseFieldEdit_igHelp, 0));
-		setReadOnly(a.getBoolean(R.styleable.BaseFieldEdit_igReadOnly, false));
-		setRequired(a.getBoolean(R.styleable.BaseFieldEdit_igRequired, false));
+		setHelpId(a.getResourceId(R.styleable.BaseFieldEdit_help, 0));
+		setReadOnly(a.getBoolean(R.styleable.BaseFieldEdit_readOnly, false));
+		setRequired(a.getBoolean(R.styleable.BaseFieldEdit_required, false));
 		a.recycle();
 	}
 

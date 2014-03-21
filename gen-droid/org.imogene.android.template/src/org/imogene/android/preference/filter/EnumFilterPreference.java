@@ -27,9 +27,9 @@ public class EnumFilterPreference extends FilterPreference<EnumFilter> implement
 		super(context, attrs, EnumFilter.FILTER_CREATOR);
 		final Resources r = context.getResources();
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EnumFilterPreference, 0, 0);
-		mIsMulti = a.getBoolean(R.styleable.EnumFilterPreference_igFilterMultiple, false);
-		mItems = r.getStringArray(a.getResourceId(R.styleable.EnumFilterPreference_igFilterItems, 0));
-		mItemsValues = r.getIntArray(a.getResourceId(R.styleable.EnumFilterPreference_igFilterItemsValues, 0));
+		mIsMulti = a.getBoolean(R.styleable.EnumFilterPreference_filterMultiple, false);
+		mItems = r.getStringArray(a.getResourceId(R.styleable.EnumFilterPreference_filterItems, 0));
+		mItemsValues = r.getIntArray(a.getResourceId(R.styleable.EnumFilterPreference_filterItemsValues, 0));
 		a.recycle();
 		mSize = mItems.length;
 	}

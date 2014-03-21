@@ -7,16 +7,39 @@
 
     <!-- Variation on the Light theme that turns off the title -->
     <style name="Theme.Imogene" parent="@style/Theme.Sherlock.Light">
-        <item name="igFieldLayoutHeight">wrap_content</item>
+        <item name="fieldLayoutHeight">wrap_content</item>
     </style>
 
     <style name="Theme.Imogene.Wizard" parent="style/Theme.Imogene">
-        <item name="igFieldLayoutHeight">fill_parent</item>
+        <item name="fieldLayoutHeight">fill_parent</item>
     </style>
 
     <!-- Start with the Holographic Light theme -->
     <style name="Theme.Imogene.Home" parent="style/Theme.Imogene">
         <item name="android:windowBackground">@drawable/imog__background_noise</item>
+    </style>
+
+    <!--
+         Theme for translucent activities. That is, windows
+         that allow you to see through them to the windows behind.  This sets up the translucent
+         flag and appropriate animations for your windows.
+    -->
+    <style name="Theme.Imogene.Translucent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--
+             Note that we use the base animation style here (that is no
+             animations) because we really have no idea how this kind of
+             activity will be used.
+        -->
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+
+    <!-- Variant of {@link #Theme_Imogene_Translucent} with no title bar -->
+    <style name="Theme.Imogene.Translucent.NoTitleBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
 </resources>

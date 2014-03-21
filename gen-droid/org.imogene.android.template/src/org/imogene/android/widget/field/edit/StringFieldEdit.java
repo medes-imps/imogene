@@ -22,7 +22,7 @@ public abstract class StringFieldEdit<T> extends BaseFieldEdit<T> {
 	public StringFieldEdit(Context context, AttributeSet attrs, int layoutId) {
 		super(context, attrs, layoutId);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StringFieldEdit, 0, 0);
-		setStringType(a.getInt(R.styleable.StringFieldEdit_igStringType, InputType.TYPE_NULL));
+		setStringType(a.getInt(R.styleable.StringFieldEdit_stringType, InputType.TYPE_NULL));
 		a.recycle();
 	}
 

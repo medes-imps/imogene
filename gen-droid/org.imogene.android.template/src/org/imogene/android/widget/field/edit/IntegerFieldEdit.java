@@ -21,13 +21,13 @@ public class IntegerFieldEdit extends NumberFieldEdit<Integer> {
 	public IntegerFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_edit_numeric);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
-		if (a.hasValue(R.styleable.NumberField_igIntMin)) {
-			setMin(a.getInt(R.styleable.NumberField_igIntMin, 0));
+		if (a.hasValue(R.styleable.NumberField_intMin)) {
+			setMin(a.getInt(R.styleable.NumberField_intMin, 0));
 		} else {
 			setMin(null);
 		}
-		if (a.hasValue(R.styleable.NumberField_igIntMax)) {
-			setMax(a.getInt(R.styleable.NumberField_igIntMax, 0));
+		if (a.hasValue(R.styleable.NumberField_intMax)) {
+			setMax(a.getInt(R.styleable.NumberField_intMax, 0));
 		} else {
 			setMax(null);
 		}
