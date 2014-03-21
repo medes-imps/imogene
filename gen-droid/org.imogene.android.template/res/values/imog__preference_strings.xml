@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Preferences messages -->
+    <string name="imog__general_settings">"Preferences"</string>
+    <string name="imog__hidden_settings">"Hidden Preferences"</string>
+    <string name="imog__synchro_parameters">"Connection parameters"</string>
+    <string name="imog__application_parameters">"Application parameters"</string>
+    <string name="imog__push_parameters">Push parameters</string>
+    <string name="imog__sync_login_title">"Synchronization user"</string>
+    <string name="imog__sync_roles_title">"Synchronization roles"</string>
+    <string name="imog__sync_server_title">"Synchronization URL"</string>
+    <string name="imog__sync_terminal_title">"Hardware ID"</string>
+    <string name="imog__sync_terminal_dialog_title">"Renew the hardware's id"</string>
+    <string name="imog__sync_terminal_dialog_message">"Are you sure you want to delete the old ID and replace it by a new one ?"</string>
+    <string name="imog__sync_check_title">"One shot synchronization"</string>
+    <string name="imog__sync_check_summary">"Launch manually a single synchronization"</string>
+    <string name="imog__sync_period_title">"Synchronization period"</string>
+    <string name="imog__sync_period_summary">"Defines the time period between two synchronizations"</string>
+    <string name="imog__sync_enabled_title">"Synchronization"</string>
+    <string name="imog__sync_enabled_summaryon">"Disable the synchronization"</string>
+    <string name="imog__sync_enabled_summaryoff">"Enable the synchronization"</string>
+    <string name="imog__sync_bidirectional_enabled_title">"Bidirectional"</string>
+    <string name="imog__sync_bidirectional_enabled_summaryon">"Disable bidirectional synchronization"</string>
+    <string name="imog__sync_bidirectional_enabled_summaryoff">"Eanble bidirectional synchronization"</string>
+    <string name="imog__sync_onsave_enabled_title">Synchronize on save</string>
+    <string name="imog__sync_onsave_enabled_summaryon">Disable synchronization on save</string>
+    <string name="imog__sync_onsave_enabled_summaryoff">Enable synchronization on save</string>
+    <string name="imog__current_login_title">"Application user"</string>
+    <string name="imog__current_roles_title">"Application user's roles"</string>
+    <string name="imog__wizard_enabled_title">"Wizard"</string>
+    <string name="imog__wizard_enabled_summaryon">"Disable wizard during entity creation"</string>
+    <string name="imog__wizard_enabled_summaryoff">"Enable wizard during insertion"</string>
+    <string name="imog__rights_title">"Modification/Suppression rights"</string>
+    <string name="imog__debug_enabled_title">"Debug preferences"</string>
+    <string name="imog__debug_enabled_title">"Save synchronization files"</string>
+    <string name="imog__debug_enabled_summaryon">"Synchronization files will be kept"</string>
+    <string name="imog__debug_enabled_summaryoff">"Synchronization files will be deleted"</string>
+    <string name="imog__delete_title">"Renew"</string>
+    <string name="imog__delete_sync_history_title">"Renew synchronization history"</string>
+    <string name="imog__delete_sync_history_summary">"Delete all synchronization history"</string>
+    <string name="imog__delete_sync_history_dialog_message">"Are you sure you want to delete all synchronization history ?"</string>
+    <string name="imog__delete_database_title">"Renew the database"</string>
+    <string name="imog__delete_database_summary">"Delete the whole database (on the device only)"</string>
+    <string name="imog__delete_database_dialog_message">"You may have unsynchronized data. All data will be lost after performing this action.\nAre you sure you want to delete all database entries ?"</string>
+    <string name="imog__ntp_title">"NTP settings"</string>
+    <string name="imog__ntp_host_title">"NTP server address"</string>
+    <string name="imog__ntp_offset_title">"Current time offset"</string>
+    <string name="imog__about">"About"</string>
+    <string name="imog__about_title">"About Imogene"</string>
+    <string name="imog__about_summary">"Display informations about the Imogene application"</string>
+    <string name="imog__about_dialog_message"><b>Imogene application for Android</b>    \nVersion: Beta Test
+    \n<b>Informations</b>    \nThis version is a test release.\n<b>Contacts</b>    \nTo contact us please send a message to john.doe@mail.com.
+    \nYou can also contact us by phone, call M. Doe at +123456789</string>
+    <string name="imog__screen_filters_title">Filters</string>
+    <string name="imog__screen_filters_summary">Design filters for specific synchronization</string>
+    <string name="imog__webservice_server_title">Web Services Address</string>
+    <string name="imog__security_parameters">Security parameters</string>
+    <string name="imog__http_authentication_enabled_title">HTTP basic authentication</string>
+    <string name="imog__http_authentication_enabled_summaryon">Authentication enabled</string>
+    <string name="imog__http_authentication_enabled_summaryoff">Authentication disabled</string>
+    <string name="imog__update_parameters">"Update parameters"</string>
+    <string name="imog__update_available_title">"Application updates"</string>
+    <string name="imog__update_available_summary_enabled">"Update available"</string>
+    <string name="imog__update_available_summary_disabled">"The application is up to date"</string>
+    <string name="imog__update_app_title">"Loading&#8230;"</string>
+    <string name="imog__update_app_message">"Downloading updates"</string>
+    <string name="imog__update_server_title">"Server Update URL"</string>
+    <string name="imog__precache_title">"Cache Settings"</string>
+    <string name="imog__precache_caching_title">"Automatic caching"</string>
+    <string name="imog__precache_caching_summary">"Automatic caching the map areas"</string>
+    <string name="imog__precache_clear_title">"Clear map tile cache"</string>
+    <string name="imog__precache_clear_summary">"Current cache size is %1$s. To clear user data use the system application settings"</string>
+    <string name="imog__precache_area_title">"Precached map areas"</string>
+    <string name="imog__precache_computing_summary">"Computing&#8230;"</string>
+    <string name="imog__push_host_title">Host address</string>
+    <string name="imog__push_port_title">Port number</string>
+    <string name="imog__push_enabled_title">Push</string>
+    <string name="imog__push_enabled_summaryon">Disable push</string>
+    <string name="imog__push_enabled_summaryoff">Enable push</string>
+    <string name="imog__push_ssl_enabled_title">Push over SSL</string>
+    <string name="imog__push_ssl_enabled_summaryon">Disable push over SSL</string>
+    <string name="imog__push_ssl_enabled_summaryoff">Enable push over SSL</string>
+
+</resources>

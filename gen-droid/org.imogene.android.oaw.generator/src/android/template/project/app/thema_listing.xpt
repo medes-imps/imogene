@@ -34,8 +34,6 @@ import android.widget.ExpandableListView;
 
 public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity {
 
-	private	static final int MENU_SYNC_ID = 1;
-	
 	private static final int DIALOG_EXIT_ID = 1;
 	
 	private final Handler mHandler = new Handler();
@@ -75,22 +73,15 @@ public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, MENU_SYNC_ID, Menu.NONE, R.string.ig_menu_sync)
-		.setIcon(R.drawable.ig_ic_title_sync)
-		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-		getSupportMenuInflater().inflate(R.menu.ig_menu_thema_listing, menu);
-		«IF multilogin-»
-		menu.findItem(R.id.ig_menu_change_user).setVisible(true).setIntent(new Intent(this, MultiUserListing.class));
-		«ENDIF-»
-		menu.findItem(R.id.ig_menu_preferences).setIntent(new Intent(this, GeneralSettings.class));
+		getSupportMenuInflater().inflate(R.menu.imog__menu_thema, menu);
+		menu.findItem(R.id.imog__menu_preferences).setIntent(new Intent(this, GeneralSettings.class));
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_SYNC_ID :
+		case R.id.imog__menu_sync :
 			SynchronizationService.actionCheck(this);
 			return true;
 		default :
@@ -117,7 +108,7 @@ public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity
 			return new AlertDialog.Builder(this)
 			.setTitle(android.R.string.dialog_alert_title)
 			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setMessage(R.string.ig_dialog_quit)
+			.setMessage(R.string.imog__dialog_quit)
 			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

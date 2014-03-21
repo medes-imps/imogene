@@ -54,7 +54,7 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		super(context, attrs);
 		init(context, layoutId);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BaseField, 0, 0);
-		setEmptyText(a.getResourceId(R.styleable.BaseField_igEmptyText, R.string.ig_select));
+		setEmptyText(a.getResourceId(R.styleable.BaseField_igEmptyText, R.string.imog__select));
 		setTitle(a.getResourceId(R.styleable.BaseField_igTitle, android.R.string.unknownName));
 		setDependent(a.getBoolean(R.styleable.BaseField_igDependent, false));
 		setHidden(a.getBoolean(R.styleable.BaseField_igHidden, false));
@@ -63,21 +63,21 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 
 	private void init(Context context, int layoutId) {
 		inflate(context, layoutId, this);
-		inflate(context, R.layout.ig_divider_layout, this);
+		inflate(context, R.layout.imog__divider_layout, this);
 
-		mValueView = (TextView) findViewById(R.id.ig_value);
+		mValueView = (TextView) findViewById(R.id.imog__value);
 		if (mValueView == null) {
 			throw new NullPointerException();
 		}
 		mValueView.setSaveEnabled(false);
 
-		mTitleView = (TextView) findViewById(R.id.ig_title);
+		mTitleView = (TextView) findViewById(R.id.imog__title);
 		if (mTitleView == null) {
 			throw new NullPointerException();
 		}
 		mTitleView.setSaveEnabled(false);
 
-		mDependentView = findViewById(R.id.ig_arrow);
+		mDependentView = findViewById(R.id.imog__arrow);
 		if (mDependentView != null) {
 			mDependentView.setSaveEnabled(false);
 		}

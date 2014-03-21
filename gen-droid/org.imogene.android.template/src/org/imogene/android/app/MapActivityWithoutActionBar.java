@@ -81,11 +81,11 @@ public class MapActivityWithoutActionBar extends MapActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(Menu.NONE, MENU_MYLOCATION_ID, Menu.NONE, R.string.maps__my_location).setIcon(
-				R.drawable.ig_ic_menu_mylocation);
-		menu.add(Menu.NONE, MENU_COMPASS_ID, Menu.NONE, R.string.maps__compass).setIcon(R.drawable.ig_ic_menu_compass);
-		menu.add(Menu.NONE, MENU_MAPMODE_ID, Menu.NONE, R.string.maps__map_mode).setIcon(R.drawable.ig_ic_menu_mapmode);
+				R.drawable.imog__ic_menu_mylocation);
+		menu.add(Menu.NONE, MENU_COMPASS_ID, Menu.NONE, R.string.maps__compass).setIcon(R.drawable.imog__ic_menu_compass);
+		menu.add(Menu.NONE, MENU_MAPMODE_ID, Menu.NONE, R.string.maps__map_mode).setIcon(R.drawable.imog__ic_menu_mapmode);
 		menu.add(Menu.NONE, MENU_OFFLINE_ID, Menu.NONE, R.string.maps__offline_mode).setIcon(
-				R.drawable.ig_ic_menu_offline);
+				R.drawable.imog__ic_menu_offline);
 		return super.onCreateOptionsMenu(menu);
 	}
 

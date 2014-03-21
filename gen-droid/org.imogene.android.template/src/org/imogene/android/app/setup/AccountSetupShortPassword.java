@@ -35,11 +35,11 @@ public class AccountSetupShortPassword extends SherlockActivity implements OnCli
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.ig_account_setup_short_password);
+		setContentView(R.layout.imog__account_setup_short_password);
 
-		mShortpwView = (EditText) findViewById(R.id.ig_account_shortpw);
-		mShortpwConfirmView = (EditText) findViewById(R.id.ig_account_shotpw_confirm);
-		mNextButton = (Button) findViewById(R.id.ig_next);
+		mShortpwView = (EditText) findViewById(R.id.imog__account_shortpw);
+		mShortpwConfirmView = (EditText) findViewById(R.id.imog__account_shotpw_confirm);
+		mNextButton = (Button) findViewById(R.id.imog__next);
 
 		mNextButton.setOnClickListener(this);
 
@@ -60,7 +60,7 @@ public class AccountSetupShortPassword extends SherlockActivity implements OnCli
 	protected Dialog onCreateDialog(int id) {
 		if (id == ERROR_DIALOG_ID) {
 			return new AlertDialog.Builder(this).setTitle(android.R.string.dialog_alert_title)
-					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.ig_account_setup_shortpw_error)
+					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.imog__account_setup_shortpw_error)
 					.setCancelable(false).setPositiveButton(android.R.string.ok, null).create();
 		} else {
 			return super.onCreateDialog(id);
@@ -70,7 +70,7 @@ public class AccountSetupShortPassword extends SherlockActivity implements OnCli
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_next:
+		case R.id.imog__next:
 			onNext();
 			break;
 		}

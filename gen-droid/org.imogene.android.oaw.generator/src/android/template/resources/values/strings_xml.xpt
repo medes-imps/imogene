@@ -42,7 +42,7 @@
 	«ENDFOREACH-»
 	
 	«IF entity.hasDynamicFields-»
-	<string name="«entity.name.toLowerCase()»_dynamic_field_group">@string/ig_dynamic_field_group</string>
+	<string name="«entity.name.toLowerCase()»_dynamic_field_group">@string/imog__dynamic_field_group</string>
 	«ENDIF-»
 	
 	«ENDFOREACH-»

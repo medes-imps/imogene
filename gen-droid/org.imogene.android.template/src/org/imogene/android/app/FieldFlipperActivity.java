@@ -25,8 +25,8 @@ public class FieldFlipperActivity extends SherlockActivity implements OnFinishCl
 
 	private void ensureWizard() {
 		if (mWizard == null) {
-			setContentView(R.layout.ig_wizard_content);
-			mWizard = (ImogBeanWizardView) findViewById(R.id.ig_wizard);
+			setContentView(R.layout.imog__wizard_content);
+			mWizard = (ImogBeanWizardView) findViewById(R.id.imog__wizard);
 			mWizard.setup();
 			mWizard.setOnFinishClickListener(this);
 		}

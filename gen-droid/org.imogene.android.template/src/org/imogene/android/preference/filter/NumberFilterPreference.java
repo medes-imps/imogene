@@ -38,19 +38,19 @@ public abstract class NumberFilterPreference<U extends Number, T extends NumberF
 		switch (o) {
 		case BETWEEN:
 			if (i != null && s != null)
-				return getContext().getString(R.string.ig_filter_number_between, i.toString(), s.toString());
+				return getContext().getString(R.string.imog__filter_number_between, i.toString(), s.toString());
 			break;
 		case EQUAL:
 			if (e != null)
-				return getContext().getString(R.string.ig_filter_number_equal, e.toString());
+				return getContext().getString(R.string.imog__filter_number_equal, e.toString());
 			break;
 		case INFIMUM:
 			if (i != null)
-				return getContext().getString(R.string.ig_filter_number_gt, i.toString());
+				return getContext().getString(R.string.imog__filter_number_gt, i.toString());
 			break;
 		case SUPREMUM:
 			if (s != null)
-				return getContext().getString(R.string.ig_filter_number_lt, s.toString());
+				return getContext().getString(R.string.imog__filter_number_lt, s.toString());
 			break;
 		}
 		return getContext().getString(android.R.string.unknownName);
@@ -96,12 +96,12 @@ public abstract class NumberFilterPreference<U extends Number, T extends NumberF
 	@Override
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		spinner = ((Spinner) view.findViewById(R.id.ig_spinner));
+		spinner = ((Spinner) view.findViewById(R.id.imog__spinner));
 
-		equals = (TextView) view.findViewById(R.id.ig_equals);
-		infimum = (TextView) view.findViewById(R.id.ig_infimum);
-		supremum = (TextView) view.findViewById(R.id.ig_supremum);
-		interval = view.findViewById(R.id.ig_interval);
+		equals = (TextView) view.findViewById(R.id.imog__equals);
+		infimum = (TextView) view.findViewById(R.id.imog__infimum);
+		supremum = (TextView) view.findViewById(R.id.imog__supremum);
+		interval = view.findViewById(R.id.imog__interval);
 
 		spinner.setOnItemSelectedListener(this);
 

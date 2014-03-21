@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="imog__button_minWidth">100sp</dimen>
+
+    <!-- action bar -->
+    <dimen name="imog__text_size_small">14sp</dimen>
+    <dimen name="imog__tab_height">38dp</dimen>
+    <dimen name="imog__tab_side_padding">2dp</dimen>
+
+</resources>

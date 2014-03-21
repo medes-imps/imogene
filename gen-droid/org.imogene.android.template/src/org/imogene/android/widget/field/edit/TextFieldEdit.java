@@ -19,7 +19,7 @@ public class TextFieldEdit extends StringFieldEdit<String> implements TextWatche
 	public static final int TYPE_EMAIL = 4;
 
 	public TextFieldEdit(Context context) {
-		super(context, R.layout.ig_field_edit_text);
+		super(context, R.layout.imog__field_edit_text);
 		setFocusable(false);
 	}
 
@@ -29,7 +29,7 @@ public class TextFieldEdit extends StringFieldEdit<String> implements TextWatche
 	}
 
 	public TextFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_edit_text);
+		super(context, attrs, R.layout.imog__field_edit_text);
 		setFocusable(false);
 	}
 

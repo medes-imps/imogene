@@ -3,61 +3,61 @@
 «FILE 'xml/hidden_settings.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/ig_security_parameters">
+	<PreferenceCategory android:title="@string/imog__security_parameters">
 		<CheckBoxPreference
 			android:key="httpAuthenticationEnabled"
-			android:title="@string/ig_http_authentication_enabled_title"
-			android:summaryOn="@string/ig_http_authentication_enabled_summaryon"
-			android:summaryOff="@string/ig_http_authentication_enabled_summaryoff" 
+			android:title="@string/imog__http_authentication_enabled_title"
+			android:summaryOn="@string/imog__http_authentication_enabled_summaryon"
+			android:summaryOff="@string/imog__http_authentication_enabled_summaryoff" 
 			android:defaultValue="true"/>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/ig_synchro_parameters">
+	<PreferenceCategory android:title="@string/imog__synchro_parameters">
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="syncTerminal"
-			android:title="@string/ig_sync_terminal_title"
+			android:title="@string/imog__sync_terminal_title"
 			android:dialogIcon="@android:drawable/ic_dialog_alert"
-			android:dialogTitle="@string/ig_sync_terminal_dialog_title"
-			android:dialogMessage="@string/ig_sync_terminal_dialog_message" />
+			android:dialogTitle="@string/imog__sync_terminal_dialog_title"
+			android:dialogMessage="@string/imog__sync_terminal_dialog_message" />
 		«IF multilogin»
 		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="syncRoles"
-			android:title="@string/ig_sync_roles_title" />
+			android:title="@string/imog__sync_roles_title" />
 		«ENDIF»
 		<fr.medes.android.preference.MyEditTextPreference 
 			android:key="«IF multilogin»currentRoles«ELSE»syncRoles«ENDIF»"
-			android:title="@string/ig_current_roles_title" />
+			android:title="@string/imog__current_roles_title" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/ig_debug_enabled_title">
+	<PreferenceCategory android:title="@string/imog__debug_enabled_title">
 		<CheckBoxPreference
 			android:key="debugEnabled"
-			android:title="@string/ig_debug_enabled_title"
-			android:summaryOn="@string/ig_debug_enabled_summaryon"
-			android:summaryOff="@string/ig_debug_enabled_summaryoff" />
+			android:title="@string/imog__debug_enabled_title"
+			android:summaryOn="@string/imog__debug_enabled_summaryon"
+			android:summaryOff="@string/imog__debug_enabled_summaryoff" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/ig_delete_title">
+	<PreferenceCategory android:title="@string/imog__delete_title">
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="deleteHistory"
-			android:title="@string/ig_delete_sync_history_title"
-			android:summary="@string/ig_delete_sync_history_summary"
+			android:title="@string/imog__delete_sync_history_title"
+			android:summary="@string/imog__delete_sync_history_summary"
 			android:dialogIcon="@android:drawable/ic_dialog_alert"
-			android:dialogTitle="@string/ig_delete_sync_history_title"
-			android:dialogMessage="@string/ig_delete_sync_history_dialog_message" />
+			android:dialogTitle="@string/imog__delete_sync_history_title"
+			android:dialogMessage="@string/imog__delete_sync_history_dialog_message" />
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="deleteDatabase"
-			android:title="@string/ig_delete_database_title"
-			android:summary="@string/ig_delete_database_summary"
+			android:title="@string/imog__delete_database_title"
+			android:summary="@string/imog__delete_database_summary"
 			android:dialogIcon="@android:drawable/ic_dialog_alert"
-			android:dialogTitle="@string/ig_delete_database_title"
-			android:dialogMessage="@string/ig_delete_database_dialog_message" />
+			android:dialogTitle="@string/imog__delete_database_title"
+			android:dialogMessage="@string/imog__delete_database_dialog_message" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/ig_ntp_title">
+	<PreferenceCategory android:title="@string/imog__ntp_title">
 		<fr.medes.android.preference.MyEditTextPreference
 			android:key="ntpHost"
-			android:title="@string/ig_ntp_host_title"
+			android:title="@string/imog__ntp_host_title"
 			android:defaultValue="«sntpServer»" />
 		<Preference
 			android:key="ntpOffset"
-			android:title="@string/ig_ntp_offset_title" />
+			android:title="@string/imog__ntp_offset_title" />
 	</PreferenceCategory>
 </PreferenceScreen>
 «ENDFILE-»

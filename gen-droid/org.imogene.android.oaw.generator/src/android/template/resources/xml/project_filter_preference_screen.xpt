@@ -6,11 +6,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:title="@string/ig_screen_filters_title" >
+	android:title="@string/imog__screen_filters_title" >
 	
 	<fr.medes.android.preference.MyEditTextPreference 
-		android:key="@string/ig_webservice_server_title"
-		android:title="@string/ig_webservice_server_title"
+		android:key="@string/imog__webservice_server_title"
+		android:title="@string/imog__webservice_server_title"
 		android:inputType="textUri"
 		android:defaultValue="«webService»" />
 	«FOREACH entities AS e-»

@@ -35,13 +35,13 @@ public class ImogBeanWizardView extends RelativeLayout implements OnClickListene
 	}
 
 	public void setup() {
-		mFlipper = (FieldFlipper) findViewById(R.id.ig_flipper);
+		mFlipper = (FieldFlipper) findViewById(R.id.imog__flipper);
 
-		mNext = findViewById(R.id.ig_next_field);
-		mPrevious = findViewById(R.id.ig_previous_field);
-		mFinish = findViewById(R.id.ig_finish);
+		mNext = findViewById(R.id.imog__next_field);
+		mPrevious = findViewById(R.id.imog__previous_field);
+		mFinish = findViewById(R.id.imog__finish);
 
-		mConstraints = (TextView) findViewById(R.id.ig_constraints);
+		mConstraints = (TextView) findViewById(R.id.imog__constraints);
 
 		mNext.setOnClickListener(this);
 		mPrevious.setOnClickListener(this);
@@ -61,13 +61,13 @@ public class ImogBeanWizardView extends RelativeLayout implements OnClickListene
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_next_field:
+		case R.id.imog__next_field:
 			mFlipper.showNext();
 			break;
-		case R.id.ig_previous_field:
+		case R.id.imog__previous_field:
 			mFlipper.showPrevious();
 			break;
-		case R.id.ig_finish:
+		case R.id.imog__finish:
 			if (mListener != null) {
 				mListener.onFinishClick();
 			}

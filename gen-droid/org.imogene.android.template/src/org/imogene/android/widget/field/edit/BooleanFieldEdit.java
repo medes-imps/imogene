@@ -13,11 +13,11 @@ import android.view.View;
 public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickListener {
 
 	public BooleanFieldEdit(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 	}
 
 	public BooleanFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 	public String getFieldDisplay() {
 		final Boolean bool = getValue();
 		if (bool != null) {
-			String[] array = getResources().getStringArray(R.array.ig_select_yes_no);
+			String[] array = getResources().getStringArray(R.array.imog__select_yes_no);
 			return bool.booleanValue() ? array[0] : array[1];
 		} else {
 			return getEmptyText();
@@ -52,7 +52,7 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
 		final Boolean init = getValue();
-		builder.setSingleChoiceItems(R.array.ig_select_yes_no, init != null ? (init ? 0 : 1) : -1, this);
+		builder.setSingleChoiceItems(R.array.imog__select_yes_no, init != null ? (init ? 0 : 1) : -1, this);
 		builder.setNeutralButton(android.R.string.cut, this);
 		builder.setNegativeButton(android.R.string.cancel, null);
 	}

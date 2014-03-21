@@ -12,7 +12,7 @@ import android.view.View;
 public class EmailFieldView extends BaseFieldView<String> {
 
 	public EmailFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_action_email);
 	}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!--
+		Layout height/width and background are set here. This is a hack to
+		apply a default style to the ActionBar. Indeed, no style can be
+		applied to a LinearLayout
+    -->
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <ScrollView
+            android:id="@android:id/empty"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true" >
+
+            <TextView
+                android:id="@+id/imog__emptyText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="0.92"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:paddingTop="10dip"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="20sp" />
+        </ScrollView>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/imog__footer"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginTop="1dip"
+        android:background="@android:drawable/bottom_bar"
+        android:paddingLeft="9dip"
+        android:paddingRight="9dip"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/imog__saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:minWidth="120dip"
+            android:text="@string/imog__menu_save" />
+
+        <Button
+            android:id="@+id/imog__discardButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:minWidth="120dip"
+            android:text="@string/imog__menu_discard" />
+    </RelativeLayout>
+
+</LinearLayout>

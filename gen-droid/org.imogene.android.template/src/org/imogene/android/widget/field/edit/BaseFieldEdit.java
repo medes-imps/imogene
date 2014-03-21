@@ -56,12 +56,12 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 	}
 
 	private void init() {
-		mHelpView = findViewById(R.id.ig_help);
+		mHelpView = findViewById(R.id.imog__help);
 		if (mHelpView != null) {
 			mHelpView.setSaveEnabled(false);
 		}
 
-		mRequiredView = findViewById(R.id.ig_required);
+		mRequiredView = findViewById(R.id.imog__required);
 		if (mRequiredView != null) {
 			mRequiredView.setSaveEnabled(false);
 		}
@@ -116,7 +116,7 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		entry.setTag(tag);
 		entry.setTitle(getTitle());
 		if (mRequired) {
-			entry.addMessage(getResources().getString(R.string.ig_required));
+			entry.addMessage(getResources().getString(R.string.imog__required));
 		}
 		return entry;
 	}
@@ -208,13 +208,13 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 	}
 
 	protected void showToastUnset() {
-		String message = getResources().getString(R.string.ig_relation_hierarchical_parent_unset, getTitle());
+		String message = getResources().getString(R.string.imog__relation_hierarchical_parent_unset, getTitle());
 		Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
 
 	@Override
 	public void onClick(View v) {
-		if (v.getId() == R.id.ig_help) {
+		if (v.getId() == R.id.imog__help) {
 			showHelpDialog(null);
 		} else {
 			dispatchClick(v);

@@ -65,8 +65,6 @@ import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity implements 
 		OnClickListener, FieldContainer, OnValueChangeListener {
 
-	private static final int MENU_SAVE_ID = Menu.FIRST;
-	
 	private static final int DIALOG_UNSAVED_ID = 1;
 	private static final int DIALOG_ERROR_ID = 2;
 	private static final int DIALOG_IAMLOST_ID = 3;
@@ -224,22 +222,17 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, MENU_SAVE_ID, Menu.NONE, R.string.ig_menu_save)
-		.setIcon(R.drawable.ig_ic_title_save)
-		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
-
+		getSupportMenuInflater().inflate(R.menu.imog__menu_edit, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.ig_menu_iamlost :
+		case R.id.imog__menu_iamlost :
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
-		case MENU_SAVE_ID:
+		case R.id.imog__menu_edit :
 			save(false);
 			return true;
 		default :
@@ -254,9 +247,9 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 				return new AlertDialog.Builder(this)
 				.setTitle(android.R.string.dialog_alert_title)
 				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setMessage(R.string.ig_unsaved_dialog_msg)
+				.setMessage(R.string.imog__unsaved_dialog_msg)
 				.setPositiveButton(android.R.string.yes, this)
-				.setNegativeButton(R.string.ig_no, this)
+				.setNegativeButton(R.string.imog__no, this)
 				.setNeutralButton(android.R.string.cancel, null)
 				.setCancelable(false)
 				.create();

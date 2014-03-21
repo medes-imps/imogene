@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imog__select_dialog_listview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/background_light"
+    android:cacheColorHint="@null"
+    android:divider="@android:drawable/divider_horizontal_bright"
+    android:scrollbars="vertical" />

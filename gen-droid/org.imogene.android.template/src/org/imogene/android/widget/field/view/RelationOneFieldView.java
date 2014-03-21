@@ -14,19 +14,19 @@ import android.view.View;
 public class RelationOneFieldView extends BaseFieldView<Uri> {
 
 	public RelationOneFieldView(Context context) {
-		super(context, R.layout.ig_field_relation);
+		super(context, R.layout.imog__field_relation);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);
 	}
 
 	public RelationOneFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_relation);
+		super(context, attrs, R.layout.imog__field_relation);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);
 	}
 
 	public void setDrawable(Drawable drawable) {
-		final View color = findViewById(R.id.ig_color);
+		final View color = findViewById(R.id.imog__color);
 		if (color != null) {
 			color.setBackgroundDrawable(drawable);
 		}

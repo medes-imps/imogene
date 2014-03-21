@@ -44,11 +44,11 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	protected Uri mContentUri;
 
 	public RelationFieldEdit(Context context) {
-		super(context, R.layout.ig_field_relation);
+		super(context, R.layout.imog__field_relation);
 	}
 
 	public RelationFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_relation);
+		super(context, attrs, R.layout.imog__field_relation);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
 		mHasReverse = a.getBoolean(R.styleable.RelationField_igHasReverse, false);
 		mDisplayId = a.getResourceId(R.styleable.RelationField_igDisplay, 0);
@@ -93,7 +93,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	}
 
 	public void setDrawable(Drawable drawable) {
-		final View color = findViewById(R.id.ig_color);
+		final View color = findViewById(R.id.imog__color);
 		if (color != null) {
 			color.setBackgroundDrawable(drawable);
 		}

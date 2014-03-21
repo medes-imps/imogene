@@ -24,7 +24,7 @@ public class ImageCapture extends Activity implements SingleMediaListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.ig_media_content);
+		setContentView(R.layout.imog__media_content);
 
 		if (savedInstanceState != null) {
 			return;

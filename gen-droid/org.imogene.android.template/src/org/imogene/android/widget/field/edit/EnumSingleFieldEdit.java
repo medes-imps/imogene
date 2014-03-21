@@ -18,12 +18,12 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 	private int[] mItemsValues;
 
 	public EnumSingleFieldEdit(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 		setValue(-1);
 	}
 
 	public EnumSingleFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EnumField, 0, 0);
 		mItems = getResources().getStringArray(a.getResourceId(R.styleable.EnumField_igItems, 0));
 		mItemsValues = getResources().getIntArray(a.getResourceId(R.styleable.EnumField_igItemsValues, 0));

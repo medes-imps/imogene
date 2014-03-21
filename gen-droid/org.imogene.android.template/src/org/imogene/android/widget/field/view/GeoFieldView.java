@@ -22,12 +22,12 @@ public class GeoFieldView extends BaseFieldView<Location> implements OnQuickActi
 	private QuickActionBar mBar;
 
 	public GeoFieldView(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 		init();
 	}
 
 	public GeoFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		init();
 	}
 

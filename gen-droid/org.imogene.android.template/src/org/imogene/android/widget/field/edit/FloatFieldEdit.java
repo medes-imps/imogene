@@ -14,12 +14,12 @@ import fr.medes.android.util.field.FieldPattern;
 public class FloatFieldEdit extends NumberFieldEdit<Float> {
 
 	public FloatFieldEdit(Context context) {
-		super(context, R.layout.ig_field_edit_numeric);
+		super(context, R.layout.imog__field_edit_numeric);
 		setFocusable(false);
 	}
 
 	public FloatFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_edit_numeric);
+		super(context, attrs, R.layout.imog__field_edit_numeric);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
 		if (a.hasValue(R.styleable.NumberField_igFloatMin)) {
 			setMin(a.getFloat(R.styleable.NumberField_igFloatMin, 0));
@@ -62,11 +62,11 @@ public class FloatFieldEdit extends NumberFieldEdit<Float> {
 		ErrorEntry entry = super.getErrorEntry(tag);
 		final Float min = getMin();
 		if (min != null) {
-			entry.addMessage(getResources().getString(R.string.ig_greater_than_float, min));
+			entry.addMessage(getResources().getString(R.string.imog__greater_than_float, min));
 		}
 		final Float max = getMax();
 		if (max != null) {
-			entry.addMessage(getResources().getString(R.string.ig_lower_than_float, max));
+			entry.addMessage(getResources().getString(R.string.imog__lower_than_float, max));
 		}
 		return entry;
 	}

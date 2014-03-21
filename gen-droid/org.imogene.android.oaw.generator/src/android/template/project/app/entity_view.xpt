@@ -63,9 +63,6 @@ import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements
 		FieldContainer, OnClickListener {
 
-	private static final int MENU_EDIT_ID = 1;
-	private static final int MENU_SYNC_ID = 2;
-
 	private static final int DIALOG_DELETE_ID = 1;
 	private static final int DIALOG_INFO_ID = 2;
 	private static final int DIALOG_IAMLOST_ID = 3;
@@ -223,29 +220,16 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (mPolicy.canEdit«name.toFirstUpper()»()) {
-			menu.add(Menu.NONE, MENU_EDIT_ID, Menu.NONE, R.string.ig_menu_edit)
-			.setIcon(R.drawable.ig_ic_title_edit)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		}
-
-		menu.add(Menu.NONE, MENU_EDIT_ID, Menu.NONE, R.string.ig_menu_sync)
-			.setIcon(R.drawable.ig_ic_title_sync)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-		getSupportMenuInflater().inflate(R.menu.ig_menu_info_item, menu);
-
-		if (mPolicy.canDelete«name.toFirstUpper()»()) {
-			getSupportMenuInflater().inflate(R.menu.ig_menu_delete_item, menu);
-		}
-		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
-		boolean hasMoreMenu = false;
+		getSupportMenuInflater().inflate(R.menu.imog__menu_view, menu);
+		menu.findItem(R.id.imog__menu_edit).setEnabled(mPolicy.canEdit«name.toFirstUpper()»());
+		menu.findItem(R.id.imog__menu_delete).setEnabled(mPolicy.canDelete«name.toFirstUpper()»());
 		«IF getMoreFields(groups.fields).size > 0-»
+		boolean hasMoreMenu = false;
 		«FOREACH getMoreFields(groups.fields) AS f-»
 		hasMoreMenu |= mPolicy.canCreate«f.entity.name.toFirstUpper()»();
 		«ENDFOREACH-»
 		if (hasMoreMenu) {
-			getSupportMenuInflater().inflate(R.menu.«name.toLowerCase()»_more_menu, menu.addSubMenu(R.string.ig_menu_actions).setIcon(android.R.drawable.ic_menu_more));
+			getSupportMenuInflater().inflate(R.menu.«name.toLowerCase()»_more_menu, menu.addSubMenu(R.string.imog__menu_actions).setIcon(android.R.drawable.ic_menu_more));
 			«FOREACH getMoreFields(groups.fields) AS f-»
 			menu.findItem(R.id.menu_action_new_«f.name.toLowerCase()»).setVisible(mPolicy.canCreate«f.entity.name.toFirstUpper()»());
 			«ENDFOREACH-»
@@ -257,19 +241,19 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_EDIT_ID:
+		case R.id.imog__menu_edit :
 			startActivity(new Intent(Intent.ACTION_EDIT, mUri));
 			return true;
-		case MENU_SYNC_ID:
+		case R.id.imog__menu_sync :
 			SynchronizationService.actionCheck(this);
 			return true;
-		case R.id.ig_menu_delete:
+		case R.id.imog__menu_delete:
 			showDialog(DIALOG_DELETE_ID);
 			return true;
-		case R.id.ig_menu_info:
+		case R.id.imog__menu_info:
 			showDialog(DIALOG_INFO_ID);
 			return true;
-		case R.id.ig_menu_iamlost:
+		case R.id.imog__menu_iamlost:
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
 		«IF getMoreFields(groups.fields).size > 0-»
@@ -314,16 +298,16 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		switch (id) {
 		case DIALOG_DELETE_ID:
 			return new AlertDialog.Builder(this)
-			.setTitle(R.string.ig_delete_confirmation_title)
+			.setTitle(R.string.imog__delete_confirmation_title)
 			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setMessage(R.string.ig_delete_confirmation)
+			.setMessage(R.string.imog__delete_confirmation)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(android.R.string.ok, this)
 			.setCancelable(false)
 			.create();
 		case DIALOG_INFO_ID:
 			return new AlertDialog.Builder(this)
-			.setTitle(R.string.ig_menu_info)
+			.setTitle(R.string.imog__menu_info)
 			.setIcon(android.R.drawable.ic_dialog_info)
 			.setAdapter(new InfoAdapter(this, mEntity),	null)
 			.setPositiveButton(android.R.string.ok, null)

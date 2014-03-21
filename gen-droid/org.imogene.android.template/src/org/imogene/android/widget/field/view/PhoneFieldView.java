@@ -12,12 +12,12 @@ import android.view.View;
 public class PhoneFieldView extends BaseFieldView<String> {
 
 	public PhoneFieldView(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 		init();
 	}
 
 	public PhoneFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		init();
 	}
 

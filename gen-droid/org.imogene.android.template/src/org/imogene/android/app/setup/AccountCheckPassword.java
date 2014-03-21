@@ -35,11 +35,11 @@ public class AccountCheckPassword extends SherlockActivity implements OnClickLis
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.ig_account_check_shortpw);
+		setContentView(R.layout.imog__account_check_shortpw);
 
-		mShortpwView = (EditText) findViewById(R.id.ig_check_shortpw);
-		mStartButton = (Button) findViewById(R.id.ig_start);
-		mChangeUserView = (Button) findViewById(R.id.ig_change_user);
+		mShortpwView = (EditText) findViewById(R.id.imog__check_shortpw);
+		mStartButton = (Button) findViewById(R.id.imog__start);
+		mChangeUserView = (Button) findViewById(R.id.imog__change_user);
 
 		mShortpwView.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
@@ -58,7 +58,7 @@ public class AccountCheckPassword extends SherlockActivity implements OnClickLis
 	protected Dialog onCreateDialog(int id) {
 		if (id == ERROR_DIALOG_ID) {
 			return new AlertDialog.Builder(this).setTitle(android.R.string.dialog_alert_title)
-					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.ig_account_setup_shortpw_error)
+					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.imog__account_setup_shortpw_error)
 					.setCancelable(false).setPositiveButton(android.R.string.ok, null).create();
 		} else {
 			return super.onCreateDialog(id);
@@ -92,7 +92,7 @@ public class AccountCheckPassword extends SherlockActivity implements OnClickLis
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_start:
+		case R.id.imog__start:
 			final String shortpw = Preferences.getPreferences(this).getShortPassword();
 			if (shortpw != null && shortpw.equals(mShortpwView.getText().toString())) {
 				Intent intent = new Intent(this, ImogHelper.getInstance().getHomeActivityClass());
@@ -102,7 +102,7 @@ public class AccountCheckPassword extends SherlockActivity implements OnClickLis
 				showDialog(ERROR_DIALOG_ID);
 			}
 			break;
-		case R.id.ig_change_user:
+		case R.id.imog__change_user:
 			AccountSetupBasics.actionNewAccount(this);
 			finish();
 		}

@@ -368,12 +368,12 @@ public class RelationFilterPreference extends FilterPreference<RelationFilter> {
 						view = getView(position, null, parent);
 					}
 				} else {
-					view = mInflater.inflate(R.layout.ig_download_footer_view, parent, false);
+					view = mInflater.inflate(R.layout.imog__download_footer_view, parent, false);
 					view.setTag(TAG_FOOTER);
 				}
 				final boolean down = DESC_DOWNLOADING.equals(item.description);
-				view.findViewById(R.id.ig_footer_downloading).setVisibility(down ? View.VISIBLE : View.GONE);
-				view.findViewById(R.id.ig_footer_error).setVisibility(down ? View.GONE : View.VISIBLE);
+				view.findViewById(R.id.imog__footer_downloading).setVisibility(down ? View.VISIBLE : View.GONE);
+				view.findViewById(R.id.imog__footer_error).setVisibility(down ? View.GONE : View.VISIBLE);
 				return view;
 			} else {
 				if (convertView != null) {

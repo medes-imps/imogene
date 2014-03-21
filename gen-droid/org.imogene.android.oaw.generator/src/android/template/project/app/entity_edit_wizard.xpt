@@ -154,7 +154,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 			return new AlertDialog.Builder(this)
 			.setTitle(android.R.string.dialog_alert_title)
 			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setMessage(R.string.ig_uncomplete_dialog_msg)
+			.setMessage(R.string.imog__uncomplete_dialog_msg)
 			.setPositiveButton(android.R.string.yes, this)
 			.setNeutralButton(android.R.string.cancel, null)
 			.setCancelable(false)

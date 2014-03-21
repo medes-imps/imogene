@@ -26,7 +26,7 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 	private String mFormat;
 
 	public BoundedIntegerFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
 		setMin(a.getInt(R.styleable.NumberField_igIntMin, 0));
 		setMax(a.getInt(R.styleable.NumberField_igIntMax, 100));
@@ -67,11 +67,11 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
-		View view = LayoutInflater.from(getContext()).inflate(R.layout.ig_field_edit_integer_bounded, null);
+		View view = LayoutInflater.from(getContext()).inflate(R.layout.imog__field_edit_integer_bounded, null);
 
-		mTextView = (TextView) view.findViewById(R.id.ig_display_value);
+		mTextView = (TextView) view.findViewById(R.id.imog__display_value);
 
-		mSeekBar = (SeekBar) view.findViewById(R.id.ig_seekbar);
+		mSeekBar = (SeekBar) view.findViewById(R.id.imog__seekbar);
 		mSeekBar.setOnSeekBarChangeListener(this);
 		mSeekBar.setMax(mMax - mMin);
 
@@ -80,18 +80,18 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 			@Override
 			public void onClick(View v) {
 				switch (v.getId()) {
-				case R.id.ig_decrease:
+				case R.id.imog__decrease:
 					mSeekBar.incrementProgressBy(-1);
 					break;
-				case R.id.ig_increase:
+				case R.id.imog__increase:
 					mSeekBar.incrementProgressBy(1);
 					break;
 				}
 			}
 		};
 
-		view.findViewById(R.id.ig_increase).setOnClickListener(listener);
-		view.findViewById(R.id.ig_decrease).setOnClickListener(listener);
+		view.findViewById(R.id.imog__increase).setOnClickListener(listener);
+		view.findViewById(R.id.imog__decrease).setOnClickListener(listener);
 
 		final Integer value = getValue();
 		if (value != null) {

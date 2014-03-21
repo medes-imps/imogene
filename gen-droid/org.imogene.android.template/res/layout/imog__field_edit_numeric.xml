@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FieldDefault" >
+
+    <View
+        android:layout_width="10dip"
+        android:layout_height="0dip" />
+
+    <ImageView style="@style/FieldArrowView" />
+
+    <View
+        android:layout_width="10dip"
+        android:layout_height="0dip" />
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <include layout="@layout/imog__field_title_bar" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText style="@style/FieldValueEditText" />
+
+            <TextView style="@style/FieldUnitText" />
+
+            <ImageView style="@style/FieldHelpView" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

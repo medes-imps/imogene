@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/imog__menu_iamlost"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/imog__menu_iamlost"/>
+    <item
+        android:id="@+id/imog__menu_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom"
+        android:title="@string/imog__menu_add"/>
+    <item
+        android:id="@+id/imog__menu_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom"
+        android:title="@android:string/search_go"/>
+    <item
+        android:id="@+id/imog__menu_sync"
+        android:icon="@drawable/imog__ic_title_sync"
+        android:showAsAction="ifRoom"
+        android:title="@string/imog__menu_sync"/>
+    <item
+        android:id="@+id/imog__menu_markall"
+        android:icon="@drawable/imog__ic_menu_mark"
+        android:title="@string/imog__menu_markall"/>
+
+</menu>

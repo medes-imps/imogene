@@ -26,11 +26,11 @@ public class EnumMultipleFieldEdit extends BaseFieldEdit<boolean[]> implements O
 	private boolean[] mCheckedItems;
 
 	public EnumMultipleFieldEdit(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 	}
 
 	public EnumMultipleFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EnumField, 0, 0);
 		mItems = getResources().getStringArray(a.getResourceId(R.styleable.EnumField_igItems, 0));
 		mItemsValues = getResources().getIntArray(a.getResourceId(R.styleable.EnumField_igItemsValues, 0));

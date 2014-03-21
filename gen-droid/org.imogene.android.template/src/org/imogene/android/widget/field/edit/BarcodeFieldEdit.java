@@ -19,19 +19,19 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 	private int mRequestCode;
 
 	public BarcodeFieldEdit(Context context) {
-		super(context, R.layout.ig_field_edit_buttons);
+		super(context, R.layout.imog__field_edit_buttons);
 		init();
 	}
 
 	public BarcodeFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_edit_buttons);
+		super(context, attrs, R.layout.imog__field_edit_buttons);
 		init();
 	}
 
 	private void init() {
-		findViewById(R.id.ig_acquire).setOnClickListener(this);
-		findViewById(R.id.ig_delete).setOnClickListener(this);
-		findViewById(R.id.ig_view).setOnClickListener(this);
+		findViewById(R.id.imog__acquire).setOnClickListener(this);
+		findViewById(R.id.imog__delete).setOnClickListener(this);
+		findViewById(R.id.imog__view).setOnClickListener(this);
 	}
 
 	@Override
@@ -42,9 +42,9 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
-		findViewById(R.id.ig_acquire).setVisibility(readOnly ? View.GONE : View.VISIBLE);
-		findViewById(R.id.ig_delete).setVisibility(readOnly ? View.GONE : View.VISIBLE);
-		findViewById(R.id.ig_view).setVisibility(readOnly ? View.GONE : View.VISIBLE);
+		findViewById(R.id.imog__acquire).setVisibility(readOnly ? View.GONE : View.VISIBLE);
+		findViewById(R.id.imog__delete).setVisibility(readOnly ? View.GONE : View.VISIBLE);
+		findViewById(R.id.imog__view).setVisibility(readOnly ? View.GONE : View.VISIBLE);
 	}
 
 	@Override
@@ -75,27 +75,27 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 		super.onChangeValue();
 		final String value = getValue();
 		if (TextUtils.isEmpty(value)) {
-			findViewById(R.id.ig_acquire).setVisibility(View.VISIBLE);
-			findViewById(R.id.ig_delete).setVisibility(View.GONE);
-			findViewById(R.id.ig_view).setVisibility(View.GONE);
+			findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);
+			findViewById(R.id.imog__delete).setVisibility(View.GONE);
+			findViewById(R.id.imog__view).setVisibility(View.GONE);
 		} else {
-			findViewById(R.id.ig_acquire).setVisibility(View.GONE);
-			findViewById(R.id.ig_delete).setVisibility(View.VISIBLE);
-			findViewById(R.id.ig_view).setVisibility(View.VISIBLE);
+			findViewById(R.id.imog__acquire).setVisibility(View.GONE);
+			findViewById(R.id.imog__delete).setVisibility(View.VISIBLE);
+			findViewById(R.id.imog__view).setVisibility(View.VISIBLE);
 		}
 	}
 
 	@Override
 	protected void dispatchClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_acquire:
+		case R.id.imog__acquire:
 			Intent intent = new Intent(Intents.ACTION_SCAN);
 			IntentUtils.startActivityForResult(getFieldManager().getActivity(), intent, mRequestCode);
 			break;
-		case R.id.ig_delete:
+		case R.id.imog__delete:
 			setValue(null);
 			break;
-		case R.id.ig_view:
+		case R.id.imog__view:
 			showDialog(null);
 			break;
 		}

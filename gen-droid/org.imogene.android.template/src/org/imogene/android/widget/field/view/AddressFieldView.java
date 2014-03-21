@@ -18,7 +18,7 @@ public class AddressFieldView extends BaseFieldView<String> implements OnQuickAc
 	private QuickActionBar mBar;
 
 	public AddressFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.ic_dialog_map);
 	}

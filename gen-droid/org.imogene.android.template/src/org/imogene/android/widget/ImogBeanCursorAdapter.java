@@ -27,7 +27,7 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 	}
 
 	public ImogBeanCursorAdapter(Context context, Cursor c, Drawable color, boolean multiple) {
-		this(context, c, color, multiple ? R.layout.ig_entity_row_multiple : R.layout.ig_entity_row);
+		this(context, c, color, multiple ? R.layout.imog__entity_row_multiple : R.layout.imog__entity_row);
 	}
 
 	public String getItemStringId(int position) {
@@ -42,10 +42,10 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 	public void bindView(View view, Context context, Cursor cursor) {
 		ImogBeanCursor c = (ImogBeanCursor) cursor;
 
-		view.findViewById(R.id.ig_list_color).setBackgroundDrawable(mColor);
+		view.findViewById(R.id.imog__list_color).setBackgroundDrawable(mColor);
 
-		TextView main = (TextView) view.findViewById(R.id.ig_list_main);
-		TextView secondary = (TextView) view.findViewById(R.id.ig_list_secondary);
+		TextView main = (TextView) view.findViewById(R.id.imog__list_main);
+		TextView secondary = (TextView) view.findViewById(R.id.imog__list_secondary);
 
 		main.setText(null);
 		secondary.setText(null);
@@ -57,14 +57,14 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 			secondary.setTextAppearance(context, android.R.style.TextAppearance_Small);
 			secondary.setTypeface(Typeface.DEFAULT);
 		} else {
-			view.setBackgroundResource(R.drawable.ig_list_selector_background_inverse);
+			view.setBackgroundResource(R.drawable.imog__list_selector_background_inverse);
 			main.setTextAppearance(context, android.R.style.TextAppearance_Medium_Inverse);
 			main.setTypeface(Typeface.DEFAULT_BOLD);
 			secondary.setTextAppearance(context, android.R.style.TextAppearance_Small_Inverse);
 			secondary.setTypeface(Typeface.DEFAULT_BOLD);
 		}
 
-		ImageView icon = (ImageView) view.findViewById(R.id.ig_list_icon);
+		ImageView icon = (ImageView) view.findViewById(R.id.imog__list_icon);
 		if (icon != null) {
 			icon.setImageResource(android.R.drawable.stat_notify_sync);
 			icon.setVisibility(c.getFlagSynchronized() ? View.GONE : View.VISIBLE);

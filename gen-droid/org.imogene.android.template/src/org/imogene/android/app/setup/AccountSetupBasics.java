@@ -61,14 +61,14 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.ig_account_setup_basics);
+		setContentView(R.layout.imog__account_setup_basics);
 
 		mPreferences = Preferences.getPreferences(this);
 
-		mLoginView = (EditText) findViewById(R.id.ig_account_login);
-		mPasswordView = (EditText) findViewById(R.id.ig_account_password);
-		mServerView = (EditText) findViewById(R.id.ig_account_server);
-		mNextButton = (Button) findViewById(R.id.ig_next);
+		mLoginView = (EditText) findViewById(R.id.imog__account_login);
+		mPasswordView = (EditText) findViewById(R.id.imog__account_password);
+		mServerView = (EditText) findViewById(R.id.imog__account_server);
+		mNextButton = (Button) findViewById(R.id.imog__next);
 
 		mNextButton.setOnClickListener(this);
 
@@ -132,7 +132,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		switch (id) {
 		case DIALOG_SNTPING_ID: {
 			ProgressDialog dialog = new ProgressDialog(this);
-			dialog.setMessage(getString(R.string.ig_obtaining_time_offset));
+			dialog.setMessage(getString(R.string.imog__obtaining_time_offset));
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			return dialog;
@@ -141,7 +141,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(android.R.string.dialog_alert_title);
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setMessage(R.string.ig_obtaining_time_offset_failed);
+			builder.setMessage(R.string.imog__obtaining_time_offset_failed);
 			builder.setCancelable(false);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -162,7 +162,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		}
 		case DIALOG_AUTHING_ID: {
 			ProgressDialog dialog = new ProgressDialog(this);
-			dialog.setMessage(getString(R.string.ig_obtaining_roles));
+			dialog.setMessage(getString(R.string.imog__obtaining_roles));
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			return dialog;
@@ -171,7 +171,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(android.R.string.dialog_alert_title);
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setMessage(R.string.ig_obtaining_roles_failed);
+			builder.setMessage(R.string.imog__obtaining_roles_failed);
 			builder.setCancelable(false);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -219,7 +219,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_next:
+		case R.id.imog__next:
 			onNext();
 			break;
 		}

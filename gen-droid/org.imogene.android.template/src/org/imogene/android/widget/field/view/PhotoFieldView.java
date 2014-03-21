@@ -17,7 +17,7 @@ public class PhotoFieldView extends BinaryFieldView {
 
 	@Override
 	public int getDisplayId() {
-		return R.string.ig_bin_photo;
+		return R.string.imog__bin_photo;
 	}
 
 }

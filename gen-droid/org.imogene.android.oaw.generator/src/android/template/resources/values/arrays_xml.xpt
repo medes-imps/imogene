@@ -80,7 +80,7 @@
 «DEFINE getSortByArray(String isoCode) FOR CardEntity-»
 	<!-- Sort by for «name»-->
 	<string-array name="«name.toLowerCase()»_sortby">
-		<item>@string/ig_modified</item>
+		<item>@string/imog__modified</item>
 		«FOREACH getMainFields(this) AS mainField-»
 		<item>«EXPAND getDescription(isoCode) FOR mainField»</item>
 		«ENDFOREACH-»

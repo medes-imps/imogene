@@ -45,7 +45,7 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 
 	public DateFilterPreference(Context context, AttributeSet attrs) {
 		super(context, attrs, DateFilter.FILTER_CREATOR);
-		setDialogLayoutResource(R.layout.ig_dialog_date_filter);
+		setDialogLayoutResource(R.layout.imog__dialog_date_filter);
 	}
 
 	@Override
@@ -58,20 +58,20 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 		switch (o) {
 		case AFTER:
 			if (a != null)
-				return getContext().getString(R.string.ig_filter_date_after, FormatHelper.displayDate(a));
+				return getContext().getString(R.string.imog__filter_date_after, FormatHelper.displayDate(a));
 			break;
 		case BEFORE:
 			if (b != null)
-				return getContext().getString(R.string.ig_filter_date_before, FormatHelper.displayDate(b));
+				return getContext().getString(R.string.imog__filter_date_before, FormatHelper.displayDate(b));
 			break;
 		case BETWEEN:
 			if (a != null && b != null)
-				return getContext().getString(R.string.ig_filter_date_between, FormatHelper.displayDate(a),
+				return getContext().getString(R.string.imog__filter_date_between, FormatHelper.displayDate(a),
 						FormatHelper.displayDate(b));
 			break;
 		case EQUAL:
 			if (e != null)
-				return getContext().getString(R.string.ig_filter_date_equal, FormatHelper.displayDate(e));
+				return getContext().getString(R.string.imog__filter_date_equal, FormatHelper.displayDate(e));
 			break;
 		}
 		return getContext().getString(android.R.string.unknownName);
@@ -136,7 +136,7 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 	@Override
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		spinner = ((Spinner) view.findViewById(R.id.ig_spinner));
+		spinner = ((Spinner) view.findViewById(R.id.imog__spinner));
 		final Calendar cal = Calendar.getInstance();
 		final int year = cal.get(Calendar.YEAR);
 		final int month = cal.get(Calendar.MONTH);
@@ -145,10 +145,10 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 		afterPicker = new DatePickerDialog(getContext(), this, year, month, day);
 		beforePicker = new DatePickerDialog(getContext(), this, year, month, day);
 
-		equals = (TextView) view.findViewById(R.id.ig_equals);
-		after = (TextView) view.findViewById(R.id.ig_after);
-		before = (TextView) view.findViewById(R.id.ig_before);
-		period = view.findViewById(R.id.ig_period);
+		equals = (TextView) view.findViewById(R.id.imog__equals);
+		after = (TextView) view.findViewById(R.id.imog__after);
+		before = (TextView) view.findViewById(R.id.imog__before);
+		period = view.findViewById(R.id.imog__period);
 
 		updateView(equals, mEquals);
 		updateView(after, mAfter);
@@ -179,15 +179,15 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_equals:
+		case R.id.imog__equals:
 			updateDatePickerDialog(equalsPicker, mEquals);
 			equalsPicker.show();
 			break;
-		case R.id.ig_after:
+		case R.id.imog__after:
 			updateDatePickerDialog(afterPicker, mAfter);
 			afterPicker.show();
 			break;
-		case R.id.ig_before:
+		case R.id.imog__before:
 			updateDatePickerDialog(beforePicker, mBefore);
 			beforePicker.show();
 			break;
@@ -197,15 +197,15 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 	@Override
 	public boolean onLongClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_equals:
+		case R.id.imog__equals:
 			mEquals = null;
 			updateView(equals, null);
 			return true;
-		case R.id.ig_after:
+		case R.id.imog__after:
 			mAfter = null;
 			updateView(after, null);
 			return true;
-		case R.id.ig_before:
+		case R.id.imog__before:
 			mBefore = null;
 			updateView(before, null);
 			return true;
@@ -233,7 +233,7 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 		if (time != null)
 			v.setText(FormatHelper.displayDate(time));
 		else
-			v.setText(R.string.ig_select);
+			v.setText(R.string.imog__select);
 	}
 
 	private static void updateDatePickerDialog(Dialog dialog, Date time) {

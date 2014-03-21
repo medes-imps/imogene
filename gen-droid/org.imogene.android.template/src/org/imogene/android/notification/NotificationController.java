@@ -328,7 +328,7 @@ public class NotificationController {
 				}
 
 				String title = sInstance.mContext.getString(mInfo.description_sg);
-				String description = sInstance.mContext.getResources().getQuantityString(R.plurals.ig_numberOfEntities,
+				String description = sInstance.mContext.getResources().getQuantityString(R.plurals.imog__numberOfEntities,
 						count, count);
 				CharSequence ticker = buildTickerMessage(title, description);
 
@@ -355,10 +355,10 @@ public class NotificationController {
 		@Override
 		public void onChange(Status status, Object object) {
 			if (status == Status.START) {
-				String ticker = sInstance.mContext.getString(R.string.ig_notification_sync_ticker);
-				String title = sInstance.mContext.getString(R.string.ig_notification_sync_title);
+				String ticker = sInstance.mContext.getString(R.string.imog__notification_sync_ticker);
+				String title = sInstance.mContext.getString(R.string.imog__notification_sync_title);
 				Notification n = sInstance.createNotification(title, ticker, ticker, new Intent(),
-						R.drawable.ig_logo_android_s, false);
+						R.drawable.imog__logo_android_s, false);
 				n.flags |= Notification.FLAG_NO_CLEAR;
 				n.defaults &= ~Notification.DEFAULT_VIBRATE;
 

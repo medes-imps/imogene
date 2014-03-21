@@ -10,12 +10,12 @@ import android.view.View;
 public abstract class DefaultEntityView<T> extends BaseFieldView<T> {
 
 	public DefaultEntityView(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 		init();
 	}
 
 	public DefaultEntityView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		init();
 	}
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/imog__menu_save"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="ifRoom"
+        android:title="@string/imog__menu_save"/>
+    <item
+        android:id="@+id/imog__menu_iamlost"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/imog__menu_iamlost"/>
+
+</menu>

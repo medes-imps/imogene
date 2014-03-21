@@ -14,12 +14,12 @@ import fr.medes.android.util.field.FieldPattern;
 public class IntegerFieldEdit extends NumberFieldEdit<Integer> {
 
 	public IntegerFieldEdit(Context context) {
-		super(context, R.layout.ig_field_edit_numeric);
+		super(context, R.layout.imog__field_edit_numeric);
 		setFocusable(false);
 	}
 
 	public IntegerFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_edit_numeric);
+		super(context, attrs, R.layout.imog__field_edit_numeric);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
 		if (a.hasValue(R.styleable.NumberField_igIntMin)) {
 			setMin(a.getInt(R.styleable.NumberField_igIntMin, 0));
@@ -62,11 +62,11 @@ public class IntegerFieldEdit extends NumberFieldEdit<Integer> {
 		ErrorEntry entry = super.getErrorEntry(tag);
 		final Integer min = getMin();
 		if (min != null) {
-			entry.addMessage(getResources().getString(R.string.ig_greater_than_decimal, min));
+			entry.addMessage(getResources().getString(R.string.imog__greater_than_decimal, min));
 		}
 		final Integer max = getMax();
 		if (max != null) {
-			entry.addMessage(getResources().getString(R.string.ig_lower_than_decimal, max));
+			entry.addMessage(getResources().getString(R.string.imog__lower_than_decimal, max));
 		}
 		return entry;
 	}

@@ -19,7 +19,7 @@ public class BooleanFieldView extends DefaultEntityView<Boolean> {
 	public String getFieldDisplay() {
 		final Boolean bool = getValue();
 		if (bool != null) {
-			String[] array = getResources().getStringArray(R.array.ig_select_yes_no);
+			String[] array = getResources().getStringArray(R.array.imog__select_yes_no);
 			return bool.booleanValue() ? array[0] : array[1];
 		}
 		return super.getFieldDisplay();

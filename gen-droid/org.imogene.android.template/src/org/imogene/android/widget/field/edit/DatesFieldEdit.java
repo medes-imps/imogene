@@ -15,12 +15,12 @@ public abstract class DatesFieldEdit extends BaseFieldEdit<Date> implements Dial
 	private Date max;
 
 	public DatesFieldEdit(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 		setDialogFactory(this);
 	}
 
 	public DatesFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		setDialogFactory(this);
 	}
 

@@ -55,7 +55,7 @@ public abstract class NumberFieldEdit<T extends Number> extends BaseFieldEdit<T>
 	}
 
 	public void setUnit(int unitId) {
-		final TextView unitView = (TextView) findViewById(R.id.ig_unit);
+		final TextView unitView = (TextView) findViewById(R.id.imog__unit);
 		if (unitView != null) {
 			if (unitId > 0) {
 				unitView.setText(unitId);

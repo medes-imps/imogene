@@ -53,12 +53,6 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	// Extras keys
 	private static final String EXTRA_CURRENT_URI = "AbstractEntityListing_currentUri";
 
-	// Options menu ids
-	private static final int MENU_ADD_ID = Menu.FIRST + 1;
-	private static final int MENU_SEARCH_ID = Menu.FIRST + 2;
-	private static final int MENU_SYNC_ID = Menu.FIRST + 3;
-	private static final int MENU_MARK_ALL_AS_READ_ID = Menu.FIRST + 4;
-	
 	// Context menu ids
 	private static final int CMENU_DELETE_ID = Menu.FIRST;
 	private static final int CMENU_EDIT_ID = Menu.FIRST + 1;
@@ -89,7 +83,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.ig_list_content);
+		setContentView(R.layout.imog__list_content);
 		
 		mPolicy = AccessPolicy.getPolicy(this);
 		
@@ -115,8 +109,8 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 
 		boolean isMultiple = isMultipleSelection();
 
-		TextView empty = (TextView) findViewById(R.id.ig_emptyText);
-		empty.setText(R.string.ig_noEntityHelpText);
+		TextView empty = (TextView) findViewById(R.id.imog__emptyText);
+		empty.setText(R.string.imog__noEntityHelpText);
 		
 		mCursor = query();
 		startManagingCursor(mCursor);
@@ -124,9 +118,9 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		setListAdapter(mAdapter = new ImogBeanCursorAdapter(this, mCursor, «name.toFirstUpper()-».Columns.COLOR, isMultiple));
 		
 		if (isMultiple) {
-			findViewById(R.id.ig_footer).setVisibility(View.VISIBLE);
-			findViewById(R.id.ig_saveButton).setOnClickListener(this);
-			findViewById(R.id.ig_discardButton).setOnClickListener(this);
+			findViewById(R.id.imog__footer).setVisibility(View.VISIBLE);
+			findViewById(R.id.imog__saveButton).setOnClickListener(this);
+			findViewById(R.id.imog__discardButton).setOnClickListener(this);
 			
 			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 			if (getIntent().hasExtra(Extras.EXTRA_SELECTED)) {
@@ -259,33 +253,15 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-		if (mPolicy.canCreate«name.toFirstUpper()»()) {
-			menu.add(Menu.NONE, MENU_ADD_ID, Menu.NONE, R.string.ig_menu_add)
-			.setIcon(R.drawable.ig_ic_title_add)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		}
-		
-		menu.add(Menu.NONE, MENU_SEARCH_ID, Menu.NONE, android.R.string.search_go)
-			.setIcon(R.drawable.ig_ic_title_search)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
-		menu.add(Menu.NONE, MENU_SYNC_ID, Menu.NONE, R.string.ig_menu_sync)
-			.setIcon(R.drawable.ig_ic_title_sync)
-			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
-		menu.add(Menu.NONE, MENU_MARK_ALL_AS_READ_ID, Menu.NONE,
-				R.string.ig_menu_mark_all_as_read)
-				.setIcon(R.drawable.ig_ic_menu_mark);
-
-		getSupportMenuInflater().inflate(R.menu.ig_menu_iamlost_item, menu);
-
+		getSupportMenuInflater().inflate(R.menu.imog__menu_list, menu);
+		menu.findItem(R.id.imog__menu_add).setEnabled(mPolicy.canCreateAdminLevel1());
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_ADD_ID:
+		case R.id.imog__menu_add :
 			boolean wizard = Preferences.getPreferences(this).isWizardEnabled();
 			Intent intent = new Intent(Intent.ACTION_INSERT, «name.toFirstUpper()».Columns.CONTENT_URI);
 			intent.putExtras(getIntent());
@@ -296,16 +272,16 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 				startActivity(intent);
 			}
 			return true;
-		case MENU_SEARCH_ID:
+		case R.id.imog__menu_search :
 			startSearch(null, false, null, false);
 			return true;
-		case MENU_SYNC_ID:
+		case R.id.imog__menu_sync :
 			SynchronizationService.actionCheck(this);
 			return true;
-		case R.id.ig_menu_iamlost:
+		case R.id.imog__menu_iamlost :
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
-		case MENU_MARK_ALL_AS_READ_ID:
+		case R.id.imog__menu_markall :
 			DatabaseUtils.markRead(getContentResolver(), «name.toFirstUpper()».Columns.CONTENT_URI, true);
 			return true;
 		default:
@@ -321,20 +297,20 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 			return;
 
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(Menu.NONE, CMENU_VIEW_ID, Menu.NONE, R.string.ig_menu_view);
+		menu.add(Menu.NONE, CMENU_VIEW_ID, Menu.NONE, R.string.imog__menu_view);
 		if (mPolicy.canEdit«name.toFirstUpper()»()) {
-			menu.add(Menu.NONE, CMENU_EDIT_ID, Menu.NONE, R.string.ig_menu_edit);
+			menu.add(Menu.NONE, CMENU_EDIT_ID, Menu.NONE, R.string.imog__menu_edit);
 		}
 		if (mPolicy.canDelete«name.toFirstUpper()»()) {
-			menu.add(Menu.NONE, CMENU_DELETE_ID, Menu.NONE, R.string.ig_menu_delete);
+			menu.add(Menu.NONE, CMENU_DELETE_ID, Menu.NONE, R.string.imog__menu_delete);
 		}
 
 		ImogBeanCursor c = (ImogBeanCursor) getListAdapter().getItem(
 				info.position - getListView().getHeaderViewsCount());
 		if (c.getFlagRead()) {
-			menu.add(Menu.NONE, CMENU_MARK_AS_UNREAD_ID, Menu.NONE, R.string.ig_menu_mark_as_unread);
+			menu.add(Menu.NONE, CMENU_MARK_AS_UNREAD_ID, Menu.NONE, R.string.imog__menu_mark_as_unread);
 		} else {
-			menu.add(Menu.NONE, CMENU_MARK_AS_READ_ID, Menu.NONE, R.string.ig_menu_mark_as_read);
+			menu.add(Menu.NONE, CMENU_MARK_AS_READ_ID, Menu.NONE, R.string.imog__menu_mark_as_read);
 		}
 	}
 
@@ -370,9 +346,9 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		switch (id) {
 		case DIALOG_DELETE_ID:
 			return new AlertDialog.Builder(this)
-			.setTitle(R.string.ig_delete_confirmation_title)
+			.setTitle(R.string.imog__delete_confirmation_title)
 			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setMessage(R.string.ig_delete_confirmation)
+			.setMessage(R.string.imog__delete_confirmation)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
@@ -408,7 +384,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ig_saveButton:
+		case R.id.imog__saveButton:
 			ListView list = getListView();
 			SparseBooleanArray spa = list.getCheckedItemPositions();
 			ArrayList<Uri> uris = null;
@@ -429,7 +405,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 			setResult(RESULT_OK, data);
 			finish();
 			break;
-		case R.id.ig_discardButton:
+		case R.id.imog__discardButton:
 			setResult(RESULT_CANCELED);
 			finish();
 			break;

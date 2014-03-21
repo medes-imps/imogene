@@ -220,8 +220,8 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 		case DIALOG_DOWNLOAD_ID:
 			mProgressDialog = new MyProgressDialog(this);
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			mProgressDialog.setTitle(R.string.ig_update_app_title);
-			mProgressDialog.setMessage(getString(R.string.ig_update_app_message));
+			mProgressDialog.setTitle(R.string.imog__update_app_title);
+			mProgressDialog.setMessage(getString(R.string.imog__update_app_message));
 			mProgressDialog.setFormatter(new Formatter() {
 				@Override
 				public String format(int progress, int max) {
@@ -334,7 +334,7 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 	private void setCacheSizeSummary(long size) {
 		String readableSize = FileUtils.readableFileSize(size);
-		String summary = getString(R.string.ig_precache_clear_summary, readableSize);
+		String summary = getString(R.string.imog__precache_clear_summary, readableSize);
 		mMapClearCache.setSummary(summary);
 	}
 
@@ -343,7 +343,7 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	}
 
 	private void setPrecacheAreaSummary(int count) {
-		String summary = getResources().getQuantityString(R.plurals.ig_precache_area_summary, count, count);
+		String summary = getResources().getQuantityString(R.plurals.imog__precache_area_summary, count, count);
 		mMapPrecacheArea.setSummary(summary);
 	}
 
@@ -361,10 +361,10 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 		if (app != null && app.isUpdatable(this)) {
 			mUpdateAvailable.setEnabled(true);
-			mUpdateAvailable.setSummary(R.string.ig_update_available_summary_enabled);
+			mUpdateAvailable.setSummary(R.string.imog__update_available_summary_enabled);
 		} else {
 			mUpdateAvailable.setEnabled(false);
-			mUpdateAvailable.setSummary(R.string.ig_update_available_summary_disabled);
+			mUpdateAvailable.setSummary(R.string.imog__update_available_summary_disabled);
 		}
 	}
 

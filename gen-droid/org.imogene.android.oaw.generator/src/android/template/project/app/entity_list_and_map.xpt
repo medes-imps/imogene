@@ -44,14 +44,14 @@ public class «name.toFirstUpper()»ListAndMap extends GDTabActivity {
 
 		if (mPolicy.canCreate«name.toFirstUpper()»()) {
 			addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_add), ACTIONBAR_ADD_ID);
+				.setDrawable(R.drawable.imog__ic_title_add), ACTIONBAR_ADD_ID);
 		}
 		
 		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_search), ACTIONBAR_SEARCH_ID);
+				.setDrawable(R.drawable.imog__ic_title_search), ACTIONBAR_SEARCH_ID);
 				
 		addActionBarItem(getGDActionBar().newActionBarItem(NormalActionBarItem.class)
-				.setDrawable(R.drawable.ig_ic_title_sync), ACTIONBAR_SYNC_ID);
+				.setDrawable(R.drawable.imog__ic_title_sync), ACTIONBAR_SYNC_ID);
 	}
 	
 	@Override

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="imog__gray">#aaa</color>
+    <color name="imog__actionbar_text">#ff29549f</color>
+    <color name="imog__accent_1">#ff29549f</color>
+    <color name="imog__required_text">#ffe23333</color>
+    <color name="imog__opaque_black">#29000000</color>
+
+</resources>

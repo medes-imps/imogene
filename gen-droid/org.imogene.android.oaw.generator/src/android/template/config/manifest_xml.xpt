@@ -47,7 +47,7 @@
 	
 	<application
 		android:name="org.imogene.android.«name.toLowerCase()».app.«name.toFirstUpper()»App"
-		android:icon="@drawable/ig_logo_android_s"
+		android:icon="@drawable/imog__logo_android_s"
 		android:label="@string/app_name"
 	 	android:debuggable="true"
 	 	android:theme="@style/Theme.Imogene" >
@@ -63,24 +63,24 @@
 			
 		<activity 
 			android:name="org.imogene.android.app.setup.AccountCheckPassword"
-			android:label="@string/ig_account_check_password_title"/>
+			android:label="@string/imog__account_check_password_title"/>
 		
 		<activity 
 			android:name="org.imogene.android.app.setup.AccountCreationIntroduction"
-			android:label="@string/ig_account_creation_introduction_title"/>
+			android:label="@string/imog__account_creation_introduction_title"/>
 		
 		<activity 
 			android:name="org.imogene.android.app.setup.AccountSetupBasics"
-			android:label="@string/ig_account_setup_basics_title" />
+			android:label="@string/imog__account_setup_basics_title" />
 			
 		<activity
 			android:name="org.imogene.android.app.setup.AccountSetupShortPassword"
-			android:label="@string/ig_account_setup_shortpw_title" />
+			android:label="@string/imog__account_setup_shortpw_title" />
 		
 		<activity
 			android:name="org.imogene.android.app.ImageCapture"
-			android:label="@string/ig_camera"
-			android:icon="@drawable/ig_ic_launcher_camera" 
+			android:label="@string/imog__camera"
+			android:icon="@drawable/imog__ic_launcher_camera" 
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.GET_CONTENT"/>
@@ -92,8 +92,8 @@
 		
 		<activity
 			android:name="org.imogene.android.app.VideoCapture"
-			android:label="@string/ig_camcorder"
-			android:icon="@drawable/ig_ic_launcher_video_camera" 
+			android:label="@string/imog__camcorder"
+			android:icon="@drawable/imog__ic_launcher_video_camera" 
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
 				<action android:name="android.intent.action.GET_CONTENT"/>
@@ -105,16 +105,16 @@
 
 		<activity 
 			android:name=".app.«name.toFirstUpper()»Listing"
-			android:label="@string/ig_list_availables_entities"
-			android:icon="@drawable/ig_logo_android_s" />
+			android:label="@string/imog__list_availables_entities"
+			android:icon="@drawable/imog__logo_android_s" />
 			
 		<activity 
 			android:name="org.imogene.android.app.GeneralSettings"
-			android:label="@string/ig_general_settings" />
+			android:label="@string/imog__general_settings" />
 			
 		<activity 
 			android:name="org.imogene.android.app.HiddenSettings"
-			android:label="@string/ig_hidden_settings" />
+			android:label="@string/imog__hidden_settings" />
 		
 		«IF hasFilter(this)-»
 		<activity android:name=".app.FilterPreferenceScreen" />

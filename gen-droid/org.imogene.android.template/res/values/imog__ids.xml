@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item name="imog__title" type="id"/>
+    <item name="imog__value" type="id"/>
+    <item name="imog__arrow" type="id"/>
+    <item name="imog__icon" type="id"/>
+    <item name="imog__help" type="id"/>
+    <item name="imog__required" type="id"/>
+    <item name="imog__unit" type="id"/>
+    
+    <item name="imog__dynamic_template" type="id"/>
+
+</resources>

@@ -48,7 +48,7 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 	protected void dispatchClick(View v) {
 		if (mType == 1 && mHasReverse && mOppositeCardinality == 1) {
 			// forbidden case
-			Toast.makeText(getContext(), R.string.ig_relation_unsettable, Toast.LENGTH_LONG).show();
+			Toast.makeText(getContext(), R.string.imog__relation_unsettable, Toast.LENGTH_LONG).show();
 			return;
 		}
 		if (isReadOnly() && getValue() != null) {

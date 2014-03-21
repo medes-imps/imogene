@@ -11,12 +11,12 @@ import android.view.View;
 public class BinaryFieldView extends BaseFieldView<Uri> {
 
 	public BinaryFieldView(Context context) {
-		super(context, R.layout.ig_field_default);
+		super(context, R.layout.imog__field_default);
 		init();
 	}
 
 	public BinaryFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.ig_field_default);
+		super(context, attrs, R.layout.imog__field_default);
 		init();
 	}
 
@@ -33,7 +33,7 @@ public class BinaryFieldView extends BaseFieldView<Uri> {
 	}
 
 	protected int getDisplayId() {
-		return R.string.ig_bin_binary;
+		return R.string.imog__bin_binary;
 	}
 
 	@Override

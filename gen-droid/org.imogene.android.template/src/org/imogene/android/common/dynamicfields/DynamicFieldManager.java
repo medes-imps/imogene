@@ -171,9 +171,9 @@ public class DynamicFieldManager implements OnValueChangeListener {
 			}
 
 			BaseFieldEdit<?> view = obtainEditView(template);
-			view.setTag(R.id.ig_dynamic_template, template.getId());
+			view.setTag(R.id.imog__dynamic_template, template.getId());
 			view.setTitle(template.getFieldName());
-			view.setEmptyText(R.string.ig_select);
+			view.setEmptyText(R.string.imog__select);
 			view.setRequired(template.getRequiredValue());
 			view.setReadOnly(false);
 			view.setOnValueChangeListener(this);
@@ -321,7 +321,7 @@ public class DynamicFieldManager implements OnValueChangeListener {
 
 	@Override
 	public void onValueChange(BaseFieldEdit<?> field) {
-		String templateId = (String) field.getTag(R.id.ig_dynamic_template);
+		String templateId = (String) field.getTag(R.id.imog__dynamic_template);
 
 		DynamicFieldTemplate template = templatesMap.get(templateId);
 		DynamicFieldInstance instance = instancesMap.get(templatesToInstancesMap.get(templateId));

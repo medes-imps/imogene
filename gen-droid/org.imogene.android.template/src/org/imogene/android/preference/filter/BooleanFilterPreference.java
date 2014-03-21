@@ -21,7 +21,7 @@ public class BooleanFilterPreference extends FilterPreference<BooleanFilter> {
 	public CharSequence getSummary() {
 		Boolean value = getFilter().getValue();
 		if (value != null) {
-			String[] array = getContext().getResources().getStringArray(R.array.ig_select_yes_no);
+			String[] array = getContext().getResources().getStringArray(R.array.imog__select_yes_no);
 			return value.booleanValue() ? array[0] : array[1];
 		}
 		return getContext().getString(android.R.string.unknownName);
@@ -31,7 +31,7 @@ public class BooleanFilterPreference extends FilterPreference<BooleanFilter> {
 	protected void onPrepareDialogBuilder(Builder builder) {
 		super.onPrepareDialogBuilder(builder);
 		Boolean value = getFilter().getValue();
-		builder.setSingleChoiceItems(R.array.ig_select_yes_no, value != null ? (value.booleanValue() ? 0 : 1) : -1,
+		builder.setSingleChoiceItems(R.array.imog__select_yes_no, value != null ? (value.booleanValue() ? 0 : 1) : -1,
 				null);
 		builder.setNeutralButton(android.R.string.cut, new OnClickListener() {
 			@Override

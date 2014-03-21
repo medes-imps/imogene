@@ -23,9 +23,9 @@ public class AccountCreationIntroduction extends SherlockActivity implements OnC
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.ig_account_creation_introduction);
+		setContentView(R.layout.imog__account_creation_introduction);
 
-		mNextButton = (Button) findViewById(R.id.ig_next);
+		mNextButton = (Button) findViewById(R.id.imog__next);
 
 		mNextButton.setOnClickListener(this);
 	}
