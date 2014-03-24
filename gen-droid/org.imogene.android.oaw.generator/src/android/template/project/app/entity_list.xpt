@@ -347,7 +347,6 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		case DIALOG_DELETE_ID:
 			return new AlertDialog.Builder(this)
 			.setTitle(R.string.imog__delete_confirmation_title)
-			.setIcon(android.R.drawable.ic_dialog_alert)
 			.setMessage(R.string.imog__delete_confirmation)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

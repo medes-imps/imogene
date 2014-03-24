@@ -32,7 +32,7 @@
     <string name="imog__wizard_enabled_summaryon">"Disable wizard during entity creation"</string>
     <string name="imog__wizard_enabled_summaryoff">"Enable wizard during insertion"</string>
     <string name="imog__rights_title">"Modification/Suppression rights"</string>
-    <string name="imog__debug_enabled_title">"Debug preferences"</string>
+    <string name="imog__debug_title">"Debug preferences"</string>
     <string name="imog__debug_enabled_title">"Save synchronization files"</string>
     <string name="imog__debug_enabled_summaryon">"Synchronization files will be kept"</string>
     <string name="imog__debug_enabled_summaryoff">"Synchronization files will be deleted"</string>

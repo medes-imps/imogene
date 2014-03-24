@@ -59,9 +59,12 @@ public class AccountSetupShortPassword extends SherlockActivity implements OnCli
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		if (id == ERROR_DIALOG_ID) {
-			return new AlertDialog.Builder(this).setTitle(android.R.string.dialog_alert_title)
-					.setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.imog__account_setup_shortpw_error)
-					.setCancelable(false).setPositiveButton(android.R.string.ok, null).create();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(android.R.string.dialog_alert_title);
+			builder.setMessage(R.string.imog__account_setup_shortpw_error);
+			builder.setCancelable(false);
+			builder.setPositiveButton(android.R.string.ok, null);
+			return builder.create();
 		} else {
 			return super.onCreateDialog(id);
 		}

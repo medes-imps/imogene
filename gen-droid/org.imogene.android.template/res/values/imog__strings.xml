@@ -60,8 +60,10 @@
     <string name="imog__obtaining_time_offset_failed">Obtaining time offset failed. Do you wish to try again ?</string>
     <string name="imog__obtaining_roles">Connecting to the distant server...</string>
     <string name="imog__obtaining_roles_failed">"Identification failed ! Check login, password and server settings. Do you wish to try again ?"</string>
-    <string name="imog__dialog_quit">"Exit Imogene android application ?"</string>
     <string name="imog__iamlost_title">"I am lost !"</string>
+    
+    <!-- Short messages -->
+    <string name="imog__msg_push_again_to_exit">Press again to exit.</string>
 
     <!-- Synchronization messages -->
     <string name="imog__notification_sync_title">"Synchronization"</string>

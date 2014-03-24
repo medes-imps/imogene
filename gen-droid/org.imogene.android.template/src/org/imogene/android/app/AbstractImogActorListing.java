@@ -75,9 +75,12 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		switch (id) {
 		case DIALOG_PASSWORD_ID:
 			final View textEntryView = LayoutInflater.from(this).inflate(R.layout.imog__alert_dialog_text_entry, null);
-			return new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(getDisplay())
-					.setView(textEntryView).setPositiveButton(android.R.string.ok, this)
-					.setNegativeButton(android.R.string.cancel, null).create();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getDisplay());
+			builder.setView(textEntryView);
+			builder.setPositiveButton(android.R.string.ok, this);
+			builder.setNegativeButton(android.R.string.cancel, null);
+			return builder.create();
 		}
 		return super.onCreateDialog(id);
 	}

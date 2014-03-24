@@ -246,7 +246,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 			case DIALOG_UNSAVED_ID :
 				return new AlertDialog.Builder(this)
 				.setTitle(android.R.string.dialog_alert_title)
-				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setMessage(R.string.imog__unsaved_dialog_msg)
 				.setPositiveButton(android.R.string.yes, this)
 				.setNegativeButton(R.string.imog__no, this)
@@ -256,7 +255,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 			case DIALOG_ERROR_ID :
 				return new AlertDialog.Builder(this)
 				.setTitle(android.R.string.dialog_alert_title)
-				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setAdapter(mAdapter = new ErrorAdapter(this, mErrors), this)
 				.setPositiveButton(android.R.string.ok, this)
 				.setCancelable(false)

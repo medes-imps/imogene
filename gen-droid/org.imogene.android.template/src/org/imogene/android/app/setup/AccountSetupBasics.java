@@ -140,7 +140,6 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		case DIALOG_SNTP_FAILED_ID: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(android.R.string.dialog_alert_title);
-			builder.setIcon(android.R.drawable.ic_dialog_alert);
 			builder.setMessage(R.string.imog__obtaining_time_offset_failed);
 			builder.setCancelable(false);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -170,7 +169,6 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		case DIALOG_AUTH_FAILED_ID: {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(android.R.string.dialog_alert_title);
-			builder.setIcon(android.R.drawable.ic_dialog_alert);
 			builder.setMessage(R.string.imog__obtaining_roles_failed);
 			builder.setCancelable(false);
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

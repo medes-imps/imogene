@@ -143,7 +143,6 @@
 			android:key="about"
 			android:title="@string/imog__about_title"
 			android:summary="@string/imog__about_summary"
-			android:dialogIcon="@android:drawable/ic_dialog_info"
 			android:dialogTitle="@string/imog__about_title"
 			android:negativeButtonText="@null"
 			android:dialogLayout="@layout/imog__about_preference" />
