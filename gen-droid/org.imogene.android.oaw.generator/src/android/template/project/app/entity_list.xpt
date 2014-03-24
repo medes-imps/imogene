@@ -241,7 +241,11 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		«LET (Collection[FieldEntity]) {} AS list-»
 		«FOREACH list.addAll(getMainFields(this).addAll(secondaryFields)) AS f ITERATOR iter-»
 		case «iter.counter1»:
+			«IF TextField.isAssignableFrom(f.metaType) && ((TextField) f).translatable-»
+			mSortKey = «EXPAND android::template::MedooAndroidFieldUtil::columnGetter FOR f»;
+			«ELSE-»
 			mSortKey = «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR f»;
+			«ENDIF-»
 			mAscending = false;
 			requery();
 			return true;

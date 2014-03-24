@@ -31,6 +31,7 @@ import fr.medes.android.xml.converters.StringConverter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.imogene.android.Constants;
 import org.imogene.android.common.binary.BinaryFile;
@@ -56,7 +57,7 @@ public class «name.toFirstUpper()» extends
 «IF georeferenced != null»implements IsGeoreferenced«ENDIF»
  {
 
-	public static interface Columns extends «IF Actor.isAssignableFrom(metaType)»ImogActor.Columns«ELSE»«IF hasDynamicFields»ImogEntity.Columns«ELSE»ImogBean.Columns«ENDIF»«ENDIF» {
+	public static class Columns implements «IF Actor.isAssignableFrom(metaType)»ImogActor.Columns«ELSE»«IF hasDynamicFields»ImogEntity.Columns«ELSE»ImogBean.Columns«ENDIF»«ENDIF» {
 		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor(«IF color.length > 0»"#«color»"«ELSE»"black"«ENDIF»));
 		public static final String TABLE_NAME = "«name.toLowerCase()»";
 		public static final String BEAN_TYPE = "«shortName»";
@@ -69,6 +70,8 @@ public class «name.toFirstUpper()» extends
 		«EXPAND column FOREACH groups.fields-»
 		
 		«EXPAND nTonTable FOREACH groups.fields-»
+		
+		«EXPAND columnGetter FOREACH groups.fields-»
 	}
 	
 	public static «name.toFirstUpper()» fromUri(Uri uri) {
@@ -170,6 +173,25 @@ public static final String «name.toUpperCase()»_«language.isoCode.toUpperCase()»
 «ENDFOREACH-»
 «ELSE-»
 public static final String «name.toUpperCase()» = "«name.toFirstLower()»";
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+«DEFINE columnGetter FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE columnGetter FOR TextField-»
+«IF translatable-»
+public static String get«name.toFirstUpper()»Column() {
+	String iso = Locale.getDefault().getLanguage();
+	«FOREACH ((Project) eRootContainer).languages AS l SEPARATOR " else "-»
+	if ("«l.isoCode»".equals(iso)) {
+		return «name.toUpperCase()»_«l.isoCode.toUpperCase()»;
+	}
+	«ENDFOREACH-»
+	return «name.toUpperCase()»_«((Project) eRootContainer).languages.get(0).isoCode.toUpperCase()»;
+}
 «ENDIF-»
 «ENDDEFINE»
 

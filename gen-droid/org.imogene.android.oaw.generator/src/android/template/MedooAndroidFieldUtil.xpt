@@ -129,3 +129,9 @@ import java.util.Set;
 «DEFINE columnName FOR FieldEntity-»
 «parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()-»
 «ENDDEFINE»
+
+
+
+«DEFINE columnGetter FOR FieldEntity-»
+«parentGroup.parentCard.name.toFirstUpper()».Columns.get«name.toFirstUpper()»Column()
+«ENDDEFINE»
