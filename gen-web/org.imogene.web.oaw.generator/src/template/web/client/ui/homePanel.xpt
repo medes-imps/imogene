@@ -549,7 +549,7 @@ public class HomePanel extends Composite {
 	«ELSE-»
 		«FOREACH entities AS e-»
 		«IF e.topLevel-»
-		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»))
+		if(!AccessManager.canDirectAccess«e.name.toFirstUpper()»() || !AccessManager.canRead«e.name.toFirstUpper()»())
 			«e.name.toFirstLower()».setVisible(false);
 		«ENDIF-»
 		«ENDFOREACH -»
