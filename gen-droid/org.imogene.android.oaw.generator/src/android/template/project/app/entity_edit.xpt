@@ -232,7 +232,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		case R.id.imog__menu_iamlost :
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
-		case R.id.imog__menu_edit :
+		case R.id.imog__menu_save :
 			save(false);
 			return true;
 		default :

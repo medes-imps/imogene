@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -18,15 +19,17 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.database.sqlite.stmt.Where;
@@ -47,7 +50,11 @@ import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()»List extends SherlockListActivity implements View.OnClickListener, OnNavigationListener {
+public class «name.toFirstUpper()»List extends SherlockListActivity implements
+		View.OnClickListener,
+		OnNavigationListener,
+		FilterQueryProvider,
+		SearchView.OnQueryTextListener {
 
 
 	// Extras keys
@@ -112,10 +119,13 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		TextView empty = (TextView) findViewById(R.id.imog__emptyText);
 		empty.setText(R.string.imog__noEntityHelpText);
 		
-		mCursor = query();
+		mCursor = query(null);
 		startManagingCursor(mCursor);
 		
-		setListAdapter(mAdapter = new ImogBeanCursorAdapter(this, mCursor, «name.toFirstUpper()-».Columns.COLOR, isMultiple));
+		mAdapter = new ImogBeanCursorAdapter(this, mCursor, «name.toFirstUpper()».Columns.COLOR, isMultiple);
+		mAdapter.setFilterQueryProvider(this);
+		
+		setListAdapter(mAdapter);
 		
 		if (isMultiple) {
 			findViewById(R.id.imog__footer).setVisibility(View.VISIBLE);
@@ -198,24 +208,6 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 		notifier.suspendMessageNotification(suspend, «name.toFirstUpper()».Columns.NOTIFICATION_ID);
     }
 	
-	private ImogBeanCursor query() {
-		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(«name.toFirstUpper()».Columns.CONTENT_URI);
-		Where where = builder.where();
-		if (mWhereClause != null) {
-			where.raw(mWhereClause, mWhereArgs).and();			
-		}
-		where.ne(«name.toFirstUpper()».Columns.MODIFIEDFROM, «name.toFirstUpper()».Columns.SYNC_SYSTEM);
-		builder.orderBy(mSortKey, mAscending);
-		return (ImogBeanCursor) builder.query();
-	}
-	
-	protected void requery() {
-		stopManagingCursor(mCursor);
-		mCursor = query();
-		startManagingCursor(mCursor);
-		mAdapter.changeCursor(mCursor);
-	}
-
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -259,6 +251,18 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.imog__menu_list, menu);
 		menu.findItem(R.id.imog__menu_add).setEnabled(mPolicy.canCreateAdminLevel1());
+		
+		SearchView searchView = (SearchView) menu.findItem(R.id.imog__menu_search).getActionView();
+		if (searchView != null) {
+			// Don't know what it is for, just in case one day the search do not work anymore
+			// SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+			// searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+			// searchView.setIconifiedByDefault(false);
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+			searchView.setIconifiedByDefault(false);
+			searchView.setOnQueryTextListener(this);
+		}
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -275,9 +279,6 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 			} else {
 				startActivity(intent);
 			}
-			return true;
-		case R.id.imog__menu_search :
-			startSearch(null, false, null, false);
 			return true;
 		case R.id.imog__menu_sync :
 			SynchronizationService.actionCheck(this);
@@ -414,6 +415,50 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements V
 			break;
 		}
 	}
+	
+	// Query and filters
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		mAdapter.getFilter().filter(newText);
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		mAdapter.getFilter().filter(query);
+		return true;
+	}
+	
+	@Override
+	public Cursor runQuery(CharSequence constraint) {
+		stopManagingCursor(mCursor);
+		mCursor = query(constraint);
+		startManagingCursor(mCursor);
+		return mCursor;
+	}
+
+	private ImogBeanCursor query(CharSequence constraint) {
+		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(«name.toFirstUpper()».Columns.CONTENT_URI);
+		Where where = builder.where();
+		if (mWhereClause != null) {
+			where.raw(mWhereClause, mWhereArgs).and();			
+		}
+		where.ne(«name.toFirstUpper()».Columns.MODIFIEDFROM, «name.toFirstUpper()».Columns.SYNC_SYSTEM);
+		if (constraint != null) {
+			//TODO
+		}
+		builder.orderBy(mSortKey, mAscending);
+		return (ImogBeanCursor) builder.query();
+	}
+	
+	private void requery() {
+		stopManagingCursor(mCursor);
+		mCursor = query(null);
+		startManagingCursor(mCursor);
+		mAdapter.changeCursor(mCursor);
+	}
+
 }
 «ENDFILE-»
 «ENDDEFINE»

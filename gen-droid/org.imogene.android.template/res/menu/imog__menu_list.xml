@@ -12,8 +12,9 @@
         android:title="@string/imog__menu_add"/>
     <item
         android:id="@+id/imog__menu_search"
+        android:actionViewClass="com.actionbarsherlock.widget.SearchView"
         android:icon="@android:drawable/ic_menu_search"
-        android:showAsAction="ifRoom"
+        android:showAsAction="ifRoom|collapseActionView"
         android:title="@android:string/search_go"/>
     <item
         android:id="@+id/imog__menu_sync"
