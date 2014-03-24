@@ -163,8 +163,7 @@ public class PushService extends Service {
 	}
 
 	@Override
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		final String action = intent.getAction();
 		if (ACTION_START.equals(action)) {
 			start();
@@ -178,6 +177,8 @@ public class PushService extends Service {
 		} else if (ACTION_PING_TIMEOUT.equals(action)) {
 			pingTimeout();
 		}
+		// Since we are pinging periodically the connection is restarted in the onCreate method.
+		return START_NOT_STICKY;
 	}
 
 	@Override
