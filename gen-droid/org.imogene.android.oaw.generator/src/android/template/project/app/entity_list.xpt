@@ -442,10 +442,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 		if (mWhereClause != null) {
 			where.raw(mWhereClause, mWhereArgs).and();			
 		}
-		where.ne(«name.toFirstUpper()».Columns.MODIFIEDFROM, «name.toFirstUpper()».Columns.SYNC_SYSTEM);
-		if (constraint != null) {
-			//TODO
-		}
+		buildWhereClause(where, constraint, true);
 		builder.orderBy(mSortKey, mAscending);
 		return (ImogBeanCursor) builder.query();
 	}
@@ -456,9 +453,57 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 		startManagingCursor(mCursor);
 		mAdapter.changeCursor(mCursor);
 	}
+	
+	private static void buildWhereClause(Where where, CharSequence constraint, boolean allFields) {
+		where.ne(«name.toFirstUpper()».Columns.MODIFIEDFROM, «name.toFirstUpper()».Columns.SYNC_SYSTEM);
+		if (constraint != null) {
+			int numClauses = 0;
+			Where subWhere = new Where();
+			«EXPAND buildWhereClause FOREACH mainFields-»
+			if (allFields) {
+				«EXPAND buildWhereClause FOREACH secondaryFields-»
+			}
+			if (numClauses > 0) {
+				subWhere.or(numClauses);
+				where.and();
+				where.clause(subWhere);
+			}
+		}
+	}
+	
+	public static QueryBuilder buildSubQueryBuilder(CharSequence constraint) {
+		QueryBuilder subQueryBuilder = ImogOpenHelper.getHelper().queryBuilder(«name.toFirstUpper()».Columns.TABLE_NAME);
+		subQueryBuilder.selectColumns(«name.toFirstUpper()».Columns._ID);
+		buildWhereClause(subQueryBuilder.where(), constraint, false);
+		return subQueryBuilder;
+	}
 
 }
 «ENDFILE-»
 «ENDDEFINE»
 
 
+«DEFINE buildWhereClause FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE buildWhereClause FOR TextField-»
+«IF translatable-»
+subWhere.like(«parentGroup.parentCard.name.toFirstUpper()».Columns.get«name.toFirstUpper()»Column(), '%' + constraint.toString() + '%');
+numClauses++;
+«ELSE-»
+subWhere.like(«parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», '%' + constraint.toString() + '%');
+numClauses++;
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE buildWhereClause FOR StringField-»
+subWhere.like(«parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», '%' + constraint.toString() + '%');
+numClauses++;
+«ENDDEFINE»
+
+«DEFINE buildWhereClause FOR RelationFieldEntity-»
+«IF cardinality == 1-»
+subWhere.in(«parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», «entity.name.toFirstUpper()»List.buildSubQueryBuilder(constraint));
+numClauses++;
+«ENDIF-»
+«ENDDEFINE»
