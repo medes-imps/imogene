@@ -14,11 +14,6 @@
         <item name="fieldLayoutHeight">fill_parent</item>
     </style>
 
-    <!-- Start with the Holographic Light theme -->
-    <style name="Theme.Imogene.Home" parent="style/Theme.Imogene">
-        <item name="android:windowBackground">@drawable/imog__background_noise</item>
-    </style>
-
     <!--
          Theme for translucent activities. That is, windows
          that allow you to see through them to the windows behind.  This sets up the translucent
