@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Light.Hack" parent="@android:style/Theme.Light">
-        <item name="android:textColorPrimaryInverse">@android:color/primary_text_light</item>
-    </style>
-
     <!-- Variation on the Light theme that turns off the title -->
     <style name="Theme.Imogene" parent="@style/Theme.Sherlock.Light">
+        <item name="quickActionBarStyle">@style/Medes.Widget.QuickAction.Bar</item>
+        <item name="quickActionBarItemStyle">@style/Medes.Widget.QuickAction.Bar.Item</item>
+        <item name="quickActionGridStyle">@style/Medes.Widget.QuickAction.Grid</item>
+        <item name="quickActionGridItemStyle">@style/Medes.Widget.QuickAction.Grid.Item</item>
         <item name="fieldLayoutHeight">wrap_content</item>
     </style>
 

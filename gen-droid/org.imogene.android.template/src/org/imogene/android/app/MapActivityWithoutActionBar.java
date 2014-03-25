@@ -30,11 +30,6 @@ import fr.medes.android.util.content.ContentUrisUtils;
 
 public class MapActivityWithoutActionBar extends MapActivity {
 
-	private static final int MENU_MAPMODE_ID = 1;
-	private static final int MENU_OFFLINE_ID = 2;
-	private static final int MENU_MYLOCATION_ID = 3;
-	private static final int MENU_COMPASS_ID = 4;
-
 	private String mWhereClause = null;
 	private Object[] mWhereArgs = null;
 	private Uri mContentUri;
@@ -80,29 +75,18 @@ public class MapActivityWithoutActionBar extends MapActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, MENU_MYLOCATION_ID, Menu.NONE, R.string.maps__my_location).setIcon(
-				R.drawable.imog__ic_menu_mylocation);
-		menu.add(Menu.NONE, MENU_COMPASS_ID, Menu.NONE, R.string.maps__compass).setIcon(R.drawable.imog__ic_menu_compass);
-		menu.add(Menu.NONE, MENU_MAPMODE_ID, Menu.NONE, R.string.maps__map_mode).setIcon(R.drawable.imog__ic_menu_mapmode);
-		menu.add(Menu.NONE, MENU_OFFLINE_ID, Menu.NONE, R.string.maps__offline_mode).setIcon(
-				R.drawable.imog__ic_menu_offline);
+		getSupportMenuInflater().inflate(R.menu.maps__menu_viewer, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_COMPASS_ID:
-			changeCompassState();
-			return true;
-		case MENU_MAPMODE_ID:
+		case R.id.maps__menu_map:
 			showDialog(DIALOG_MAPMODE_ID);
 			return true;
-		case MENU_MYLOCATION_ID:
+		case R.id.maps__menu_place:
 			changeMyLocationState();
-			return true;
-		case MENU_OFFLINE_ID:
-			changeConnectionState();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -129,8 +113,8 @@ public class MapActivityWithoutActionBar extends MapActivity {
 			mBalloonView.setTag(ContentUrisUtils.withAppendedId(mContentUri, item.getUid()));
 			mBalloonView.setData(item.getTitle(), item.getSnippet());
 
-			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-					item.getPoint(), LayoutParams.BOTTOM_CENTER, 0, -34);
+			LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, item.getPoint(),
+					LayoutParams.BOTTOM_CENTER, 0, -34);
 
 			if (isRecycled) {
 				mBalloonView.setLayoutParams(params);
@@ -158,8 +142,8 @@ public class MapActivityWithoutActionBar extends MapActivity {
 
 		@Override
 		public void onOverlaysLoaded(ArrayList<OverlayItem> items) {
-			ItemizedIconOverlay<OverlayItem> ov = new ItemizedIconOverlay<OverlayItem>(items, getResources()
-					.getDrawable(R.drawable.maps__bubble), mGestureListener, mResourceProxy);
+			ItemizedIconOverlay<OverlayItem> ov = new ItemizedIconOverlay<OverlayItem>(items, getResources().getDrawable(
+					R.drawable.maps__bubble), mGestureListener, mResourceProxy);
 
 			mMapView.getOverlayManager().add(ov);
 			mMapView.postInvalidate();

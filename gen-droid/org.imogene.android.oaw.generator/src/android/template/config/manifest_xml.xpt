@@ -180,8 +180,7 @@
 			android:name=".app.«entity.name.toFirstUpper()-»Wizard"
 			android:label="@string/«entity.name.toLowerCase()-»_des_new"
 			android:theme="@style/Theme.Imogene.Wizard"
-			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-»
-			«REM»android:theme="@style/Theme.Light.Hack"comment«ENDREM» >
+			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-»>
 			<intent-filter>
 				<action android:name="android.intent.action.INSERT" />
 				<category android:name="android.intent.category.DEFAULT" />

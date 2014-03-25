@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/imog__menu_save"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/imog__ic_action_accept"
         android:showAsAction="ifRoom"
         android:title="@string/imog__menu_save"/>
     <item
         android:id="@+id/imog__menu_iamlost"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@drawable/imog__ic_action_place"
         android:title="@string/imog__menu_iamlost"/>
 
 </menu>

@@ -3,17 +3,12 @@
 
     <item
         android:id="@+id/imog__menu_sync"
-        android:icon="@drawable/imog__ic_title_sync"
+        android:icon="@drawable/imog__ic_action_refresh"
         android:showAsAction="ifRoom"
         android:title="@string/imog__menu_sync"/>
     <item
         android:id="@+id/imog__menu_preferences"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/imog__ic_action_settings"
         android:title="@string/imog__menu_settings"/>
-    <item
-        android:id="@+id/imog__menu_change_user"
-        android:icon="@android:drawable/ic_menu_manage"
-        android:title="@string/imog__menu_change_user"
-        android:visible="false"/>
 
 </menu>
