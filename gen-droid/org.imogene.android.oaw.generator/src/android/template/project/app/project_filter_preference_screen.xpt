@@ -10,18 +10,18 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 import org.imogene.android.«name.toLowerCase()».R;
-«FOREACH entities AS e-»
-«IF hasFilter(e)-»
-import org.imogene.android.«name.toLowerCase()».roles.«e.name.toFirstUpper()»Roles;
-«ENDIF-»
-«ENDFOREACH-»
+import org.imogene.android.«name.toLowerCase()».security.AccessPolicy;
 
 public class FilterPreferenceScreen extends SherlockPreferenceActivity {
+
+	private AccessPolicy mPolicy;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.filter_preference_screen);
+		
+		mPolicy = AccessPolicy.getPolicy(this);
 		
 		«FOREACH entities AS e-»
 		«IF hasFilter(e)-»
@@ -33,12 +33,12 @@ public class FilterPreferenceScreen extends SherlockPreferenceActivity {
 	«FOREACH entities AS e-»
 	«IF hasFilter(e)-»
 	private boolean isPreferenceScreen«e.name.toFirstUpper()»FilterEnabled() {
-		if («e.name.toFirstUpper()»Roles.canRead(this)) {
+		if (mPolicy.canRead«e.name.toFirstUpper()»()) {
 			«IF e.clientPeriodFilterable-»
 			return true;
 			«ELSE-»
 			«FOREACH getFilteredGroups(e.clientFilterFields) AS g-»
-			if («e.name.toFirstUpper()»Roles.canRead«g.name.toFirstUpper()»(this)) {
+			if (mPolicy.canRead«e.name.toFirstUpper()»«g.name.toFirstUpper()»()) {
 				return true;
 			}
 			«ENDFOREACH-»

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».roles.«name.toFirstUpper()»Roles;
+import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()»FilterPreferenceScreen extends SherlockPreferenceActivity {
 
@@ -23,8 +23,9 @@ public class «name.toFirstUpper()»FilterPreferenceScreen extends SherlockPrefere
 	}
 	
 	private void preparePreferenceScreenFilter() {
+		AccessPolicy policy = AccessPolicy.getPolicy(this);
 		«FOREACH getFilteredGroups(clientFilterFields) AS g-»
-		boolean canRead«g.name.toFirstUpper()» = «name.toFirstUpper()»Roles.canRead«g.name.toFirstUpper()»(this);
+		boolean canRead«g.name.toFirstUpper()» = policy.canRead«name.toFirstUpper()»«g.name.toFirstUpper()»();
 		«FOREACH clientFilterFields AS f-»
 		«IF g.fields.contains(f)-»
 		findPreference("«f.name.toLowerCase()»_filter").setEnabled(canRead«g.name.toFirstUpper()»);
