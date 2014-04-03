@@ -10,36 +10,32 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
+import android.widget.NumberPicker;
 import fr.medes.android.util.field.FieldPattern;
 
-public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements DialogInterface.OnClickListener,
-		OnSeekBarChangeListener {
+public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements DialogInterface.OnClickListener {
 
-	private SeekBar mSeekBar;
-	private TextView mTextView;
+	private NumberPicker mNumberPicker;
 
-	private int mMax;
-	private int mMin;
+	private int mMaxValue;
+	private int mMinValue;
 	private String mFormat;
 
 	public BoundedIntegerFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_default);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberField, 0, 0);
-		setMin(a.getInt(R.styleable.NumberField_intMin, 0));
-		setMax(a.getInt(R.styleable.NumberField_intMax, 100));
+		setMinValue(a.getInt(R.styleable.NumberField_intMin, 0));
+		setMaxValue(a.getInt(R.styleable.NumberField_intMax, 100));
 		mFormat = a.getString(R.styleable.NumberField_format);
 		a.recycle();
 	}
 
-	public void setMin(int min) {
-		mMin = min;
+	public void setMinValue(int min) {
+		mMinValue = min;
 	}
 
-	public void setMax(int max) {
-		mMax = max;
+	public void setMaxValue(int max) {
+		mMaxValue = max;
 	}
 
 	@Override
@@ -69,35 +65,13 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 	protected void onPrepareDialogBuilder(Builder builder) {
 		View view = LayoutInflater.from(getContext()).inflate(R.layout.imog__field_edit_integer_bounded, null);
 
-		mTextView = (TextView) view.findViewById(R.id.imog__display_value);
-
-		mSeekBar = (SeekBar) view.findViewById(R.id.imog__seekbar);
-		mSeekBar.setOnSeekBarChangeListener(this);
-		mSeekBar.setMax(mMax - mMin);
-
-		final OnClickListener listener = new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				switch (v.getId()) {
-				case R.id.imog__decrease:
-					mSeekBar.incrementProgressBy(-1);
-					break;
-				case R.id.imog__increase:
-					mSeekBar.incrementProgressBy(1);
-					break;
-				}
-			}
-		};
-
-		view.findViewById(R.id.imog__increase).setOnClickListener(listener);
-		view.findViewById(R.id.imog__decrease).setOnClickListener(listener);
-
-		final Integer value = getValue();
-		if (value != null) {
-			mSeekBar.setProgress(getValue() - mMin);
+		mNumberPicker = (NumberPicker) view.findViewById(R.id.imog__numberPicker);
+		mNumberPicker.setMinValue(mMinValue);
+		mNumberPicker.setMaxValue(mMaxValue);
+		if (getValue() != null) {
+			mNumberPicker.setValue(getValue());
 		} else {
-			mSeekBar.setProgress((mMax - mMin) / 2);
+			mNumberPicker.setValue((mMaxValue + mMinValue) / 2);
 		}
 
 		builder.setView(view);
@@ -115,25 +89,12 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
 		case Dialog.BUTTON_POSITIVE:
-			setValue(mSeekBar.getProgress() + mMin);
+			setValue(mNumberPicker.getValue());
 			break;
 		case Dialog.BUTTON_NEUTRAL:
 			setValue(null);
 			break;
 		}
-	}
-
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		mTextView.setText(String.format(mFormat, (progress + mMin)));
-	}
-
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-	}
-
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
 	}
 
 }

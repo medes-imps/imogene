@@ -9,7 +9,7 @@
     android:versionName="«versionCode».0">
     
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="11"
         android:targetSdkVersion="14" />
 	
     <supports-screens
