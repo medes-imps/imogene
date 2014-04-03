@@ -38,7 +38,6 @@
                 android:id="@+id/imog__delete"
                 android:layout_width="70dip"
                 android:layout_height="45dip"
-                android:background="@drawable/imog__btn_default"
                 android:scaleType="fitCenter"
                 android:src="@drawable/imog__binary_delete" />
 
@@ -46,7 +45,6 @@
                 android:id="@+id/imog__acquire"
                 android:layout_width="70dip"
                 android:layout_height="45dip"
-                android:background="@drawable/imog__btn_default"
                 android:scaleType="fitCenter"
                 android:src="@drawable/imog__binary_add" />
 
@@ -54,7 +52,6 @@
                 android:id="@+id/imog__view"
                 android:layout_width="70dip"
                 android:layout_height="45dip"
-                android:background="@drawable/imog__btn_default"
                 android:scaleType="fitCenter"
                 android:src="@drawable/imog__binary_view" />
 

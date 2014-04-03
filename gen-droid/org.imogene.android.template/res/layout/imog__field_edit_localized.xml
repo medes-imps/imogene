@@ -56,14 +56,12 @@
             android:id="@+id/imog__more_button"
             android:layout_width="fill_parent"
             android:layout_height="17dip"
-            android:background="@drawable/imog__btn_default"
             android:src="@drawable/imog__indicator_down_arrow" />
 
         <ImageButton
             android:id="@+id/imog__less_button"
             android:layout_width="fill_parent"
             android:layout_height="17dip"
-            android:background="@drawable/imog__btn_default"
             android:src="@drawable/imog__indicator_up_arrow" />
 
         <LinearLayout
