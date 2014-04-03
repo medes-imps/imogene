@@ -30,7 +30,6 @@ public abstract class DefaultEntityView<T> extends BaseFieldView<T> {
 
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
-		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setMessage(getFieldDisplay());
 		builder.setPositiveButton(android.R.string.ok, null);
 	}

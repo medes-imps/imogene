@@ -103,7 +103,6 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
-		builder.setIcon(android.R.drawable.ic_dialog_info);
 		builder.setMessage(getValue());
 		builder.setPositiveButton(android.R.string.ok, null);
 	}

@@ -52,7 +52,6 @@ public class EnumMultipleFieldView extends DefaultEntityView<boolean[]> {
 
 	@Override
 	protected void onPrepareDialogBuilder(Builder builder) {
-		builder.setIcon(android.R.drawable.ic_dialog_info);
 		final String[] items = getFieldDisplay().split(" ; ");
 		builder.setItems(items, null);
 		builder.setPositiveButton(android.R.string.ok, null);

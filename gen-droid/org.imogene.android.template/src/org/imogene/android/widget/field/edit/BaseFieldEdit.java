@@ -222,8 +222,10 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 	}
 
 	private void showHelpDialog(Bundle state) {
-		Builder builder = new AlertDialog.Builder(getContext()).setIcon(android.R.drawable.ic_dialog_info)
-				.setTitle(getTitle()).setMessage(mHelpId).setPositiveButton(android.R.string.ok, null);
+		Builder builder = new AlertDialog.Builder(getContext());
+		builder.setTitle(getTitle());
+		builder.setMessage(mHelpId);
+		builder.setPositiveButton(android.R.string.ok, null);
 
 		getFieldManager().registerOnActivityDestroyListener(this);
 
