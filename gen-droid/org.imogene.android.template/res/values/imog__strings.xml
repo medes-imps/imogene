@@ -61,6 +61,7 @@
     <string name="imog__obtaining_roles">Connecting to the distant server...</string>
     <string name="imog__obtaining_roles_failed">"Identification failed ! Check login, password and server settings. Do you wish to try again ?"</string>
     <string name="imog__iamlost_title">"I am lost !"</string>
+    <string name="imog__numberOfEntities">{0,choice,0#No entity|1#One entity|1&lt;{0} entities}</string>
     
     <!-- Short messages -->
     <string name="imog__msg_push_again_to_exit">Press again to exit.</string>

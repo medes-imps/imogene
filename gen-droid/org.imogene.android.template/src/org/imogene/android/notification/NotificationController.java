@@ -1,5 +1,6 @@
 package org.imogene.android.notification;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.imogene.android.Constants;
@@ -328,8 +329,8 @@ public class NotificationController {
 				}
 
 				String title = sInstance.mContext.getString(mInfo.description_sg);
-				String description = sInstance.mContext.getResources().getQuantityString(R.plurals.imog__numberOfEntities,
-						count, count);
+				String fmt = sInstance.mContext.getResources().getString(R.string.imog__numberOfEntities);
+				String description = MessageFormat.format(fmt, count);
 				CharSequence ticker = buildTickerMessage(title, description);
 
 				Notification n = sInstance.createNotification(title, description, ticker, intent, mInfo.drawable, true);

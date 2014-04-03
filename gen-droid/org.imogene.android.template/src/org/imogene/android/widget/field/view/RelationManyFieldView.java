@@ -1,5 +1,6 @@
 package org.imogene.android.widget.field.view;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
@@ -17,14 +18,14 @@ import fr.medes.android.database.sqlite.stmt.Where;
 
 public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 
-	private final int displayId;
+	private final int displayRes;
 
 	private Uri contentUri;
 
 	public RelationManyFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_relation);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
-		displayId = a.getResourceId(R.styleable.RelationField_display, 0);
+		displayRes = a.getResourceId(R.styleable.RelationField_display, R.string.imog__numberOfEntities);
 		a.recycle();
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);
@@ -52,7 +53,8 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 		final List<Uri> uris = getValue();
 		if (uris != null && !uris.isEmpty()) {
 			int size = uris.size();
-			return getResources().getQuantityString(displayId, size, size);
+			String fmt = getResources().getString(displayRes);
+			return MessageFormat.format(fmt, size);
 		}
 		return super.getFieldDisplay();
 	}

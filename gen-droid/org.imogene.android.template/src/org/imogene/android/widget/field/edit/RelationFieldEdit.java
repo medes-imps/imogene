@@ -32,7 +32,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	private ArrayList<ExtraBuilder> mBuilders;
 
 	protected boolean mHasReverse = false;
-	protected int mDisplayId = android.R.string.unknownName;
+	protected int mDisplayRes = R.string.imog__numberOfEntities;
 	protected int mOppositeCardinality = -1;
 	protected int mType; // 0 for main relation field; 1 for reverse relation
 							// field
@@ -51,15 +51,15 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		super(context, attrs, R.layout.imog__field_relation);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
 		mHasReverse = a.getBoolean(R.styleable.RelationField_hasReverse, false);
-		mDisplayId = a.getResourceId(R.styleable.RelationField_display, 0);
+		mDisplayRes = a.getResourceId(R.styleable.RelationField_display, R.string.imog__numberOfEntities);
 		mOppositeCardinality = a.getInt(R.styleable.RelationField_oppositeCardinality, 0);
 		mType = a.getInt(R.styleable.RelationField_relationType, 0);
 		a.recycle();
 		setOnClickListener(this);
 	}
 
-	public void setDisplayId(int displayId) {
-		mDisplayId = displayId;
+	public void setDisplay(int display) {
+		mDisplayRes = display;
 	}
 
 	public void setOppositeRelationField(String oppositerelationField) {

@@ -1,5 +1,6 @@
 package org.imogene.android.widget.field.edit;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,8 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 		final List<Uri> uris = getValue();
 		if (uris != null && !uris.isEmpty()) {
 			int size = uris.size();
-			return getResources().getQuantityString(mDisplayId, size, size);
+			String fmt = getResources().getString(mDisplayRes);
+			return MessageFormat.format(fmt, size);
 		} else {
 			return getEmptyText();
 		}

@@ -72,6 +72,7 @@
     <string name="imog__precache_clear_title">"Clear map tile cache"</string>
     <string name="imog__precache_clear_summary">"Current cache size is %1$s. To clear user data use the system application settings"</string>
     <string name="imog__precache_area_title">"Precached map areas"</string>
+    <string name="imog__precache_area_summary">{0,choice,0#No precached map area|1#One precached map area|1&lt;{0} precached map areas}</string>
     <string name="imog__precache_computing_summary">"Computing&#8230;"</string>
     <string name="imog__push_host_title">Host address</string>
     <string name="imog__push_port_title">Port number</string>

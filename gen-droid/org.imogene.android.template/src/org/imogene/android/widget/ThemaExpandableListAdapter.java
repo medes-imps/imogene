@@ -1,5 +1,6 @@
 package org.imogene.android.widget;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import org.imogene.android.common.entity.ImogBean;
@@ -71,8 +72,8 @@ public final class ThemaExpandableListAdapter extends BaseExpandableListAdapter 
 		builder.where().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 		int count = (int) builder.queryForLong();
 
-		String s = mContext.getResources().getQuantityString(R.plurals.imog__numberOfEntities, count, count);
-		secondary.setText(s);
+		String fmt = mContext.getString(R.string.imog__numberOfEntities);
+		secondary.setText(MessageFormat.format(fmt, count));
 
 		ImageView icon = (ImageView) view.findViewById(R.id.imog__list_icon);
 		if (entity.drawable != 0) {

@@ -132,7 +132,7 @@ app:dateMin="«min»"
 
 «DEFINE specificAttributes FOR RelationFieldEntity-»
 app:hasReverse="«oppositeRelationField != null»"
-app:display="@plurals/«entity.name.toLowerCase()-»_display"
+app:display="@string/imog__numberOfEntities"
 app:oppositeCardinality="«getOppositeCardinality(this)-»"
 app:relationType="«IF MainRelationFieldEntity.isAssignableFrom(metaType)»main«ELSE»reverse«ENDIF»"
 «ENDDEFINE»

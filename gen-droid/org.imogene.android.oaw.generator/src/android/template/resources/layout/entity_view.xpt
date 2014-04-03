@@ -131,6 +131,6 @@ app:itemsValues="@array/«EXPAND android::template::MedooAndroidFieldUtil::resour
 
 «DEFINE specificAttributes FOR RelationFieldEntity-»
 «IF cardinality != 1»
-app:display="@plurals/«entity.name.toLowerCase()-»_display"
+app:display="@string/imog__numberOfEntities"
 «ENDIF»
 «ENDDEFINE»

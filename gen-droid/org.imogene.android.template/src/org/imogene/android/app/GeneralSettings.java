@@ -1,6 +1,7 @@
 package org.imogene.android.app;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
@@ -343,8 +344,8 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	}
 
 	private void setPrecacheAreaSummary(int count) {
-		String summary = getResources().getQuantityString(R.plurals.imog__precache_area_summary, count, count);
-		mMapPrecacheArea.setSummary(summary);
+		String fmt = getResources().getString(R.string.imog__precache_area_summary);
+		mMapPrecacheArea.setSummary(MessageFormat.format(fmt, count));
 	}
 
 	private void setCheckUpdateEnabled(boolean enabled) {

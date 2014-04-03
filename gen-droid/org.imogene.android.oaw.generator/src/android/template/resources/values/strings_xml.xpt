@@ -9,13 +9,6 @@
 	
 	<string name="«name.toLowerCase()-»_downloader">"«name.toFirstUpper()-» downloader"</string>
 	
-	<!--  Modify and delete keys for preferences -->
-	«FOREACH entities AS entity»
-	<string name="«entity.name.toLowerCase()-»_modify">"«entity.name.toUpperCase()-»_MODIFY"</string>
-	<string name="«entity.name.toLowerCase()-»_delete">"«entity.name.toUpperCase()-»_DELETE"</string>
-	«ENDFOREACH-»
-	
-
 	<!--  Description for each entity field -->
 	«IF hasMiscellaneousThema(entities, themas)-»
 	<string name="thema_miscellaneous">"Miscellaneous"</string>
@@ -25,10 +18,10 @@
 	«ENDFOREACH-»
 	
 	«FOREACH entities AS entity-»	
-	<string name="«entity.name.toLowerCase()-»_des_sg">"«entity.name-»"</string>
-	<string name="«entity.name.toLowerCase()-»_des_pl">"«entity.name-»"</string>
-	<string name="«entity.name.toLowerCase()-»_des_new">"New «entity.name-»"</string>
-	<string name="«entity.name.toLowerCase()-»_des_registered">"«entity.name-» registered"</string>
+	<string name="«entity.name.toLowerCase()-»_des_sg">"«entity.name»"</string>
+	<string name="«entity.name.toLowerCase()-»_des_pl">"«entity.name»"</string>
+	<string name="«entity.name.toLowerCase()-»_des_new">"New «entity.name»"</string>
+	<string name="«entity.name.toLowerCase()-»_des_registered">"«entity.name» registered"</string>
 	«FOREACH entity.groups AS group-»
 	<string name="«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»">"«group.name-»"</string>
 	«FOREACH group.fields AS field-»
@@ -65,10 +58,10 @@
 	«EXPAND getDescription(iso) FOREACH themas-»
 	
 	«FOREACH entities AS entity-»	
-	<string name="«entity.name.toLowerCase()-»_des_sg">"«EXPAND getDescription(iso) FOR entity-»"</string>
-	<string name="«entity.name.toLowerCase()-»_des_pl">"«EXPAND getDescription(iso) FOR entity-»"</string>
-	<string name="«entity.name.toLowerCase()-»_des_new">"New «EXPAND getDescription(iso) FOR entity-»"</string>
-	<string name="«entity.name.toLowerCase()-»_des_registered">"«EXPAND getDescription(iso) FOR entity-» registered"</string>
+	<string name="«entity.name.toLowerCase()-»_des_sg">"«EXPAND getDescription(iso) FOR entity»"</string>
+	<string name="«entity.name.toLowerCase()-»_des_pl">"«EXPAND getDescription(iso) FOR entity»"</string>
+	<string name="«entity.name.toLowerCase()-»_des_new">"New «EXPAND getDescription(iso) FOR entity»"</string>
+	<string name="«entity.name.toLowerCase()-»_des_registered">"«EXPAND getDescription(iso) FOR entity» registered"</string>
 	«FOREACH entity.groups AS group-»
 		«EXPAND getDescription(iso) FOR group-»
 		«FOREACH group.fields AS field-»
