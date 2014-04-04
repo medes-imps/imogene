@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="imog__select_yes_no">
+        <item>Oui</item>
+        <item>Non</item>
+    </string-array>
+    <string-array name="imog__entries_period_preference">
+        <item>15 secondes</item>
+        <item>30 secondes</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+    </string-array>
+    <string-array name="imog__period_filter_values">
+        <item>Non défini</item>
+        <item>Période</item>
+        <!-- <item>Equals</item> -->
+    </string-array>
+    <string-array name="imog__numeric_filter_values">
+        <item>Non défini</item>
+        <item>Egal</item>
+        <item>Intervalle</item>
+    </string-array>
+    <string-array name="imog__string_filter_values">
+        <item>Non défini</item>
+        <item>Contient</item>
+        <item>Egal</item>
+        <item>Commence avec</item>
+    </string-array>
+
+</resources>

@@ -14,16 +14,16 @@
 	«EXPAND getSortByArray(null) FOREACH entities-»
 	
 	<!-- Available languages iso codes -->
-	<string-array name="languages_iso">
+	<string-array name="languages_iso" translatable="false">
 	«FOREACH languages AS l-»
-		<item>"«l.isoCode»"</item>
+		<item>«l.isoCode»</item>
 	«ENDFOREACH-»
 	</string-array>
 	
 	<!-- Available languages display -->
-	<string-array name="languages_display">
+	<string-array name="languages_display" translatable="false">
 	«FOREACH languages AS l-»
-		<item>"«l.name»"</item>
+		<item>«l.name»</item>
 	«ENDFOREACH-»
 	</string-array>
 
@@ -70,7 +70,7 @@
 «DEFINE getArray(String isoCode) FOR EnumField-»
 	<string-array name="«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»">
 	«FOREACH enumValues AS enum-»
-		<item>"«EXPAND getDescription(isoCode) FOR enum-»"</item>
+		<item>«EXPAND getDescription(isoCode) FOR enum-»</item>
 	«ENDFOREACH-»
 	</string-array>
 «ENDDEFINE»

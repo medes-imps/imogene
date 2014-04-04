@@ -14,7 +14,6 @@ public class Preferences {
 	public static final String MULTILOGIN_ENABLED = "multiloginEnabled";
 	public static final String ADMIN_LOGIN = "adminLogin";
 	public static final String ADMIN_PASSWORD = "adminPassword";
-	public static final String ADMIN_ROLES = "adminRoles";
 	public static final String CURRENT_LOGIN = "currentLogin";
 	public static final String SYNC_LOGIN = "syncLogin";
 	public static final String SYNC_PASSWORD = "syncPassword";
@@ -184,7 +183,7 @@ public class Preferences {
 
 	public boolean isSetAdmin() {
 		SharedPreferences sp = mSharedPreferences;
-		return sp.contains(ADMIN_LOGIN) && sp.contains(ADMIN_PASSWORD) && sp.contains(ADMIN_ROLES);
+		return sp.contains(ADMIN_LOGIN) && sp.contains(ADMIN_PASSWORD);
 	}
 
 	public boolean isAdmin(String login, String password) {
@@ -202,14 +201,6 @@ public class Preferences {
 
 	public void setAdminPassword(String value) {
 		setEncryptedString(ADMIN_PASSWORD, value);
-	}
-
-	public String getAdminRoles() {
-		return mSharedPreferences.getString(ADMIN_ROLES, null);
-	}
-
-	public void setAdminRoles(String value) {
-		mSharedPreferences.edit().putString(ADMIN_ROLES, value).commit();
 	}
 
 	public boolean isHttpAuthenticationEnabled() {

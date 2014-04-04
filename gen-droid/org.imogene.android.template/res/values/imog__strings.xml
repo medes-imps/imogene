@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <!-- Menu strings -->
-    <string name="imog__menu_save">"Save"</string>
-    <string name="imog__menu_discard">"Discard"</string>
-    <string name="imog__menu_delete">"Delete"</string>
-    <string name="imog__menu_view">"View"</string>
-    <string name="imog__menu_mark_as_read">"Mark as read"</string>
-    <string name="imog__menu_mark_as_unread">"Mark as unread"</string>
-    <string name="imog__menu_resume_sync">"Resume Sync."</string>
-    <string name="imog__menu_actions">"Actions"</string>
-    <string name="imog__menu_sort_by_modified">"Modification date"</string>
-    <string name="imog__menu_markall">"Mark all as read"</string>
-    <string name="imog__menu_iamlost">"I am lost"</string>
-    <string name="imog__menu_change_user">"Change user"</string>
-    <string name="imog__menu_autozoom">"Autozoom"</string>
-    <string name="imog__menu_map">"Map"</string>
-    <string name="imog__menu_info">Info.</string>
+    <string name="imog__menu_save">Save</string>
+    <string name="imog__menu_discard">Discard</string>
+    <string name="imog__menu_delete">Delete</string>
+    <string name="imog__menu_view">View</string>
+    <string name="imog__menu_mark_as_read">Mark as read</string>
+    <string name="imog__menu_mark_as_unread">Mark as unread</string>
+    <string name="imog__menu_resume_sync">Resume Synchronization</string>
+    <string name="imog__menu_actions">Actions</string>
+    <string name="imog__menu_sort_by_modified">Modification date</string>
+    <string name="imog__menu_markall">Mark all as read</string>
+    <string name="imog__menu_iamlost">I am lost</string>
+    <string name="imog__menu_change_user">Change user</string>
+    <string name="imog__menu_autozoom">Autozoom</string>
+    <string name="imog__menu_map">Map</string>
+    <string name="imog__menu_info">Information</string>
     <string name="imog__menu_logo">Imogene Android</string>
     <string name="imog__menu_home">Home</string>
-    <string name="imog__menu_sync">Sync</string>
-    <string name="imog__menu_add">Sync</string>
+    <string name="imog__menu_sync">Synchronize</string>
+    <string name="imog__menu_add">New</string>
     <string name="imog__menu_edit">Edit</string>
-    <string name="imog__menu_settings">"Preferences"</string>
+    <string name="imog__menu_settings">Preferences</string>
 
     <!-- Other -->
     <string name="imog__no">No</string>
-    <string name="imog__camera">"Camera"</string>
-    <string name="imog__camcorder">"Camcorder"</string>
-    <string name="imog__list_availables_entities">"List of available entities"</string>
-    <string name="imog__modified">"Last modification date"</string>
-    <string name="imog__modified_by">"Modified by"</string>
-    <string name="imog__modified_from">"Modified from"</string>
-    <string name="imog__created">"Creation date"</string>
-    <string name="imog__created_by">"Created by"</string>
-    <string name="imog__entity_id">"Entity id"</string>
-    <string name="imog__noEntityHelpText">"You don\'t have any form.\n\n<li>To add a form, press + to create a new form from scratch.</li>"</string>
+    <string name="imog__camera">Camera</string>
+    <string name="imog__camcorder">Camcorder</string>
+    <string name="imog__list_availables_entities">Available entities</string>
+    <string name="imog__modified">Last modification date</string>
+    <string name="imog__modified_by">Modified by</string>
+    <string name="imog__modified_from">Modified from</string>
+    <string name="imog__created">Creation date</string>
+    <string name="imog__created_by">Created by</string>
+    <string name="imog__entity_id">Identifier</string>
+    <string name="imog__noEntityHelpText">You don\'t have any form.\n\n<li>To add a form, press + to create a new form from scratch.</li></string>
     <string name="imog__insert_entity">New entity</string>
-    <string name="imog__bin_binary">"One binary"</string>
-    <string name="imog__bin_video">"One video"</string>
-    <string name="imog__bin_audio">"one audio"</string>
-    <string name="imog__bin_photo">"One picture"</string>
-    <string name="imog__select">"Select"</string>
+    <string name="imog__bin_binary">File attached</string>
+    <string name="imog__bin_video">Video attached</string>
+    <string name="imog__bin_audio">Sound attached</string>
+    <string name="imog__bin_photo">Picture attached</string>
+    <string name="imog__select">Select</string>
     <string name="imog__select_dialog">Make a choice</string>
     <string name="imog__anf_title">Activity not found</string>
     <string name="imog__anf">The activity was not found please report this bug to your IT manager</string>
-    <string name="imog__delete_confirmation_title">"Delete"</string>
-    <string name="imog__delete_confirmation">"This element will be deleted."</string>
+    <string name="imog__delete_confirmation_title">Delete</string>
+    <string name="imog__delete_confirmation">This element will be deleted</string>
     <string name="imog__relation_unsettable">This side of the relation cannot be set</string>
-    <string name="imog__relation_hierarchical_parent_unset">"You have to fill the field %s"</string>
-    <string name="imog__unsaved_dialog_msg">"The entity has been modified. Save changes ?"</string>
-    <string name="imog__uncomplete_dialog_msg">"You haven't finished to fill the form. Quit without saving ?"</string>
+    <string name="imog__relation_hierarchical_parent_unset">You have to fill the field %s</string>
+    <string name="imog__unsaved_dialog_msg">Save changes before closing ?</string>
+    <string name="imog__uncomplete_dialog_msg">You haven\'t finished to fill the form. Quit without saving ?</string>
     <string name="imog__lower_than_decimal">must be lower than %d</string>
     <string name="imog__greater_than_decimal">must be greater than %d</string>
     <string name="imog__lower_than_float">must be lower than %.2f</string>
@@ -58,50 +58,50 @@
     <string name="imog__required">Required</string>
     <string name="imog__obtaining_time_offset">Obtaining time offset from NTP server</string>
     <string name="imog__obtaining_time_offset_failed">Obtaining time offset failed. Do you wish to try again ?</string>
-    <string name="imog__obtaining_roles">Connecting to the distant server...</string>
-    <string name="imog__obtaining_roles_failed">"Identification failed ! Check login, password and server settings. Do you wish to try again ?"</string>
-    <string name="imog__iamlost_title">"I am lost !"</string>
+    <string name="imog__obtaining_roles">Connecting to the distant server&#8230;</string>
+    <string name="imog__obtaining_roles_failed">Identification failed ! Check login, password and server settings. Do you wish to try again ?</string>
+    <string name="imog__iamlost_title">I am lost !</string>
     <string name="imog__numberOfEntities">{0,choice,0#No entity|1#One entity|1&lt;{0} entities}</string>
-    
+
     <!-- Short messages -->
-    <string name="imog__msg_push_again_to_exit">Press again to exit.</string>
+    <string name="imog__msg_push_again_to_exit">Press again to exit</string>
 
     <!-- Synchronization messages -->
-    <string name="imog__notification_sync_title">"Synchronization"</string>
-    <string name="imog__notification_sync_ticker">"Synchronizing data"</string>
+    <string name="imog__notification_sync_title">Synchronization</string>
+    <string name="imog__notification_sync_ticker">Synchronizing data</string>
 
     <!-- Account creation -->
-    <string name="imog__account_welcome">"Account creation"</string>
-    <string name="imog__account_check_password_title">"Check password"</string>
-    <string name="imog__account_introduction">"Welcome to Imogene setup !\n\nUse your Imogene account to use this application."</string>
-    <string name="imog__account_next_action">"Next"</string>
-    <string name="imog__account_setup_basics_login_hint">"Login"</string>
-    <string name="imog__account_setup_basics_password_hint">"Password"</string>
-    <string name="imog__account_setup_basics_server_hint">"Server URL"</string>
-    <string name="imog__account_setup_basics_title">"Set up account"</string>
-    <string name="imog__account_setup_shortpw_instructions">"Set up a short password"</string>
-    <string name="imog__account_setup_shortpw_title">"Set up short password"</string>
-    <string name="imog__account_setup_shortpw_hint">"Short password"</string>
-    <string name="imog__account_setup_shortpw_confirm_hint">"Confirm short password"</string>
-    <string name="imog__account_setup_shortpw_error">"Error typing the short password"</string>
-    <string name="imog__account_welcome_message">"Welcome"</string>
-    <string name="imog__account_start">"Start"</string>
-    <string name="imog__account_change_user">"Change user"</string>
-    <string name="imog__account_creation_introduction_title">"Your account"</string>
-    
+    <string name="imog__account_welcome">Account creation</string>
+    <string name="imog__account_check_password_title">Check password</string>
+    <string name="imog__account_introduction">Welcome to Imogene setup !\n\nUse your Imogene account to use this application.</string>
+    <string name="imog__account_next_action">Next</string>
+    <string name="imog__account_setup_basics_login_hint">Login</string>
+    <string name="imog__account_setup_basics_password_hint">Password</string>
+    <string name="imog__account_setup_basics_server_hint">Server URL</string>
+    <string name="imog__account_setup_basics_title">Set up account</string>
+    <string name="imog__account_setup_shortpw_instructions">Set up a short password</string>
+    <string name="imog__account_setup_shortpw_title">Set up short password</string>
+    <string name="imog__account_setup_shortpw_hint">Short password</string>
+    <string name="imog__account_setup_shortpw_confirm_hint">Confirm short password</string>
+    <string name="imog__account_setup_shortpw_error">Error typing the short password</string>
+    <string name="imog__account_welcome_message">Welcome</string>
+    <string name="imog__account_start">Start</string>
+    <string name="imog__account_change_user">Change user</string>
+    <string name="imog__account_creation_introduction_title">Your account</string>
+
     <!-- Wizard -->
-    <string name="imog__wizard_next">"Next"</string>
-    <string name="imog__wizard_previous">"Previous"</string>
-    <string name="imog__wizard_finish">"Finish"</string>
-    <string name="imog__wizard_acquire">"Click to acquire"</string>
-    <string name="imog__wizard_delete">"Click to delete"</string>
-    <string name="imog__wizard_view">"Click to visualize"</string>
-    
+    <string name="imog__wizard_next">Next</string>
+    <string name="imog__wizard_previous">Previous</string>
+    <string name="imog__wizard_finish">Finish</string>
+    <string name="imog__wizard_acquire">Acquire</string>
+    <string name="imog__wizard_delete">Delete</string>
+    <string name="imog__wizard_view">Visualize</string>
+
     <!-- Authentication -->
-    <string name="imog__alert_dialog_username">"Username"</string>
-    <string name="imog__alert_dialog_password">"Password"</string>
-    <string name="imog__alert_dialog_wrong_password">"Wrong password"</string>
-    
+    <string name="imog__alert_dialog_username">Username</string>
+    <string name="imog__alert_dialog_password">Password</string>
+    <string name="imog__alert_dialog_wrong_password">Wrong password</string>
+
     <!-- Client filters -->
     <string name="imog__after">After</string>
     <string name="imog__before">Before</string>
@@ -123,7 +123,7 @@
 
     <!-- Dynamic Fields -->
     <string name="imog__dynamic_field_group">Dynamic fields</string>
-    
+
     <!-- Crash report messages -->
     <string name="imog__crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
     <string name="imog__crash_dialog_title">CrashTest has crashed</string>

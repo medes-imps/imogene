@@ -3,37 +3,29 @@
 «FILE 'xml/hidden_settings.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/imog__security_parameters">
+	<PreferenceCategory android:title="@string/imog__security_category">
 		<CheckBoxPreference
 			android:key="httpAuthenticationEnabled"
-			android:title="@string/imog__http_authentication_enabled_title"
-			android:summaryOn="@string/imog__http_authentication_enabled_summaryon"
-			android:summaryOff="@string/imog__http_authentication_enabled_summaryoff" 
+			android:title="@string/imog__security_httpauth_enabled_title"
+			android:summaryOn="@string/imog__security_httpauth_enabled_summaryon"
+			android:summaryOff="@string/imog__security_httpauth_enabled_summaryoff" 
 			android:defaultValue="true"/>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/imog__synchro_parameters">
+	<PreferenceCategory android:title="@string/imog__sync_category">
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="syncTerminal"
 			android:title="@string/imog__sync_terminal_title"
 			android:dialogTitle="@string/imog__sync_terminal_dialog_title"
 			android:dialogMessage="@string/imog__sync_terminal_dialog_message" />
-		«IF multilogin»
-		<fr.medes.android.preference.MyEditTextPreference 
-			android:key="syncRoles"
-			android:title="@string/imog__sync_roles_title" />
-		«ENDIF»
-		<fr.medes.android.preference.MyEditTextPreference 
-			android:key="«IF multilogin»currentRoles«ELSE»syncRoles«ENDIF»"
-			android:title="@string/imog__current_roles_title" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/imog__debug_title">
+	<PreferenceCategory android:title="@string/imog__debug_category">
 		<CheckBoxPreference
 			android:key="debugEnabled"
 			android:title="@string/imog__debug_enabled_title"
 			android:summaryOn="@string/imog__debug_enabled_summaryon"
 			android:summaryOff="@string/imog__debug_enabled_summaryoff" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/imog__delete_title">
+	<PreferenceCategory android:title="@string/imog__delete_category">
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="deleteHistory"
 			android:title="@string/imog__delete_sync_history_title"
@@ -47,7 +39,7 @@
 			android:dialogTitle="@string/imog__delete_database_title"
 			android:dialogMessage="@string/imog__delete_database_dialog_message" />
 	</PreferenceCategory>
-	<PreferenceCategory android:title="@string/imog__ntp_title">
+	<PreferenceCategory android:title="@string/imog__ntp_category">
 		<fr.medes.android.preference.MyEditTextPreference
 			android:key="ntpHost"
 			android:title="@string/imog__ntp_host_title"

@@ -6,16 +6,11 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android" >
 	<PreferenceCategory 
-		android:title="@string/imog__synchro_parameters">
+		android:title="@string/imog__sync_category">
 		«IF multilogin»
 		<fr.medes.android.preference.EncryptedPreference
 			android:key="syncLogin"
 			android:title="@string/imog__sync_login_title" />
-		<fr.medes.android.preference.MyEditTextPreference 
-			android:key="syncRoles"
-			android:title="@string/imog__sync_roles_title"
-			android:shouldDisableView="false"
-			android:enabled="false" />
 		«ENDIF»
 		<fr.medes.android.preference.MyEditTextPreference
 			android:key="syncServer"
@@ -29,8 +24,8 @@
 		«IF hasFilter(this)-»
 		<PreferenceScreen
 			android:key="screenFilters"
-			android:title="@string/imog__screen_filters_title"
-			android:summary="@string/imog__screen_filters_summary">
+			android:title="@string/imog__filters_screen"
+			android:summary="@string/imog__filters_screen_summary">
 			
 			<intent
                 android:targetPackage="org.imogene.android.«name.toLowerCase()»"
@@ -67,7 +62,7 @@
 			android:defaultValue="true" />
 	</PreferenceCategory>
 	<PreferenceCategory 
-		android:title="@string/imog__push_parameters">
+		android:title="@string/imog__push_category">
 		<CheckBoxPreference 
 			android:key="pushEnabled"
 			android:title="@string/imog__push_enabled_title"
@@ -89,7 +84,7 @@
 			android:defaultValue="false" />
 	</PreferenceCategory>
 	<PreferenceCategory 
-		android:title="@string/imog__update_parameters">
+		android:title="@string/imog__update_category">
 		<fr.medes.android.preference.MyEditTextPreference
 			android:key="updateServer"
 			android:title="@string/imog__update_server_title"
@@ -102,23 +97,18 @@
         </Preference>
 	</PreferenceCategory>
 	<PreferenceCategory
-		android:title="@string/imog__application_parameters">
+		android:title="@string/imog__application_category">
 		<fr.medes.android.preference.EncryptedPreference
 			android:key="«IF multilogin»currentLogin«ELSE»syncLogin«ENDIF»"
-			android:title="@string/imog__current_login_title" />
-		<fr.medes.android.preference.MyEditTextPreference 
-			android:key="«IF multilogin»currentRoles«ELSE»syncRoles«ENDIF»"
-			android:title="@string/imog__current_roles_title"
-			android:shouldDisableView="false"
-			android:enabled="false" />
+			android:title="@string/imog__application_current_login_title" />
 		<CheckBoxPreference
 			android:key="wizardEnabled"
-			android:title="@string/imog__wizard_enabled_title"
-			android:summaryOn="@string/imog__wizard_enabled_summaryon"
-			android:summaryOff="@string/imog__wizard_enabled_summaryoff" />
+			android:title="@string/imog__application_wizard_enabled_title"
+			android:summaryOn="@string/imog__application_wizard_enabled_summaryon"
+			android:summaryOff="@string/imog__application_wizard_enabled_summaryoff" />
 	</PreferenceCategory>
 	<PreferenceCategory
-	    android:title="@string/imog__precache_title" >
+	    android:title="@string/imog__precache_category" >
     	<Preference
     		android:key="mapAutomaticCache"
         	android:title="@string/imog__precache_caching_title"
@@ -138,7 +128,7 @@
     	</Preference>
     </PreferenceCategory>
 	<PreferenceCategory
-		android:title="@string/imog__about">
+		android:title="@string/imog__about_category">
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="about"
 			android:title="@string/imog__about_title"
