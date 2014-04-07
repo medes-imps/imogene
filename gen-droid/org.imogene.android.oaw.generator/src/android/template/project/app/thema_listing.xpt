@@ -5,6 +5,7 @@
 package org.imogene.android.«name.toLowerCase()-».app;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.actionbarsherlock.app.SherlockExpandableListActivity;
 import com.actionbarsherlock.view.Menu;
@@ -118,7 +119,7 @@ public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity
 
 	protected final void fillData() {
 		ArrayList<Integer> groupData = new ArrayList<Integer>();
-		ArrayList<ArrayList<EntityInfo>> childData = new ArrayList<ArrayList<EntityInfo>>();
+		ArrayList<List<EntityInfo>> childData = new ArrayList<List<EntityInfo>>();
 		
 		«IF hasMiscellaneousThema(entities, themas)-»
 		ArrayList<EntityInfo> themaMiscellaneous = new ArrayList<EntityInfo>();

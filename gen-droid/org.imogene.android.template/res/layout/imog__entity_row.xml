@@ -7,7 +7,7 @@
     android:orientation="horizontal" >
 
     <View
-        android:id="@+id/imog__list_color"
+        android:id="@android:id/background"
         android:layout_width="10dip"
         android:layout_height="58dip" />
 
@@ -20,7 +20,7 @@
         android:paddingLeft="20dip" >
 
         <TextView
-            android:id="@+id/imog__list_main"
+            android:id="@android:id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dip"
@@ -29,7 +29,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/imog__list_secondary"
+            android:id="@android:id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
@@ -38,7 +38,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imog__list_icon"
+        android:id="@android:id/icon"
         android:layout_width="32dip"
         android:layout_height="32dip"
         android:layout_marginRight="15dip"

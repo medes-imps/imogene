@@ -132,10 +132,10 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		public void bindView(View view, Context context, Cursor cursor) {
 			ImogActorCursorJoiner c = (ImogActorCursorJoiner) cursor;
 
-			view.findViewById(R.id.imog__list_color).setBackgroundDrawable(c.getDrawable());
+			view.findViewById(android.R.id.background).setBackgroundDrawable(c.getDrawable());
 
-			TextView main = (TextView) view.findViewById(R.id.imog__list_main);
-			TextView secondary = (TextView) view.findViewById(R.id.imog__list_secondary);
+			TextView main = (TextView) view.findViewById(android.R.id.text1);
+			TextView secondary = (TextView) view.findViewById(android.R.id.text2);
 
 			main.setText(c.getUserDisplay(context));
 			secondary.setText(c.getLogin());

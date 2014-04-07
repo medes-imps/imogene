@@ -42,10 +42,10 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 	public void bindView(View view, Context context, Cursor cursor) {
 		ImogBeanCursor c = (ImogBeanCursor) cursor;
 
-		view.findViewById(R.id.imog__list_color).setBackgroundDrawable(mColor);
+		view.findViewById(android.R.id.background).setBackgroundDrawable(mColor);
 
-		TextView main = (TextView) view.findViewById(R.id.imog__list_main);
-		TextView secondary = (TextView) view.findViewById(R.id.imog__list_secondary);
+		TextView main = (TextView) view.findViewById(android.R.id.text1);
+		TextView secondary = (TextView) view.findViewById(android.R.id.text2);
 
 		main.setText(null);
 		secondary.setText(null);
@@ -64,7 +64,7 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 			secondary.setTypeface(Typeface.DEFAULT_BOLD);
 		}
 
-		ImageView icon = (ImageView) view.findViewById(R.id.imog__list_icon);
+		ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 		if (icon != null) {
 			icon.setImageResource(android.R.drawable.stat_notify_sync);
 			icon.setVisibility(c.getFlagSynchronized() ? View.GONE : View.VISIBLE);
