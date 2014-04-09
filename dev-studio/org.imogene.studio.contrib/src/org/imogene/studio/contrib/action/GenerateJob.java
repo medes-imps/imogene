@@ -88,7 +88,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		IProject project = getGeneratedProject();
 
-		if (!createProject(mProjectName))
+		if (!createProject(mProjectName, monitor))
 			return Status.CANCEL_STATUS;
 
 		if (mUnCompressArchive) {
@@ -145,35 +145,15 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 		return mSelectedProject;
 	}
 
-	// OLD VERSION THAT DIDN'T KEEP THE PROJECT
-	// /** create the new project into the workspace */
-	// private boolean createProject(final String projectName) {
-	// try {
-	// /* create the new project */
-	// IProject project = ResourcesPlugin.getWorkspace().getRoot()
-	// .getProject(projectName);
-	// if (project.exists())
-	// project.delete(true, true, null);
-	// IProjectDescription desc = project.getWorkspace()
-	// .newProjectDescription(projectName);
-	// project.create(desc, null);
-	// project.open(null);
-	// return true;
-	// } catch (CoreException ce) {
-	// ce.printStackTrace();
-	// return false;
-	// }
-	// }
-
 	/** create the new project into the workspace if it doesn't exist */
-	private boolean createProject(final String projectName) {
+	private boolean createProject(final String projectName, IProgressMonitor monitor) {
 		try {
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 			if (!project.exists()) {
 				IProjectDescription desc = project.getWorkspace().newProjectDescription(projectName);
 				project.create(desc, null);
 			}
-			project.open(null);
+			project.open(monitor);
 			return true;
 		} catch (CoreException e) {
 			e.printStackTrace();

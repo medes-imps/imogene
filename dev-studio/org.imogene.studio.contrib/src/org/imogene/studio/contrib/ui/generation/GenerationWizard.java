@@ -252,6 +252,11 @@ public class GenerationWizard extends Wizard {
 	 * @return path to the generated project
 	 */
 	public String getGeneratedPath() {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		if (project.exists()) {
+			// If project exists
+			return project.getLocation().toOSString();
+		}
 		return ResourcesPlugin.getWorkspace().getRoot().getLocation().append(projectName).toOSString();
 	}
 
