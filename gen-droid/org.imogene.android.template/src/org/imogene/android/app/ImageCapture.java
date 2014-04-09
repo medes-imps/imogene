@@ -8,14 +8,13 @@ import org.imogene.android.template.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.media.MediaScannerConnection.OnScanCompletedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import fr.medes.android.media.SingleMediaScanner;
-import fr.medes.android.media.SingleMediaScanner.SingleMediaListener;
 
-public class ImageCapture extends Activity implements SingleMediaListener {
+public class ImageCapture extends Activity implements OnScanCompletedListener {
 
 	private static final int ACTIVITY_IMAGE_CAPTURE = 1;
 
@@ -53,25 +52,27 @@ public class ImageCapture extends Activity implements SingleMediaListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ACTIVITY_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-			Intent intent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
-			intent.setData(Uri.fromFile(Environment.getExternalStorageDirectory()));
-			sendBroadcast(intent);
-			new SingleMediaScanner(this, mPath, this);
+			MediaScannerConnection.scanFile(this, new String[] { mPath.getAbsolutePath() }, null, this);
 		} else {
-			mPath.delete();
-			setResult(RESULT_CANCELED);
-			finish();
+			cancelOrFailed();
 		}
 	}
 
+	private void cancelOrFailed() {
+		mPath.delete();
+		setResult(RESULT_CANCELED);
+		finish();
+
+	}
+
 	@Override
-	public void onScanComplete(Uri uri) {
+	public void onScanCompleted(String path, Uri uri) {
 		if (uri != null) {
 			setResult(RESULT_OK, new Intent().setData(uri));
 			finish();
 		} else {
-			setResult(RESULT_CANCELED);
-			finish();
+			cancelOrFailed();
 		}
 	}
+
 }
