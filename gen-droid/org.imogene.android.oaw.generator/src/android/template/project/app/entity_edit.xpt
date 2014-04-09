@@ -204,15 +204,11 @@ public class 南ame.toFirstUpper()-聚dit extends ViewPagerIndicatorActivity imple
 		mManager.dispatchActivityResult(requestCode, resultCode, data);
 	}
 	
-	private void forceFinish() {
-		super.finish();
-	}
-
 	@Override
-	public void finish() {
+	public void onBackPressed() {
 		showDialog(DIALOG_UNSAVED_ID);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -296,7 +292,7 @@ public class 南ame.toFirstUpper()-聚dit extends ViewPagerIndicatorActivity imple
 			save(false);
 			break;
 		case Dialog.BUTTON_NEGATIVE:
-			forceFinish();
+			finish();
 			break;
 		default:
 			if (which >= 0) {
@@ -372,10 +368,10 @@ public class 南ame.toFirstUpper()-聚dit extends ViewPagerIndicatorActivity imple
 			if (uri != null) {
 				Toast.makeText(this, R.string.南ame.toLowerCase()蓓des_registered, Toast.LENGTH_SHORT).show();
 				setResult(RESULT_OK, new Intent().setData(uri));
-				forceFinish();
+				finish();
 			} else {
 				setResult(RESULT_CANCELED);
-				forceFinish();
+				finish();
 			}
 		} else {
 			showDialog(DIALOG_ERROR_ID);

@@ -188,12 +188,8 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		save(false);
 	}
 	
-	protected final void forceFinish() {
-		super.finish();
-	}
-	
 	@Override
-	public void finish() {
+	public void onBackPressed() {
 		showDialog(DIALOG_UNCOMPLETE_ID);
 	}
 	
@@ -226,10 +222,10 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 			if (uri != null) {
 				Toast.makeText(this, R.string.«name.toLowerCase()»_des_registered, Toast.LENGTH_SHORT).show();
 				setResult(RESULT_OK, new Intent().setData(uri));
-				forceFinish();
+				finish();
 			} else {
 				setResult(RESULT_CANCELED);
-				forceFinish();
+				finish();
 			}
 		}
 	}
