@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,47 +94,23 @@ public class BinaryFileConverter implements Converter {
 
 		// content
 		writer.startNode("content");
-		// System.out.println("<content>");
 		if (binary.getLength() > 0) {
 
 			try {
-				File tempFile = File.createTempFile(binary.getFileName(), null);
-
-				// write content from binary to temp file
-				OutputStream out = new FileOutputStream(tempFile);
 				InputStream is = binary.createInputStream();
-
-				byte[] bytes = new byte[4096];
-				int read = 0;
+				byte[] bytes = new byte[1024];
+				int read = -1;
 				while ((read = is.read(bytes)) != -1) {
-					if (read != 4096) {
-						byte[] newBytes = Arrays.copyOf(bytes, read);
-						out.write(Base64.encodeBase64(newBytes));
-					} else {
-						out.write(Base64.encodeBase64(bytes));
-					}
-				}
-				out.flush();
-				out.close();
-				is.close();
-
-				// write content from temp file to xml
-				FileReader fr = new FileReader(tempFile);
-				BufferedReader bf = new BufferedReader(fr);
-				while (true) {
-					String s = bf.readLine();
-					if (s == null)
-						break;
 					writer.startNode("data");
-					// System.out.println("<data>");
-					writer.setValue(s);
-					// System.out.println(s);
+					if (read != bytes.length) {
+						byte[] newBytes = Arrays.copyOf(bytes, read);
+						writer.setValue(new String(Base64.encodeBase64(newBytes)));
+					} else {
+						writer.setValue(new String(Base64.encodeBase64(bytes)));
+					}
 					writer.endNode();
-					// System.out.println("</data>");
 				}
-				bf.close();
-				fr.close();
-				tempFile.delete();
+				is.close();
 			} catch (FileNotFoundException e) {
 				logger.error(e.getMessage());
 			} catch (IOException e) {
@@ -143,7 +118,6 @@ public class BinaryFileConverter implements Converter {
 			}
 		}
 		writer.endNode();
-		// System.out.println("</content>");
 	}
 
 	@Override
@@ -235,9 +209,8 @@ public class BinaryFileConverter implements Converter {
 						}
 						byte[] bytes = Base64.decodeBase64(line.getBytes());
 						out.write(bytes);
+						out.flush();
 					}
-					out.flush();
-					out.close();
 					strReader.close();
 					reader.moveUp();
 				}
