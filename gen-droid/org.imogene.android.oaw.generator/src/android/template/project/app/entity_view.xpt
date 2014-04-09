@@ -221,8 +221,8 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.imog__menu_view, menu);
-		menu.findItem(R.id.imog__menu_edit).setEnabled(mPolicy.canEdit«name.toFirstUpper()»());
-		menu.findItem(R.id.imog__menu_delete).setEnabled(mPolicy.canDelete«name.toFirstUpper()»());
+		menu.findItem(R.id.imog__menu_edit).setVisible(mPolicy.canEdit«name.toFirstUpper()»());
+		menu.findItem(R.id.imog__menu_delete).setVisible(mPolicy.canDelete«name.toFirstUpper()»());
 		«IF getMoreFields(groups.fields).size > 0-»
 		boolean hasMoreMenu = false;
 		«FOREACH getMoreFields(groups.fields) AS f-»

@@ -250,7 +250,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.imog__menu_list, menu);
-		menu.findItem(R.id.imog__menu_add).setEnabled(mPolicy.canCreate«name.toFirstUpper()»());
+		menu.findItem(R.id.imog__menu_add).setVisible(mPolicy.canCreate«name.toFirstUpper()»());
 		
 		SearchView searchView = (SearchView) menu.findItem(R.id.imog__menu_search).getActionView();
 		if (searchView != null) {
