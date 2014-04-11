@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.imogene.admin.client.AdminRenderer;
-import org.imogene.admin.client.event.create.CreateFieldGroupEvent;
 import org.imogene.admin.client.event.list.ListFieldGroupEvent;
-import org.imogene.admin.client.event.view.ViewFieldGroupEvent;
 import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.filter.FieldGroupFilterPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
@@ -19,6 +17,7 @@ import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 
 import com.google.gwt.cell.client.TextCell;
@@ -27,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.HandlerRegistration;
@@ -77,7 +77,8 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 
 	@Override
 	protected GwtEvent<?> getViewEvent(FieldGroupProxy value) {
-		return new ViewFieldGroupEvent(value.getId());
+		History.newItem(TokenHelper.TK_VIEW + "/fieldgroup/" + value.getId(), true);
+		return null;
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class FieldGroupDynaTable extends ImogDynaTable<FieldGroupProxy> {
 		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
-					requestFactory.getEventBus().fireEvent(new CreateFieldGroupEvent());
+					History.newItem(TokenHelper.TK_NEW + "/fieldgroup/", true);
 				}
 			};
 			return command;

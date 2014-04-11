@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.imogene.admin.client.AdminRenderer;
-import org.imogene.admin.client.event.create.CreateNotificationEvent;
 import org.imogene.admin.client.event.list.ListNotificationEvent;
-import org.imogene.admin.client.event.view.ViewNotificationEvent;
 import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.filter.NotificationFilterPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
@@ -21,6 +19,7 @@ import org.imogene.web.client.ui.table.ImogColumn;
 import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.TokenHelper;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.HandlerRegistration;
@@ -37,6 +37,7 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Composite that displays the list of Notification entries
+ * 
  * @author MEDES-IMPS
  */
 public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
@@ -45,8 +46,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	private PushButton deleteButton;
 
-	public NotificationDynaTable(AdminRequestFactory requestFactory,
-			ImogBeanDataProvider<NotificationProxy> provider,
+	public NotificationDynaTable(AdminRequestFactory requestFactory, ImogBeanDataProvider<NotificationProxy> provider,
 			boolean checkBoxesVisible) {
 		super(requestFactory, provider, checkBoxesVisible);
 	}
@@ -64,32 +64,29 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 	protected void setColumns() {
 
 		if (ProfileUtil.isAdmin()) {
-			
+
 			Column<NotificationProxy, String> formTypeColumn = new FormTypeColumn();
 			formTypeColumn.setSortable(true);
-			table.addColumn(formTypeColumn, AdminNLS.constants()
-					.notification_field_s_formType());
-			
+			table.addColumn(formTypeColumn, AdminNLS.constants().notification_field_s_formType());
+
 			Column<NotificationProxy, String> nameColumn = new NameColumn();
 			nameColumn.setSortable(true);
-			table.addColumn(nameColumn, AdminNLS.constants()
-					.notification_field_s_name());		
-			
+			table.addColumn(nameColumn, AdminNLS.constants().notification_field_s_name());
+
 			Column<NotificationProxy, String> methodColumn = new MethodColumn();
 			methodColumn.setSortable(true);
-			table.addColumn(methodColumn, AdminNLS.constants()
-					.notification_field_s_method());
-			
+			table.addColumn(methodColumn, AdminNLS.constants().notification_field_s_method());
+
 			Column<NotificationProxy, String> operationColumn = new OperationColumn();
 			operationColumn.setSortable(true);
-			table.addColumn(operationColumn, AdminNLS.constants()
-					.notification_field_s_operation());
+			table.addColumn(operationColumn, AdminNLS.constants().notification_field_s_operation());
 		}
 	}
 
 	@Override
 	protected GwtEvent<?> getViewEvent(NotificationProxy value) {
-		return new ViewNotificationEvent(value.getId());
+		History.newItem(TokenHelper.TK_VIEW + "/notification/" + value.getId(), true);
+		return null;
 	}
 
 	@Override
@@ -104,6 +101,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Creates the Create action command for the entity
+	 * 
 	 * @return the create command
 	 */
 	public Command getCreateCommand() {
@@ -111,8 +109,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
-					requestFactory.getEventBus().fireEvent(
-							new CreateNotificationEvent());
+					History.newItem(TokenHelper.TK_NEW + "/notification/", true);
 				}
 			};
 			return command;
@@ -122,6 +119,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Creates the Delete action command for the entity
+	 * 
 	 * @return the delete command
 	 */
 	public PushButton getDeleteButton() {
@@ -149,8 +147,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 				@Override
 				public void onClick(ClickEvent event) {
 
-					Set<NotificationProxy> selectedEntities = selectionModel
-							.getSelectedSet();
+					Set<NotificationProxy> selectedEntities = selectionModel.getSelectedSet();
 
 					int count = selectedEntities.size();
 					if (count > 0) {
@@ -158,37 +155,27 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 						AdminRenderer renderer = AdminRenderer.get();
 
 						StringBuffer msg = new StringBuffer();
-						msg.append(BaseNLS.constants()
-								.confirmation_delete_several1()
-								+ " "
-								+ AdminNLS.constants().notification_name()
-								+ " "
-								+ BaseNLS.constants()
-										.confirmation_delete_several2() + ": ");
+						msg.append(BaseNLS.constants().confirmation_delete_several1() + " "
+								+ AdminNLS.constants().notification_name() + " "
+								+ BaseNLS.constants().confirmation_delete_several2() + ": ");
 						int i = 0;
 						for (NotificationProxy entity : selectedEntities) {
 							if (count == 1 || i == count - 1)
-								msg.append("'"
-										+ renderer.getDisplayValue(entity)
-										+ "' ?");
+								msg.append("'" + renderer.getDisplayValue(entity) + "' ?");
 							else
-								msg.append("'"
-										+ renderer.getDisplayValue(entity)
-										+ "', ");
+								msg.append("'" + renderer.getDisplayValue(entity) + "', ");
 							i = i + 1;
 						}
 
 						boolean toDelete = Window.confirm(msg.toString());
 						if (toDelete) {
 
-							Request<Void> deleteRequest = getNotificationRequest()
-									.delete(selectedEntities);
+							Request<Void> deleteRequest = getNotificationRequest().delete(selectedEntities);
 							deleteRequest.fire(new Receiver<Void>() {
 								@Override
 								public void onSuccess(Void response) {
-									//Window.alert("The selected Notification entries have been deleted");
-									requestFactory.getEventBus().fireEvent(
-											new ListNotificationEvent());
+									// Window.alert("The selected Notification entries have been deleted");
+									requestFactory.getEventBus().fireEvent(new ListNotificationEvent());
 								}
 
 								@Override
@@ -203,9 +190,8 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 				}
 			}));
 
-			// Selection changed handler	
-			registrations.add(requestFactory.getEventBus().addHandler(
-					SelectionChangedInTableEvent.TYPE,
+			// Selection changed handler
+			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE,
 					new SelectionChangedInTableEvent.Handler() {
 						@Override
 						public void noticeSelectionChange(int selectedItems) {
@@ -220,6 +206,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Creates the ExportExcel action command for the entity
+	 * 
 	 * @return the ExportExcel command
 	 */
 	public PushButton getExportExcelCommand() {
@@ -260,6 +247,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field Name
+	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class NameColumn extends ImogColumn<NotificationProxy, String> {
@@ -286,6 +274,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field FormType
+	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class FormTypeColumn extends ImogColumn<NotificationProxy, String> {
@@ -302,8 +291,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 			if (object.getFormType() == null)
 				value = "";
 			else
-				value = renderer.getEnumDisplayValue(NotificationProxy.class,
-						"formType", object.getFormType());
+				value = renderer.getEnumDisplayValue(NotificationProxy.class, "formType", object.getFormType());
 
 			return value;
 		}
@@ -315,6 +303,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field Method
+	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class MethodColumn extends ImogColumn<NotificationProxy, String> {
@@ -331,8 +320,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 			if (object.getMethod() == null)
 				value = "";
 			else
-				value = renderer.getEnumDisplayValue(NotificationProxy.class,
-						"method", object.getMethod());
+				value = renderer.getEnumDisplayValue(NotificationProxy.class, "method", object.getMethod());
 
 			return value;
 		}
@@ -344,6 +332,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field Operation
+	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class OperationColumn extends ImogColumn<NotificationProxy, String> {
@@ -360,8 +349,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 			if (object.getOperation() == null)
 				value = "";
 			else
-				value = renderer.getEnumDisplayValue(NotificationProxy.class,
-						"operation", object.getOperation());
+				value = renderer.getEnumDisplayValue(NotificationProxy.class, "operation", object.getOperation());
 
 			return value;
 		}

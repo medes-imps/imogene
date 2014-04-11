@@ -7,7 +7,6 @@ import java.util.Set;
 import org.imogene.admin.client.AdminRenderer;
 import org.imogene.admin.client.event.create.CreateEntityProfileEvent;
 import org.imogene.admin.client.event.list.ListEntityProfileEvent;
-import org.imogene.admin.client.event.view.ViewEntityProfileEvent;
 import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.filter.EntityProfileFilterPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
@@ -20,6 +19,7 @@ import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
 
 import com.google.gwt.cell.client.TextCell;
@@ -28,6 +28,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.HandlerRegistration;
@@ -98,7 +99,8 @@ public class EntityProfileDynaTable extends ImogDynaTable<EntityProfileProxy> {
 
 	@Override
 	protected GwtEvent<?> getViewEvent(EntityProfileProxy value) {
-		return new ViewEntityProfileEvent(value.getId());
+		History.newItem(TokenHelper.TK_VIEW + "/entityprofile/" + value.getId(), true);
+		return null;
 	}
 
 	@Override
@@ -121,6 +123,7 @@ public class EntityProfileDynaTable extends ImogDynaTable<EntityProfileProxy> {
 		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
+					History.newItem(TokenHelper.TK_NEW + "/entityprofile/", true);
 					requestFactory.getEventBus().fireEvent(new CreateEntityProfileEvent());
 				}
 			};

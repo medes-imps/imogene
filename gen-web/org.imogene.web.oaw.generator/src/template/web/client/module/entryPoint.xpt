@@ -704,9 +704,141 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 					«EXPAND setOnValueChange FOR e-»
 				«ENDIF-»
 			«ENDFOREACH-»
+			/** actions for notifications */
+			if (entityToken.getType().equals("notification")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for Notification */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewNotificationEvent(entityToken.getId()));
+
+					/* list for Notification */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListNotificationEvent());
+					}
+					/* new Notification */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateNotificationEvent());
+					}
+				}
+			}
+			/** actions for DynamicField Template */
+			if (entityToken.getType().equals("dynamicfieldtemplate")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for DynamicField Template */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewDynamicFieldTemplateEvent(entityToken.getId()));
+
+					/* list for DynamicField Template */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListDynamicFieldTemplateEvent());
+					}
+					/* new DynamicField Template */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateDynamicFieldTemplateEvent());
+					}
+				}
+			}
+			/** actions for EntityProfile */
+			if (entityToken.getType().equals("entityprofile")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for EntityProfile */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewEntityProfileEvent(entityToken.getId()));
+
+					/* list for EntityProfile */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListEntityProfileEvent());
+					}
+					/* new EntityProfile */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateEntityProfileEvent());
+					}
+				}
+			}
+			/** actions for FieldGroup */
+			if (entityToken.getType().equals("fieldgroup")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for FieldGroup */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewFieldGroupEvent(entityToken.getId()));
+
+					/* list for FieldGroup */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListFieldGroupEvent());
+					}
+					/* new FieldGroup */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateFieldGroupEvent());
+					}
+				}
+			}
+			/** actions for FieldGroupProfile */
+			if (entityToken.getType().equals("fieldgroupprofile")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for FieldGroupProfile */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewFieldGroupProfileEvent(entityToken.getId()));
+
+					/* list for FieldGroupProfile */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListFieldGroupProfileEvent());
+					}
+					/* new FieldGroupProfile */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateFieldGroupProfileEvent());
+					}
+				}
+			}
+			/** actions fro Profile */
+			if (entityToken.getType().equals("profile")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for Profile */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewProfileEvent(entityToken.getId()));
+
+					/* list for Profile */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListProfileEvent());
+					}
+					/* new Profile */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateProfileEvent());
+					}
+				}
+			}
+			/** actions for CardEntity */
+			if (entityToken.getType().equals("cardentity")) {
+				if (ProfileUtil.isAdmin()) {
+					/* view for CardEntity */
+					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
+						eventBus.fireEvent(new ViewCardEntityEvent(entityToken.getId()));
+
+					/* list for CardEntity */
+					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
+						if (AccessManager.canDirectAccessExpertDoctor())
+							eventBus.fireEvent(new ListCardEntityEvent());
+					}
+					/* new CardEntity */
+					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
+						if (AccessManager.canCreateExpertDoctor())
+							eventBus.fireEvent(new CreateCardEntityEvent());
+					}
+				}
+			}
 		«ENDIF-»
-		}
-		else
+		} else
 			eventBus.fireEvent(new GoHomeEvent());
 	}
 		

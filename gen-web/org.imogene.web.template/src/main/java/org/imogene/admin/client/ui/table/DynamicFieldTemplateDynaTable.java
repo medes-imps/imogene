@@ -9,10 +9,8 @@ import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.dynamicfields.i18n.DynFieldsNLS;
 import org.imogene.web.client.dynamicfields.ui.field.FormTypeUtil;
 import org.imogene.web.client.dynamicfields.ui.renderer.DynFieldsRenderer;
-import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
 import org.imogene.web.client.event.ListDynamicFieldTemplateEvent;
 import org.imogene.web.client.event.SelectionChangedInTableEvent;
-import org.imogene.web.client.event.ViewDynamicFieldTemplateEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.table.ImogBeanDataProvider;
 import org.imogene.web.client.ui.table.ImogColumn;
@@ -20,6 +18,7 @@ import org.imogene.web.client.ui.table.ImogDynaTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.DynamicFieldTemplateProxy;
 import org.imogene.web.shared.request.DynamicFieldTemplateRequest;
 
@@ -29,6 +28,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.HandlerRegistration;
@@ -38,20 +38,17 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Composite that displays the list of DynamicField_Template entries
+ * 
  * @author MEDES-IMPS
  */
-public class DynamicFieldTemplateDynaTable
-		extends
-			ImogDynaTable<DynamicFieldTemplateProxy> {
+public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTemplateProxy> {
 
 	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 
 	private PushButton deleteButton;
 
-	public DynamicFieldTemplateDynaTable(
-			AdminRequestFactory requestFactory,
-			ImogBeanDataProvider<DynamicFieldTemplateProxy> provider,
-			boolean checkBoxesVisible) {
+	public DynamicFieldTemplateDynaTable(AdminRequestFactory requestFactory,
+			ImogBeanDataProvider<DynamicFieldTemplateProxy> provider, boolean checkBoxesVisible) {
 		super(requestFactory, provider, checkBoxesVisible);
 	}
 
@@ -68,58 +65,51 @@ public class DynamicFieldTemplateDynaTable
 	protected void setColumns() {
 
 		if (ProfileUtil.isAdmin()) {
-			
+
 			Column<DynamicFieldTemplateProxy, String> formTypeColumn = new FormTypeColumn();
 			formTypeColumn.setSortable(true);
-			table.addColumn(formTypeColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_formType());
-			
+			table.addColumn(formTypeColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_formType());
+
 			Column<DynamicFieldTemplateProxy, String> fieldNameColumn = new FieldNameColumn();
 			fieldNameColumn.setSortable(true);
-			table.addColumn(fieldNameColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_fieldName());
-			
+			table.addColumn(fieldNameColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_fieldName());
+
 			Column<DynamicFieldTemplateProxy, String> fieldTypeColumn = new FieldTypeColumn();
 			fieldTypeColumn.setSortable(true);
-			table.addColumn(fieldTypeColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_fieldType());
+			table.addColumn(fieldTypeColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_fieldType());
 
 			Column<DynamicFieldTemplateProxy, String> templateCreatorColumn = new TemplateCreatorColumn();
 			templateCreatorColumn.setSortable(true);
 			table.addColumn(templateCreatorColumn, DynFieldsNLS.constants()
 					.dynamicField_Template_field_s_templateCreator());
-			
+
 			Column<DynamicFieldTemplateProxy, String> descriptionColumn = new DescriptionColumn();
 			descriptionColumn.setSortable(true);
-			table.addColumn(descriptionColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_description());
-			
+			table.addColumn(descriptionColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_description());
+
 			Column<DynamicFieldTemplateProxy, String> fieldPositionColumn = new FieldPositionColumn();
 			fieldPositionColumn.setSortable(true);
-			table.addColumn(fieldPositionColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_fieldPosition());
-			
+			table.addColumn(fieldPositionColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_fieldPosition());
+
 			Column<DynamicFieldTemplateProxy, String> isDefaultColumn = new IsDefaultColumn();
 			isDefaultColumn.setSortable(true);
-			table.addColumn(isDefaultColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_isDefault());
-			
+			table.addColumn(isDefaultColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_isDefault());
+
 			Column<DynamicFieldTemplateProxy, String> allUsersColumn = new AllUsersColumn();
 			allUsersColumn.setSortable(true);
-			table.addColumn(allUsersColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_allUsers());
-			
+			table.addColumn(allUsersColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_allUsers());
+
 			Column<DynamicFieldTemplateProxy, String> isActivatedColumn = new IsActivatedColumn();
 			isActivatedColumn.setSortable(true);
-			table.addColumn(isActivatedColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_isActivated());
+			table.addColumn(isActivatedColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_isActivated());
 		}
 
 	}
 
 	@Override
 	protected GwtEvent<?> getViewEvent(DynamicFieldTemplateProxy value) {
-		return new ViewDynamicFieldTemplateEvent(value.getId());
+		History.newItem(TokenHelper.TK_VIEW + "/dynamicfieldtemplate/" + value.getId(), true);
+		return null;
 	}
 
 	@Override
@@ -134,6 +124,7 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Creates the Create action command for the entity
+	 * 
 	 * @return the create command
 	 */
 	public Command getCreateCommand() {
@@ -141,8 +132,7 @@ public class DynamicFieldTemplateDynaTable
 		if (ProfileUtil.isAdmin()) {
 			Command command = new Command() {
 				public void execute() {
-					requestFactory.getEventBus().fireEvent(
-							new CreateDynamicFieldTemplateEvent());
+					History.newItem(TokenHelper.TK_NEW + "/dynamicfieldtemplate/", true);
 				}
 			};
 			return command;
@@ -152,6 +142,7 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Creates the Delete action command for the entity
+	 * 
 	 * @return the delete command
 	 */
 	public PushButton getDeleteButton() {
@@ -179,8 +170,7 @@ public class DynamicFieldTemplateDynaTable
 				@Override
 				public void onClick(ClickEvent event) {
 
-					Set<DynamicFieldTemplateProxy> selectedEntities = selectionModel
-							.getSelectedSet();
+					Set<DynamicFieldTemplateProxy> selectedEntities = selectionModel.getSelectedSet();
 
 					int count = selectedEntities.size();
 					if (count > 0) {
@@ -188,39 +178,27 @@ public class DynamicFieldTemplateDynaTable
 						DynFieldsRenderer renderer = DynFieldsRenderer.get();
 
 						StringBuffer msg = new StringBuffer();
-						msg.append(BaseNLS.constants()
-								.confirmation_delete_several1()
-								+ " "
-								+ DynFieldsNLS.constants().dynamicField_Template_name()
-								+ " "
-								+ BaseNLS.constants()
-										.confirmation_delete_several2() + ": ");
+						msg.append(BaseNLS.constants().confirmation_delete_several1() + " "
+								+ DynFieldsNLS.constants().dynamicField_Template_name() + " "
+								+ BaseNLS.constants().confirmation_delete_several2() + ": ");
 						int i = 0;
 						for (DynamicFieldTemplateProxy entity : selectedEntities) {
 							if (count == 1 || i == count - 1)
-								msg.append("'"
-										+ renderer.getDisplayValue(entity)
-										+ "' ?");
+								msg.append("'" + renderer.getDisplayValue(entity) + "' ?");
 							else
-								msg.append("'"
-										+ renderer.getDisplayValue(entity)
-										+ "', ");
+								msg.append("'" + renderer.getDisplayValue(entity) + "', ");
 							i = i + 1;
 						}
 
 						boolean toDelete = Window.confirm(msg.toString());
 						if (toDelete) {
 
-							Request<Void> deleteRequest = getDynamicField_TemplateRequest()
-									.delete(selectedEntities);
+							Request<Void> deleteRequest = getDynamicField_TemplateRequest().delete(selectedEntities);
 							deleteRequest.fire(new Receiver<Void>() {
 								@Override
 								public void onSuccess(Void response) {
-									//Window.alert("The selected DynamicField_Template entries have been deleted");
-									requestFactory
-											.getEventBus()
-											.fireEvent(
-													new ListDynamicFieldTemplateEvent());
+									// Window.alert("The selected DynamicField_Template entries have been deleted");
+									requestFactory.getEventBus().fireEvent(new ListDynamicFieldTemplateEvent());
 								}
 
 								@Override
@@ -235,9 +213,8 @@ public class DynamicFieldTemplateDynaTable
 				}
 			}));
 
-			// Selection changed handler	
-			registrations.add(requestFactory.getEventBus().addHandler(
-					SelectionChangedInTableEvent.TYPE,
+			// Selection changed handler
+			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE,
 					new SelectionChangedInTableEvent.Handler() {
 						@Override
 						public void noticeSelectionChange(int selectedItems) {
@@ -249,7 +226,6 @@ public class DynamicFieldTemplateDynaTable
 					}));
 		}
 	}
-
 
 	private DynamicFieldTemplateRequest getDynamicField_TemplateRequest() {
 		AdminRequestFactory dynFieldsRequestFactory = (AdminRequestFactory) requestFactory;
@@ -276,11 +252,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field FieldName
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class FieldNameColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class FieldNameColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		public FieldNameColumn() {
 			super(new TextCell());
@@ -304,11 +279,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field FieldType
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class FieldTypeColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class FieldTypeColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		private DynFieldsRenderer renderer = DynFieldsRenderer.get();
 
@@ -322,8 +296,7 @@ public class DynamicFieldTemplateDynaTable
 			if (object.getFieldType() == null)
 				value = "";
 			else
-				value = renderer.getEnumDisplayValue(
-						DynamicFieldTemplateProxy.class, "fieldType",
+				value = renderer.getEnumDisplayValue(DynamicFieldTemplateProxy.class, "fieldType",
 						object.getFieldType());
 
 			return value;
@@ -336,11 +309,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field FormType
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class FormTypeColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class FormTypeColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		private DynFieldsRenderer renderer = DynFieldsRenderer.get();
 
@@ -354,9 +326,7 @@ public class DynamicFieldTemplateDynaTable
 			if (object.getFormType() == null)
 				value = "";
 			else
-				value = renderer.getEnumDisplayValue(
-						DynamicFieldTemplateProxy.class, "formType",
-						object.getFormType());
+				value = renderer.getEnumDisplayValue(DynamicFieldTemplateProxy.class, "formType", object.getFormType());
 
 			return value;
 		}
@@ -368,13 +338,12 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field TemplateCreator
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class TemplateCreatorColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class TemplateCreatorColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
-		//private DynFieldsRenderer renderer = DynFieldsRenderer.get();
+		// private DynFieldsRenderer renderer = DynFieldsRenderer.get();
 
 		public TemplateCreatorColumn() {
 			super(new TextCell());
@@ -398,11 +367,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field Description
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class DescriptionColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class DescriptionColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		public DescriptionColumn() {
 			super(new TextCell());
@@ -426,11 +394,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field IsDefault
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class IsDefaultColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class IsDefaultColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		public IsDefaultColumn() {
 			super(new TextCell());
@@ -442,8 +409,7 @@ public class DynamicFieldTemplateDynaTable
 			if (object.getIsDefault() == null)
 				value = "";
 			else
-				value = BooleanUtil.getBooleanDisplayValue(object
-						.getIsDefault());
+				value = BooleanUtil.getBooleanDisplayValue(object.getIsDefault());
 
 			return value;
 		}
@@ -455,11 +421,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field FieldPosition
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class FieldPositionColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class FieldPositionColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		public FieldPositionColumn() {
 			super(new TextCell());
@@ -483,11 +448,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field AllUsers
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class AllUsersColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class AllUsersColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		public AllUsersColumn() {
 			super(new TextCell());
@@ -499,8 +463,7 @@ public class DynamicFieldTemplateDynaTable
 			if (object.getAllUsers() == null)
 				value = "";
 			else
-				value = BooleanUtil
-						.getBooleanDisplayValue(object.getAllUsers());
+				value = BooleanUtil.getBooleanDisplayValue(object.getAllUsers());
 
 			return value;
 		}
@@ -512,11 +475,10 @@ public class DynamicFieldTemplateDynaTable
 
 	/**
 	 * Column for field IsActivated
+	 * 
 	 * @author MEDES-IMPS
 	 */
-	private class IsActivatedColumn
-			extends
-				ImogColumn<DynamicFieldTemplateProxy, String> {
+	private class IsActivatedColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
 
 		public IsActivatedColumn() {
 			super(new TextCell());
@@ -528,8 +490,7 @@ public class DynamicFieldTemplateDynaTable
 			if (object.getIsActivated() == null)
 				value = "";
 			else
-				value = BooleanUtil.getBooleanDisplayValue(object
-						.getIsActivated());
+				value = BooleanUtil.getBooleanDisplayValue(object.getIsActivated());
 
 			return value;
 		}

@@ -239,18 +239,14 @@ public class HomePanel extends Composite {
 			notification.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateNotificationEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/notification/", true);
 				}
 			});
-		} else
-			notification.setCreateClickHandler(null);
-
-		if (ProfileUtil.isAdmin()) {
 			notification.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListNotificationEvent());
+					History.newItem(TokenHelper.TK_LIST + "/notification/", true);
 				}
 			});
 			notification.setSearchClickHandler(new ClickHandler() {
@@ -258,32 +254,29 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = notification.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListNotificationEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/notification/searchValue", true);
 				}
 			});
 		} else {
+			notification.setCreateClickHandler(null);
 			notification.setListClickHandler(null);
 			notification.setSearchClickHandler(null);
 		}
-		
+
 		/* DynamicFieldTemplate Menu */
 
 		if (ProfileUtil.isAdmin()) {
 			dynamicField_Template.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateDynamicFieldTemplateEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/dynamicfieldtemplate/", true);
 				}
 			});
-		} else
-			dynamicField_Template.setCreateClickHandler(null);
-
-		if (ProfileUtil.isAdmin()) {
 			dynamicField_Template.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListDynamicFieldTemplateEvent());
+					History.newItem(TokenHelper.TK_LIST + "/dynamicfieldtemplate/", true);
 				}
 			});
 			dynamicField_Template.setSearchClickHandler(new ClickHandler() {
@@ -291,32 +284,29 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = dynamicField_Template.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListDynamicFieldTemplateEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/dynamicfieldtemplate/searchValue", true);
 				}
 			});
 		} else {
+			dynamicField_Template.setCreateClickHandler(null);
 			dynamicField_Template.setListClickHandler(null);
 			dynamicField_Template.setSearchClickHandler(null);
 		}
-		
+
 		/* EntityProfile Menu */
 
 		if (ProfileUtil.isAdmin()) {
 			entityProfile.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateEntityProfileEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/entityprofile/", true);
 				}
 			});
-		} else
-			entityProfile.setCreateClickHandler(null);
-
-		if (ProfileUtil.isAdmin()) {
 			entityProfile.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListEntityProfileEvent());
+					History.newItem(TokenHelper.TK_LIST + "/entityprofile/", true);
 				}
 			});
 			entityProfile.setSearchClickHandler(new ClickHandler() {
@@ -324,10 +314,11 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = entityProfile.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListEntityProfileEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/entityprofile/searchValue", true);
 				}
 			});
 		} else {
+			entityProfile.setCreateClickHandler(null);
 			entityProfile.setListClickHandler(null);
 			entityProfile.setSearchClickHandler(null);
 		}
@@ -338,18 +329,15 @@ public class HomePanel extends Composite {
 			fieldGroup.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateFieldGroupEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/fieldgroup/", true);
 				}
 			});
-		} else
-			fieldGroup.setCreateClickHandler(null);
 
-		if (ProfileUtil.isAdmin()) {
 			fieldGroup.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListFieldGroupEvent());
+					History.newItem(TokenHelper.TK_LIST + "/fieldgroup/", true);
 				}
 			});
 			fieldGroup.setSearchClickHandler(new ClickHandler() {
@@ -357,10 +345,11 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = fieldGroup.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListFieldGroupEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/fieldgroup/searchValue", true);
 				}
 			});
 		} else {
+			fieldGroup.setCreateClickHandler(null);
 			fieldGroup.setListClickHandler(null);
 			fieldGroup.setSearchClickHandler(null);
 		}
@@ -371,18 +360,14 @@ public class HomePanel extends Composite {
 			fieldGroupProfile.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateFieldGroupProfileEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/fieldgroupprofile/", true);
 				}
 			});
-		} else
-			fieldGroupProfile.setCreateClickHandler(null);
-
-		if (ProfileUtil.isAdmin()) {
 			fieldGroupProfile.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListFieldGroupProfileEvent());
+					History.newItem(TokenHelper.TK_LIST + "/fieldgroupprofile/", true);
 				}
 			});
 			fieldGroupProfile.setSearchClickHandler(new ClickHandler() {
@@ -390,10 +375,11 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = fieldGroupProfile.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListFieldGroupProfileEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/fieldgroupprofile/searchValue", true);
 				}
 			});
 		} else {
+			fieldGroupProfile.setCreateClickHandler(null);
 			fieldGroupProfile.setListClickHandler(null);
 			fieldGroupProfile.setSearchClickHandler(null);
 		}
@@ -404,18 +390,14 @@ public class HomePanel extends Composite {
 			profile.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateProfileEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/profile/", true);
 				}
 			});
-		} else
-			profile.setCreateClickHandler(null);
-
-		if (ProfileUtil.isAdmin()) {
 			profile.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListProfileEvent());
+					History.newItem(TokenHelper.TK_LIST + "/profile/", true);
 				}
 			});
 			profile.setSearchClickHandler(new ClickHandler() {
@@ -423,10 +405,11 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = profile.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListProfileEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/profile/searchValue", true);
 				}
 			});
 		} else {
+			profile.setCreateClickHandler(null);
 			profile.setListClickHandler(null);
 			profile.setSearchClickHandler(null);
 		}
@@ -437,18 +420,14 @@ public class HomePanel extends Composite {
 			cardEntity.setCreateClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new CreateCardEntityEvent(new GoHomeEvent()));
+					History.newItem(TokenHelper.TK_NEW + "/cardentity/", true);
 				}
 			});
-		} else
-			cardEntity.setCreateClickHandler(null);
-
-		if (ProfileUtil.isAdmin()) {
 			cardEntity.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					LocalSession.get().setSearchCriterions(null, null);
-					eventBus.fireEvent(new ListCardEntityEvent());
+					History.newItem(TokenHelper.TK_LIST + "/cardentity/", true);
 				}
 			});
 			cardEntity.setSearchClickHandler(new ClickHandler() {
@@ -456,10 +435,11 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = cardEntity.getSearchValue();
 					if (searchValue != null && !searchValue.isEmpty())
-						eventBus.fireEvent(new ListCardEntityEvent(searchValue));
+						History.newItem(TokenHelper.TK_LIST + "/cardentity/searchValue", true);
 				}
 			});
 		} else {
+			cardEntity.setCreateClickHandler(null);
 			cardEntity.setListClickHandler(null);
 			cardEntity.setSearchClickHandler(null);
 		}
