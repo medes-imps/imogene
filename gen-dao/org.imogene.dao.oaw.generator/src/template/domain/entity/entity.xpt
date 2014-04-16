@@ -3,7 +3,7 @@
 «EXTENSION template::CommonEntityUtilExt»
 «EXTENSION template::domain::DaoUtilExt»
 
-«DEFINE generate(String projectName) FOR CardEntity»
+«DEFINE generate(String projectName, String embedded) FOR CardEntity»
 «FILE projectName.toLowerCase() + "/domain/entity/" + name.toFirstUpper() + ".java"»
 package org.imogene.«projectName.toLowerCase()».domain.entity;
 
@@ -76,7 +76,7 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 		«EXPAND validationAnnotation FOR f-»
 	«ENDIF-»
 	«ENDREM»
-	«EXPAND jpaAnnotation FOR f»
+	«EXPAND jpaAnnotation(embedded) FOR f»
 	private «EXPAND template::domain::DaoFieldUtil::entityFieldType FOR f» «EXPAND template::CommonFieldUtil::propertyName FOR f»«EXPAND defaultValue FOR f»;
 	«ENDFOREACH -»	
 	«ENDFOREACH»	
@@ -159,9 +159,9 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 «REM»----------------------------------------------- «ENDREM»
 «REM»-------------- FIELD DECLARATION -------------- «ENDREM»
 «REM»----------------------------------------------- «ENDREM»
-«DEFINE jpaAnnotation FOR FieldEntity»«ENDDEFINE»
+«DEFINE jpaAnnotation(String embedded) FOR FieldEntity»«ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR TextField»
+«DEFINE jpaAnnotation(String embedded) FOR TextField»
 	«IF translatable-»
 	«LET (Project) parentGroup.parentCard.eContainer AS project-»
 	@Embedded
@@ -174,26 +174,26 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR TextAreaField»
+«DEFINE jpaAnnotation(String embedded) FOR TextAreaField»
 	«IF translatable-»
 	«LET (Project) parentGroup.parentCard.eContainer AS project-»
 	@Embedded
 	@AttributeOverrides({
 		«FOREACH project.languages AS l SEPARATOR ','-»
-    	@AttributeOverride(name="«l.name.toLowerCase()»", column=@Column(name="«name.toFirstLower()»_«l.isoCode»", columnDefinition="TEXT"))
+    	@AttributeOverride(name="«l.name.toLowerCase()»", column=@Column(name="«name.toFirstLower()»_«l.isoCode»", columnDefinition="«IF embedded == "true"»VARCHAR(1000)«ELSE»TEXT«ENDIF»"))
 		«ENDFOREACH-»
   	})
 	«ENDLET-»
 	«ELSE-»
-	@Column(columnDefinition="TEXT")
+	@Column(columnDefinition = "«IF embedded == "true"»VARCHAR(1000)«ELSE»TEXT«ENDIF»")
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR DatesField»
+«DEFINE jpaAnnotation(String embedded) FOR DatesField»
 	@Temporal(TemporalType.TIMESTAMP)
 «ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR GeoField»
+«DEFINE jpaAnnotation(String embedded) FOR GeoField»
 	@Embedded
 	@AttributeOverrides({
     	@AttributeOverride(name="latitude", column=@Column(name="«name.toFirstLower()»_Latitude")),
@@ -201,11 +201,11 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
   	})
 «ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR BinaryField»
+«DEFINE jpaAnnotation(String embedded) FOR BinaryField»
 	@OneToOne
 «ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR MainRelationFieldEntity»
+«DEFINE jpaAnnotation(String embedded) FOR MainRelationFieldEntity»
 «IF cardinality == 1 -»
 	«IF getOppositeCardinality(this) == 1 -»
 	@OneToOne(cascade = CascadeType.MERGE)
@@ -245,7 +245,7 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 «ENDIF»
 «ENDDEFINE»
 
-«DEFINE jpaAnnotation FOR ReverseRelationFieldEntity»
+«DEFINE jpaAnnotation(String embedded) FOR ReverseRelationFieldEntity»
 «IF cardinality == 1 -»
 	«IF getOppositeCardinality(this) == 1 -»
 	@OneToOne(mappedBy="«EXPAND template::CommonFieldUtil::propertyName FOR oppositeRelationField»", cascade = CascadeType.MERGE)
