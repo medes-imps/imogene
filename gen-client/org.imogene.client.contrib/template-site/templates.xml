@@ -13,7 +13,7 @@
 		</parameters>
 -->
  		<parseSet>
-              <include filenames=".project,MANIFEST.MF,plugin_fr.properties,plugin.properties,plugin.xml,container-light.product,Activator.java"/>
+              <include filenames=".project,MANIFEST.MF,plugin_fr.properties,plugin.properties,plugin.xml,container.product,Activator.java"/>
               <exclude extensions="jar"/>
         </parseSet>
 	</template>
