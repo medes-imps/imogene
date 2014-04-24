@@ -13,6 +13,9 @@ import java.util.UUID;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender;
+import org.acra.sender.HttpSender.Method;
+import org.acra.sender.HttpSender.Type;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
@@ -24,7 +27,12 @@ import org.imogene.android.«name.toLowerCase()».domain.«name.toFirstUpper()»Help
 import org.imogene.android.«name.toLowerCase()».domain.«name.toFirstUpper()»LocalizedText;
 
 @ReportsCrashes(
-		formKey = "dHczWFFCT2ZaTks1MWZoMXJZc0gxWHc6MQ", // google form on medes imps account
+		formKey = "",
+		formUri = "http://bugreport.i-mogene.org/acra",
+		formUriBasicAuthLogin = "android",
+		formUriBasicAuthPassword = "androidpassword",
+		maxNumberOfRequestRetries = 3,
+		disableSSLCertValidation = true,
 		mode = ReportingInteractionMode.DIALOG,
 		resToastText = R.string.imog__crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
 	    resDialogText = R.string.imog__crash_dialog_text,
@@ -37,9 +45,12 @@ public class «name.toFirstUpper()»App extends AmlApplication {
 
 	@Override
 	public void onCreate() {
+		super.onCreate();
+
 		// The following line triggers the initialization of ACRA
     	ACRA.init(this);
-		super.onCreate();
+    	ACRA.getErrorReporter().removeAllReportSenders();
+		ACRA.getErrorReporter().setReportSender(new HttpSender(Method.PUT, Type.JSON, null));
 		
 		«name.toFirstUpper()»OpenHelper.init(this);
 		«name.toFirstUpper()»Helper.init();
