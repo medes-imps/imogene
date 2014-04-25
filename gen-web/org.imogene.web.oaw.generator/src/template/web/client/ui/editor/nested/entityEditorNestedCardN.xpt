@@ -227,7 +227,7 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 		clearImage.addClickHandler(handler);
 	}
 	
-	«EXPAND setterForRelation FOREACH nestedFields-»		
+	«EXPAND template::web::client::ui::editor::entityEditor::setterForRelation FOREACH nestedFields-»		
 	
 	
 	«IF isSimpleRelationFieldPresent(nestedFields) || isMultiRelationFieldPresent(nestedFields) -»
@@ -321,43 +321,5 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 }
 «ENDLET-»
 «ENDFILE»
-«ENDIF -»
-«ENDDEFINE»
-
-
-
-
-
-«REM» setters for relation with cardinality 1 «ENDREM»
-«DEFINE setterForRelation FOR FieldEntity -»«ENDDEFINE»
-«DEFINE setterForRelation FOR RelationFieldEntity -»
-«IF cardinality == 1 -»
-	/**
-	 * Setter to inject a «entity.name.toFirstUpper()» value
-	 * @param value the value to be injected into the editor
-	 * @param isLocked true if relation field shall be locked (non editable)
-	 */
-	public void set«name.toFirstUpper()»(«entity.name.toFirstUpper()»Proxy value, boolean isLocked) {
-		«EXPAND template::CommonFieldUtil::propertyName FOR this».setLocked(isLocked);	
-		«EXPAND template::CommonFieldUtil::propertyName FOR this».setValue(value);
-		
-		«FOREACH getHierarchicalFilterChilds(this, this.parentGroup.parentCard.nestedFields) AS f -»
-		// Field «f.name.toFirstUpper()» depends on the value of field «f.relationHierarchicalFilter.get(0).name.toFirstLower()»
-		get«f.name.toFirstUpper()»FilteredBy«f.relationHierarchicalFilter.get(0).name.toFirstUpper()»(value);
-		«ENDFOREACH -»
-	}
-	
-	/** Widget update for field «EXPAND template::CommonFieldUtil::propertyName FOR this» */
-	private void clear«name.toFirstUpper()»Widget() {
-		«EXPAND template::CommonFieldUtil::propertyName FOR this».clear();
-		«FOREACH getHierarchicalFilterChilds(this, this.parentGroup.parentCard.nestedFields) AS f -»
-		clear«f.name.toFirstUpper()»Widget();
-		«ENDFOREACH -»	
-	}
-«ELSE -»	
-	/** Widget update for field «EXPAND template::CommonFieldUtil::propertyName FOR this» */
-	private void clear«name.toFirstUpper()»Widget() {
-		«EXPAND template::CommonFieldUtil::propertyName FOR this».emptyList();
-	}	
 «ENDIF -»
 «ENDDEFINE»

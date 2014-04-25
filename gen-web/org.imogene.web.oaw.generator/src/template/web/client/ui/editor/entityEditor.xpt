@@ -1221,22 +1221,20 @@ import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.paren
 		«ENDFOREACH -»
 	}
 	
-	«IF relationHierarchicalFilter!=null && relationHierarchicalFilter.size>0-»
 	/** Widget update for field «EXPAND template::CommonFieldUtil::propertyName FOR this» */
 	private void clear«name.toFirstUpper()»Widget() {
 		«EXPAND template::CommonFieldUtil::propertyName FOR this».clear();
+		«IF relationHierarchicalFilter!=null && relationHierarchicalFilter.size>0-»
 		«FOREACH getHierarchicalFilterChilds(this, this.parentGroup.parentCard.groups.fields) AS f -»
 		clear«f.name.toFirstUpper()»Widget();
 		«ENDFOREACH -»	
+		«ENDIF -»
 	}
-	«ENDIF -»
 «ELSE -»
-	«IF relationHierarchicalFilter!=null && relationHierarchicalFilter.size>0-»
 	/** Widget update for field «EXPAND template::CommonFieldUtil::propertyName FOR this» */
 	private void clear«name.toFirstUpper()»Widget() {
 		«EXPAND template::CommonFieldUtil::propertyName FOR this».emptyList();
 	}
-	«ENDIF -»
 «ENDIF -»
 «ENDIF -»
 «ENDDEFINE»

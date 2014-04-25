@@ -179,14 +179,14 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		current = new«name.toFirstUpper()»;
 		editorDriver.edit(current, request);
 		
-		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);
+
 		«IF hasDynamicFields-»
 		/* get the list of Dynamic Field Templates for this type of entity */
 		getDynamicFieldTemplates();
-		«ENDIF -» 
-		«ENDIF -»		
+		«ENDIF-»
+
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
 		«EXPAND manageHierarchicalLists(true) FOREACH groups.fields-»
@@ -241,10 +241,9 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		«EXPAND createInstance FOREACH groups.fields-»
 		
 		editor.setEditedValue(current);
-		«IF hasNestedFormWithCardN(this.groups.fields) || hasDynamicFields-»
+
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);	 
-		«ENDIF -»			
 		
 		editorDriver.edit(current, request);
 		«IF hasDynamicFields-»
@@ -457,27 +456,30 @@ fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonF
 «ENDDEFINE»
 
 «DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR RelationFieldEntity-»
-«IF parents == null-»
-	fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+«LET (List[RelationFieldEntity]) {} AS mylist»
+	«IF parents == null-»
+		fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«mylist.add(this) -> ""-»
+	«ELSE-»
+		fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
+		«mylist.addAll(parents).add(this) -> ""-»
+	«ENDIF-»
+
 	«IF nestedForm-»
 		«IF entity.nestedFields != null && entity.nestedFields.size > 0 -»
-			«EXPAND fetchRelatedEntities({this}) FOREACH entity.nestedFields-»
+			«EXPAND fetchRelatedEntities(mylist) FOREACH entity.nestedFields-»
 		«ELSE-»
-			«EXPAND fetchRelatedEntities({this}) FOREACH entity.groups.fields-»
+			«EXPAND fetchRelatedEntities(mylist) FOREACH entity.groups.fields-»
 		«ENDIF-»
 	«ELSE-»
-	«EXPAND fetchRelatedEntities({this}) FOREACH entity.mainFields-»
+		«EXPAND fetchRelatedEntities(mylist) FOREACH entity.mainFields-»
 	«ENDIF-»
+	
 	«IF relationHierarchicalFilter.size == 2 && relationHierarchicalFilter.get(0).cardinality != 1-»
-	// Field «name.toFirstLower()» depends on the value of field «relationHierarchicalFilter.get(0).name.toFirstLower()»
-	«EXPAND fetchRelatedEntities({this}) FOR relationHierarchicalFilter.get(1)-»
+		// Field «name.toFirstLower()» depends on the value of field «relationHierarchicalFilter.get(0).name.toFirstLower()»
+		«EXPAND fetchRelatedEntities(mylist) FOR relationHierarchicalFilter.get(1)-»
 	«ENDIF-»
-«ELSE-»
-	fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
-	«LET (List[RelationFieldEntity]) {} AS mylist»
-	«EXPAND fetchRelatedEntities(mylist.addAll(parents).add(this)) FOREACH entity.mainFields-»
-	«ENDLET»
-«ENDIF-»
+«ENDLET»
 «ENDDEFINE»
 
 
@@ -560,8 +562,7 @@ fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonF
 		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new«name.toFirstUpper()»);
 	«ELSE-»
 		//create list of «entity.name.toFirstUpper()» in editor 
-		List<«entity.name.toFirstUpper()»Proxy> «name.toFirstLower()»List = new ArrayList<«entity.name.toFirstUpper()»Proxy>();
-		new«parentGroup.parentCard.name.toFirstUpper()».«EXPAND template::CommonFieldUtil::setterName FOR this»(«name.toFirstLower()»List);	
+		«variable».«EXPAND template::CommonFieldUtil::setterName FOR this»(new ArrayList<«entity.name.toFirstUpper()»Proxy>());	
 	«ENDIF-»
 «ENDIF-»
 «ENDDEFINE»

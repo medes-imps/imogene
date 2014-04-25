@@ -249,7 +249,7 @@ public class «name.toFirstUpper()»EditorNestedForm extends Composite implements 
 		isClearImageActive = true;
 	}
 	
-	«EXPAND template::web::client::ui::editor::nested::entityEditorNestedCardN::setterForRelation FOREACH nestedFields-»		
+	«EXPAND template::web::client::ui::editor::entityEditor::setterForRelation FOREACH nestedFields-»		
 	
 	
 	«IF isSimpleRelationFieldPresent(nestedFields) || isMultiRelationFieldPresent(nestedFields) -»
