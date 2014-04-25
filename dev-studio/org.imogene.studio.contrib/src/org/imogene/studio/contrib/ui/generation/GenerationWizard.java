@@ -105,6 +105,7 @@ public class GenerationWizard extends Wizard {
 
 		GenerateJob job = new GenerateJob(selectedProject, projectName, archive, definition, properties, workflow, uncompress);
 		job.setPostGenerationTasks(mPostGenerationTasks);
+		job.setUser(true);
 		job.schedule();
 
 		return true;
