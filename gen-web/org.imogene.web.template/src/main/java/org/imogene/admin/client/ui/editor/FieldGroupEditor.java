@@ -18,6 +18,7 @@ import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -161,6 +162,12 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 	}
 
 	/**
+	 * Sets the Request Context for the List Editors
+	 */
+	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
+	}
+
+	/**
 	 * Manages editor updates when a field value changes
 	 */
 	private void setFieldValueChangeHandler() {
@@ -194,6 +201,11 @@ public class FieldGroupEditor extends Composite implements Editor<FieldGroupProx
 		entity.setLocked(isLocked);
 		entity.setValue(value);
 
+	}
+
+	/** Widget update for field entity */
+	private void clearEntityWidget() {
+		entity.clear();
 	}
 
 	/**

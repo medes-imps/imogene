@@ -19,6 +19,10 @@ public interface FieldGroupProfileProxy extends ImogBeanProxy {
 
 	public void setProfile(ProfileProxy value);
 
+	public CardEntityProxy getCardEntity();
+
+	public void setCardEntity(CardEntityProxy value);
+
 	public FieldGroupProxy getFieldGroup();
 
 	public void setFieldGroup(FieldGroupProxy value);

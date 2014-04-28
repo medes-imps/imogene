@@ -25,6 +25,7 @@ import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.SystemUtil;
+import org.imogene.web.server.handler.HandlerHelper;
 «IF isBinaryFieldPresent(this.groups.fields) -»
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.BinaryDao;
@@ -72,7 +73,7 @@ public class «name.toFirstUpper()»Handler {
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public «name.toFirstUpper()» findById(String entityId) {
 		return dao.load(entityId);
 	}

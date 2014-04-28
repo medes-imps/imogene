@@ -22,18 +22,20 @@ import org.imogene.lib.common.entity.ImogBeanImpl;
 public class Profile extends ImogBeanImpl {
 
 	private static final long serialVersionUID = -1146782351391973857L;
-	
+
 	public static final String ADMINISTRATOR = "administrator";
 
 	/* Description group fields */
 
 	private String name;
 
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade=CascadeType.DETACH)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.DETACH })
 	@JoinColumn(name = "entityProfilesProfile_id")
 	private List<EntityProfile> entityProfiles;
 
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade=CascadeType.DETACH)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.DETACH })
 	@JoinColumn(name = "fieldGroupProfilesProfile_id")
 	private List<FieldGroupProfile> fieldGroupProfiles;
 

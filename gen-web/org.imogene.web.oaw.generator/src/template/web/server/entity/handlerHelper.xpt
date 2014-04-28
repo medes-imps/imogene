@@ -4,21 +4,24 @@
 
 
 «DEFINE generate(String packageName, String projectName) FOR Project»
-«FILE projectName.toLowerCase()+ "/server/handler/HandlerHelper.java"»
+«FILE projectName.toLowerCase()+ "/server/handler/HandlerHelperImpl.java"»
 package org.imogene.«projectName.toLowerCase()».server.handler;
 
 import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.web.server.handler.BasicHandlerHelper;
 «FOREACH entities AS e-»
 import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
 «ENDFOREACH-»
 
-public class HandlerHelper {
+public class HandlerHelperImpl extends BasicHandlerHelper {
 
 	«FOREACH entities AS e-»
 	private «e.name.toFirstUpper()»Handler «e.name.toFirstLower()»Handler;
 	«ENDFOREACH-»
 	
+	@Override
 	public void delete(ImogBean bean) {
+		super.delete(bean);
 		«FOREACH entities AS e SEPARATOR " else "»
 		if (bean instanceof «e.name.toFirstUpper()») {
 			«e.name.toFirstLower()»Handler.delete((«e.name.toFirstUpper()») bean);
@@ -26,7 +29,9 @@ public class HandlerHelper {
 		«ENDFOREACH»
 	}
 	
+	@Override
 	public void save(ImogBean bean, boolean isNew) {
+		super.save(bean, isNew);
 		«FOREACH entities AS e SEPARATOR " else "»
 		if (bean instanceof «e.name.toFirstUpper()») {
 			«e.name.toFirstLower()»Handler.save((«e.name.toFirstUpper()») bean, isNew);

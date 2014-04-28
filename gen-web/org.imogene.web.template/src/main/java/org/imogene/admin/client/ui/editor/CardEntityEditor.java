@@ -11,6 +11,7 @@ import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -25,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
- * Editor that provides the UI components that allow a SynchronizableEntityProxy to be viewed and edited
+ * Editor that provides the UI components that allow a CardEntityProxy to be viewed and edited
  * 
  * @author MEDES-IMPS
  */
@@ -127,6 +128,12 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	}
 
 	/**
+	 * Sets the Request Context for the List Editors
+	 */
+	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
+	}
+
+	/**
 	 * Manages editor updates when a field value changes
 	 */
 	private void setFieldValueChangeHandler() {
@@ -151,8 +158,8 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	}
 
 	/**
-	 * Gets the SynchronizableEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used
-	 * to transmit the proxy to related entities
+	 * Gets the CardEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
+	 * the proxy to related entities
 	 * 
 	 * @return
 	 */
@@ -161,8 +168,8 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	}
 
 	/**
-	 * Sets the SynchronizableEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used
-	 * to transmit the proxy to related entities
+	 * Sets the CardEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
+	 * the proxy to related entities
 	 * 
 	 * @param editedValue
 	 */

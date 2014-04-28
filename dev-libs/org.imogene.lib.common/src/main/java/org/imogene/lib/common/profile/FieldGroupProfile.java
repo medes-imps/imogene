@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.imogene.lib.common.entity.ImogBeanImpl;
+import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.model.FieldGroup;
 
 /**
@@ -26,6 +27,9 @@ public class FieldGroupProfile extends ImogBeanImpl {
 	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "fieldGroupProfilesProfile_id")
 	private Profile profile;
+
+	@ManyToOne
+	private CardEntity cardEntity;
 
 	@ManyToOne(cascade = CascadeType.DETACH)
 	private FieldGroup fieldGroup;
@@ -53,6 +57,14 @@ public class FieldGroupProfile extends ImogBeanImpl {
 
 	public void setProfile(Profile value) {
 		profile = value;
+	}
+
+	public CardEntity getCardEntity() {
+		return cardEntity;
+	}
+
+	public void setCardEntity(CardEntity cardEntity) {
+		this.cardEntity = cardEntity;
 	}
 
 	public FieldGroup getFieldGroup() {

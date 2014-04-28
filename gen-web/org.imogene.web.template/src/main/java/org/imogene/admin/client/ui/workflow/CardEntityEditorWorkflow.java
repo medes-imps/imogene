@@ -132,6 +132,11 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 		this.setContent(editor);
 	}
 
+	@Override
+	protected void onAttach() {
+		super.onAttach();
+	}
+
 	/**
 	 * Create a new instance of CardEntity
 	 */
@@ -146,6 +151,9 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 		/* push the instance to the editor */
 		current = newCardEntity;
 		editorDriver.edit(current, request);
+
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
 
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
@@ -188,6 +196,9 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 		current = request.edit(entity);
 
 		editor.setEditedValue(current);
+
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
 
 		editorDriver.edit(current, request);
 		editor.setEdited(false);

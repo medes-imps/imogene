@@ -5,14 +5,13 @@ import java.util.Set;
 
 import org.imogene.web.server.handler.EntityProfileHandler;
 import org.imogene.web.server.locator.SpringServiceLocator;
-import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
-import org.imogene.web.shared.proxy.ProfileProxy;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.web.bindery.requestfactory.shared.Request;
-import com.google.web.bindery.requestfactory.shared.RequestContext;
 import com.google.web.bindery.requestfactory.shared.Service;
 
 /**
@@ -21,7 +20,7 @@ import com.google.web.bindery.requestfactory.shared.Service;
  * @author Medes-IMPS
  */
 @Service(value = EntityProfileHandler.class, locator = SpringServiceLocator.class)
-public interface EntityProfileRequest extends RequestContext {
+public interface EntityProfileRequest extends ImogEntityRequest {
 
 	Request<EntityProfileProxy> findById(String id);
 
@@ -67,11 +66,7 @@ public interface EntityProfileRequest extends RequestContext {
 
 	Request<Void> delete(EntityProfileProxy entity);
 
-	Request<Void> saveProfile(ProfileProxy entity, boolean isNew);
+	Request<Void> save(ImogBeanProxy entity, boolean isNew);
 
-	Request<Void> deleteProfile(ProfileProxy entity);
-
-	Request<Void> saveEntity(CardEntityProxy entity, boolean isNew);
-
-	Request<Void> deleteEntity(CardEntityProxy entity);
+	Request<Void> delete(ImogBeanProxy entity);
 }

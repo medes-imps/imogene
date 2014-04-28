@@ -172,6 +172,8 @@ public interface AdminTranslations extends Constants {
 	/* FieldGroupProfile fields texts */
 	String fieldGroupProfile_field_profile();
 
+	String fieldGroupProfile_field_cardEntity();
+
 	String fieldGroupProfile_field_fieldGroup();
 
 	String fieldGroupProfile_field_read();

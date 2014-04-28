@@ -10,7 +10,7 @@ import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.FieldGroup;
 import org.imogene.lib.common.model.FieldGroupDao;
 import org.imogene.lib.common.profile.FieldGroupProfile;
@@ -31,11 +31,9 @@ public class FieldGroupHandler {
 	/* FieldGroupProfileDao for Foreign Key Deletion */
 	private FieldGroupProfileDao fieldGroupProfileDao;
 
-	private CardEntityHandler entityHandler;
-
 	private ImogBeanFilter filter;
-
 	private SystemUtil systemUtil;
+	private HandlerHelper handlerHelper;
 
 	/**
 	 * Loads the entity with the specified id
@@ -43,7 +41,7 @@ public class FieldGroupHandler {
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public FieldGroup findById(String entityId) {
 		return dao.load(entityId);
 	}
@@ -67,7 +65,9 @@ public class FieldGroupHandler {
 	 */
 	@Transactional
 	public void save(FieldGroup entity, boolean isNew) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
+
 		if (entity != null) {
 
 			if (isNew) {
@@ -84,6 +84,17 @@ public class FieldGroupHandler {
 	}
 
 	/**
+	 * Saves or updates the bean
+	 * 
+	 * @param entity the bean to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	@Transactional
+	public void save(ImogBean entity, boolean isNew) {
+		handlerHelper.save(entity, isNew);
+	}
+
+	/**
 	 * Lists the entities of type FieldGroup
 	 * 
 	 * @param sortProperty the property used to sort the collection
@@ -92,6 +103,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(String sortProperty, boolean sortOrder) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -111,6 +123,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(int i, int j, String sortProperty, boolean sortOrder) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -131,6 +144,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(int i, int j, String sortProperty, boolean sortOrder, ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -154,6 +168,7 @@ public class FieldGroupHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listFieldGroup(int i, int j, String sortProperty, boolean sortOrder,
 			List<BasicCriteria> criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -183,6 +198,7 @@ public class FieldGroupHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listNonAffectedFieldGroup(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions, String property) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -224,6 +240,7 @@ public class FieldGroupHandler {
 	@Transactional(readOnly = true)
 	public List<FieldGroup> listNonAffectedFieldGroupReverse(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions, String property) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -278,6 +295,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countFieldGroup(ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -295,6 +313,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countNonAffectedFieldGroup(String property, ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -323,6 +342,7 @@ public class FieldGroupHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countNonAffectedFieldGroupReverse(String property, ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -362,7 +382,9 @@ public class FieldGroupHandler {
 	 */
 	@Transactional
 	public void delete(FieldGroup entity) {
+
 		// Delete foreign key reference for field FieldGroup of entity FieldGroupProfile
+
 		ImogJunction searchCriterionsForFieldGroupProfileFieldGroup = new ImogConjunction();
 		BasicCriteria criteriaFieldGroupProfileFieldGroup = new BasicCriteria();
 		criteriaFieldGroupProfileFieldGroup.setOperation(CriteriaConstants.RELATIONFIELD_OPERATOR_EQUAL);
@@ -370,8 +392,8 @@ public class FieldGroupHandler {
 		criteriaFieldGroupProfileFieldGroup.setField("fieldGroup.id");
 		searchCriterionsForFieldGroupProfileFieldGroup.add(criteriaFieldGroupProfileFieldGroup);
 
-		List<FieldGroupProfile> resultForFieldGroupProfileFieldGroup = fieldGroupProfileDao.load("modified", false,
-				searchCriterionsForFieldGroupProfileFieldGroup);
+		List<FieldGroupProfile> resultForFieldGroupProfileFieldGroup = fieldGroupProfileDao.load("modified",
+				false, searchCriterionsForFieldGroupProfileFieldGroup);
 		if (resultForFieldGroupProfileFieldGroup != null) {
 			for (FieldGroupProfile foreignEntity : resultForFieldGroupProfileFieldGroup) {
 				foreignEntity.setModified(new Date());
@@ -384,13 +406,31 @@ public class FieldGroupHandler {
 	}
 
 	/**
+	 * Removes the specified bean from the database
+	 * 
+	 * @param entity The bean to be deleted
+	 */
+	@Transactional
+	public void delete(ImogBean entity) {
+		handlerHelper.delete(entity);
+	}
+
+	/**
 	 * Lists the entities of type FieldGroup for the CSV export
 	 */
 	@Transactional(readOnly = true)
-	public List<FieldGroup> listForCsv(String sortProperty, boolean sortOrder, String name) {
+	public List<FieldGroup> listForCsv(String sortProperty, boolean sortOrder, String entity_name, String name) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
+		if (entity_name != null && !entity_name.isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			criteria.setField("entity.name");
+			criteria.setValue(entity_name);
+			junction.add(criteria);
+		}
 		if (name != null && !name.isEmpty()) {
 			BasicCriteria criteria = new BasicCriteria();
 			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
@@ -415,49 +455,12 @@ public class FieldGroupHandler {
 	}
 
 	/**
-	 * Saves entity of type CardEntity
-	 * 
-	 * @param entity the CardEntity to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveEntity(CardEntity entity, boolean isNew) {
-		entityHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type CardEntity
-	 * 
-	 * @param toDelete the CardEntity to be deleted
-	 */
-	public void deleteEntity(CardEntity toDelete) {
-		entityHandler.delete(toDelete);
-	}
-
-	/**
 	 * Setter for bean injection
 	 * 
 	 * @param dao the FieldGroup Dao
 	 */
 	public void setDao(FieldGroupDao dao) {
 		this.dao = dao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param fieldGroupProfileFieldGroupDao the FieldGroupProfile Dao
-	 */
-	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
-		this.fieldGroupProfileDao = fieldGroupProfileDao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param entityHandler the CardEntity Handler
-	 */
-	public void setEntityHandler(CardEntityHandler entityHandler) {
-		this.entityHandler = entityHandler;
 	}
 
 	/**
@@ -476,6 +479,24 @@ public class FieldGroupHandler {
 	 */
 	public void setSystemUtil(SystemUtil systemUtil) {
 		this.systemUtil = systemUtil;
+	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param helper
+	 */
+	public void setHandlerHelper(HandlerHelper helper) {
+		this.handlerHelper = helper;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param fieldGroupProfileDao the FieldGroupProfile Dao
+	 */
+	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
+		this.fieldGroupProfileDao = fieldGroupProfileDao;
 	}
 
 }

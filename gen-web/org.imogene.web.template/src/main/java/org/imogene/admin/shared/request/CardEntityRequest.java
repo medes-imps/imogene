@@ -6,11 +6,12 @@ import java.util.Set;
 import org.imogene.web.server.handler.CardEntityHandler;
 import org.imogene.web.server.locator.SpringServiceLocator;
 import org.imogene.web.shared.proxy.CardEntityProxy;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.web.bindery.requestfactory.shared.Request;
-import com.google.web.bindery.requestfactory.shared.RequestContext;
 import com.google.web.bindery.requestfactory.shared.Service;
 
 /**
@@ -19,11 +20,13 @@ import com.google.web.bindery.requestfactory.shared.Service;
  * @author Medes-IMPS
  */
 @Service(value = CardEntityHandler.class, locator = SpringServiceLocator.class)
-public interface CardEntityRequest extends RequestContext {
+public interface CardEntityRequest extends ImogEntityRequest {
 
 	Request<CardEntityProxy> findById(String id);
 
 	Request<Void> save(CardEntityProxy c, boolean isNew);
+
+	Request<List<CardEntityProxy>> listCardEntity(String sortProperty, boolean sortOrder);
 
 	Request<List<CardEntityProxy>> listCardEntity(int first, int max, String sortProperty, boolean sortOrder);
 
@@ -63,4 +66,7 @@ public interface CardEntityRequest extends RequestContext {
 
 	Request<Void> delete(CardEntityProxy entity);
 
+	Request<Void> save(ImogBeanProxy entity, boolean isNew);
+
+	Request<Void> delete(ImogBeanProxy entity);
 }

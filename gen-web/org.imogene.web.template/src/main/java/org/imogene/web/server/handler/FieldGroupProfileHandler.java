@@ -10,10 +10,9 @@ import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.model.FieldGroup;
+import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.FieldGroupProfileDao;
-import org.imogene.lib.common.profile.Profile;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.SystemUtil;
@@ -28,13 +27,9 @@ public class FieldGroupProfileHandler {
 
 	private FieldGroupProfileDao dao;
 
-	private ProfileHandler profileHandler;
-
-	private FieldGroupHandler fieldGroupHandler;
-
 	private ImogBeanFilter filter;
-
 	private SystemUtil systemUtil;
+	private HandlerHelper handlerHelper;
 
 	/**
 	 * Loads the entity with the specified id
@@ -42,7 +37,7 @@ public class FieldGroupProfileHandler {
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public FieldGroupProfile findById(String entityId) {
 		return dao.load(entityId);
 	}
@@ -82,6 +77,17 @@ public class FieldGroupProfileHandler {
 
 			dao.saveOrUpdate(entity, isNew);
 		}
+	}
+
+	/**
+	 * Saves or updates the bean
+	 * 
+	 * @param entity the bean to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	@Transactional
+	public void save(ImogBean entity, boolean isNew) {
+		handlerHelper.save(entity, isNew);
 	}
 
 	/**
@@ -378,11 +384,21 @@ public class FieldGroupProfileHandler {
 	}
 
 	/**
+	 * Removes the specified bean from the database
+	 * 
+	 * @param entity The bean to be deleted
+	 */
+	@Transactional
+	public void delete(ImogBean entity) {
+		handlerHelper.delete(entity);
+	}
+
+	/**
 	 * Lists the entities of type FieldGroupProfile for the CSV export
 	 */
 	@Transactional(readOnly = true)
 	public List<FieldGroupProfile> listForCsv(String sortProperty, boolean sortOrder, String profile_name,
-			String fieldGroup_name, String read, String write, String export) {
+			String fieldGroup_entity_name, String fieldGroup_name, String read, String write, String export) {
 
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
@@ -392,6 +408,13 @@ public class FieldGroupProfileHandler {
 			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 			criteria.setField("profile.name");
 			criteria.setValue(profile_name);
+			junction.add(criteria);
+		}
+		if (fieldGroup_entity_name != null && !fieldGroup_entity_name.isEmpty()) {
+			BasicCriteria criteria = new BasicCriteria();
+			criteria.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+			criteria.setField("fieldGroup.entity.name");
+			criteria.setValue(fieldGroup_entity_name);
 			junction.add(criteria);
 		}
 		if (fieldGroup_name != null && !fieldGroup_name.isEmpty()) {
@@ -439,70 +462,12 @@ public class FieldGroupProfileHandler {
 	}
 
 	/**
-	 * Saves entity of type Profile
-	 * 
-	 * @param entity the Profile to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveProfile(Profile entity, boolean isNew) {
-
-		profileHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type Profile
-	 * 
-	 * @param toDelete the Profile to be deleted
-	 */
-	public void deleteProfile(Profile toDelete) {
-		profileHandler.delete(toDelete);
-	}
-
-	/**
-	 * Saves entity of type FieldGroup
-	 * 
-	 * @param entity the FieldGroup to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveFieldGroup(FieldGroup entity, boolean isNew) {
-
-		fieldGroupHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type FieldGroup
-	 * 
-	 * @param toDelete the FieldGroup to be deleted
-	 */
-	public void deleteFieldGroup(FieldGroup toDelete) {
-		fieldGroupHandler.delete(toDelete);
-	}
-
-	/**
 	 * Setter for bean injection
 	 * 
 	 * @param dao the FieldGroupProfile Dao
 	 */
 	public void setDao(FieldGroupProfileDao dao) {
 		this.dao = dao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param profileHandler the Profile Handler
-	 */
-	public void setProfileHandler(ProfileHandler profileHandler) {
-		this.profileHandler = profileHandler;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param fieldGroupHandler the FieldGroup Handler
-	 */
-	public void setFieldGroupHandler(FieldGroupHandler fieldGroupHandler) {
-		this.fieldGroupHandler = fieldGroupHandler;
 	}
 
 	/**
@@ -522,4 +487,14 @@ public class FieldGroupProfileHandler {
 	public void setSystemUtil(SystemUtil systemUtil) {
 		this.systemUtil = systemUtil;
 	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param helper
+	 */
+	public void setHandlerHelper(HandlerHelper helper) {
+		this.handlerHelper = helper;
+	}
+
 }

@@ -18,6 +18,7 @@ import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 
@@ -147,6 +148,9 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 		current = newFieldGroup;
 		editorDriver.edit(current, request);
 
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
+
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
 		editor.setEdited(true);
@@ -163,6 +167,7 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 		/* get the FieldGroup instance from database */
 		Request<FieldGroupProxy> fetchRequest = request.findById(entityId);
+
 		fetchRequest.with("entity");
 
 		fetchRequest.to(new Receiver<FieldGroupProxy>() {
@@ -189,6 +194,9 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 		current = request.edit(entity);
 
 		editor.setEditedValue(current);
+
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
 
 		editorDriver.edit(current, request);
 		editor.setEdited(false);
@@ -294,6 +302,16 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 	@Override
 	protected void returnToList() {
 		requestFactory.getEventBus().fireEvent(new ListFieldGroupEvent());
+	}
+
+	/**
+	 * Setter to inject a CardEntity value
+	 * 
+	 * @param value the value to be injected
+	 * @param isLocked true if relation field shall be locked (non editable)
+	 */
+	public void setEntity(CardEntityProxy value, boolean isLocked) {
+		editor.setEntity(value, isLocked);
 	}
 
 }

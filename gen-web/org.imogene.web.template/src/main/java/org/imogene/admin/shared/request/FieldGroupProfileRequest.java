@@ -6,13 +6,12 @@ import java.util.Set;
 import org.imogene.web.server.handler.FieldGroupProfileHandler;
 import org.imogene.web.server.locator.SpringServiceLocator;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
-import org.imogene.web.shared.proxy.FieldGroupProxy;
-import org.imogene.web.shared.proxy.ProfileProxy;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
+import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.web.bindery.requestfactory.shared.Request;
-import com.google.web.bindery.requestfactory.shared.RequestContext;
 import com.google.web.bindery.requestfactory.shared.Service;
 
 /**
@@ -21,7 +20,7 @@ import com.google.web.bindery.requestfactory.shared.Service;
  * @author Medes-IMPS
  */
 @Service(value = FieldGroupProfileHandler.class, locator = SpringServiceLocator.class)
-public interface FieldGroupProfileRequest extends RequestContext {
+public interface FieldGroupProfileRequest extends ImogEntityRequest {
 
 	Request<FieldGroupProfileProxy> findById(String id);
 
@@ -68,11 +67,7 @@ public interface FieldGroupProfileRequest extends RequestContext {
 
 	Request<Void> delete(FieldGroupProfileProxy entity);
 
-	Request<Void> saveProfile(ProfileProxy entity, boolean isNew);
+	Request<Void> save(ImogBeanProxy entity, boolean isNew);
 
-	Request<Void> deleteProfile(ProfileProxy entity);
-
-	Request<Void> saveFieldGroup(FieldGroupProxy entity, boolean isNew);
-
-	Request<Void> deleteFieldGroup(FieldGroupProxy entity);
+	Request<Void> delete(ImogBeanProxy entity);
 }

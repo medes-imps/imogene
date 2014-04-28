@@ -1,0 +1,64 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group">
+
+	<ui:style>
+		.imog-AddImage {
+			cursor: pointer;
+			cursor: hand;
+			margin-left: 2px;
+		}
+
+		.fieldGroup-ListEditor {
+			margin-top: 5px;
+		}
+
+		.header {
+			width: 217px;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		@external .fieldGroup-ListEditor;
+	</ui:style>
+
+	<imo3:FieldGroupPanel ui:field="listSection" >
+	    <g:HorizontalPanel>
+			<g:VerticalPanel>
+	
+				<g:HorizontalPanel  verticalAlignment="middle" >
+				
+					<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    <g:Label ui:field="entityLabel" stylePrimaryName="{style.header}"/>
+					</g:cell>
+					<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    <g:Label ui:field="createLabel" stylePrimaryName="{style.header}"/>
+					</g:cell>
+					<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    <g:Label ui:field="deleteLabel" stylePrimaryName="{style.header}"/>
+					</g:cell>
+					<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    <g:Label ui:field="directAccessLabel" stylePrimaryName="{style.header}"/>
+					</g:cell>
+					<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    <g:Label ui:field="exportLabel" stylePrimaryName="{style.header}"/>
+					</g:cell>
+									
+					<g:cell verticalAlignment="middle" horizontalAlignment="right">
+					    <g:Image ui:field="addItem" stylePrimaryName="{style.imog-AddImage}" width="24px" />		
+					</g:cell>
+				</g:HorizontalPanel>	    
+			    
+				<g:VerticalPanel ui:field="listContainer" />
+				
+			</g:VerticalPanel>
+			
+		</g:HorizontalPanel>
+	</imo3:FieldGroupPanel>
+
+</ui:UiBinder> 
+
+
+
+

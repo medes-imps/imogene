@@ -10,10 +10,9 @@ import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.EntityProfileDao;
-import org.imogene.lib.common.profile.Profile;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.util.SystemUtil;
@@ -28,13 +27,9 @@ public class EntityProfileHandler {
 
 	private EntityProfileDao dao;
 
-	private ProfileHandler profileHandler;
-
-	private CardEntityHandler entityHandler;
-
 	private ImogBeanFilter filter;
-
 	private SystemUtil systemUtil;
+	private HandlerHelper handlerHelper;
 
 	/**
 	 * Loads the entity with the specified id
@@ -42,7 +37,7 @@ public class EntityProfileHandler {
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public EntityProfile findById(String entityId) {
 		return dao.load(entityId);
 	}
@@ -66,6 +61,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional
 	public void save(EntityProfile entity, boolean isNew) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 
 		if (entity != null) {
@@ -84,6 +80,17 @@ public class EntityProfileHandler {
 	}
 
 	/**
+	 * Saves or updates the bean
+	 * 
+	 * @param entity the bean to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	@Transactional
+	public void save(ImogBean entity, boolean isNew) {
+		handlerHelper.save(entity, isNew);
+	}
+
+	/**
 	 * Lists the entities of type EntityProfile
 	 * 
 	 * @param sortProperty the property used to sort the collection
@@ -92,6 +99,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(String sortProperty, boolean sortOrder) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -111,6 +119,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(int i, int j, String sortProperty, boolean sortOrder) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -132,6 +141,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -155,6 +165,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listEntityProfile(int i, int j, String sortProperty, boolean sortOrder,
 			List<BasicCriteria> criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -184,6 +195,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listNonAffectedEntityProfile(int i, int j, String sortProperty, boolean sortOrder,
 			ImogJunction criterions, String property) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -225,6 +237,7 @@ public class EntityProfileHandler {
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listNonAffectedEntityProfileReverse(int i, int j, String sortProperty,
 			boolean sortOrder, ImogJunction criterions, String property) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -279,6 +292,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countEntityProfile(ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -296,6 +310,7 @@ public class EntityProfileHandler {
 	 */
 	@Transactional(readOnly = true)
 	public Long countNonAffectedEntityProfile(String property, ImogJunction criterions) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 		if (criterions != null)
@@ -369,11 +384,22 @@ public class EntityProfileHandler {
 	}
 
 	/**
+	 * Removes the specified bean from the database
+	 * 
+	 * @param entity The bean to be deleted
+	 */
+	@Transactional
+	public void delete(ImogBean entity) {
+		handlerHelper.delete(entity);
+	}
+
+	/**
 	 * Lists the entities of type EntityProfile for the CSV export
 	 */
 	@Transactional(readOnly = true)
 	public List<EntityProfile> listForCsv(String sortProperty, boolean sortOrder, String profile_name,
 			String entity_name, String directAccess, String create, String delete, String export) {
+
 		ImogActor actor = HttpSessionUtil.getCurrentUser();
 		ImogJunction junction = createFilterJuntion(actor);
 
@@ -436,70 +462,12 @@ public class EntityProfileHandler {
 	}
 
 	/**
-	 * Saves entity of type Profile
-	 * 
-	 * @param entity the Profile to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveProfile(Profile entity, boolean isNew) {
-
-		profileHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type Profile
-	 * 
-	 * @param toDelete the Profile to be deleted
-	 */
-	public void deleteProfile(Profile toDelete) {
-		profileHandler.delete(toDelete);
-	}
-
-	/**
-	 * Saves entity of type SynchronizableEntity
-	 * 
-	 * @param entity the SynchronizableEntity to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveEntity(CardEntity entity, boolean isNew) {
-
-		entityHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type SynchronizableEntity
-	 * 
-	 * @param toDelete the SynchronizableEntity to be deleted
-	 */
-	public void deleteEntity(CardEntity toDelete) {
-		entityHandler.delete(toDelete);
-	}
-
-	/**
 	 * Setter for bean injection
 	 * 
 	 * @param dao the EntityProfile Dao
 	 */
 	public void setDao(EntityProfileDao dao) {
 		this.dao = dao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param profileHandler the Profile Handler
-	 */
-	public void setProfileHandler(ProfileHandler profileHandler) {
-		this.profileHandler = profileHandler;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param entityHandler the SynchronizableEntity Handler
-	 */
-	public void setEntityHandler(CardEntityHandler entityHandler) {
-		this.entityHandler = entityHandler;
 	}
 
 	/**
@@ -519,4 +487,14 @@ public class EntityProfileHandler {
 	public void setSystemUtil(SystemUtil systemUtil) {
 		this.systemUtil = systemUtil;
 	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param helper
+	 */
+	public void setHandlerHelper(HandlerHelper helper) {
+		this.handlerHelper = helper;
+	}
+
 }

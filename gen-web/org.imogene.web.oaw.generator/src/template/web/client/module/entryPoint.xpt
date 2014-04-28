@@ -13,34 +13,24 @@ import java.util.logging.Logger;
 
 import org.imogene.admin.client.AdminRenderer;
 import org.imogene.admin.client.event.create.CreateCardEntityEvent;
-import org.imogene.admin.client.event.create.CreateEntityProfileEvent;
 import org.imogene.admin.client.event.create.CreateFieldGroupEvent;
-import org.imogene.admin.client.event.create.CreateFieldGroupProfileEvent;
 import org.imogene.admin.client.event.create.CreateNotificationEvent;
 import org.imogene.admin.client.event.create.CreateProfileEvent;
 import org.imogene.admin.client.event.list.ListCardEntityEvent;
-import org.imogene.admin.client.event.list.ListEntityProfileEvent;
 import org.imogene.admin.client.event.list.ListFieldGroupEvent;
-import org.imogene.admin.client.event.list.ListFieldGroupProfileEvent;
 import org.imogene.admin.client.event.list.ListNotificationEvent;
 import org.imogene.admin.client.event.list.ListProfileEvent;
 import org.imogene.admin.client.event.view.ViewCardEntityEvent;
-import org.imogene.admin.client.event.view.ViewEntityProfileEvent;
 import org.imogene.admin.client.event.view.ViewFieldGroupEvent;
-import org.imogene.admin.client.event.view.ViewFieldGroupProfileEvent;
 import org.imogene.admin.client.event.view.ViewNotificationEvent;
 import org.imogene.admin.client.event.view.ViewProfileEvent;
 import org.imogene.admin.client.ui.table.panel.CardEntityListPanel;
 import org.imogene.admin.client.ui.table.panel.DynamicFieldTemplateListPanel;
-import org.imogene.admin.client.ui.table.panel.EntityProfileListPanel;
 import org.imogene.admin.client.ui.table.panel.FieldGroupListPanel;
-import org.imogene.admin.client.ui.table.panel.FieldGroupProfileListPanel;
 import org.imogene.admin.client.ui.table.panel.NotificationListPanel;
 import org.imogene.admin.client.ui.table.panel.ProfileListPanel;
 import org.imogene.admin.client.ui.workflow.panel.CardEntityFormPanel;
-import org.imogene.admin.client.ui.workflow.panel.EntityProfileFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.FieldGroupFormPanel;
-import org.imogene.admin.client.ui.workflow.panel.FieldGroupProfileFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.NotificationFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.ProfileFormPanel;
 import org.imogene.web.client.dynamicfields.ui.workflow.panel.DynamicFieldTemplateFormPanel;
@@ -522,87 +512,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 					displayWrapperPanel(new ProfileListPanel(requestFactory, searchText));
 			}
 		}));
-		/**
-		 * Handlers for entity EntityProfile
-		 * */
 
-		/* Create EntityProfile Handler */
-		registrations.add(eventBus.addHandler(CreateEntityProfileEvent.TYPE, new CreateEntityProfileEvent.Handler() {
-			public void createNewEntityProfile(GwtEvent<?> closeEvent) {
-				if (ProfileUtil.isAdmin()) {
-					EntityProfileFormPanel entityprofileForm = new EntityProfileFormPanel(requestFactory, null);
-					entityprofileForm.setCloseEvent(closeEvent);
-					displayWrapperPanel(entityprofileForm);
-				}
-			}
-		}));
-
-		/* View EntityProfile Handler */
-		registrations.add(eventBus.addHandler(ViewEntityProfileEvent.TYPE, new ViewEntityProfileEvent.Handler() {
-			public void viewEntityProfile(String entityId, GwtEvent<?> closeEvent) {
-				if (ProfileUtil.isAdmin()) {
-					EntityProfileFormPanel entityprofileForm = new EntityProfileFormPanel(requestFactory, entityId);
-					entityprofileForm.setCloseEvent(closeEvent);
-					displayWrapperPanel(entityprofileForm);
-				}
-			}
-		}));
-
-		/* List EntityProfile Handler */
-		registrations.add(eventBus.addHandler(ListEntityProfileEvent.TYPE, new ListEntityProfileEvent.Handler() {
-			public void listEntityProfile() {
-				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new EntityProfileListPanel(requestFactory));
-			}
-
-			public void listEntityProfile(String searchText) {
-				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new EntityProfileListPanel(requestFactory, searchText));
-			}
-		}));
-		/**
-		 * Handlers for entity FieldGroupProfile
-		 * */
-
-		/* Create FieldGroupProfile Handler */
-		registrations.add(eventBus.addHandler(CreateFieldGroupProfileEvent.TYPE,
-				new CreateFieldGroupProfileEvent.Handler() {
-					public void createNewFieldGroupProfile(GwtEvent<?> closeEvent) {
-						if (ProfileUtil.isAdmin()) {
-							FieldGroupProfileFormPanel fieldgroupprofileForm = new FieldGroupProfileFormPanel(
-									requestFactory, null);
-							fieldgroupprofileForm.setCloseEvent(closeEvent);
-							displayWrapperPanel(fieldgroupprofileForm);
-						}
-					}
-				}));
-
-		/* View FieldGroupProfile Handler */
-		registrations.add(eventBus.addHandler(ViewFieldGroupProfileEvent.TYPE,
-				new ViewFieldGroupProfileEvent.Handler() {
-					public void viewFieldGroupProfile(String entityId, GwtEvent<?> closeEvent) {
-						if (ProfileUtil.isAdmin()) {
-							FieldGroupProfileFormPanel fieldgroupprofileForm = new FieldGroupProfileFormPanel(
-									requestFactory, entityId);
-							fieldgroupprofileForm.setCloseEvent(closeEvent);
-							displayWrapperPanel(fieldgroupprofileForm);
-						}
-					}
-				}));
-
-		/* List FieldGroupProfile Handler */
-		registrations.add(eventBus.addHandler(ListFieldGroupProfileEvent.TYPE,
-				new ListFieldGroupProfileEvent.Handler() {
-					public void listFieldGroupProfile() {
-						if (ProfileUtil.isAdmin())
-							displayWrapperPanel(new FieldGroupProfileListPanel(requestFactory));
-					}
-
-					public void listFieldGroupProfile(String searchText) {
-						if (ProfileUtil.isAdmin())
-							displayWrapperPanel(new FieldGroupProfileListPanel(requestFactory, searchText));
-					}
-				}));
 		/**
 		 * Handlers for entity CardEntity
 		 * */
@@ -713,13 +623,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 
 					/* list for Notification */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListNotificationEvent());
+						eventBus.fireEvent(new ListNotificationEvent());
 					}
 					/* new Notification */
 					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateNotificationEvent());
+						eventBus.fireEvent(new CreateNotificationEvent());
 					}
 				}
 			}
@@ -732,32 +640,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 
 					/* list for DynamicField Template */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListDynamicFieldTemplateEvent());
+						eventBus.fireEvent(new ListDynamicFieldTemplateEvent());
 					}
 					/* new DynamicField Template */
 					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateDynamicFieldTemplateEvent());
-					}
-				}
-			}
-			/** actions for EntityProfile */
-			if (entityToken.getType().equals("entityprofile")) {
-				if (ProfileUtil.isAdmin()) {
-					/* view for EntityProfile */
-					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
-						eventBus.fireEvent(new ViewEntityProfileEvent(entityToken.getId()));
-
-					/* list for EntityProfile */
-					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListEntityProfileEvent());
-					}
-					/* new EntityProfile */
-					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateEntityProfileEvent());
+						eventBus.fireEvent(new CreateDynamicFieldTemplateEvent());
 					}
 				}
 			}
@@ -770,32 +657,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 
 					/* list for FieldGroup */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListFieldGroupEvent());
+						eventBus.fireEvent(new ListFieldGroupEvent());
 					}
 					/* new FieldGroup */
 					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateFieldGroupEvent());
-					}
-				}
-			}
-			/** actions for FieldGroupProfile */
-			if (entityToken.getType().equals("fieldgroupprofile")) {
-				if (ProfileUtil.isAdmin()) {
-					/* view for FieldGroupProfile */
-					if (entityToken.getAction().equals(TokenHelper.TK_VIEW))
-						eventBus.fireEvent(new ViewFieldGroupProfileEvent(entityToken.getId()));
-
-					/* list for FieldGroupProfile */
-					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListFieldGroupProfileEvent());
-					}
-					/* new FieldGroupProfile */
-					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateFieldGroupProfileEvent());
+						eventBus.fireEvent(new CreateFieldGroupEvent());
 					}
 				}
 			}
@@ -808,13 +674,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 
 					/* list for Profile */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListProfileEvent());
+						eventBus.fireEvent(new ListProfileEvent());
 					}
 					/* new Profile */
 					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateProfileEvent());
+						eventBus.fireEvent(new CreateProfileEvent());
 					}
 				}
 			}
@@ -827,13 +691,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 
 					/* list for CardEntity */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccessExpertDoctor())
-							eventBus.fireEvent(new ListCardEntityEvent());
+						eventBus.fireEvent(new ListCardEntityEvent());
 					}
 					/* new CardEntity */
 					if (entityToken.getAction().equals(TokenHelper.TK_NEW)) {
-						if (AccessManager.canCreateExpertDoctor())
-							eventBus.fireEvent(new CreateCardEntityEvent());
+						eventBus.fireEvent(new CreateCardEntityEvent());
 					}
 				}
 			}

@@ -10,15 +10,11 @@ import java.util.List;
 
 import org.imogene.admin.client.AdminIconConstants;
 import org.imogene.admin.client.event.create.CreateCardEntityEvent;
-import org.imogene.admin.client.event.create.CreateEntityProfileEvent;
 import org.imogene.admin.client.event.create.CreateFieldGroupEvent;
-import org.imogene.admin.client.event.create.CreateFieldGroupProfileEvent;
 import org.imogene.admin.client.event.create.CreateNotificationEvent;
 import org.imogene.admin.client.event.create.CreateProfileEvent;
 import org.imogene.admin.client.event.list.ListCardEntityEvent;
-import org.imogene.admin.client.event.list.ListEntityProfileEvent;
 import org.imogene.admin.client.event.list.ListFieldGroupEvent;
-import org.imogene.admin.client.event.list.ListFieldGroupProfileEvent;
 import org.imogene.admin.client.event.list.ListNotificationEvent;
 import org.imogene.admin.client.event.list.ListProfileEvent;
 import org.imogene.admin.client.i18n.AdminNLS;
@@ -101,10 +97,6 @@ public class HomePanel extends Composite {
 	FieldGroupPanel temaProfiles;
 	@UiField(provided = true)
 	EntityPanel profile;
-	@UiField(provided = true)
-	EntityPanel entityProfile;
-	@UiField(provided = true)
-	EntityPanel fieldGroupProfile;
 
 	/* thema Model */
 	@UiField(provided = true)
@@ -173,8 +165,6 @@ public class HomePanel extends Composite {
 		temaProfiles = new FieldGroupPanel();
 		temaProfiles.setGroupTitle("Profiles");
 		profile = new EntityPanel(AdminNLS.constants().profile_name());
-		entityProfile = new EntityPanel(AdminNLS.constants().entityProfile_name());
-		fieldGroupProfile = new EntityPanel(AdminNLS.constants().fieldGroupProfile_name());
 
 		/* thema Model */
 		temaModel = new FieldGroupPanel();
@@ -293,36 +283,6 @@ public class HomePanel extends Composite {
 			dynamicField_Template.setSearchClickHandler(null);
 		}
 
-		/* EntityProfile Menu */
-
-		if (ProfileUtil.isAdmin()) {
-			entityProfile.setCreateClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					History.newItem(TokenHelper.TK_NEW + "/entityprofile/", true);
-				}
-			});
-			entityProfile.setListClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					LocalSession.get().setSearchCriterions(null, null);
-					History.newItem(TokenHelper.TK_LIST + "/entityprofile/", true);
-				}
-			});
-			entityProfile.setSearchClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					String searchValue = entityProfile.getSearchValue();
-					if (searchValue != null && !searchValue.isEmpty())
-						History.newItem(TokenHelper.TK_LIST + "/entityprofile/searchValue", true);
-				}
-			});
-		} else {
-			entityProfile.setCreateClickHandler(null);
-			entityProfile.setListClickHandler(null);
-			entityProfile.setSearchClickHandler(null);
-		}
-
 		/* FieldGroup Menu */
 
 		if (ProfileUtil.isAdmin()) {
@@ -352,36 +312,6 @@ public class HomePanel extends Composite {
 			fieldGroup.setCreateClickHandler(null);
 			fieldGroup.setListClickHandler(null);
 			fieldGroup.setSearchClickHandler(null);
-		}
-
-		/* FieldGroupProfile Menu */
-
-		if (ProfileUtil.isAdmin()) {
-			fieldGroupProfile.setCreateClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					History.newItem(TokenHelper.TK_NEW + "/fieldgroupprofile/", true);
-				}
-			});
-			fieldGroupProfile.setListClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					LocalSession.get().setSearchCriterions(null, null);
-					History.newItem(TokenHelper.TK_LIST + "/fieldgroupprofile/", true);
-				}
-			});
-			fieldGroupProfile.setSearchClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					String searchValue = fieldGroupProfile.getSearchValue();
-					if (searchValue != null && !searchValue.isEmpty())
-						History.newItem(TokenHelper.TK_LIST + "/fieldgroupprofile/searchValue", true);
-				}
-			});
-		} else {
-			fieldGroupProfile.setCreateClickHandler(null);
-			fieldGroupProfile.setListClickHandler(null);
-			fieldGroupProfile.setSearchClickHandler(null);
 		}
 
 		/* Profile Menu */
@@ -502,8 +432,6 @@ public class HomePanel extends Composite {
 		
 		/* thema Profiles */
 		profile.setVisible(true);
-		entityProfile.setVisible(true);
-		fieldGroupProfile.setVisible(true);
 		temaProfiles.setVisible(true);
 
 		/* thema Model */

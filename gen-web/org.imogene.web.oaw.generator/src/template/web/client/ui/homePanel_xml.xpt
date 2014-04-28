@@ -68,8 +68,6 @@
 						<imo:FieldGroupPanel ui:field="temaProfiles">
 							<g:FlowPanel>
 								<imo2:EntityPanel ui:field="profile" />
-								<imo2:EntityPanel ui:field="entityProfile" />
-								<imo2:EntityPanel ui:field="fieldGroupProfile" />
 							</g:FlowPanel>
 						</imo:FieldGroupPanel>
 					</g:cell>

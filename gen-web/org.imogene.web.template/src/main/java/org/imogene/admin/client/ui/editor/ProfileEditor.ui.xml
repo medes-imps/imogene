@@ -5,6 +5,7 @@
 	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.relation.multi'
 	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group"
 	xmlns:imo4="urn:import:org.imogene.web.client.ui.field.binary"
+	xmlns:imon1="urn:import:org.imogene.admin.client.ui.editor.nested"
 	>		
 	
 
@@ -23,7 +24,7 @@
 			margin-left: 10px;
 		}
 		
-		@if user.agent ie6 ie8 {
+		@if user.agent ie6 ie8 ie9 {
 			.dependentVisibility {
 				margin-left: 20px;
 				font-style: italic;
@@ -51,10 +52,10 @@
 				<imo:ImogTextBox ui:field="name" />
 			</g:SimplePanel>
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
-				<imo2:ImogMultiRelationBox ui:field="entityProfiles" />
+				<imon1:ProfileEntityProfilesListEditor ui:field="entityProfiles" />
 			</g:SimplePanel>
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
-				<imo2:ImogMultiRelationBox ui:field="fieldGroupProfiles" />
+				<imon1:ProfileFieldGroupProfilesListEditor ui:field="fieldGroupProfiles" />
 			</g:SimplePanel>
 
 		</imo3:FieldGroupPanel>	

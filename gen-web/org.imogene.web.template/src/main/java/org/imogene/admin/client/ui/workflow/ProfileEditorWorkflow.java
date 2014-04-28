@@ -1,6 +1,8 @@
 package org.imogene.admin.client.ui.workflow;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -18,6 +20,8 @@ import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.shared.proxy.EntityProfileProxy;
+import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
 
@@ -142,10 +146,17 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		/* create a new intance of Profile */
 		ProfileProxy newProfile = request.create(ProfileProxy.class);
 		newProfile.setId(ImogKeyGenerator.generateKeyId("PRO"));
+		// create list of EntityProfile in editor
+		newProfile.setEntityProfiles(new ArrayList<EntityProfileProxy>());
+		// create list of FieldGroupProfile in editor
+		newProfile.setFieldGroupProfiles(new ArrayList<FieldGroupProfileProxy>());
 
 		/* push the instance to the editor */
 		current = newProfile;
 		editorDriver.edit(current, request);
+
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
 
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
@@ -163,12 +174,17 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 
 		/* get the Profile instance from database */
 		Request<ProfileProxy> fetchRequest = request.findById(entityId);
+
 		fetchRequest.with("entityProfiles");
-		fetchRequest.with("entityProfiles.profile");
+
 		fetchRequest.with("entityProfiles.entity");
+
 		fetchRequest.with("fieldGroupProfiles");
-		fetchRequest.with("fieldGroupProfiles.profile");
+
+		fetchRequest.with("fieldGroupProfiles.cardEntity");
+
 		fetchRequest.with("fieldGroupProfiles.fieldGroup");
+
 		fetchRequest.with("fieldGroupProfiles.fieldGroup.entity");
 
 		fetchRequest.to(new Receiver<ProfileProxy>() {
@@ -193,8 +209,21 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		/* push the instance to the editor in view mode */
 		request = requestFactory.profileRequest();
 		current = request.edit(entity);
+		List<EntityProfileProxy> entityProfiles = current.getEntityProfiles();
+		if (entityProfiles != null && entityProfiles.size() > 0) {
+			for (EntityProfileProxy item : entityProfiles) {
+			}
+		}
+		List<FieldGroupProfileProxy> fieldGroupProfiles = current.getFieldGroupProfiles();
+		if (fieldGroupProfiles != null && fieldGroupProfiles.size() > 0) {
+			for (FieldGroupProfileProxy item : fieldGroupProfiles) {
+			}
+		}
 
 		editor.setEditedValue(current);
+
+		/* set request context for list editor operations */
+		editor.setRequestContextForListEditors(request);
 
 		editorDriver.edit(current, request);
 		editor.setEdited(false);

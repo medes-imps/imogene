@@ -11,6 +11,7 @@ import org.imogene.lib.common.criteria.ImogConjunction;
 import org.imogene.lib.common.criteria.ImogJunction;
 import org.imogene.lib.common.dao.ImogActorDao;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.EntityProfileDao;
 import org.imogene.lib.common.profile.FieldGroupProfile;
@@ -30,20 +31,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileHandler {
 
 	private ProfileDao dao;
-	/* ActorDao for Foreign Key Deletion */
+	/* MyActorDao for Foreign Key Deletion */
 	private ImogActorDao actorProfilesDao;
 	/* EntityProfileDao for Foreign Key Deletion */
 	private EntityProfileDao entityProfileDao;
 	/* FieldGroupProfileDao for Foreign Key Deletion */
 	private FieldGroupProfileDao fieldGroupProfileDao;
 
-	private EntityProfileHandler entityProfileHandler;
-
-	private FieldGroupProfileHandler fieldGroupProfileHandler;
-
 	private ImogBeanFilter filter;
-
 	private SystemUtil systemUtil;
+	private HandlerHelper handlerHelper;
 
 	/**
 	 * Loads the entity with the specified id
@@ -51,7 +48,7 @@ public class ProfileHandler {
 	 * @param entityId the entity id
 	 * @return the entity or null
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public Profile findById(String entityId) {
 		return dao.load(entityId);
 	}
@@ -89,8 +86,50 @@ public class ProfileHandler {
 			entity.setModifiedBy(actor.getLogin());
 			entity.setModifiedFrom(systemUtil.getTerminal());
 
+			// manage related entityProfiles
+			List<EntityProfile> listEntityProfiles = entity.getEntityProfiles();
+			if (listEntityProfiles != null && listEntityProfiles.size() > 0) {
+				for (EntityProfile item : listEntityProfiles) {
+					if (item != null) {
+
+						item.setModified(new Date(systemUtil.getCurrentTimeMillis()));
+						item.setModifiedBy(actor.getLogin());
+						item.setModifiedFrom(systemUtil.getTerminal());
+						if (item.getCreatedBy() == null) {
+							item.setCreatedBy(actor.getLogin());
+						}
+					}
+				}
+			}
+			// manage related fieldGroupProfiles
+			List<FieldGroupProfile> listFieldGroupProfiles = entity.getFieldGroupProfiles();
+			if (listFieldGroupProfiles != null && listFieldGroupProfiles.size() > 0) {
+				for (FieldGroupProfile item : listFieldGroupProfiles) {
+					if (item != null) {
+
+						item.setModified(new Date(systemUtil.getCurrentTimeMillis()));
+						item.setModifiedBy(actor.getLogin());
+						item.setModifiedFrom(systemUtil.getTerminal());
+						if (item.getCreatedBy() == null) {
+							item.setCreatedBy(actor.getLogin());
+						}
+					}
+				}
+			}
+
 			dao.saveOrUpdate(entity, isNew);
 		}
+	}
+
+	/**
+	 * Saves or updates the bean
+	 * 
+	 * @param entity the bean to be saved or updated
+	 * @param isNew true if it is a new entity added for the first time.
+	 */
+	@Transactional
+	public void save(ImogBean entity, boolean isNew) {
+		handlerHelper.save(entity, isNew);
 	}
 
 	/**
@@ -435,6 +474,16 @@ public class ProfileHandler {
 	}
 
 	/**
+	 * Removes the specified bean from the database
+	 * 
+	 * @param entity The bean to be deleted
+	 */
+	@Transactional
+	public void delete(ImogBean entity) {
+		handlerHelper.delete(entity);
+	}
+
+	/**
 	 * Lists the entities of type Profile for the CSV export
 	 */
 	@Transactional(readOnly = true)
@@ -467,97 +516,12 @@ public class ProfileHandler {
 	}
 
 	/**
-	 * Saves entity of type EntityProfile
-	 * 
-	 * @param entity the EntityProfile to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveEntityProfiles(EntityProfile entity, boolean isNew) {
-
-		entityProfileHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type EntityProfile
-	 * 
-	 * @param toDelete the EntityProfile to be deleted
-	 */
-	public void deleteEntityProfiles(EntityProfile toDelete) {
-		entityProfileHandler.delete(toDelete);
-	}
-
-	/**
-	 * Saves entity of type FieldGroupProfile
-	 * 
-	 * @param entity the FieldGroupProfile to be saved or updated
-	 * @param isNew true if it is a new entity added for the first time.
-	 */
-	public void saveFieldGroupProfiles(FieldGroupProfile entity, boolean isNew) {
-
-		fieldGroupProfileHandler.save(entity, isNew);
-	}
-
-	/**
-	 * Deletes entity of type FieldGroupProfile
-	 * 
-	 * @param toDelete the FieldGroupProfile to be deleted
-	 */
-	public void deleteFieldGroupProfiles(FieldGroupProfile toDelete) {
-		fieldGroupProfileHandler.delete(toDelete);
-	}
-
-	/**
 	 * Setter for bean injection
 	 * 
 	 * @param dao the Profile Dao
 	 */
 	public void setDao(ProfileDao dao) {
 		this.dao = dao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param myActorProfilesDao the MyActor Dao
-	 */
-	public void setMyActorProfilesDao(ImogActorDao myActorProfilesDao) {
-		this.actorProfilesDao = myActorProfilesDao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param entityProfileProfileDao the EntityProfile Dao
-	 */
-	public void setEntityProfileDao(EntityProfileDao entityProfileDao) {
-		this.entityProfileDao = entityProfileDao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param fieldGroupProfileProfileDao the FieldGroupProfile Dao
-	 */
-	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
-		this.fieldGroupProfileDao = fieldGroupProfileDao;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param entityProfilesHandler the EntityProfile Handler
-	 */
-	public void setEntityProfileHandler(EntityProfileHandler entityProfileHandler) {
-		this.entityProfileHandler = entityProfileHandler;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param fieldGroupProfilesHandler the FieldGroupProfile Handler
-	 */
-	public void setFieldGroupProfileHandler(FieldGroupProfileHandler fieldGroupProfileHandler) {
-		this.fieldGroupProfileHandler = fieldGroupProfileHandler;
 	}
 
 	/**
@@ -577,4 +541,41 @@ public class ProfileHandler {
 	public void setSystemUtil(SystemUtil systemUtil) {
 		this.systemUtil = systemUtil;
 	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param helper
+	 */
+	public void setHandlerHelper(HandlerHelper helper) {
+		this.handlerHelper = helper;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param actorProfilesDao the Actor Dao
+	 */
+	public void setActorProfilesDao(ImogActorDao actorProfilesDao) {
+		this.actorProfilesDao = actorProfilesDao;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param entityProfileDao the EntityProfile Dao
+	 */
+	public void setEntityProfileDao(EntityProfileDao entityProfileDao) {
+		this.entityProfileDao = entityProfileDao;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param fieldGroupProfileDao the FieldGroupProfile Dao
+	 */
+	public void setFieldGroupProfileDao(FieldGroupProfileDao fieldGroupProfileDao) {
+		this.fieldGroupProfileDao = fieldGroupProfileDao;
+	}
+
 }

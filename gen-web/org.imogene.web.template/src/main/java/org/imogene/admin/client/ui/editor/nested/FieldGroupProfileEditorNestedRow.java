@@ -1,28 +1,26 @@
-package org.imogene.admin.client.ui.editor;
+package org.imogene.admin.client.ui.editor.nested;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.imogene.admin.client.AdminRenderer;
+import org.imogene.admin.client.dataprovider.CardEntityDataProvider;
 import org.imogene.admin.client.dataprovider.FieldGroupDataProvider;
-import org.imogene.admin.client.dataprovider.ProfileDataProvider;
+import org.imogene.admin.client.event.save.SaveCardEntityEvent;
 import org.imogene.admin.client.event.save.SaveFieldGroupEvent;
-import org.imogene.admin.client.event.save.SaveProfileEvent;
-import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.admin.client.ui.workflow.panel.CardEntityFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.FieldGroupFormPanel;
-import org.imogene.admin.client.ui.workflow.panel.ProfileFormPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.field.ImogBooleanBox;
 import org.imogene.web.client.ui.field.ImogField;
-import org.imogene.web.client.ui.field.group.FieldGroupPanel;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProfileProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
-import org.imogene.web.shared.proxy.ProfileProxy;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -35,18 +33,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
- * Editor that provides the UI components that allow a FieldGroupProfileProxy to be viewed and edited
+ * Editor that provides the UI components that allow a FieldGroupProfileProxy to be viewed and edited in an editor list
  * 
  * @author MEDES-IMPS
  */
-public class FieldGroupProfileEditor extends Composite implements Editor<FieldGroupProfileProxy>,
+public class FieldGroupProfileEditorNestedRow extends Composite implements Editor<FieldGroupProfileProxy>,
 		HasEditorDelegate<FieldGroupProfileProxy>, HasEditorErrors<FieldGroupProfileProxy> {
 
-	interface Binder extends UiBinder<Widget, FieldGroupProfileEditor> {
+	interface Binder extends UiBinder<Widget, FieldGroupProfileEditorNestedRow> {
 	}
 
 	private static final Binder BINDER = GWT.create(Binder.class);
@@ -55,17 +54,18 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 	private EditorDelegate<FieldGroupProfileProxy> delegate;
 
-	private FieldGroupProfileProxy editedValue; // Not used by the editor
 	private boolean hideButtons = false;
+	private int index = 0;
+	private boolean isNewProxy = false;
 
-	/* Description section widgets */
 	@UiField
-	@Ignore
-	FieldGroupPanel descriptionSection;
+	Image clearImage;
+
 	@UiField(provided = true)
-	ImogSingleRelationBox<ProfileProxy> profile;
+	ImogSingleRelationBox<CardEntityProxy> cardEntity;
 	@UiField(provided = true)
 	ImogSingleRelationBox<FieldGroupProxy> fieldGroup;
+	private FieldGroupDataProvider fieldGroupDataProvider;
 	@UiField
 	ImogBooleanBox read;
 	@UiField
@@ -79,7 +79,7 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	 * @param factory the application request factory
 	 * @param hideButtons true if the relation field buttons shall be hidden
 	 */
-	public FieldGroupProfileEditor(AdminRequestFactory factory, boolean hideButtons) {
+	public FieldGroupProfileEditorNestedRow(AdminRequestFactory factory, boolean hideButtons) {
 
 		this.requestFactory = factory;
 		this.hideButtons = hideButtons;
@@ -87,6 +87,9 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 		setRelationFields();
 
 		initWidget(BINDER.createAndBindUi(this));
+
+		clearImage.setTitle(BaseNLS.constants().button_remove());
+		clearImage.setUrl(GWT.getModuleBaseURL() + "images/relation_remove.png");
 
 		properties();
 	}
@@ -96,44 +99,50 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	 * 
 	 * @param factory the application request factory
 	 */
-	public FieldGroupProfileEditor(AdminRequestFactory factory) {
+	public FieldGroupProfileEditorNestedRow(AdminRequestFactory factory) {
 		this(factory, false);
 	}
 
 	/**
 	 * Sets the properties of the fields
 	 */
-	private void properties() {
+	public void properties() {
 
-		/* Description section widgets */
-		descriptionSection.setGroupTitle(AdminNLS.constants().fieldGroupProfile_group_description());
-		profile.setLabel(AdminNLS.constants().fieldGroupProfile_field_profile());
-		fieldGroup.setLabel(AdminNLS.constants().fieldGroupProfile_field_fieldGroup());
-		read.setLabel(AdminNLS.constants().fieldGroupProfile_field_read());
-		write.setLabel(AdminNLS.constants().fieldGroupProfile_field_write());
-		export.setLabel(AdminNLS.constants().fieldGroupProfile_field_export());
-
+		// cardEntity.setLabel(NLS.constants().fieldGroupProfile_field_cardEntity(),
+		// HasHorizontalAlignment.ALIGN_RIGHT);
+		cardEntity.setLabelWidth("0px");
+		// the value of cardEntity affects the value of other fields
+		cardEntity.notifyChanges(requestFactory.getEventBus());
+		// fieldGroup.setLabel(NLS.constants().fieldGroupProfile_field_fieldGroup(),
+		// HasHorizontalAlignment.ALIGN_RIGHT);
+		fieldGroup.setLabelWidth("0px");
+		// read.setLabel(NLS.constants().fieldGroupProfile_field_read(), HasHorizontalAlignment.ALIGN_RIGHT);
+		read.setLabelWidth("0px");
+		// write.setLabel(NLS.constants().fieldGroupProfile_field_write(), HasHorizontalAlignment.ALIGN_RIGHT);
+		write.setLabelWidth("0px");
+		// export.setLabel(NLS.constants().fieldGroupProfile_field_export(), HasHorizontalAlignment.ALIGN_RIGHT);
+		export.setLabelWidth("0px");
 	}
 
 	/**
 	 * Configures the widgets that manage relation fields
 	 */
-	private void setRelationFields() {
+	public void setRelationFields() {
 
-		/* field profile */
-		ProfileDataProvider profileDataProvider;
-		profileDataProvider = new ProfileDataProvider(requestFactory);
+		/* field cardEntity */
+		CardEntityDataProvider cardEntityDataProvider;
+		cardEntityDataProvider = new CardEntityDataProvider(requestFactory);
 		if (hideButtons) // in popup, relation buttons hidden
-			profile = new ImogSingleRelationBox<ProfileProxy>(profileDataProvider, AdminRenderer.get(), true);
+			cardEntity = new ImogSingleRelationBox<CardEntityProxy>(cardEntityDataProvider, AdminRenderer.get(), true);
 		else {// in wrapper panel, relation buttons enabled
 			if (ProfileUtil.isAdmin())
-				profile = new ImogSingleRelationBox<ProfileProxy>(profileDataProvider, AdminRenderer.get());
+				cardEntity = new ImogSingleRelationBox<CardEntityProxy>(cardEntityDataProvider, AdminRenderer.get());
 			else
-				profile = new ImogSingleRelationBox<ProfileProxy>(false, profileDataProvider, AdminRenderer.get());
+				cardEntity = new ImogSingleRelationBox<CardEntityProxy>(false, cardEntityDataProvider,
+						AdminRenderer.get());
 		}
 
 		/* field fieldGroup */
-		FieldGroupDataProvider fieldGroupDataProvider;
 		fieldGroupDataProvider = new FieldGroupDataProvider(requestFactory);
 		if (hideButtons) // in popup, relation buttons hidden
 			fieldGroup = new ImogSingleRelationBox<FieldGroupProxy>(fieldGroupDataProvider, AdminRenderer.get(), true);
@@ -154,40 +163,44 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	 */
 	public void setEdited(boolean isEdited) {
 
+		clearImage.setVisible(isEdited);
+
 		if (isEdited)
 			setFieldEditAccess();
 		else
 			setFieldReadAccess();
 
-		/* Description section widgets */
-		profile.setEdited(isEdited);
+		cardEntity.setEdited(isEdited);
 		fieldGroup.setEdited(isEdited);
 		read.setEdited(isEdited);
 		write.setEdited(isEdited);
 		export.setEdited(isEdited);
-
 	}
 
 	/**
 	 * Configures the visibility of the fields in view mode depending on the user privileges
 	 */
-	private void setFieldReadAccess() {
-
-		/* Description section widgets visibility */
-		if (!ProfileUtil.isAdmin())
-			descriptionSection.setVisible(false);
-
+	public void setFieldReadAccess() {
+		if (!ProfileUtil.isAdmin()) {
+			cardEntity.setVisible(false);
+			fieldGroup.setVisible(false);
+			read.setVisible(false);
+			write.setVisible(false);
+			export.setVisible(false);
+		}
 	}
 
 	/**
 	 * Configures the visibility of the fields in edit mode depending on the user privileges
 	 */
-	private void setFieldEditAccess() {
-
-		/* Description section widgets visibility */
-		if (!ProfileUtil.isAdmin())
-			descriptionSection.setVisible(false);
-
+	public void setFieldEditAccess() {
+		if (!ProfileUtil.isAdmin()) {
+			cardEntity.setVisible(false);
+			fieldGroup.setVisible(false);
+			read.setVisible(false);
+			write.setVisible(false);
+			export.setVisible(false);
+		}
 	}
 
 	/**
@@ -203,6 +216,11 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 						// field dependent visibility management
 						computeVisibility(field, false);
 
+						/* FieldGroup list content depends on the value of field CardEntity */
+						if (field.equals(cardEntity)) {
+							clearFieldGroupWidget();
+							getFieldGroupFilteredByCardEntity(cardEntity.getValue());
+						}
 					}
 				}));
 	}
@@ -215,15 +233,44 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	}
 
 	/**
-	 * Setter to inject a Profile value
+	 * Filters the content of the RelationField FieldGroup by the value of the RelationField CardEntity
+	 * 
+	 * @param cardEntity the value of the RelationField CardEntity
+	 */
+	public void getFieldGroupFilteredByCardEntity(CardEntityProxy pCardEntity) {
+
+		if (pCardEntity != null) {
+			if (!hideButtons)
+				fieldGroup.hideButtons(false);
+			fieldGroupDataProvider.setFilterCriteria(pCardEntity.getId(), "entity.id");
+		} else {
+			fieldGroup.hideButtons(true);
+			fieldGroupDataProvider.setFilterCriteria(null);
+		}
+	}
+
+	public void setDeleteClickHandler(ClickHandler handler) {
+		// registrations.add(clearImage.addClickHandler(handler));
+		clearImage.addClickHandler(handler);
+	}
+
+	/**
+	 * Setter to inject a CardEntity value
 	 * 
 	 * @param value the value to be injected into the editor
 	 * @param isLocked true if relation field shall be locked (non editable)
 	 */
-	public void setProfile(ProfileProxy value, boolean isLocked) {
-		profile.setLocked(isLocked);
-		profile.setValue(value);
+	public void setCardEntity(CardEntityProxy value, boolean isLocked) {
+		cardEntity.setLocked(isLocked);
+		cardEntity.setValue(value);
 
+		// Field FieldGroup depends on the value of field cardEntity
+		getFieldGroupFilteredByCardEntity(value);
+	}
+
+	/** Widget update for field cardEntity */
+	private void clearCardEntityWidget() {
+		cardEntity.clear();
 	}
 
 	/**
@@ -238,31 +285,36 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 
 	}
 
+	/** Widget update for field fieldGroup */
+	private void clearFieldGroupWidget() {
+		fieldGroup.clear();
+	}
+
 	/**
 	 * Configures the handlers of the widgets that manage relation fields
 	 */
 	private void setRelationHandlers() {
 
-		/* 'Information' button for field Profile */
-		profile.setViewClickHandler(new ClickHandler() {
+		/* 'Information' button for field CardEntity */
+		cardEntity.setViewClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (profile.getValue() != null) {
+				if (cardEntity.getValue() != null) {
 					RelationPopupPanel relationPopup = new RelationPopupPanel();
-					ProfileFormPanel form = new ProfileFormPanel(requestFactory, profile.getValue().getId(),
-							relationPopup, "profile");
+					CardEntityFormPanel form = new CardEntityFormPanel(requestFactory, cardEntity.getValue().getId(),
+							relationPopup, "cardEntity");
 					relationPopup.addWidget(form);
 					relationPopup.show();
 				}
 			}
 		});
 
-		/* 'Add' button for field Profile */
-		profile.setAddClickHandler(new ClickHandler() {
+		/* 'Add' button for field CardEntity */
+		cardEntity.setAddClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				RelationPopupPanel relationPopup = new RelationPopupPanel();
-				ProfileFormPanel form = new ProfileFormPanel(requestFactory, null, relationPopup, "profile");
+				CardEntityFormPanel form = new CardEntityFormPanel(requestFactory, null, relationPopup, "cardEntity");
 				/* common fields */
 
 				relationPopup.addWidget(form);
@@ -270,18 +322,18 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 			}
 		});
 
-		/* SaveEvent handler when a Profile is created or updated from the relation field Profile */
-		registrations.add(requestFactory.getEventBus().addHandler(SaveProfileEvent.TYPE,
-				new SaveProfileEvent.Handler() {
+		/* SaveEvent handler when a CardEntity is created or updated from the relation field CardEntity */
+		registrations.add(requestFactory.getEventBus().addHandler(SaveCardEntityEvent.TYPE,
+				new SaveCardEntityEvent.Handler() {
 					@Override
-					public void saveProfile(ProfileProxy value) {
-						profile.setValue(value);
+					public void saveCardEntity(CardEntityProxy value) {
+						cardEntity.setValue(value);
 					}
 
 					@Override
-					public void saveProfile(ProfileProxy value, String initField) {
-						if (initField.equals("profile"))
-							profile.setValue(value, true);
+					public void saveCardEntity(CardEntityProxy value, String initField) {
+						if (initField.equals("cardEntity"))
+							cardEntity.setValue(value, true);
 					}
 				}));
 
@@ -329,24 +381,20 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 
 	}
 
-	/**
-	 * Gets the FieldGroupProfileProxy that is edited in the Workflow Not used by the editor Temporary storage used to
-	 * transmit the proxy to related entities
-	 * 
-	 * @return
-	 */
-	public FieldGroupProfileProxy getEditedValue() {
-		return editedValue;
+	public void setIndex(int newIndex) {
+		this.index = newIndex;
 	}
 
-	/**
-	 * Sets the FieldGroupProfileProxy that is edited in the Workflow Not used by the editor Temporary storage used to
-	 * transmit the proxy to related entities
-	 * 
-	 * @param editedValue
-	 */
-	public void setEditedValue(FieldGroupProfileProxy editedValue) {
-		this.editedValue = editedValue;
+	public int getIndex() {
+		return index;
+	}
+
+	public boolean isNewProxy() {
+		return isNewProxy;
+	}
+
+	public void setNewProxy(boolean isNewProxy) {
+		this.isNewProxy = isNewProxy;
 	}
 
 	/**
@@ -354,35 +402,12 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	 */
 	public void validateFields() {
 
-		// profile is a required field
-		if (profile.getValue() == null)
-			delegate.recordError(BaseNLS.messages().error_required(), null, "profile");
+		// cardEntity is a required field
+		if (cardEntity.getValue() == null)
+			delegate.recordError(BaseNLS.messages().error_required(), null, "cardEntity");
 		// fieldGroup is a required field
 		if (fieldGroup.getValue() == null)
 			delegate.recordError(BaseNLS.messages().error_required(), null, "fieldGroup");
-	}
-
-	/**
-	 */
-	private void setAllLabelWith(String width) {
-
-		/* Description field group */
-		profile.setLabelWidth(width);
-		fieldGroup.setLabelWidth(width);
-		read.setLabelWidth(width);
-		write.setLabelWidth(width);
-		export.setLabelWidth(width);
-
-	}
-
-	/**
-	 */
-	private void setAllBoxWith(String width) {
-
-		/* Description field group */
-		profile.setBoxWidth(width);
-		fieldGroup.setBoxWidth(width);
-
 	}
 
 	@Override
@@ -394,7 +419,7 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 	public void showErrors(List<EditorError> errors) {
 		if (errors != null && errors.size() > 0) {
 
-			List<EditorError> profileFieldErrors = new ArrayList<EditorError>();
+			List<EditorError> cardEntityFieldErrors = new ArrayList<EditorError>();
 			List<EditorError> fieldGroupFieldErrors = new ArrayList<EditorError>();
 
 			for (EditorError error : errors) {
@@ -402,15 +427,14 @@ public class FieldGroupProfileEditor extends Composite implements Editor<FieldGr
 				if (userData != null && userData instanceof String) {
 					String field = (String) userData;
 
-					if (field.equals("profile"))
-						profileFieldErrors.add(error);
+					if (field.equals("cardEntity"))
+						cardEntityFieldErrors.add(error);
 					if (field.equals("fieldGroup"))
 						fieldGroupFieldErrors.add(error);
-
 				}
 			}
-			if (profileFieldErrors.size() > 0)
-				profile.showErrors(profileFieldErrors);
+			if (cardEntityFieldErrors.size() > 0)
+				cardEntity.showErrors(cardEntityFieldErrors);
 			if (fieldGroupFieldErrors.size() > 0)
 				fieldGroup.showErrors(fieldGroupFieldErrors);
 		}
