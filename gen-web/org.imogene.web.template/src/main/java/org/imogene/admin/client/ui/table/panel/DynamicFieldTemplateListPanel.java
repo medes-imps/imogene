@@ -10,7 +10,6 @@ import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.css.ImogResources;
 import org.imogene.web.client.dynamicfields.i18n.DynFieldsNLS;
 import org.imogene.web.client.dynamicfields.ui.field.FormTypeUtil;
-import org.imogene.web.client.event.GoHomeEvent;
 import org.imogene.web.client.event.IsTableFilteredEvent;
 import org.imogene.web.client.event.SelectMenuItemEvent;
 import org.imogene.web.client.i18n.BaseNLS;
@@ -20,6 +19,7 @@ import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -28,6 +28,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,6 +37,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * Panel that contains the DynamicField_Template Dynatable
+ * 
  * @author Medes-IMPS
  */
 public class DynamicFieldTemplateListPanel extends Composite {
@@ -61,11 +63,12 @@ public class DynamicFieldTemplateListPanel extends Composite {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param requestFactory
 	 * @param searchText text that will be used to filter the table entries
 	 */
-	public DynamicFieldTemplateListPanel(
-			AdminRequestFactory requestFactory, String searchText, FormTypeUtil formTypeUtil) {
+	public DynamicFieldTemplateListPanel(AdminRequestFactory requestFactory, String searchText,
+			FormTypeUtil formTypeUtil) {
 
 		this.requestFactory = requestFactory;
 		imogResources = GWT.create(ImogResources.class);
@@ -92,6 +95,7 @@ public class DynamicFieldTemplateListPanel extends Composite {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param requestFactory
 	 */
 	public DynamicFieldTemplateListPanel(AdminRequestFactory requestFactory, FormTypeUtil formTypeUtil) {
@@ -99,22 +103,21 @@ public class DynamicFieldTemplateListPanel extends Composite {
 	}
 
 	/**
-	 * Configures the Data provider that enables to get the data to feed the table that lists DynamicField_Template entries
+	 * Configures the Data provider that enables to get the data to feed the table that lists DynamicField_Template
+	 * entries
+	 * 
 	 * @param provider
 	 * @param searchText
 	 * @return
 	 */
-	private String configureDataProvider(
-			DynamicFieldTemplateDataProvider provider, String searchText) {
+	private String configureDataProvider(DynamicFieldTemplateDataProvider provider, String searchText) {
 
 		String filteringMessage = null;
 		if (searchText != null) {
 			filteringMessage = provider.fullTextSearch(searchText);
-			LocalSession.get().setSearchCriterions(
-					provider.getSearchCriterions(), filteringMessage);
+			LocalSession.get().setSearchCriterions(provider.getSearchCriterions(), filteringMessage);
 		} else {
-			ImogJunctionProxy searchCriterions = LocalSession.get()
-					.getSearchCriterions();
+			ImogJunctionProxy searchCriterions = LocalSession.get().getSearchCriterions();
 			if (searchCriterions != null) {
 				provider.setSearchCriterions(searchCriterions);
 				filteringMessage = LocalSession.get().getFilteringMessage();
@@ -124,7 +127,9 @@ public class DynamicFieldTemplateListPanel extends Composite {
 	}
 
 	/**
-	 * Configures the Wrapper panel to manage the actions that are related to the table that lists DynamicField_Template entries
+	 * Configures the Wrapper panel to manage the actions that are related to the table that lists DynamicField_Template
+	 * entries
+	 * 
 	 * @param eventBus
 	 * @param listComposite
 	 */
@@ -153,6 +158,7 @@ public class DynamicFieldTemplateListPanel extends Composite {
 
 	/**
 	 * Adds a Filter button that enables to filter the table entries to the wrapper panel
+	 * 
 	 * @param eventBus
 	 */
 	private void setFilterButton(ImogFilterPanel filterPanel) {
@@ -166,6 +172,7 @@ public class DynamicFieldTemplateListPanel extends Composite {
 
 	/**
 	 * Adds create and export buttons to the wrapper panel
+	 * 
 	 * @param createCommand
 	 * @param exportButton
 	 * @param eventBus
@@ -177,8 +184,8 @@ public class DynamicFieldTemplateListPanel extends Composite {
 			plusButton = new PopupButton(BaseNLS.constants().button_plus());
 
 			if (createCommand != null) {
-				SimpleMenuItem item = new SimpleMenuItem(requestFactory.getEventBus(), BaseNLS
-						.constants().button_create(), createCommand);
+				SimpleMenuItem item = new SimpleMenuItem(requestFactory.getEventBus(), BaseNLS.constants()
+						.button_create(), createCommand);
 				plusButton.addPopupPanelContent(item);
 			}
 
@@ -186,9 +193,9 @@ public class DynamicFieldTemplateListPanel extends Composite {
 		}
 	}
 
-
 	/**
 	 * Adds a button that enables to go the the Home panel
+	 * 
 	 * @param eventBus
 	 * @return
 	 */
@@ -210,38 +217,35 @@ public class DynamicFieldTemplateListPanel extends Composite {
 
 		// Handler for filterButton
 		if (filterButton != null) {
-			registrations.add(eventBus.addHandler(IsTableFilteredEvent.TYPE,
-					new IsTableFilteredEvent.Handler() {
-						@Override
-						public void noticeFilteringChange(Boolean isFiltered,
-								String message) {
-							if (isFiltered) {
-								filterButton.setButtonActivatedStyle();
-								wrapperPanel.setMessageLabel(message);
-							} else {
-								filterButton.removeButtonActivatedStyle();
-								wrapperPanel.clearMessageLabel();
-							}
-						}
-					}));
+			registrations.add(eventBus.addHandler(IsTableFilteredEvent.TYPE, new IsTableFilteredEvent.Handler() {
+				@Override
+				public void noticeFilteringChange(Boolean isFiltered, String message) {
+					if (isFiltered) {
+						filterButton.setButtonActivatedStyle();
+						wrapperPanel.setMessageLabel(message);
+					} else {
+						filterButton.removeButtonActivatedStyle();
+						wrapperPanel.clearMessageLabel();
+					}
+				}
+			}));
 		}
 
 		// Handler for plusButton
 		if (plusButton != null) {
-			registrations.add(eventBus.addHandler(SelectMenuItemEvent.TYPE,
-					new SelectMenuItemEvent.Handler() {
-						@Override
-						public void selectMenuItem(SimpleMenuItem menuItem) {
-							plusButton.hidePopup();
-						}
-					}));
+			registrations.add(eventBus.addHandler(SelectMenuItemEvent.TYPE, new SelectMenuItemEvent.Handler() {
+				@Override
+				public void selectMenuItem(SimpleMenuItem menuItem) {
+					plusButton.hidePopup();
+				}
+			}));
 		}
 
-		// Handler for goHomeButton	
+		// Handler for goHomeButton
 		if (goHomeButton != null) {
 			registrations.add(goHomeButton.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new GoHomeEvent());
+					History.newItem(TokenHelper.TK_CLASSIC, true);
 				}
 			}));
 		}

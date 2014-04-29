@@ -8,7 +8,6 @@ import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.table.FieldGroupDynaTable;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.css.ImogResources;
-import org.imogene.web.client.event.GoHomeEvent;
 import org.imogene.web.client.event.IsTableFilteredEvent;
 import org.imogene.web.client.event.SelectMenuItemEvent;
 import org.imogene.web.client.i18n.BaseNLS;
@@ -18,6 +17,7 @@ import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.client.util.ProfileUtil;
+import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
 import com.google.gwt.core.client.GWT;
@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -265,7 +266,7 @@ public class FieldGroupListPanel extends Composite {
 		if (goHomeButton != null) {
 			registrations.add(goHomeButton.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new GoHomeEvent());
+					History.newItem(TokenHelper.TK_CLASSIC, true);
 				}
 			}));
 		}
