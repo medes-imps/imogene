@@ -30,16 +30,16 @@
 			<imo1:ImogSingleRelationBox ui:field="entity" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="create" />
+			<imo:ImogCheckBox ui:field="create" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="delete" />
+			<imo:ImogCheckBox ui:field="delete" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="directAccess" />
+			<imo:ImogCheckBox ui:field="directAccess" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="export" />
+			<imo:ImogCheckBox ui:field="export" />
 		</g:cell>
 	
 		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">

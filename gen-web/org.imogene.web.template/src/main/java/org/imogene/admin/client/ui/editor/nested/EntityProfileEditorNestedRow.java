@@ -11,6 +11,7 @@ import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.field.ImogBooleanBox;
+import org.imogene.web.client.ui.field.ImogCheckBox;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
@@ -60,13 +61,13 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 	@UiField(provided = true)
 	ImogSingleRelationBox<CardEntityProxy> entity;
 	@UiField
-	ImogBooleanBox create;
+	ImogCheckBox create;
 	@UiField
-	ImogBooleanBox delete;
+	ImogCheckBox delete;
 	@UiField
-	ImogBooleanBox directAccess;
+	ImogCheckBox directAccess;
 	@UiField
-	ImogBooleanBox export;
+	ImogCheckBox export;
 
 	/**
 	 * Constructor

@@ -33,13 +33,13 @@
 			<imo1:ImogSingleRelationBox ui:field="fieldGroup" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="read" />
+			<imo:ImogCheckBox ui:field="read" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="write" />
+			<imo:ImogCheckBox ui:field="write" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
-			<imo:ImogBooleanBox ui:field="export" />
+			<imo:ImogCheckBox ui:field="export" />
 		</g:cell>
 	
 		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">

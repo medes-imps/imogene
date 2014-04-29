@@ -13,7 +13,7 @@ import org.imogene.admin.client.ui.workflow.panel.FieldGroupFormPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.i18n.BaseNLS;
-import org.imogene.web.client.ui.field.ImogBooleanBox;
+import org.imogene.web.client.ui.field.ImogCheckBox;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
@@ -67,11 +67,11 @@ public class FieldGroupProfileEditorNestedRow extends Composite implements Edito
 	ImogSingleRelationBox<FieldGroupProxy> fieldGroup;
 	private FieldGroupDataProvider fieldGroupDataProvider;
 	@UiField
-	ImogBooleanBox read;
+	ImogCheckBox read;
 	@UiField
-	ImogBooleanBox write;
+	ImogCheckBox write;
 	@UiField
-	ImogBooleanBox export;
+	ImogCheckBox export;
 
 	/**
 	 * Constructor

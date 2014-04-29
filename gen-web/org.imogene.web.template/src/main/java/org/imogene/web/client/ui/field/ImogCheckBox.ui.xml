@@ -1,0 +1,24 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' 
+	xmlns:imo='urn:import:org.imogene.web.client.ui.field'
+	xmlns:imo2='urn:import:org.imogene.web.client.ui.field.error'
+	xmlns:imo3='urn:import:org.imogene.web.client.ui.field.widget'>
+
+	<ui:style>
+	</ui:style>
+
+
+	<imo:ImogFieldAbstract ui:field="fieldBox">
+		
+		<g:VerticalPanel>
+
+			<imo2:ImogErrorLabel ui:field="errorLabel" />
+			
+			<imo3:ImogBooleanAsCheckBox ui:field="checkBox"/>
+
+		</g:VerticalPanel>
+
+	</imo:ImogFieldAbstract>
+
+
+</ui:UiBinder>
