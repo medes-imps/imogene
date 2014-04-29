@@ -41,6 +41,7 @@ public class ProfileHandler {
 	private ImogBeanFilter filter;
 	private SystemUtil systemUtil;
 	private HandlerHelper handlerHelper;
+	private ProfileHelper profileHelper;
 
 	/**
 	 * Loads the entity with the specified id
@@ -62,6 +63,15 @@ public class ProfileHandler {
 	@Transactional(readOnly = true)
 	public Profile getById(String entityId) {
 		return dao.getById(entityId);
+	}
+
+	/**
+	 * Create a new profile filled with default values
+	 * 
+	 * @return the default profile
+	 */
+	public Profile createProfile() {
+		return profileHelper.createProfile();
 	}
 
 	/**
@@ -549,6 +559,15 @@ public class ProfileHandler {
 	 */
 	public void setHandlerHelper(HandlerHelper helper) {
 		this.handlerHelper = helper;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param profileHelper
+	 */
+	public void setProfileHelper(ProfileHelper profileHelper) {
+		this.profileHelper = profileHelper;
 	}
 
 	/**

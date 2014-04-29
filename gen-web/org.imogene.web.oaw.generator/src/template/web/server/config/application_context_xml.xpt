@@ -139,6 +139,13 @@
 		<property name="filter" ref="filter" />
 		<property name="systemUtil" ref="systemUtil" />
 		<property name="handlerHelper" ref="handlerHelper" />
+		<property name="profileHelper" ref="profileHelper" />
+	</bean>
+	
+	<!-- Profile Helper -->
+	<bean id="profileHelper" class="org.imogene.«projectName.toLowerCase()».server.handler.ProfileHelperImpl">
+		<property name="cardEntityDao" ref="cardEntityDaoBase" />
+		<property name="fieldGroupDao" ref="fieldGroupDaoBase" />
 	</bean>
 	
 	«IF applicationType == "admin"-»
@@ -146,7 +153,7 @@
 	<bean id="imogActorHandler" class="org.imogene.web.server.handler.ImogActorHandler">
 		<property name="dao" ref="actorDao" />
 	</bean>
-	
+
 	<!-- Notification handler -->
 	<bean id="notificationHandler" class="org.imogene.admin.server.handler.NotificationHandler">
 		<property name="dao" ref="notificationDaoBase" />

@@ -1,6 +1,5 @@
 package org.imogene.admin.client.ui.workflow;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -144,23 +143,21 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		request = requestFactory.profileRequest();
 
 		/* create a new intance of Profile */
-		ProfileProxy newProfile = request.create(ProfileProxy.class);
-		newProfile.setId(ImogKeyGenerator.generateKeyId("PRO"));
-		// create list of EntityProfile in editor
-		newProfile.setEntityProfiles(new ArrayList<EntityProfileProxy>());
-		// create list of FieldGroupProfile in editor
-		newProfile.setFieldGroupProfiles(new ArrayList<FieldGroupProfileProxy>());
+		Request<ProfileProxy> createRequest = request.createProfile();
 
-		/* push the instance to the editor */
-		current = newProfile;
-		editorDriver.edit(current, request);
-
-		/* set request context for list editor operations */
-		editor.setRequestContextForListEditors(request);
-
-		/* update field widgets in editor */
-		editor.computeVisibility(null, true);
-		editor.setEdited(true);
+		createRequest.with("entityProfiles");
+		createRequest.with("entityProfiles.entity");
+		createRequest.with("fieldGroupProfiles");
+		createRequest.with("fieldGroupProfiles.cardEntity");
+		createRequest.with("fieldGroupProfiles.fieldGroup");
+		createRequest.with("fieldGroupProfiles.fieldGroup.entity");
+		
+		createRequest.to(new Receiver<ProfileProxy>() {
+			@Override
+			public void onSuccess(ProfileProxy response) {
+				displayProfile(response, true);
+			}
+		}).fire();
 	}
 
 	/**
@@ -176,21 +173,16 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		Request<ProfileProxy> fetchRequest = request.findById(entityId);
 
 		fetchRequest.with("entityProfiles");
-
 		fetchRequest.with("entityProfiles.entity");
-
 		fetchRequest.with("fieldGroupProfiles");
-
 		fetchRequest.with("fieldGroupProfiles.cardEntity");
-
 		fetchRequest.with("fieldGroupProfiles.fieldGroup");
-
 		fetchRequest.with("fieldGroupProfiles.fieldGroup.entity");
 
 		fetchRequest.to(new Receiver<ProfileProxy>() {
 			@Override
 			public void onSuccess(ProfileProxy entity) {
-				viewProfile(entity);
+				displayProfile(entity, false);
 			}
 		}).fire();
 	}
@@ -199,40 +191,47 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 	 * Display the current instance of Profile in editor
 	 * 
 	 * @param entity the ProfileProxy to be displayed
+	 * @param editet whether we are in edition mode or not
 	 */
-	private void viewProfile(ProfileProxy entity) {
-
-		/* display instance information */
-		setTitle(AdminNLS.constants().profile_name() + ": " + AdminRenderer.get().getDisplayValue(entity));
-		setMetaData((ImogBeanProxy) entity);
-
+	private void displayProfile(ProfileProxy entity, boolean edited) {
 		/* push the instance to the editor in view mode */
 		request = requestFactory.profileRequest();
 		current = request.edit(entity);
-		List<EntityProfileProxy> entityProfiles = current.getEntityProfiles();
-		if (entityProfiles != null && entityProfiles.size() > 0) {
-			for (EntityProfileProxy item : entityProfiles) {
+		
+		if (entity.getId() != null) {
+			/* display instance information */
+			setTitle(AdminNLS.constants().profile_name() + ": " + AdminRenderer.get().getDisplayValue(entity));
+			setMetaData((ImogBeanProxy) entity);
+		} else {
+			// Has been created server side so generate ids
+			current.setId(ImogKeyGenerator.generateKeyId("PRO"));
+			List<EntityProfileProxy> entityProfiles = current.getEntityProfiles();
+			if (entityProfiles != null && entityProfiles.size() > 0) {
+				for (EntityProfileProxy item : entityProfiles) {
+					item.setId(ImogKeyGenerator.generateKeyId("PRO_ENT"));
+				}
+			}
+			List<FieldGroupProfileProxy> fieldGroupProfiles = current.getFieldGroupProfiles();
+			if (fieldGroupProfiles != null && fieldGroupProfiles.size() > 0) {
+				for (FieldGroupProfileProxy item : fieldGroupProfiles) {
+					item.setId(ImogKeyGenerator.generateKeyId("PRO_GRP"));
+				}
 			}
 		}
-		List<FieldGroupProfileProxy> fieldGroupProfiles = current.getFieldGroupProfiles();
-		if (fieldGroupProfiles != null && fieldGroupProfiles.size() > 0) {
-			for (FieldGroupProfileProxy item : fieldGroupProfiles) {
-			}
-		}
-
+		
 		editor.setEditedValue(current);
 
 		/* set request context for list editor operations */
 		editor.setRequestContextForListEditors(request);
 
 		editorDriver.edit(current, request);
-		editor.setEdited(false);
+		editor.setEdited(edited);
 
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
 
 		/* display edit button */
-		if (ProfileUtil.isAdmin())
+		if (!edited && ProfileUtil.isAdmin())
 			setModifiable(true);
 	}
 

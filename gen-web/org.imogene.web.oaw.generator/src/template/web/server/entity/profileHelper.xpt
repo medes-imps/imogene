@@ -1,0 +1,62 @@
+«IMPORT core»
+
+«DEFINE generate(String packageName, String projectName) FOR Project»
+«FILE projectName.toLowerCase()+ "/server/handler/ProfileHelperImpl.java"»
+package org.imogene.«projectName.toLowerCase()».server.handler;
+
+import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.model.CardEntityDao;
+import org.imogene.lib.common.model.FieldGroup;
+import org.imogene.lib.common.model.FieldGroupDao;
+import org.imogene.lib.common.profile.EntityProfile;
+import org.imogene.lib.common.profile.FieldGroupProfile;
+import org.imogene.lib.common.profile.Profile;
+import org.imogene.web.server.handler.ProfileHelper;
+
+public class ProfileHelperImpl implements ProfileHelper {
+
+	protected CardEntityDao cardEntityDao;
+	protected FieldGroupDao fieldGroupDao;
+
+	public void setCardEntityDao(CardEntityDao cardEntityDao) {
+		this.cardEntityDao = cardEntityDao;
+	}
+
+	public void setFieldGroupDao(FieldGroupDao fieldGroupDao) {
+		this.fieldGroupDao = fieldGroupDao;
+	}
+	
+	@Override
+	public Profile createProfile() {
+		Profile profile = new Profile();
+
+		CardEntity entity;
+		FieldGroup fieldGroup;
+		EntityProfile entityProfile;
+		FieldGroupProfile fieldGroupProfile;
+		
+		«FOREACH entities AS e-»
+		entity = cardEntityDao.load("«e.name.toLowerCase()»");
+		entityProfile = new EntityProfile();
+		entityProfile.setProfile(profile);
+		entityProfile.setEntity(entity);
+		profile.addToEntityProfiles(entityProfile);
+		
+		«FOREACH e.groups AS g-»
+		fieldGroup = fieldGroupDao.load("«e.name.toLowerCase()».«g.name.toLowerCase()»");
+		fieldGroupProfile = new FieldGroupProfile();
+		fieldGroupProfile.setCardEntity(fieldGroup.getEntity());
+		fieldGroupProfile.setFieldGroup(fieldGroup);
+		fieldGroupProfile.setProfile(profile);
+		
+		profile.addTofieldGroupProfiles(fieldGroupProfile);
+		«ENDFOREACH-»
+		«ENDFOREACH-»
+		
+		
+		return profile;
+	}
+
+}
+«ENDFILE»
+«ENDDEFINE»

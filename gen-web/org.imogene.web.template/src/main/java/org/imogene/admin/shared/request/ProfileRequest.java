@@ -69,4 +69,6 @@ public interface ProfileRequest extends ImogEntityRequest {
 	Request<Void> save(ImogBeanProxy entity, boolean isNew);
 
 	Request<Void> delete(ImogBeanProxy entity);
+
+	Request<ProfileProxy> createProfile();
 }
