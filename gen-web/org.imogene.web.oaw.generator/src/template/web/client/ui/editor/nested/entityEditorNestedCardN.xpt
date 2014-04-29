@@ -127,6 +127,7 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 		
 		«FOREACH nestedFields AS f -»
 		//«EXPAND template::CommonFieldUtil::propertyName FOR f».setLabel(NLS.constants().«name.toFirstLower()»_field_«f.name.toFirstLower()»(), HasHorizontalAlignment.ALIGN_RIGHT);
+		«IF !RelationFieldEntity.isAssignableFrom(f.metaType) || !((RelationFieldEntity) f).nestedForm-»
 		«EXPAND template::CommonFieldUtil::propertyName FOR f».setLabelWidth("0px");
 		«EXPAND template::web::client::ui::editor::entityEditor::configureFieldOptions(projectName) FOR f-»
 		«IF f.hidden==true-»
@@ -137,6 +138,7 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 		// the value of «EXPAND template::CommonFieldUtil::propertyName FOR f» affects the visibility of other fields
 		«EXPAND template::CommonFieldUtil::propertyName FOR f».notifyChanges(requestFactory.getEventBus());
 		«ENDIF -»
+		«ENDIF-»
 		«ENDFOREACH -»	
 	}	
 		

@@ -19,8 +19,7 @@ import java.util.List;
 
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.«projectName.toLowerCase()».shared.«projectName.toFirstUpper()»RequestFactory;
-import org.imogene.«projectName.toLowerCase()».shared.proxy.«entity.name.toFirstUpper()»Proxy;
-import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
+import org.imogene.«projectName.toLowerCase()».shared.proxy.*;
 import org.imogene.«projectName.toLowerCase()».shared.request.«parentGroup.parentCard.name.toFirstUpper()»Request;
 
 import org.imogene.web.client.i18n.BaseNLS;
@@ -32,6 +31,7 @@ import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Ignore;
+import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.editor.client.IsEditor;
 import com.google.gwt.editor.client.adapters.EditorSource;
 import com.google.gwt.editor.client.adapters.ListEditor;
@@ -225,10 +225,20 @@ public class «parentGroup.parentCard.name.toFirstUpper()»«name.toFirstUpper()»Li
 		if (editors != null && editors.size() > 0) {
 			for («entity.name.toFirstUpper()»EditorNestedRow subEditor : editors)
 				subEditor.validateFields();
-		}	
+		}
 	}
-
-
+	
+	/**
+	 * Dispatch show errors to nested rows 
+	 */
+	public void showErrors(List<EditorError> errors) {
+		List<«entity.name.toFirstUpper()»EditorNestedRow> editors = editor.getEditors();
+		if (editors != null && editors.size() > 0) {
+			for («entity.name.toFirstUpper()»EditorNestedRow subEditor : editors)
+				subEditor.showErrors(errors);
+		}
+	}
+	
 	/**
 	 * Internal class
 	 */
