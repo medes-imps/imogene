@@ -90,7 +90,6 @@
 	<bean id="dynamicFieldInstanceDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldInstanceDaoImpl"/>
 	
 	«IF applicationType == "admin"-»
-	<bean id="imogActorDaoBase" class="org.imogene.lib.common.dao.ImogActorImplDaoImpl"/>
 	<bean id="notificationDaoBase" class="org.imogene.lib.common.notification.NotificationDaoImpl"/>
 	«ENDIF-»
 	

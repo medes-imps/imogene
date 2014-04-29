@@ -133,7 +133,7 @@
 	</bean>
 	<bean id="profileHandler" class="org.imogene.web.server.handler.ProfileHandler">
 		<property name="dao" ref="profileDaoBase" />
-		<property name="actorProfilesDao" ref="imogActorDaoBase" />
+		<property name="actorProfilesDao" ref="actorDao" />
 		<property name="entityProfileDao" ref="entityProfileDaoBase" />
 		<property name="fieldGroupProfileDao" ref="fieldGroupProfileDaoBase" />
 		<property name="filter" ref="filter" />
@@ -144,7 +144,7 @@
 	«IF applicationType == "admin"-»
 	<!-- ImogActor handler -->
 	<bean id="imogActorHandler" class="org.imogene.web.server.handler.ImogActorHandler">
-		<property name="dao" ref="imogActorDaoBase" />
+		<property name="dao" ref="actorDao" />
 	</bean>
 	
 	<!-- Notification handler -->
