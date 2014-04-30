@@ -29,13 +29,11 @@ public class Profile extends ImogBeanImpl {
 
 	private String name;
 
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-			CascadeType.DETACH })
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "entityProfilesProfile_id")
 	private List<EntityProfile> entityProfiles;
 
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-			CascadeType.DETACH })
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = false, cascade = CascadeType.ALL)
 	@JoinColumn(name = "fieldGroupProfilesProfile_id")
 	private List<FieldGroupProfile> fieldGroupProfiles;
 
