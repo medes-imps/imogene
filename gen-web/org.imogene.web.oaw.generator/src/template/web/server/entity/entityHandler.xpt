@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
-import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.«projectName.toLowerCase()».domain.dao.*;
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
@@ -24,7 +24,6 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.SystemUtil;
 import org.imogene.web.server.handler.HandlerHelper;
 «IF isBinaryFieldPresent(this.groups.fields) -»
 import org.imogene.lib.common.binary.Binary;
@@ -36,13 +35,10 @@ import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
 import org.imogene.web.server.handler.DynamicFieldInstanceHandler;
 import org.imogene.web.server.handler.DynamicFieldTemplateHandler;
 «ENDIF-»
-«EXPAND importsForFilterFields(projectName) FOR this -»
-«EXPAND importsForRelation(projectName) FOREACH groups.fields-»
-«EXPAND importForeignKeyCardReference(this,projectName) FOREACH ((Project) eContainer).entities.groups.fields-»
-import org.springframework.transaction.annotation.Transactional;
 «IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 import org.imogene.admin.server.security.SecurityUtils;
 «ENDIF-»
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -65,7 +61,6 @@ public class «name.toFirstUpper()»Handler {
 	«ENDIF-»
 	
 	private ImogBeanFilter filter;
-	private SystemUtil systemUtil;
 	private HandlerHelper handlerHelper;
 	
 	/**
@@ -128,35 +123,23 @@ public class «name.toFirstUpper()»Handler {
 			«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 			if(passwordChanged)
 				entity.setPassword(SecurityUtils.passwordHashAsBase64(entity.getPassword(), entity.getLogin()));
-			«ENDIF-»		
+			«ENDIF-»
 			
-			if(isNew) {
-				entity.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
-				entity.setCreatedBy(actor.getLogin());			
-			}
-
-			entity.setModified(new Date(systemUtil.getCurrentTimeMillis()));
-			entity.setModifiedBy(actor.getLogin());
-			entity.setModifiedFrom(systemUtil.getTerminal());
+			handlerHelper.prepare(entity);
 			
 			«IF hasDynamicFields -»
 			// manage dynamic fields
 			List<DynamicFieldInstance> dfValues = entity.getDynamicFieldValues();
 			if (dfValues != null && dfValues.size()>0) {
 				for (DynamicFieldInstance dfValue : dfValues) {
-					if(dfValue!=null) {
-						dfValue.setModified(new Date(systemUtil.getCurrentTimeMillis()));
-						dfValue.setModifiedBy(actor.getLogin());
-						dfValue.setModifiedFrom(systemUtil.getTerminal());
-						if (dfValue.getCreatedBy() == null) {
-							dfValue.setCreatedBy(actor.getLogin());
-						}
+					if(dfValue != null) {
+						handlerHelper.prepare(dfValue);
 					}
 				}
 			}
 			«ENDIF-»
 			
-			«EXPAND updateChilds FOREACH groups.fields-»
+			«EXPAND updateChilds("entity") FOREACH groups.fields-»
 			
 			«EXPAND removeFromParent FOREACH groups.fields-»	
 		
@@ -557,15 +540,6 @@ public class «name.toFirstUpper()»Handler {
 	/**
 	 * Setter for bean injection.
 	 * 
-	 * @param systemUtil
-	 */
-	public void setSystemUtil(SystemUtil systemUtil) {
-		this.systemUtil = systemUtil;
-	}
-	
-	/**
-	 * Setter for bean injection.
-	 * 
 	 * @param helper
 	 */
 	public void setHandlerHelper(HandlerHelper helper) {
@@ -627,12 +601,6 @@ public class «name.toFirstUpper()»Handler {
 «REM»-------------------- RELATION FIELDS---------------- «ENDREM»
 «REM»---------------------------------------------------- «ENDREM»
 
-«REM» Imports implied by the relation fields «ENDREM»
-«DEFINE importsForRelation(String projectName) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE importsForRelation(String projectName) FOR RelationFieldEntity»
-import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirstUpper()»;
-«ENDDEFINE»
-
 «REM» no affection possible from the reverse side of a one-to-one relation«ENDREM»
 «DEFINE removeFromParent FOR FieldEntity-»«ENDDEFINE»
 «DEFINE removeFromParent FOR ReverseRelationFieldEntity-»
@@ -643,36 +611,32 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirs
 «ENDDEFINE»
 
 «REM» «ENDREM»
-«DEFINE updateChilds FOR FieldEntity-»«ENDDEFINE»
-«DEFINE updateChilds FOR RelationFieldEntity-»
+«DEFINE updateChilds(String entityName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE updateChilds(String entityName) FOR RelationFieldEntity-»
 «IF nestedForm-»
-			// manage related «name.toFirstLower()»
+	// manage related «name.toFirstLower()»
 «IF cardinality==1-»
-			«entity.name.toFirstUpper()» «name.toFirstLower()» = entity.«EXPAND template::CommonFieldUtil::getterName FOR this»();
-			if(«name.toFirstLower()»!=null) {
-				«name.toFirstLower()».setModified(new Date(systemUtil.getCurrentTimeMillis()));
-				«name.toFirstLower()».setModifiedBy(actor.getLogin());
-				«name.toFirstLower()».setModifiedFrom(systemUtil.getTerminal());
-				if(«name.toFirstLower()».getCreatedBy()==null){
-					«name.toFirstLower()».setCreatedBy(actor.getLogin());
-				}
-				entity.«EXPAND template::CommonFieldUtil::setterName FOR this»(«name.toFirstLower()»);
-			}	
+	«entity.name.toFirstUpper()» «shortName.toLowerCase()» = «entityName».«EXPAND template::CommonFieldUtil::getterName FOR this»();
+	if(«shortName.toLowerCase()» != null) {
+		handlerHelper.prepare(«shortName.toLowerCase()»);
+		«IF entity.nestedFields != null && entity.nestedFields.size > 0-»
+			«EXPAND updateChilds(shortName.toLowerCase()) FOREACH entity.nestedFields-»
+		«ELSE-»
+			«EXPAND updateChilds(shortName.toLowerCase()) FOREACH entity.groups.fields-»
+		«ENDIF-»
+	}
 «ELSE-»
-			List<«entity.name.toFirstUpper()»> list«name.toFirstUpper()» = entity.«EXPAND template::CommonFieldUtil::getterName FOR this»();
-			if (list«name.toFirstUpper()» != null && list«name.toFirstUpper()».size()>0) {
-				for («entity.name.toFirstUpper()» item : list«name.toFirstUpper()») {
-					if (item != null) {						
-						
-						item.setModified(new Date(systemUtil.getCurrentTimeMillis()));
-						item.setModifiedBy(actor.getLogin());
-						item.setModifiedFrom(systemUtil.getTerminal());
-						if (item.getCreatedBy() == null) {
-							item.setCreatedBy(actor.getLogin());
-						}
-					}
-				}
-			}
+	List<«entity.name.toFirstUpper()»> «shortName.toLowerCase()» = «entityName».«EXPAND template::CommonFieldUtil::getterName FOR this»();
+	if («shortName.toLowerCase()» != null) {
+		for («entity.name.toFirstUpper()» «shortName.toLowerCase()»Item : «shortName.toLowerCase()») {
+			handlerHelper.prepare(«shortName.toLowerCase()»Item);
+			«IF entity.nestedFields != null && entity.nestedFields.size > 0-»
+				«EXPAND updateChilds(shortName.toLowerCase() + "Item") FOREACH entity.nestedFields-»
+			«ELSE-»
+				«EXPAND updateChilds(shortName.toLowerCase() + "Item") FOREACH entity.groups.fields-»
+			«ENDIF-»			
+		}
+	}
 «ENDIF-»	
 «ENDIF-»
 «ENDDEFINE»
@@ -681,16 +645,6 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirs
 «REM»---------------------------------------------------- «ENDREM»
 «REM»-------------------- FILTER FIELDS ----------------- «ENDREM»
 «REM»---------------------------------------------------- «ENDREM»
-
-«REM» Imports for filter fields «ENDREM»
-«DEFINE importsForFilterFields(String projectName) FOR CardEntity -»
-	«FOREACH actorFilterFields AS actorField-»
-	«IF actorField.actorField!=null-»
-	import org.imogene.«projectName.toLowerCase()».domain.entity.«actorField.actorField.parentActor.name.toFirstUpper()»;
-	import org.imogene.«projectName.toLowerCase()».domain.entity.«actorField.entityField.entity.name.toFirstUpper()»;
-	«ENDIF-»
-	«ENDFOREACH-»
-«ENDDEFINE»
 
 «REM» Filter field handling «ENDREM»
 «DEFINE handleFilterField(String entityName) FOR ActorFilter -»
@@ -721,21 +675,6 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«entity.name.toFirs
 «REM» ------------------------------     DELETE FOREIGN KEYS      ----------------------- «ENDREM»
 «REM» ----------------------------------------------------------------------------------- «ENDREM»
 
-
-«REM» ------------------------------------------ 
-      Imports classes for foreign key deletion
-«REM» ------------------------------------------------«ENDREM»
-«DEFINE importForeignKeyCardReference(CardEntity cardEntity, String projectName) FOR FieldEntity-»«ENDDEFINE»
-«DEFINE importForeignKeyCardReference(CardEntity cardEntity, String projectName) FOR RelationFieldEntity-»
-«IF cardEntity.name==this.entity.name -»	
-	«IF (this.cardinality == 1 && !(ReverseRelationFieldEntity.isAssignableFrom(this.metaType) && (getOppositeCardinality(this) == 1)))
-	|| (this.cardinality != 1 && (getOppositeCardinality(this) != 1))-»	
-import org.imogene.«projectName.toLowerCase()».domain.entity.«this.parentGroup.parentCard.name.toFirstUpper()»;
-import org.imogene.«projectName.toLowerCase()».domain.dao.«this.parentGroup.parentCard.name.toFirstUpper()»Dao;
-     «ENDIF -»
-«ENDIF -»
-«ENDDEFINE»
-«REM» ------------------------------------------ «ENDREM»
 
 «REM» ------------------------------------------ 
       Declare DAO for foreign key deletion

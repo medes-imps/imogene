@@ -24,11 +24,15 @@
 		<class>org.imogene.lib.common.profile.Profile</class>
 		<class>org.imogene.lib.common.user.DefaultUser</class>
 		<class>org.imogene.lib.common.useraction.UserAction</class>
+		«IF embedded != "true"-»
+		<class>org.imogene.lib.sync.history.SyncHistory</class>
+		<class>org.imogene.lib.sync.session.SyncSession</class>
+		«ENDIF-»
 		«FOREACH entities AS e-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»</class>
 		«IF embedded != "true"-»
 		<class>org.imogene.«projectName.toLowerCase()».domain.entity.backup.«e.name.toFirstUpper()»Bck</class>
-		«ENDIF»
+		«ENDIF-»
 		«ENDFOREACH-»
 	</persistence-unit>
 </persistence>

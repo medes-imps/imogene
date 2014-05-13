@@ -86,19 +86,19 @@
 	<bean id="actorDao" class="org.imogene.lib.common.dao.ImogActorImplDaoImpl" />
 	
 	<!-- Dynamic fields dao -->
-	<bean id="dynamicFieldTemplateDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDaoImpl"/>
-	<bean id="dynamicFieldInstanceDaoBase" class="org.imogene.lib.common.dynamicfields.DynamicFieldInstanceDaoImpl"/>
+	<bean id="dynamicFieldTemplateDao" class="org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDaoImpl"/>
+	<bean id="dynamicFieldInstanceDao" class="org.imogene.lib.common.dynamicfields.DynamicFieldInstanceDaoImpl"/>
 	
 	«IF applicationType == "admin"-»
-	<bean id="notificationDaoBase" class="org.imogene.lib.common.notification.NotificationDaoImpl"/>
+	<bean id="notificationDao" class="org.imogene.lib.common.notification.NotificationDaoImpl"/>
 	«ENDIF-»
 	
 	<!-- Profile daos -->
-	<bean id="cardEntityDaoBase" class="org.imogene.lib.common.model.CardEntityDaoImpl"/>
-	<bean id="fieldGroupDaoBase" class="org.imogene.lib.common.model.FieldGroupDaoImpl"/>
-	<bean id="entityProfileDaoBase" class="org.imogene.lib.common.profile.EntityProfileDaoImpl"/>
-	<bean id="fieldGroupProfileDaoBase" class="org.imogene.lib.common.profile.FieldGroupProfileDaoImpl"/>
-	<bean id="profileDaoBase" class="org.imogene.lib.common.profile.ProfileDaoImpl"/>
+	<bean id="cardEntityDao" class="org.imogene.lib.common.model.CardEntityDaoImpl"/>
+	<bean id="fieldGroupDao" class="org.imogene.lib.common.model.FieldGroupDaoImpl"/>
+	<bean id="entityProfileDao" class="org.imogene.lib.common.profile.EntityProfileDaoImpl"/>
+	<bean id="fieldGroupProfileDao" class="org.imogene.lib.common.profile.FieldGroupProfileDaoImpl"/>
+	<bean id="profileDao" class="org.imogene.lib.common.profile.ProfileDaoImpl"/>
 	
 	<!-- Entity Daos -->
 	«FOREACH entities AS e -»

@@ -1,11 +1,16 @@
 package org.imogene.web.server.handler;
 
+import java.util.Date;
+
+import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.CardEntity;
 import org.imogene.lib.common.model.FieldGroup;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
+import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.SystemUtil;
 
 public class BasicHandlerHelper implements HandlerHelper {
 
@@ -14,6 +19,8 @@ public class BasicHandlerHelper implements HandlerHelper {
 	private FieldGroupProfileHandler fieldGroupProfileHandler;
 	private CardEntityHandler cardEntityHandler;
 	private FieldGroupHandler fieldGroupHandler;
+
+	private SystemUtil systemUtil;
 
 	@Override
 	public void delete(ImogBean bean) {
@@ -42,6 +49,20 @@ public class BasicHandlerHelper implements HandlerHelper {
 			cardEntityHandler.save((CardEntity) bean, isNew);
 		} else if (bean instanceof FieldGroup) {
 			fieldGroupHandler.save((FieldGroup) bean, isNew);
+		}
+	}
+
+	@Override
+	public void prepare(ImogBean bean) {
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
+		bean.setModified(new Date(systemUtil.getCurrentTimeMillis()));
+		bean.setModifiedBy(actor.getLogin());
+		bean.setModifiedFrom(systemUtil.getTerminal());
+		if (bean.getCreatedBy() == null) {
+			bean.setCreatedBy(actor.getLogin());
+		}
+		if (bean.getCreated() == null) {
+			bean.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
 		}
 	}
 
@@ -88,5 +109,14 @@ public class BasicHandlerHelper implements HandlerHelper {
 	 */
 	public void setFieldGroupHandler(FieldGroupHandler handler) {
 		this.fieldGroupHandler = handler;
+	}
+
+	/**
+	 * Setter for bean injection.
+	 * 
+	 * @param systemUtil
+	 */
+	public void setSystemUtil(SystemUtil systemUtil) {
+		this.systemUtil = systemUtil;
 	}
 }
