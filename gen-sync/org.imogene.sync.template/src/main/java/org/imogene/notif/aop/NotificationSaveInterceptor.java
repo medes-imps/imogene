@@ -76,8 +76,9 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 		else
 			typeAction = UserActionConstants.USERACTION_TYPE_UPDATE;
 
-		if (!bean.getCreatedBy().equals(SyncConstants.SYNC_ID_SYS))
+		if (!SyncConstants.SYNC_ID_SYS.equals(bean.getCreatedBy())) {
 			saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
+		}
 
 		try {
 			cloneEntity(bean);
@@ -101,7 +102,9 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 			String typeFormulaire = bean.getClass().getSimpleName();
 			String typeAction = UserActionConstants.USERACTION_TYPE_READ;
 
-			saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
+			if (!SyncConstants.SYNC_ID_SYS.equals(bean.getCreatedBy())) {
+				saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
+			}
 		}
 	}
 
@@ -116,7 +119,9 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 		String typeFormulaire = bean.getClass().getSimpleName();
 		String typeAction = UserActionConstants.USERACTION_TYPE_DELETE;
 
-		saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
+		if (!SyncConstants.SYNC_ID_SYS.equals(bean.getCreatedBy())) {
+			saveAction(typeAction, typeFormulaire, idFormulaire, getActor(bean.getCreatedBy()));
+		}
 	}
 
 	private void cloneEntity(Object source) {
