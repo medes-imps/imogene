@@ -26,8 +26,10 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::entity::entity::generate("${modelName}", "${embedded}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- JPA entities Bck -->
@@ -35,8 +37,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::entity::entityBck::generate("${modelName}", "${embedded}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- SPECIFIC - entity cloner  -->
@@ -44,8 +47,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::entity::entityCloner::generate("${modelName}", "${embedded}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- SPECIFIC - Clone factory -->
@@ -53,8 +57,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::entity::cloneFactory::generate("${modelName}", "${embedded}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- DAO interfaces -->
@@ -62,8 +67,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::dao::entityDao::generate("${modelName}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />		
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>		
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component> -->
 	
 	<!-- DAO JPA implementations -->
@@ -71,8 +77,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::dao::entityDaoImpl::generate("${modelName}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component> -->
 	
 	<!-- Localized Texts -->
@@ -80,8 +87,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::domain::entity::localizedText::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 </workflow>

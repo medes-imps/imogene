@@ -34,8 +34,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::sync::config::persistence_xml::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/resources/META-INF/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/src/main/resources/META-INF/'>
+			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- spring application-context -->
@@ -45,8 +46,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::application_context_xml::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />	
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />	
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
+			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
+		</outlet>
 	</component>
 
 	<!-- spring dao-context -->
@@ -56,8 +58,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::dao_context_xml::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />	
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />	
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
+			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- spring aop-context -->
@@ -67,8 +70,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::aop_context_xml::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />	
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />	
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
+			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- spring xml converter-context -->
@@ -78,8 +82,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::converter_context_xml::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />	
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />	
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
+			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
+		</outlet>
 	</component>
 
     <!-- web.xml for synchro servlet -->
@@ -89,8 +94,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::web_xml::generate("${projectName}") FOR project'/>
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />	
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>
+			<!-- <postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/> -->
+		</outlet>	
 	</component>
 	
 	<!-- application-servlet.xml -->
@@ -100,8 +106,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::servlet_xml::generate("${projectName}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>
+			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
+		</outlet>
 	</component>	
 	
 	<!-- jdbc.properties -->
@@ -111,7 +118,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::jdbc_properties::generate("${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}","${audioConverter}") FOR project' />
-		<genPath value="${home-gen}/src/main/webapp/WEB-INF" />		
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF' />
 	</component>
 	
 	<!-- ======================================================================================================================== -->
@@ -125,8 +132,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::entity::entityHelperImpl::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entity Data Handler interface -->
@@ -136,8 +144,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::entity::entityHandler::generate("${modelName}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entity Data Handler implementation -->
@@ -147,8 +156,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::entity::entityHandlerImpl::generate("${modelName}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src/main/java" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Data Handler manager implementation -->
@@ -158,8 +168,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::entity::dataHandlerImpl::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>	
 	
 	<!-- ======================================================================================================================== -->
@@ -171,8 +182,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::sync::security::userAccessControl::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}' >
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 
 	<!-- Security policy -->
@@ -180,8 +192,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::sync::security::accessPolicy::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}' >
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 
 	<!-- Security policy factory -->
@@ -189,8 +202,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::sync::security::accessPolicyFactory::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}' >
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 
 	<!-- Default policy -->
@@ -200,8 +214,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::security::beanFilter::generate("${modelName}") FOR project'/>
-		<genPath value="${home-gen}/src/main/java/${packagePath}" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/${packagePath}' >
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 </workflow>

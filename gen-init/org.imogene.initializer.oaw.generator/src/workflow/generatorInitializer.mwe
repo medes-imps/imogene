@@ -30,8 +30,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::initializer::generate("${modelName}", "${ADMINPASSWORD}", "${packageName}") FOR project' />
-		<genPath value="${home-gen}/src/main/java/org/imogene/initializer" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src/main/java/org/imogene/initializer' >
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- AddEnumerationTables SQL script -->
@@ -39,6 +40,6 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::enumerationValuesTable_sql::generate("${modelName}") FOR project' />
-		<genPath value="${home-gen}/sql" />
+		<outlet path='${home-gen}/sql' />
 	</component>
 </workflow>
