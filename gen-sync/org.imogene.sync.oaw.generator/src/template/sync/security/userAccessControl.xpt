@@ -7,6 +7,8 @@ package org.imogene.«projectName.toLowerCase()».security;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
+import org.imogene.«projectName.toLowerCase()».handler.*;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.user.DefaultUser;
 import org.imogene.lib.sync.handler.DefaultUserHandler;
@@ -14,10 +16,6 @@ import org.imogene.lib.sync.security.UserAccessControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
-«FOREACH entities AS e-»
-import org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»Handler;
-«ENDFOREACH-»
 
 /**
  * Class to manage the application user access

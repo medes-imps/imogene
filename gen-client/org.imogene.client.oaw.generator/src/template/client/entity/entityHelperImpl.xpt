@@ -15,7 +15,7 @@ import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.binary.file.BinaryFileHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 
 /**
  * «name» Bean Implementation

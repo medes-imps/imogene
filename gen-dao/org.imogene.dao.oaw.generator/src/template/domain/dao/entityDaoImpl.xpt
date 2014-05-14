@@ -11,8 +11,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 import org.imogene.lib.common.dao.«IF Actor.isAssignableFrom(this.metaType)»ImogActorDaoImpl«ELSE»ImogBeanDaoImpl«ENDIF»;
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR eContainer-»
 
 /**
  * Manage persistence for «name.toFirstUpper()»

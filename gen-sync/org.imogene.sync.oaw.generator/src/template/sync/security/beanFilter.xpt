@@ -8,13 +8,13 @@ package org.imogene.«projectName.toLowerCase()».security;
 import java.util.List;
 import java.util.Vector;
 
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 import org.imogene.lib.common.dao.GenericDao;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.lib.sync.server.util.HttpSessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
 
 /**
  * Class to filter beans so that only 

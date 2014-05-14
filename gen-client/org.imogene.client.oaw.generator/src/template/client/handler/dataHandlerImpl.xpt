@@ -4,7 +4,7 @@
 «FILE "org/imogene/" + projectName.toLowerCase() + "/handler/DataHandlerManagerImpl.java"»
 package org.imogene.«projectName.toLowerCase()».handler;
 
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR this-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;

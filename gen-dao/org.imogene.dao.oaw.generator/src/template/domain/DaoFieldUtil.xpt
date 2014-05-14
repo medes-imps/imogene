@@ -64,25 +64,3 @@ public void «EXPAND template::CommonFieldUtil::setterNameForPropertyWithLowerUpp
 }
 «ENDDEFINE»
 
-
-«DEFINE importEntity(String projectName) FOR emf::EObject-»«ENDDEFINE»
-
-«DEFINE importEntity(String projectName) FOR Project-»
-«EXPAND importEntity(projectName) FOREACH entities-»
-«ENDDEFINE»
-
-«DEFINE importEntity(String projectName) FOR CardEntity-»
-import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
-«ENDDEFINE»
-
-
-
-«DEFINE importDao(String projectName) FOR emf::EObject»«ENDDEFINE»
-
-«DEFINE importDao(String projectName) FOR Project»
-«EXPAND importDao(projectName) FOREACH entities-»
-«ENDDEFINE»
-
-«DEFINE importDao(String projectName) FOR CardEntity-»
-import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
-«ENDDEFINE»

@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
@@ -25,8 +27,6 @@ import org.imogene.lib.sync.handler.ImogActorHandlerImpl;
 import org.imogene.lib.sync.handler.ImogBeanHandlerImpl;
 import org.imogene.lib.sync.server.clientfilter.ClientFilterUtil;
 import org.imogene.sync.FilterFieldsHelper;
-«EXPAND template::domain::DaoFieldUtil::importDao(projectName) FOR this-»
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR eContainer-»
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

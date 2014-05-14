@@ -16,8 +16,8 @@ import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.ImogActorHandlerImpl;
 import org.imogene.lib.sync.handler.ImogBeanHandlerImpl;
-«EXPAND template::domain::DaoFieldUtil::importDao(projectName) FOR this-»
-«EXPAND template::domain::DaoFieldUtil::importEntity(projectName) FOR eContainer-»
+import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
