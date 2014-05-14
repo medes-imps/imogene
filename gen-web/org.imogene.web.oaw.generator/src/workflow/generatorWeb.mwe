@@ -76,9 +76,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::editor::entityEditor_xml::generate("${packageName}","${modelName}","${applicationType}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	
 	<!-- GWT ListEditors  -->
@@ -95,9 +93,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::editor::nested::entityFieldListEditor_xml::generate("${packageName}","${modelName}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>				
 
 	<!-- GWT Editor nested card N -->
@@ -114,9 +110,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::editor::nested::entityEditorNestedCardN_xml::generate("${packageName}","${modelName}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	
 	<!-- GWT Editor nested card 1 -->
@@ -133,9 +127,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::editor::nested::entityEditorNestedCard1_xml::generate("${packageName}","${modelName}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>				
 	
 	
@@ -163,9 +155,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::editor::entityEditorWorkflowPanel_xml::generate("${packageName}","${modelName}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>	
 	
 	<!-- GWT table  -->
@@ -192,9 +182,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::table::entityListPanel_xml::generate("${packageName}","${modelName}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>		
 	
 	<!-- GWT dataprovider  -->
@@ -222,9 +210,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::module::module_xml::generate("${packageName}","${modelName}", "${projectName}","${navigators}","${applicationType}") FOR project' />
-		<outlet path='${home-gen}/src/main/resources/${packagePath}' >
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/resources/${packagePath}'/>
 	</component>	
 	
 	<!-- GWT entry point -->
@@ -241,9 +227,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::module::entryPoint_xml::generate("${packageName}","${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	
 	<!-- GWT Home Panel -->
@@ -260,9 +244,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::homePanel_xml::generate("${packageName}","${modelName}","${applicationType}") FOR project' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	
 	<!-- GWT Top Banner Panel -->
@@ -279,9 +261,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::topBannerPanel_xml::generate("${packageName}","${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>	
 	
 	
@@ -299,9 +279,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::field::localizedTextBox_xml::generate("${packageName}","${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	
 	<!-- GWT LocalizedTextArea field -->
@@ -318,9 +296,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::ui::field::localizedTextAreaBox_xml::generate("${packageName}","${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	
 	<!-- Form Types -->
@@ -501,9 +477,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::web_xml::generate("${projectName}","${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'>
-			<!-- <postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/> -->
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
 	<!-- spring application context -->
@@ -511,9 +485,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::application_context_xml::generate("${modelName}","${applicationType}", "${embedded}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
 	<!-- dao application context -->
@@ -521,9 +493,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::dao_context_xml::generate("${modelName}","${applicationType}", "${embedded}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
 	<!-- aop application context -->
@@ -531,9 +501,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::aop_context_xml::generate("${modelName}", "${embedded}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
 	<!-- spring security context -->
@@ -541,9 +509,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::security_context_xml::generate("${projectName}","${applicationType}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
 	<!-- project servlet -->
@@ -551,9 +517,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::project_servlet_xml::generate("${projectName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
 	<!-- application properties -->
@@ -569,9 +533,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::config::persistence_xml::generate("${modelName}", "${applicationType}", "${embedded}") FOR project' />
-		<outlet path='${home-gen}/src/main/resources/META-INF/' >
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/resources/META-INF/'/>
 	</component>
 	
 	<!--                                    -->
@@ -681,9 +643,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::server::birt::csv_export_rptdesign::generate("${packageName}","${modelName}","${applicationType}") FOREACH project.entities' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/birt' >
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/birt'/>
 	</component>
 	
 	<!-- property files (same generator as on client) -->
@@ -693,6 +653,5 @@
 		<expand value='template::web::client::i18n::projectTranslation_properties::generate("${modelName}","${applicationType}", "birt") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/WEB-INF/birt' />
 	</component>
-					
-		
+
 </workflow>

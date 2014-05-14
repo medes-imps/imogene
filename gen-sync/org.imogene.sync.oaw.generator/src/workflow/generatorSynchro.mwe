@@ -34,9 +34,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::sync::config::persistence_xml::generate("${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/resources/META-INF/'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/resources/META-INF/'/>
 	</component>
 	
 	<!-- spring application-context -->
@@ -46,9 +44,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::application_context_xml::generate("${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'/>
 	</component>
 
 	<!-- spring dao-context -->
@@ -58,9 +54,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::dao_context_xml::generate("${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'/>
 	</component>
 	
 	<!-- spring aop-context -->
@@ -70,9 +64,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::aop_context_xml::generate("${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'/>
 	</component>
 	
 	<!-- spring xml converter-context -->
@@ -82,9 +74,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::converter_context_xml::generate("${modelName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>	
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'/>
 	</component>
 
     <!-- web.xml for synchro servlet -->
@@ -94,9 +84,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::web_xml::generate("${projectName}") FOR project'/>
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>
-			<!-- <postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/> -->
-		</outlet>	
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'/>
 	</component>
 	
 	<!-- application-servlet.xml -->
@@ -106,9 +94,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='template::sync::config::servlet_xml::generate("${projectName}") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF'>
-			<postprocessor class="org.eclipse.xtend.typesystem.xsd.XMLBeautifier"/>
-		</outlet>
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF'/>
 	</component>	
 	
 	<!-- jdbc.properties -->
