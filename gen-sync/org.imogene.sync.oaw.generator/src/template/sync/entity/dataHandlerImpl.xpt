@@ -15,12 +15,14 @@ import org.imogene.lib.common.model.FieldGroup;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.user.DefaultUser;
 import org.imogene.lib.sync.binary.file.BinaryFileHandler;
 import org.imogene.lib.sync.clientfilter.ClientFilterHandler;
 import org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandler;
 import org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandler;
 import org.imogene.lib.sync.handler.CardEntityHandler;
 import org.imogene.lib.sync.handler.DataHandlerManager;
+import org.imogene.lib.sync.handler.DefaultUserHandler;
 import org.imogene.lib.sync.handler.EntityProfileHandler;
 import org.imogene.lib.sync.handler.FieldGroupHandler;
 import org.imogene.lib.sync.handler.FieldGroupProfileHandler;
@@ -36,6 +38,10 @@ public class DataHandlerManagerImpl implements DataHandlerManager {
 	@Qualifier(value = "«e.name.toFirstLower()»Handler")
 	private «e.name.toFirstUpper()»Handler «e.name.toFirstLower()»Handler;
 	«ENDFOREACH»
+
+	@Autowired
+	@Qualifier(value = "defaultUserHandler")
+	private DefaultUserHandler defaultUserHandler;
 	
 	@Autowired
 	@Qualifier(value = "binaryHandler")
@@ -75,7 +81,9 @@ public class DataHandlerManagerImpl implements DataHandlerManager {
 	
 	@Override
 	public ImogBeanHandler<? extends ImogBean> getHandler(Class<?> clazz) {
-		if (BinaryFile.class.equals(clazz)) {
+		if (DefaultUser.class.equals(clazz)) {
+			return defaultUserHandler;
+		} else if (BinaryFile.class.equals(clazz)) {
 			return binaryHandler;
 		} else if (ClientFilter.class.equals(clazz)) {
 			return clientFilterHandler;

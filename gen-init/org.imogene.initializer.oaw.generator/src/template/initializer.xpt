@@ -31,6 +31,12 @@ public class InitializerImpl implements Initializer {
 	@Override
 	@Transactional
 	public void initialize() {
+		CardEntity defaultUserCardEntity = new CardEntity();
+		defaultUserCardEntity.setId("defaultUser");
+		defaultUserCardEntity.setName("Default User");
+		defaultUserCardEntity.setClassName(DefaultUser.class.getName());
+		save(defaultUserCardEntity);
+
 		CardEntity dynamicFieldInstance = new CardEntity();
 		dynamicFieldInstance.setId("dynamicFieldInstance");
 		dynamicFieldInstance.setName("Dynamic Field Instance");
@@ -105,6 +111,7 @@ public class InitializerImpl implements Initializer {
 		defaultUser.setLogin("admin");
 		defaultUser.setPassword(passwordHashAsBase64("«password»", "admin"));
 		defaultUser.addProfile(administrator);
+		defaultUser.addSynchronizable(defaultUserCardEntity);
 		defaultUser.addSynchronizable(dynamicFieldInstance);
 		defaultUser.addSynchronizable(dynamicFieldTemplate);
 		defaultUser.addSynchronizable(cardEntity);
