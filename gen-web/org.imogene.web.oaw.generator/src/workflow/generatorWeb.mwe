@@ -654,4 +654,76 @@
 		<outlet path='${home-gen}/src/main/webapp/WEB-INF/birt' />
 	</component>
 
+	<!-- ====================================== -->
+	<!--		EMBEDDED SYNCHRONIZATION		-->
+	<!-- ====================================== -->
+	
+	<!-- spring xml converter-context -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}"/>
+		</metaModel>
+		<expand value='template::web::server::sync::config::converter_context_xml::generate("${modelName}", "${embedded}") FOR project' />
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
+	</component>
+	
+	<!-- spring sync-context -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand value='template::web::server::sync::config::sync_context_xml::generate("${modelName}", "${embedded}") FOR project' />
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
+	</component>
+
+	<!-- entity helper -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand value='template::web::server::sync::entityHelperImpl::generate("${modelName}", "${embedded}") FOR project' />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
+	</component>
+
+	<!-- Entity Data Handler interface -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand value='template::web::server::sync::entityHandler::generate("${modelName}", "${embedded}") FOREACH project.entities' />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
+	</component>
+	
+	<!-- Entity Data Handler implementation -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand value='template::web::server::sync::entityHandlerImpl::generate("${modelName}", "${embedded}") FOREACH project.entities' />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
+	</component>
+	
+	<!-- Data Handler manager implementation -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
+			<metaModelFile value="${imogeneMetaModel}" />
+		</metaModel>
+		<expand value='template::web::server::sync::dataHandlerImpl::generate("${modelName}", "${embedded}") FOR project' />
+		<outlet path='${home-gen}/src/main/java'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
+	</component>
+
 </workflow>

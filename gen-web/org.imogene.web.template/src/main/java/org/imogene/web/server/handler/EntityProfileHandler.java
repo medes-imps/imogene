@@ -14,8 +14,8 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.EntityProfileDao;
 import org.imogene.lib.common.security.ImogBeanFilter;
+import org.imogene.lib.common.util.SystemUtil;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.SystemUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

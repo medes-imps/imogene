@@ -1,9 +1,8 @@
-package org.imogene.web.server.util.impl;
+package org.imogene.lib.common.util;
 
 import org.imogene.lib.common.constants.CommonConstants;
-import org.imogene.web.server.util.SystemUtil;
 
-public class SystemUtilImpl implements SystemUtil {
+public class DefaultSystemUtil implements SystemUtil {
 
 	@Override
 	public long getCurrentTimeMillis() {

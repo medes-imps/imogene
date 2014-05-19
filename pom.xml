@@ -26,6 +26,7 @@
 		<commons.io.version>2.4</commons.io.version>
 		<commons.logging.version>1.1.3</commons.logging.version>
 		<commons.codec.version>1.8</commons.codec.version>
+		<commons.net.version>3.3</commons.net.version>
 		<medes.batik.version>1.6.0</medes.batik.version>
 		<medes.birt.version>1.0.0.201110121016</medes.birt.version>
 		<!-- Version limited by spring-security -->
@@ -36,7 +37,7 @@
 		<javax.mail.version>1.4.7</javax.mail.version>
 		<javax.servlet.version>2.5</javax.servlet.version>
 		<javax.validation.version>1.0.0.GA</javax.validation.version>
-		<derbyclient.version>10.10.1.1</derbyclient.version>
+		<derby.version>10.10.2.0</derby.version>
 		<slf4j.log4j12.version>1.7.5</slf4j.log4j12.version>
 	</properties>
 

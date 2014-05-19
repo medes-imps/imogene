@@ -18,110 +18,115 @@ import org.imogene.library.Constants;
 import org.imogene.library.LibraryPlugin;
 import org.imogene.library.Tools;
 
-public abstract class AbstractClasspathContainer implements IClasspathContainer {	
-	
-	protected abstract List<IClasspathEntry> getEntries();	
-		
-	protected void addSynchro(){
+public abstract class AbstractClasspathContainer implements IClasspathContainer {
+
+	protected abstract List<IClasspathEntry> getEntries();
+
+	protected void addSynchro() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.SYNC_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-	
-	protected void addSynchroClient(){
+
+	protected void addSynchroClient() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.SYNC_CLIENT_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-		
-	protected void addWeb(){
+
+	protected void addWeb() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WEB_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-	
-	protected void addAdmin(){
+
+	protected void addWebEmbedded() {
+		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WEBEMB_DESC_PATH);
+		addJarsToEntries(confFile);
+	}
+
+	protected void addAdmin() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.ADMIN_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-	
-	protected void addNotifier(){
+
+	protected void addNotifier() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.NOTIF_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-	
-//	protected void addWebService(){
-//		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_DESC_PATH);
-//		addJarsToEntries(confFile);
-//	}
-	
-//	protected void addWebServiceSoap(){
-//		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_SOAP_DESC_PATH);
-//		addJarsToEntries(confFile);
-//	}
-	
-	protected void addInitializer(){
+
+	// protected void addWebService(){
+	// URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_DESC_PATH);
+	// addJarsToEntries(confFile);
+	// }
+
+	// protected void addWebServiceSoap(){
+	// URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.WS_SOAP_DESC_PATH);
+	// addJarsToEntries(confFile);
+	// }
+
+	protected void addInitializer() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.INIT_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-	
+
 	protected void addDao() {
 		URL confFile = LibraryPlugin.getDefault().getBundle().getEntry(Constants.DAO_DESC_PATH);
 		addJarsToEntries(confFile);
 	}
-	
-	protected void addAll(){
-		Enumeration<URL> jars = LibraryPlugin.getDefault().getBundle().findEntries(Constants.JAR_PATH, "*.jar", true);	
+
+	protected void addAll() {
+		Enumeration<URL> jars = LibraryPlugin.getDefault().getBundle().findEntries(Constants.JAR_PATH, "*.jar", true);
 		addToEntries(Collections.list(jars));
 	}
-		
-	
+
 	/*
-	 * Add jars describe in the xml document
-	 * to the project build path.
+	 * Add jars describe in the xml document to the project build path.
+	 * 
 	 * @param xmlDescription url to xml description file
 	 */
-	private void addJarsToEntries(URL xmlDescription){
-		Collection<URL> jars = new ArrayList<URL>(); 
+	private void addJarsToEntries(URL xmlDescription) {
+		Collection<URL> jars = new ArrayList<URL>();
 		try {
 			for (String name : Tools.getJarNames(xmlDescription.openStream())) {
-				URL url = LibraryPlugin.getDefault().getBundle().getEntry(Constants.JAR_PATH+name);
-				if(url!=null)
+				URL url = LibraryPlugin.getDefault().getBundle().getEntry(Constants.JAR_PATH + name);
+				if (url != null)
 					jars.add(url);
 				else
-					throw new RuntimeException("Library named '"+name+"' not found.");
+					throw new RuntimeException("Library named '" + name + "' not found.");
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
 		addToEntries(jars);
 	}
-	
+
 	/*
 	 * add jars as classpath entries.
+	 * 
 	 * @param jars The jars to add
 	 */
-	private void addToEntries(Collection<URL> jars){
-		for(URL url : jars){		
-			try{
+	private void addToEntries(Collection<URL> jars) {
+		for (URL url : jars) {
+			try {
 				IPath path = new Path(FileLocator.toFileURL(url).getPath());
 				getEntries().add(JavaCore.newLibraryEntry(path, null, new Path("/")));
-			}catch(IOException ioe){
-				ioe.printStackTrace();				
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
 			}
 		}
 	}
 
 	@Override
-	public IClasspathEntry[] getClasspathEntries() {		
+	public IClasspathEntry[] getClasspathEntries() {
 		return getEntries().toArray(new IClasspathEntry[0]);
-	}	
+	}
 
 	@Override
-	public int getKind() {		
+	public int getKind() {
 		return IClasspathContainer.K_APPLICATION;
 	}
 
 	@Override
-	public IPath getPath() {		
+	public IPath getPath() {
 		return null;
 	}
-	
+
 }

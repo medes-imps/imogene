@@ -12,7 +12,7 @@ import org.imogene.library.contrib.export.ExportManager;
 import org.imogene.library.contrib.export.ExportedEntry;
 import org.imogene.studio.contrib.interfaces.GenerationManager;
 import org.imogene.studio.contrib.interfaces.PostGenerationTask;
-import org.imogene.studio.contrib.ui.navigator.SynchroClientShadow;
+import org.imogene.studio.contrib.ui.navigator.ClientShadow;
 
 public class ClasspathCopyTask implements PostGenerationTask {
 
@@ -20,7 +20,7 @@ public class ClasspathCopyTask implements PostGenerationTask {
 
 	@Override
 	public void onPostGeneration(GenerationManager manager) throws CoreException {
-		List<ExportedEntry> entries = ExportManager.getClasspath(SynchroClientShadow.NATURE);
+		List<ExportedEntry> entries = ExportManager.getClasspath(ClientShadow.NATURE);
 		IFolder iDestination = manager.getGeneratedProject().getFolder(LIBRARY_PATH);
 		if (!iDestination.exists()) {
 			iDestination.create(true, true, null);

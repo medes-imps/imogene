@@ -15,8 +15,8 @@ import org.imogene.lib.common.dynamicfields.DynamicFieldInstanceDao;
 import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
 import org.imogene.lib.common.dynamicfields.DynamicFieldTemplateDao;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.util.SystemUtil;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.SystemUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

@@ -1,4 +1,4 @@
-package org.imogene.web.server.util;
+package org.imogene.lib.common.util;
 
 public interface SystemUtil {
 

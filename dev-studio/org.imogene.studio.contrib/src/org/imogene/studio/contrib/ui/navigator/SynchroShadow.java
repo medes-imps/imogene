@@ -12,7 +12,7 @@ public class SynchroShadow extends AbstractShadow {
 	
 	public SynchroShadow(IProject parent){
 		super(parent, TYPE);
-		setLabel(Messages.SynchroShadow_2);
+		setLabel("Synchronization server");
 		setIcon(ImogeneStudioPlugin.getImageDescriptor(
 			"icons/serverSynchro.png").createImage()); //$NON-NLS-1$
 	}

@@ -9,8 +9,8 @@ import org.imogene.lib.common.model.FieldGroup;
 import org.imogene.lib.common.profile.EntityProfile;
 import org.imogene.lib.common.profile.FieldGroupProfile;
 import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.util.SystemUtil;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.SystemUtil;
 
 public class BasicHandlerHelper implements HandlerHelper {
 

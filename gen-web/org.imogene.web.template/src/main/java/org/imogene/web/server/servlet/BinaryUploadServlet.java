@@ -13,35 +13,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.imogene.web.server.service.BinaryUploadService;
-import org.imogene.web.server.util.ExportedPropertiesHolder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * This servlet enables to handle binary file upload for the Imogene platform.
+ * 
  * @author Medes-IMPS
  */
 public class BinaryUploadServlet extends UploadAction {
 
 	/** serial version */
 	private static final long serialVersionUID = 6429923373802231312L;
-	private static final String PATH_PARAM = "binaryPath";
 
 	private BinaryUploadService binaryUploadService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+		WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(config
+				.getServletContext());
 		binaryUploadService = (BinaryUploadService) wac.getBean("binaryUploadService");
 		// videoConverter = (MediaConverter) wac.getBean("videoConverter");
-		initBinaryPath(wac);
 	}
 
-
 	/**
-	 * Copy the uploaded file in the correct folder, Create the binary entity
-	 * associated.
+	 * Copy the uploaded file in the correct folder, Create the binary entity associated.
 	 */
 	@Override
 	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException {
@@ -65,12 +62,5 @@ public class BinaryUploadServlet extends UploadAction {
 	public void removeItem(HttpServletRequest request, FileItem item) throws UploadActionException {
 		// getLocalFile(item.getName()).delete();
 	}
-	
-	/**
-	 * Set the binary path used by this application
-	 */
-	private void initBinaryPath(WebApplicationContext wac) {
-		ExportedPropertiesHolder eph = (ExportedPropertiesHolder) wac.getBean("exportedProperties");
-		binaryUploadService.setBinaryPath(eph.getProperties().get(PATH_PARAM));
-	}
+
 }

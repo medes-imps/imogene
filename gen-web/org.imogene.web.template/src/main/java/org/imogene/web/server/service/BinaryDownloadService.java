@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface BinaryDownloadService {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException;
-	
+
 	public void setBinaryPath(String path);
 
 }

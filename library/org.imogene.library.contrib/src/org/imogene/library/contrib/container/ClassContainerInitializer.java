@@ -11,79 +11,69 @@ import org.imogene.studio.contrib.ui.navigator.AdminShadow;
 import org.imogene.studio.contrib.ui.navigator.DaoShadow;
 import org.imogene.studio.contrib.ui.navigator.InitializerShadow;
 import org.imogene.studio.contrib.ui.navigator.NotifierShadow;
-import org.imogene.studio.contrib.ui.navigator.SynchroClientShadow;
+import org.imogene.studio.contrib.ui.navigator.ClientShadow;
 import org.imogene.studio.contrib.ui.navigator.SynchroShadow;
+import org.imogene.studio.contrib.ui.navigator.WebEmbeddedShadow;
 import org.imogene.studio.contrib.ui.navigator.WebServiceShadow;
 import org.imogene.studio.contrib.ui.navigator.WebServiceSoapShadow;
 import org.imogene.studio.contrib.ui.navigator.WebShadow;
 
-public class ClassContainerInitializer extends
-		ClasspathContainerInitializer{
+public class ClassContainerInitializer extends ClasspathContainerInitializer {
 
-	public final static String LIBRARY_ID="org.imogene.studio.library.IMOGENE_LIB";
-	
+	public final static String LIBRARY_ID = "org.imogene.studio.library.IMOGENE_LIB";
+
 	@Override
-	public void initialize(IPath containerPath, IJavaProject project)
-			throws CoreException {
-		
+	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+
 		IProject p = project.getProject();
-		AbstractClasspathContainer con = null;			
-		
-		if(p.hasNature(NotifierShadow.NATURE)){
+		AbstractClasspathContainer con = null;
+
+		if (p.hasNature(NotifierShadow.NATURE)) {
 			con = new NotifierClasspathContainer();
-		}
-		else if(p.hasNature(SynchroShadow.NATURE)){
+		} else if (p.hasNature(SynchroShadow.NATURE)) {
 			con = new SyncServerClasspathContainer();
-		}
-		else if(p.hasNature(SynchroClientShadow.NATURE)){
-			con = new SyncClientClasspathContainer(project);
-		}
-		else if(p.hasNature(WebShadow.NATURE)){
+		} else if (p.hasNature(ClientShadow.NATURE)) {
+			con = new ClientClasspathContainer(project);
+		} else if (p.hasNature(WebShadow.NATURE)) {
+			con = new WebClasspathContainer();
+		} else if (p.hasNature(WebEmbeddedShadow.NATURE)) {
+			con = new WebEmbeddedClasspathContainer();
+		} else if (p.hasNature(AdminShadow.NATURE)) {
 			con = new WebAdminClasspathContainer();
-		}
-		else if(p.hasNature(AdminShadow.NATURE)){
-			con = new WebAdminClasspathContainer();
-		}
-		else if(p.hasNature(InitializerShadow.NATURE)){
+		} else if (p.hasNature(InitializerShadow.NATURE)) {
 			con = new InitializerClasspathContainer();
-		}
-		else if(p.hasNature(WebServiceShadow.NATURE)){
+		} else if (p.hasNature(WebServiceShadow.NATURE)) {
 			con = new WebServiceClasspathContainer();
-		}
-		else if(p.hasNature(WebServiceSoapShadow.NATURE)){
+		} else if (p.hasNature(WebServiceSoapShadow.NATURE)) {
 			con = new WebServiceSoapClasspathContainer();
-		}
-		else if(p.hasNature(DaoShadow.NATURE)) {
+		} else if (p.hasNature(DaoShadow.NATURE)) {
 			con = new DaoClasspathContainer();
 		}
-		if(con==null)
+		if (con == null)
 			con = new AllClasspathContainer();
-		
-		if(con!=null){
-			JavaCore.setClasspathContainer(containerPath,
-					new IJavaProject[] { project },
+
+		if (con != null) {
+			JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project },
 					new IClasspathContainer[] { con }, null);
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("unused")
-	private void displayInfoAboutProject(IProject p){
-		if(p!=null){
+	private void displayInfoAboutProject(IProject p) {
+		if (p != null) {
 			System.out.println("----- LIB project info -----");
-			System.out.println("Name: "+p.getName());
-			try{
-				for(String id : p.getDescription().getNatureIds()){
-					System.out.println("Nature: "+id);
+			System.out.println("Name: " + p.getName());
+			try {
+				for (String id : p.getDescription().getNatureIds()) {
+					System.out.println("Nature: " + id);
 				}
-			}catch(CoreException ce){
+			} catch (CoreException ce) {
 				ce.printStackTrace();
 			}
-		}else{
+		} else {
 			System.out.println("Project is null");
 		}
 	}
-	
-
 
 }

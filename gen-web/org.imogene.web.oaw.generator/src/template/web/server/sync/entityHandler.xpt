@@ -1,0 +1,23 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String projectName, String embedded) FOR CardEntity»
+«IF embedded == "true"»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/server/sync/handler/" + name + "Handler.java"»
+package org.imogene.«projectName.toLowerCase()».server.sync.handler;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»;
+import org.imogene.lib.sync.handler.ImogActorHandler;
+import org.imogene.lib.sync.handler.ImogBeanHandler;
+
+/**
+ * Interface of a data handler for the «name.toFirstUpper()» 
+ * @author Medes-IMPS
+ */
+public interface «name.toFirstUpper()»Handler extends «IF Actor.isAssignableFrom(metaType)»ImogActorHandler<«name.toFirstUpper()»>«ELSE»ImogBeanHandler<«name.toFirstUpper()»>«ENDIF» {
+
+}
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

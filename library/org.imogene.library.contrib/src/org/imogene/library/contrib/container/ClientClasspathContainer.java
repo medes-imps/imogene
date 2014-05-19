@@ -15,7 +15,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.imogene.library.contrib.Activator;
 
-public class SyncClientClasspathContainer extends AbstractClasspathContainer {
+public class ClientClasspathContainer extends AbstractClasspathContainer {
 
 	private List<IClasspathEntry> entries = new Vector<IClasspathEntry>();
 
@@ -24,7 +24,7 @@ public class SyncClientClasspathContainer extends AbstractClasspathContainer {
 	private static final String PLUGIN_LIB_FOLDER = "lib";
 
 
-	public SyncClientClasspathContainer(IJavaProject project) {	
+	public ClientClasspathContainer(IJavaProject project) {	
 		IFolder libFolder = project.getProject().getFolder(new Path(PLUGIN_LIB_FOLDER));
 		try {
 			for (IResource r : libFolder.members()) {

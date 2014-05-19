@@ -1,0 +1,87 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String projectName, String embedded) FOR CardEntity»
+«IF embedded == "true"»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/server/sync/handler/" + name + "HandlerImpl.java"»
+package org.imogene.«projectName.toLowerCase()».server.sync.handler;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
+import org.imogene.lib.common.criteria.ImogJunction;
+import org.imogene.lib.common.dao.ImogBeanDao;
+import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.sync.SyncConstants;
+import org.imogene.lib.sync.handler.ImogActorHandlerImpl;
+import org.imogene.lib.sync.handler.ImogBeanHandlerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+/**
+ * Implements a data handler for the «name.toFirstUpper()» 
+ * @author Medes-IMPS
+ */
+public class «name.toFirstUpper()»HandlerImpl extends «IF Actor.isAssignableFrom(metaType)»ImogActorHandlerImpl<«name.toFirstUpper()»>«ELSE»ImogBeanHandlerImpl<«name.toFirstUpper()»>«ENDIF» implements «name.toFirstUpper()»Handler {
+
+	@Autowired
+	@Qualifier(value = "«name.toFirstLower()»Dao")
+	private «name.toFirstUpper()»Dao dao;
+	
+	@Override
+	public «name.toFirstUpper()» createNewEntity(String id) {
+		//TODO handle  with not null constraint values
+		«name.toFirstUpper()» entity = new «name.toFirstUpper()»();			
+		entity.setId(id);
+		entity.setModified(new Date());
+		entity.setCreatedBy(SyncConstants.SYNC_ID_SYS);
+		entity.setModifiedBy(SyncConstants.SYNC_ID_SYS);
+		entity.setModifiedFrom(SyncConstants.SYNC_ID_SYS);
+		return entity;
+	}
+	
+	@Override
+	protected void saveOrUpdate(«name.toFirstUpper()» entity, boolean neu) {
+		«EXPAND saveParent FOREACH groups.fields-»
+		getDao().saveOrUpdate(entity, neu);
+	}
+	
+	@Override
+	protected ImogJunction createFilterJuntion(ImogActor user) {
+		return null;
+	}
+	
+	@Override
+	protected ImogJunction createClientFilterJuntion(String userId, String terminalId) {
+		return null;
+	}	
+	
+	@Override
+	protected «name.toFirstUpper()»Dao getDao() {
+		return dao;
+	}
+	
+}
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»
+
+
+
+
+«REM» ------------------------------------------------«ENDREM»
+«DEFINE saveParent FOR FieldEntity-»«ENDDEFINE»
+«DEFINE saveParent FOR ReverseRelationFieldEntity -»
+	«IF (cardinality == 1 && oppositeRelationField!=null && oppositeRelationField.cardinality == 1)-»
+		«REM» Relation 1 <-> 1 «ENDREM»
+		if(entity.«EXPAND template::CommonFieldUtil::getterName FOR this-»()!=null){
+			entity.«EXPAND template::CommonFieldUtil::getterName FOR this-»().«EXPAND template::CommonFieldUtil::setterName FOR oppositeRelationField-»(entity);
+		}		
+	«ENDIF -»
+«ENDDEFINE»
+«REM» ------------------------------------------------«ENDREM»

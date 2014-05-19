@@ -3,16 +3,16 @@ package org.imogene.studio.contrib.ui.navigator;
 import org.eclipse.core.resources.IProject;
 import org.imogene.studio.contrib.ImogeneStudioPlugin;
 
-public class WebShadow extends AbstractShadow {
+public class ClientShadow extends AbstractShadow {
 
-	public static final String TYPE = "web";
+	public static final String TYPE = "client";
 
-	public static final String NATURE = "org.imogene.nature.gen.web";
+	public static final String NATURE = "org.imogene.nature.gen.client";
 
-	public WebShadow(IProject parent) {
+	public ClientShadow(IProject parent) {
 		super(parent, TYPE);
-		setLabel("Web");
-		setIcon(ImogeneStudioPlugin.getImageDescriptor("icons/gwtLogo.png").createImage());
+		setLabel("Client");
+		setIcon(ImogeneStudioPlugin.getImageDescriptor("icons/serverSynchro.png").createImage());
 	}
 
 	@Override

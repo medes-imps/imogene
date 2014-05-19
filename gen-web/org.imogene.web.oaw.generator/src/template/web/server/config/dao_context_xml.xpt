@@ -16,7 +16,7 @@
     <bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver" />
-		<property name="url" value="jdbc:derby:/home/julien/tmp/database/vgtropics;create=true" />
+		<property name="url" value="jdbc:derby:#{systemProperties['imogene.home']}/db/«projectName.toLowerCase()»;create=true" />
 		<property name="username" value="app" />
 		<property name="password" value="app" />
 	</bean>
@@ -72,19 +72,9 @@
 	<!--						 -->
 	
 	<!-- BinaryFile manager -->
-	«IF embedded == "true"-»
-	<bean id="binaryFileManager" class="org.imogene.lib.common.binary.file.BinaryFileManager" factory-method="getInstance" > 
-		<property name="binaryPath" >
-			<bean class="java.lang.System" factory-method="getProperty">
-				<constructor-arg value="imogene.binary.path" />
-			</bean>
-		</property>
-	</bean>
-	«ELSE-»
 	<bean id="binaryFileManager" class="org.imogene.lib.common.binary.file.BinaryFileManager" factory-method="getInstance">
-		<property name="binaryPath" value="${binary.path}"/>
+		<property name="binaryPath" value="«IF embedded == "true"»#{systemProperties['imogene.home']}/binaries«ELSE»${binary.path}«ENDIF»"/>
 	</bean>
-	«ENDIF-»
 	
 	<!-- Binary dao -->	
 	<bean id="binaryDao" class="org.imogene.lib.common.binary.file.BinaryFileDaoImpl" />

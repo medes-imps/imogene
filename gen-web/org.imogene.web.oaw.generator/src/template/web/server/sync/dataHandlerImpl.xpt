@@ -1,0 +1,118 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName, String embedded) FOR Project»
+«IF embedded == "true"»
+«FILE "org/imogene/" + projectName.toLowerCase() + "/server/sync/handler/DataHandlerManagerImpl.java"»
+package org.imogene.«projectName.toLowerCase()».server.sync.handler;
+
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
+import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.common.filter.ClientFilter;
+import org.imogene.lib.common.model.CardEntity;
+import org.imogene.lib.common.model.FieldGroup;
+import org.imogene.lib.common.profile.EntityProfile;
+import org.imogene.lib.common.profile.FieldGroupProfile;
+import org.imogene.lib.common.profile.Profile;
+import org.imogene.lib.common.user.DefaultUser;
+import org.imogene.lib.sync.binary.file.BinaryFileHandler;
+import org.imogene.lib.sync.clientfilter.ClientFilterHandler;
+import org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandler;
+import org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandler;
+import org.imogene.lib.sync.handler.CardEntityHandler;
+import org.imogene.lib.sync.handler.DataHandlerManager;
+import org.imogene.lib.sync.handler.DefaultUserHandler;
+import org.imogene.lib.sync.handler.EntityProfileHandler;
+import org.imogene.lib.sync.handler.FieldGroupHandler;
+import org.imogene.lib.sync.handler.FieldGroupProfileHandler;
+import org.imogene.lib.sync.handler.ImogBeanHandler;
+import org.imogene.lib.sync.handler.ProfileHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+public class DataHandlerManagerImpl implements DataHandlerManager {
+
+	«FOREACH entities AS e»
+	@Autowired
+	private «e.name.toFirstUpper()»Handler «e.name.toFirstLower()»Handler;
+	«ENDFOREACH»
+	
+	@Autowired
+	private DefaultUserHandler defaultUserHandler;
+
+	@Autowired
+	private BinaryFileHandler binaryHandler;
+	
+	@Autowired
+	private ClientFilterHandler clientFilterHandler;
+	
+	@Autowired
+	private DynamicFieldInstanceHandler dynamicFieldInstanceHandler;
+	
+	@Autowired
+	private DynamicFieldTemplateHandler dynamicFieldTemplateHandler;
+	
+	@Autowired
+	private ProfileHandler profileHandler;
+
+	@Autowired
+	private EntityProfileHandler entityProfileHandler;
+
+	@Autowired
+	private FieldGroupProfileHandler fieldGroupProfileHandler;
+
+	@Autowired
+	private CardEntityHandler cardEntityHandler;
+
+	@Autowired
+	private FieldGroupHandler fieldGroupHandler;
+	
+	@Override
+	public ImogBeanHandler<? extends ImogBean> getHandler(Class<?> clazz) {
+		if (BinaryFile.class.equals(clazz)) {
+			return binaryHandler;
+		} else if (DefaultUser.class.equals(clazz)) {
+			return defaultUserHandler;
+		} else if (ClientFilter.class.equals(clazz)) {
+			return clientFilterHandler;
+		} else if (DynamicFieldInstance.class.equals(clazz)) {
+			return dynamicFieldInstanceHandler;
+		} else if (DynamicFieldTemplate.class.equals(clazz)) {
+			return dynamicFieldTemplateHandler;
+		} else if (Profile.class.equals(clazz)) {
+			return profileHandler;
+		} else if (EntityProfile.class.equals(clazz)) {
+			return entityProfileHandler;
+		} else if (FieldGroupProfile.class.equals(clazz)) {
+			return fieldGroupProfileHandler;
+		} else if (CardEntity.class.equals(clazz)) {
+			return cardEntityHandler;
+		} else if (FieldGroup.class.equals(clazz)) {
+			return fieldGroupHandler;
+		} else
+		«FOREACH entities AS e SEPARATOR "else"-»
+		if («e.name.toFirstUpper()».class.equals(clazz)) {
+			return «e.name.toFirstLower()»Handler;
+		}
+		«ENDFOREACH-»
+		return null;
+	}
+
+	@Override
+	public ImogBeanHandler<? extends ImogBean> getHandler(String className) {
+		try {
+			Class<?> clazz = Class.forName(className);
+			return getHandler(clazz);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+}
+
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

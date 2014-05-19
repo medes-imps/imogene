@@ -20,19 +20,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * @author Medes-IMPS
  */
 public class BinaryDownloadServiceImpl implements BinaryDownloadService {
-	
+
 	private static final String DEFAULT_DIRECTORY = "/binaries/";
 	private String binaryPath = DEFAULT_DIRECTORY;
-	
+
 	@Autowired
 	@Qualifier(value = "binaryHandler")
 	private BinaryHandler binaryHandler;
-	
-
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
 		String paramId = req.getParameter("binaryId");
 		String flvId = req.getParameter("flvId");
 		String mp3Id = req.getParameter("mp3Id");
@@ -64,7 +61,8 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 			Binary binary = binaryHandler.getBinary(mp3Id);
 			if (binary != null) {
 				File mp3File = getLocalFileAsMp3(binary);
-				resp.setHeader("Content-Disposition", "attachment; filename=\"" + binary.getFileName() /*+ ".mp3"*/ + "\"");
+				resp.setHeader("Content-Disposition", "attachment; filename=\"" + binary.getFileName() /* + ".mp3" */
+						+ "\"");
 				resp.setContentType("audio/mp3");
 				resp.setContentLength((int) mp3File.length());
 				copy(new FileInputStream(mp3File), resp.getOutputStream());
@@ -123,7 +121,7 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 	// ioe.printStackTrace();
 	// }
 	// }
-	
+
 	/**
 	 * Set the binary path used by this application
 	 */
@@ -138,6 +136,7 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 
 	/**
 	 * Get the local file where copy the FileItem
+	 * 
 	 * @param remoteName the remote name
 	 * @return the corresponding file.
 	 */
@@ -147,6 +146,7 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 
 	/**
 	 * Get the local file where copy the FileItem
+	 * 
 	 * @param remoteName the remote name
 	 * @return the corresponding file.
 	 */
@@ -156,6 +156,7 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 
 	/**
 	 * Get the local thumbnail
+	 * 
 	 * @param remoteName the remote name
 	 * @return the corresponding file.
 	 */
@@ -165,15 +166,17 @@ public class BinaryDownloadServiceImpl implements BinaryDownloadService {
 
 	/**
 	 * Get the local mp3 copy
+	 * 
 	 * @param binary the binary
 	 * @return the mp3 file copy
 	 */
 	private File getLocalFileAsMp3(Binary binary) {
-		return new File(binaryPath /*+ "mp3/"*/ + binary.getId() + "-" + binary.getFileName() /*+ ".mp3"*/);
+		return new File(binaryPath /* + "mp3/" */+ binary.getId() + "-" + binary.getFileName() /* + ".mp3" */);
 	}
 
 	/**
 	 * Copy the binary file to the http response output stream
+	 * 
 	 * @param in input stream
 	 * @param out output stream
 	 * @throws IOException

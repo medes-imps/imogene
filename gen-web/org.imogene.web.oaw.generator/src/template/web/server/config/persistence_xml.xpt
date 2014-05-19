@@ -24,7 +24,8 @@
 		<class>org.imogene.lib.common.profile.Profile</class>
 		<class>org.imogene.lib.common.user.DefaultUser</class>
 		<class>org.imogene.lib.common.useraction.UserAction</class>
-		«IF embedded != "true"-»
+		«IF embedded == "true"-»
+		<class>org.imogene.lib.sync.client.params.SyncParams</class>
 		<class>org.imogene.lib.sync.history.SyncHistory</class>
 		<class>org.imogene.lib.sync.session.SyncSession</class>
 		«ENDIF-»

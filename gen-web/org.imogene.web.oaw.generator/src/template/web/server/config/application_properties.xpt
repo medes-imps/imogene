@@ -8,6 +8,8 @@ jdbc.url=jdbc:derby://localhost:1493/«name.toLowerCase()»;create=true
 jdbc.username=admin
 jdbc.password=admin
 hibernate.dialect=org.hibernate.dialect.DerbyDialect
+
+ntp.host=africa.pool.ntp.org
 «ELSE-»
 # JDBC properties
 jdbc.driverClassName=«jdbcDriver»

@@ -8,9 +8,9 @@ import org.imogene.lib.common.binary.BinaryDao;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.binary.file.BinaryFileManager;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.util.SystemUtil;
 import org.imogene.web.server.util.BinaryDesc;
 import org.imogene.web.server.util.HttpSessionUtil;
-import org.imogene.web.server.util.SystemUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

@@ -25,28 +25,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public class BinaryUploadServiceImpl implements BinaryUploadService {
-	
+
 	private static final String BINARY_SHORTNAME = "BIN";
 	private static final String DEFAULT_DIRECTORY = "/binaries/";
 	private String binaryPath = DEFAULT_DIRECTORY;
-//	private static final String PATH_PARAM = "binaryPath";
-	
+
 	@Autowired
 	@Qualifier(value = "videoConverter")
 	private MediaConverter videoConverter;
-	
+
 	@Autowired
 	@Qualifier(value = "binaryHandler")
 	private BinaryHandler binaryHandler;
-	
-	
 
 	/**
-	 * Copy the uploaded file in the correct folder,
-	 * Create the binary entity associated.
+	 * Copy the uploaded file in the correct folder, Create the binary entity associated.
 	 */
 	@Override
-	public String executeAction(HttpServletRequest request,	List<FileItem> sessionFiles) throws UploadActionException {
+	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException {
 		String entityId = "noid";
 		for (FileItem item : sessionFiles) {
 			if (false == item.isFormField()) {
@@ -63,85 +59,78 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 					item.write(localFile);
 					/* binary file conversion to flv */
 					if (item.getContentType().contains("video")) {
-						File flvFile = new File(binaryPath + "/flv/"
-								+ localFile.getName() + ".flv");
+						File flvFile = new File(binaryPath + "/flv/" + localFile.getName() + ".flv");
 						if (!item.getContentType().contains("x-flash-video")) {
-							videoConverter.convert(localFile, new File(
-									binaryPath + "flv/" + localFile.getName()
-											+ ".flv"), item.getContentType());
+							videoConverter.convert(localFile, new File(binaryPath + "flv/" + localFile.getName()
+									+ ".flv"), item.getContentType());
 						} else {
-							copy(new FileInputStream(localFile),
-									new FileOutputStream(flvFile));
+							copy(new FileInputStream(localFile), new FileOutputStream(flvFile));
 						}
 					}
 					/* image file thumbnail */
 					if (item.getContentType().contains("image")) {
-						File thumbnail = new File(binaryPath + "/thumb_"
-								+ localFile.getName());
-						PhotoConverter.convert(localFile, thumbnail,
-								item.getContentType());
+						File thumbnail = new File(binaryPath + "/thumb_" + localFile.getName());
+						PhotoConverter.convert(localFile, thumbnail, item.getContentType());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return  entityId;
+		return entityId;
 	}
-	
-	  /**
-	   * Get the content of an uploaded file.
-	   */
-	  @Override
-	  public void getUploadedFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	    
+
+	/**
+	 * Get the content of an uploaded file.
+	 */
+	@Override
+	public void getUploadedFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String entityId = request.getParameter(UConsts.PARAM_SHOW);
 		Binary binary = binaryHandler.getBinary(entityId);
 		if (binary != null) {
 			File thumbFile = getLocalThumbnail(binary);
-			response.setHeader("Content-Disposition", "attachment; filename=\""
-					+ binary.getFileName() + "\"");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + binary.getFileName() + "\"");
 			response.setContentType(binary.getContentType());
 			response.setContentLength((int) thumbFile.length());
 			copy(new FileInputStream(thumbFile), response.getOutputStream());
 		} else {
 			response.sendError(404);
 		}
-	  }
-	  
-		/**
-		 * Set the binary path of the application
-		 */
-		public void setBinaryPath(String path) {
-//			ExportedPropertiesHolder eph = (ExportedPropertiesHolder) wac.getBean("exportedProperties");
-			if (path != null)
-				binaryPath = path;
-			if (!binaryPath.endsWith("/"))
-				binaryPath = binaryPath + "/";
-			/* flv directory */
-			File flvDir = new File(binaryPath + "flv/");
-			if (!flvDir.exists())
-				flvDir.mkdir();
-		}
-	
+	}
+
+	/**
+	 * Set the binary path of the application
+	 */
+	public void setBinaryPath(String path) {
+		if (path != null)
+			binaryPath = path;
+		if (!binaryPath.endsWith("/"))
+			binaryPath = binaryPath + "/";
+		/* flv directory */
+		File flvDir = new File(binaryPath + "flv/");
+		if (!flvDir.exists())
+			flvDir.mkdirs();
+	}
+
 	/**
 	 * Get the local file where copy the FileItem
-	 * @param remoteName the remote name 
+	 * 
+	 * @param remoteName the remote name
 	 * @return the corresponding file.
 	 */
 	private File getLocalFile(String remoteName, String entityId) {
 		String basename = (new File(remoteName)).getName();
 		return new File(binaryPath + entityId + "-" + basename);
 	}
-	
+
 	/**
 	 * Copy the binary file to the http response output stream
+	 * 
 	 * @param in input stream
 	 * @param out output stream
 	 * @throws IOException
 	 */
-	private static void copy(InputStream in, OutputStream out)
-			throws IOException {
+	private static void copy(InputStream in, OutputStream out) throws IOException {
 		try {
 			byte[] buffer = new byte[1024];
 			int nrOfBytes = -1;
@@ -162,16 +151,15 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the local thumbnail
-	 * @param remoteName the remote name 
+	 * 
+	 * @param remoteName the remote name
 	 * @return the corresponding file.
 	 */
 	private File getLocalThumbnail(Binary binary) {
-		return new File(binaryPath + "/thumb_" + binary.getId() + "-"
-				+ binary.getFileName());
+		return new File(binaryPath + "/thumb_" + binary.getId() + "-" + binary.getFileName());
 	}
-	
-	
+
 }

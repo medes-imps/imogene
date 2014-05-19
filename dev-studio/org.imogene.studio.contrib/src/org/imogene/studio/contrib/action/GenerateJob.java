@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -143,6 +144,11 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 
 	public IProject getSelectedProject() {
 		return mSelectedProject;
+	}
+
+	@Override
+	public Map<String, String> getProperties() {
+		return mProperties;
 	}
 
 	/** create the new project into the workspace if it doesn't exist */
@@ -303,8 +309,8 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 
 	// inject the classloader associated with the current class
 	private void injectClassLoader() {
-		ResourceLoaderFactory.setCurrentThreadResourceLoader(new ResourceLoaderImpl(OawGeneratorMedooCommon.getDefault()
-				.getClass().getClassLoader()));
+		ResourceLoaderFactory.setCurrentThreadResourceLoader(new ResourceLoaderImpl(OawGeneratorMedooCommon
+				.getDefault().getClass().getClassLoader()));
 		Thread.currentThread().setContextClassLoader(GenerateJob.class.getClassLoader());
 	}
 
@@ -346,7 +352,8 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 		for (IPackageFragment fragment : jProject.getPackageFragments()) {
 			if (fragment.getKind() == IPackageFragmentRoot.K_SOURCE) {
 				for (ICompilationUnit unit : fragment.getCompilationUnits()) {
-					CompilationUnit astRoot = SharedASTProvider.getAST(unit, SharedASTProvider.WAIT_ACTIVE_ONLY, monitor);
+					CompilationUnit astRoot = SharedASTProvider.getAST(unit, SharedASTProvider.WAIT_ACTIVE_ONLY,
+							monitor);
 					OrganizeImportsOperation op = new OrganizeImportsOperation(unit, astRoot, false, true, true, null);
 					try {
 						op.run(monitor);

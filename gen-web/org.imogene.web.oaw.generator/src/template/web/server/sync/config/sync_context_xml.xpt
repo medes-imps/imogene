@@ -1,0 +1,124 @@
+«IMPORT core»
+«EXTENSION template::CommonEntityUtilExt» 
+
+«DEFINE generate(String projectName, String embedded) FOR Project-»
+«IF embedded == "true"»
+«FILE "sync-context.xml"-»
+<?xml version="1.0" encoding="iso-8859-1"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/task
+     http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+     
+	<!--  Encryption system initialization -->
+	<bean id="encryptionKeyProvider" class="org.imogene.lib.sync.client.encryption.DefaultSecretKeyProvider"/>	
+	<bean id="encryptionManager" class="org.imogene.encryption.EncryptionManager" init-method="getInstance">
+		<property name="keyProvider" ref="encryptionKeyProvider"/>
+	</bean>
+
+	<!--                         -->
+	<!-- DAO layer configuration -->
+	<!--						 -->
+	
+	<!-- SyncHistory DAO -->
+	<bean id="syncHistoryDao" class="org.imogene.lib.sync.history.SyncHistoryDaoImpl" />
+  	
+  	<!-- SyncSession DAO -->
+	<bean id="syncSessionDao" class="org.imogene.lib.sync.session.SyncSessionDaoImpl" />
+
+  	<!-- DefaultUser DAO -->
+  	<bean id="defaultUserDao" class="org.imogene.lib.common.user.DefaultUserDaoImpl" />
+
+
+	<!-- ClientFilter DAO -->
+	<bean id="clientFilterDao" class="org.imogene.lib.common.filter.ClientFilterDaoImpl" />
+
+
+	<!--								-->
+	<!--	DataHandler configuration	-->
+	<!--								-->
+	
+	<!--  Initialize the DataHandler Manager -->	
+	<bean id="dataHandlerManager" class="org.imogene.«projectName.toLowerCase()».server.sync.handler.DataHandlerManagerImpl"/>
+
+	<!-- Entity helper -->
+	<bean id="entityHelper" class="org.imogene.«projectName.toLowerCase()».server.sync.EntityHelperImpl"/>
+	
+	<!-- Entity Handlers -->
+	<bean id="scDefaultUserHandler" class="org.imogene.lib.sync.handler.DefaultUserHandlerImpl" >
+		<property name="dao" ref="defaultUserDao"/>
+	</bean>
+	
+	<bean id="scBinaryHandler" class="org.imogene.lib.sync.binary.file.BinaryFileHandlerImpl" >
+		<property name="binaryFileDao" ref="binaryDao"/>
+	</bean>	
+	
+	<bean id="scClientFilterHandler" class="org.imogene.lib.sync.clientfilter.ClientFilterHandlerImpl">
+		<property name="dao" ref="clientFilterDao"/>
+	</bean>
+	
+	<bean id="scDynamicFieldInstanceHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldInstanceHandlerImpl">
+		<property name="dao" ref="dynamicFieldInstanceDao"/>
+	</bean>
+	
+	<bean id="scDynamicFieldTemplateHandler" class="org.imogene.lib.sync.dynamicfields.DynamicFieldTemplateHandlerImpl">
+		<property name="dao" ref="dynamicFieldTemplateDao"/>
+	</bean>
+	
+	<bean id="scProfileHandler" class="org.imogene.lib.sync.handler.ProfileHandlerImpl" >
+		<property name="dao" ref="profileDao"/>
+	</bean>
+	
+	<bean id="scEntityProfileHandler" class="org.imogene.lib.sync.handler.EntityProfileHandlerImpl" >
+		<property name="dao" ref="entityProfileDao"/>
+	</bean>
+
+	<bean id="scFieldGroupProfileHandler" class="org.imogene.lib.sync.handler.FieldGroupProfileHandlerImpl" >
+		<property name="dao" ref="fieldGroupProfileDao"/>
+	</bean>
+	
+	<bean id="scCardEntityHandler" class="org.imogene.lib.sync.handler.CardEntityHandlerImpl" >
+		<property name="dao" ref="cardEntityDao"/>
+	</bean>
+	
+	<bean id="scFieldGroupHandler" class="org.imogene.lib.sync.handler.FieldGroupHandlerImpl" >
+		<property name="dao" ref="fieldGroupDao"/>
+	</bean>
+
+    «FOREACH entities AS e»
+	<bean id="sc«e.name.toFirstUpper()»Handler" class="org.imogene.«projectName.toLowerCase()».server.sync.handler.«e.name.toFirstUpper()»HandlerImpl" />
+	«ENDFOREACH»
+	
+	<!-- Initialize the Synchronizer -->
+	<bean id="synchronizer" class="org.imogene.lib.sync.client.impl.SynchronizerImpl">
+		<property name="directoryPath" value="#{systemProperties['imogene.home']}/sync" />
+		<property name="dataManager" ref="dataHandlerManager" />
+		<property name="serializer" ref="xmlSerializer" />
+		<property name="syncHistoryDao" ref="syncHistoryDao" />
+		<property name="genericDao" ref="genericDao" />
+		<property name="entityHelper" ref="entityHelper" />
+		<property name="encryptionManager" ref="encryptionManager" />
+	</bean>
+
+	<task:annotation-driven />
+
+	<bean id="ntpoffset" class="org.imogene.lib.sync.client.impl.NTPOffsetTaskImpl">
+		<property name="genericDao" ref="genericDao" />
+		<property name="host" value="${ntp.host}" />
+	</bean>
+
+	<task:scheduled-tasks>
+		<task:scheduled ref="ntpoffset" method="update" fixed-delay="60000" />
+	</task:scheduled-tasks>
+
+</beans>
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

@@ -12,7 +12,7 @@ public class WebClasspathContainer extends AbstractClasspathContainer {
 	private static String DESCRIPTION = "Imogene web library";
 	
 	public WebClasspathContainer(){	
-		addAdmin();
+		addWeb();
 	}
 	
 	@Override

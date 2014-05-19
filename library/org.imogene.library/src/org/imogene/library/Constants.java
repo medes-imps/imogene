@@ -6,6 +6,8 @@ public class Constants {
 		
 	public static final String WEB_DESC_PATH="libs/web.xml";
 	
+	public static final String WEBEMB_DESC_PATH="libs/web-embedded.xml";
+	
 	public static final String ADMIN_DESC_PATH="libs/admin.xml";
 	
 //	public static final String WS_DESC_PATH="libs/webservices.xml";

@@ -44,37 +44,18 @@
         <property name="accessDeniedUrl" value="jsp/WrongLogin.jsp" />
     </bean> 
 		
-	<!-- Exported spring properties -->
-	«IF embedded == "true"-»
-	<bean name="exportedProperties" class="org.imogene.web.server.util.ExportedPropertiesHolder">
-		<property name="properties">
-			<map>
-				<entry key="binaryPath">
-					<bean class="java.lang.System" factory-method="getProperty">
-						<constructor-arg value="imogene.binary.path" />
-					</bean>
-				</entry>
-			</map>
-		</property>
-	</bean>
-	«ELSE-»
-	<bean name="exportedProperties" class="org.imogene.web.server.util.ExportedPropertiesHolder">
-		<property name="properties">
-			<map>
-				<entry key="binaryPath" value="${binary.path}"/>
-			</map>
-		</property>
-	</bean>
-	«ENDIF-»
-	
 	<!-- Video converter -->
 	<bean name="videoConverter" class="org.imogene.web.server.servlet.util.VideoConverter">
 		<property name="commandLine" value="${converter.video}"/>
 	</bean>
 	
 	<!-- Services -->
-	<bean id="binaryDownloadService" class="org.imogene.web.server.service.BinaryDownloadServiceImpl" />	
-	<bean id="binaryUploadService" class="org.imogene.web.server.service.BinaryUploadServiceImpl" />	
+	<bean id="binaryDownloadService" class="org.imogene.web.server.service.BinaryDownloadServiceImpl" >
+		<property name="binaryPath" value="«IF embedded == "true"»#{systemProperties['imogene.home']}/binaries«ELSE»${binary.path}«ENDIF»"/>
+	</bean>	
+	<bean id="binaryUploadService" class="org.imogene.web.server.service.BinaryUploadServiceImpl" >
+		<property name="binaryPath" value="«IF embedded == "true"»#{systemProperties['imogene.home']}/binaries«ELSE»${binary.path}«ENDIF»"/>
+	</bean>
 	
 	<!-- Handlers -->
 
@@ -190,9 +171,9 @@
 	</bean>
 	
 	«IF embedded == "true"-»
-	<bean id="systemUtil" class="org.imogene.web.server.util.impl.SystemUtilEmbeddedImpl" />
+	<bean id="systemUtil" class="org.imogene.lib.sync.client.util.ClientSystemUtil" />
 	«ELSE-»
-	<bean id="systemUtil" class="org.imogene.web.server.util.impl.SystemUtilImpl" />
+	<bean id="systemUtil" class="org.imogene.lib.common.util.DefaultSystemUtil" />
 	«ENDIF-»
 	
 	<bean id="formUtil" class="org.imogene.«projectName.toLowerCase()».server.util.«projectName.toFirstUpper()»FormUtil"/>	
