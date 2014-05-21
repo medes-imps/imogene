@@ -4,12 +4,10 @@ Bundle-Name: Client Template
 Bundle-SymbolicName: org.imogene.client.template;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: javax.mail,
- javax.servlet,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.forms,
- org.imogene.client.core,
- org.slf4j.log4j
+ org.imogene.client.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Medes-IMPS
 Bundle-Activator: org.imogene.client.Activator

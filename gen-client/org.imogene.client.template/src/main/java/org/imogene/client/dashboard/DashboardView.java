@@ -4,21 +4,13 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Date;
-import java.text.DateFormat;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormText;
@@ -28,25 +20,17 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
-import org.imogene.client.Activator;
 import org.imogene.client.i18n.Messages;
-import org.imogene.client.ui.ISyncConstants;
-import org.imogene.client.ui.SyncPreferencePage;
 
-public class DashboardView extends ViewPart implements IHyperlinkListener, IPropertyChangeListener {
+public class DashboardView extends ViewPart implements IHyperlinkListener {
 
 	public static final String ID = "org.imogene.client.dashboard.DashboardView"; //$NON-NLS-1$
 
 	private static final String LAUNCH_BROWSER = "launch.browser"; //$NON-NLS-1$
-	private static final String LAUNCH_SYNCHRONIZE = "launch.synchronize"; //$NON-NLS-1$
-	private static final String LAUNCH_START = "launch.start"; //$NON-NLS-1$
-	private static final String LAUNCH_STOP = "launch.stop"; //$NON-NLS-1$
-	private static final String LAUNCH_PREFS = "launch.prefs"; //$NON-NLS-1$
 	private static final String LAUNCH_COPY = "copy.address"; //$NON-NLS-1$
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 
-	private FormText syncText;
 	private String url;
 
 	public DashboardView() {
@@ -86,24 +70,10 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 		launchText.addHyperlinkListener(this);
 
 		launchSection.setClient(launchText);
-
-		Section syncSection = toolkit.createSection(form.getBody(), Section.TWISTIE | Section.TITLE_BAR);
-		syncSection.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		syncSection.setText(Messages.dashboard_sync_title);
-		syncSection.setExpanded(true);
-
-		syncText = toolkit.createFormText(syncSection, false);
-		syncText.addHyperlinkListener(this);
-
-		syncSection.setClient(syncText);
-
-		update();
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
 	@Override
 	public void dispose() {
-		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		toolkit.dispose();
 		super.dispose();
 	}
@@ -111,19 +81,6 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 	@Override
 	public void setFocus() {
 		// Nothing to do
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (ISyncConstants.SYNC_LAST.equals(event.getProperty()) || ISyncConstants.SYNC_AUTO.equals(event.getProperty())
-				|| ISyncConstants.SYNC_PERIOD.equals(event.getProperty())) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					update();
-				}
-			});
-		}
 	}
 
 	@Override
@@ -141,16 +98,6 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 		Object href = e.getHref();
 		if (LAUNCH_BROWSER.equals(href)) {
 			openUrl(url);
-		} else if (LAUNCH_SYNCHRONIZE.equals(href)) {
-			Activator.getDefault().synchronize();
-		} else if (LAUNCH_START.equals(href)) {
-			Activator.getDefault().start();
-		} else if (LAUNCH_STOP.equals(href)) {
-			Activator.getDefault().stop();
-		} else if (LAUNCH_PREFS.equals(href)) {
-			PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(getSite().getShell(), SyncPreferencePage.ID, null,
-					null);
-			dialog.open();
 		} else if (LAUNCH_COPY.equals(href)) {
 			Clipboard clipboard = new Clipboard(Display.getCurrent());
 			clipboard.setContents(new Object[] { url }, new Transfer[] { TextTransfer.getInstance() });
@@ -186,26 +133,6 @@ public class DashboardView extends ViewPart implements IHyperlinkListener, IProp
 				}
 			}
 		}
-	}
-
-	private void update() {
-		if (syncText == null) {
-			return;
-		}
-		IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
-
-		long time = preferences.getLong(ISyncConstants.SYNC_LAST);
-		String date = DateFormat.getDateTimeInstance().format(new Date(time));
-
-		boolean auto = preferences.getBoolean(ISyncConstants.SYNC_AUTO);
-		String mode = auto ? Messages.dashboard_sync_automatic : Messages.dashboard_sync_manual;
-
-		long periodMinutes = preferences.getLong(ISyncConstants.SYNC_PERIOD);
-		String period = SyncPreferencePage.getHumanReadablePeriod(periodMinutes);
-
-		syncText.setText(Messages.binds(Messages.dashboard_sync_description, mode, date, period), true, true);
-		syncText.setImage("start", Activator.getImageDescriptor("icons/start-16x16.png").createImage()); //$NON-NLS-1$ //$NON-NLS-2$
-		syncText.setImage("stop", Activator.getImageDescriptor("icons/stop-16x16.png").createImage()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }

@@ -37,7 +37,6 @@ public class JettyServer {
 	private File webAppsDirectory;
 
 	public void start() throws Exception {
-
 		DOMConfigurator.configure(getClass().getResource("log4j.xml"));
 
 		port = Integer.valueOf(System.getProperty("jetty.port", "8080"));

@@ -16,8 +16,6 @@ Require-Bundle: org.eclipse.emf.mwe.core,
 Eclipse-RegisterBuddy: org.imogene.oaw.generator.common,
  org.imogene.dao.oaw.generator
 Export-Package: org.imogene.client.oaw.generator,
- template.client.config,
- template.client.handler,
  workflow
 Bundle-ClassPath: .,
  src/

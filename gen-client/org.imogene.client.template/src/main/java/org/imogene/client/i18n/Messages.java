@@ -37,57 +37,8 @@ public class Messages extends NLS {
 	public static String dashboard_form_title;
 	public static String dashboard_launch_title;
 	public static String dashboard_launch_description;
-	public static String dashboard_sync_title;
-	public static String dashboard_sync_description;
-	public static String dashboard_sync_automatic;
-	public static String dashboard_sync_manual;
 	public static String dashboard_library_title;
 	public static String dashboard_library_message;
-
-	public static String sync_pref_title;
-	public static String sync_pref_url;
-	public static String sync_pref_url_error;
-	public static String sync_pref_user;
-	public static String sync_pref_auto;
-	public static String sync_pref_period;
-	public static String sync_pref_terminal;
-
-	public static String sync_pref_period_15min;
-	public static String sync_pref_period_1hour;
-	public static String sync_pref_period_2hours;
-	public static String sync_pref_period_4hours;
-	public static String sync_pref_period_8hours;
-	public static String sync_pref_period_1day;
-
-	public static String ntp_pref_title;
-	public static String ntp_pref_host;
-	public static String ntp_pref_host_error;
-	public static String ntp_pref_rate;
-
-	public static String ntp_title;
-	public static String ntp_error;
-
-	public static String sync_title;
-	public static String sync_init;
-	public static String sync_open;
-	public static String sync_open_error;
-	public static String sync_send;
-	public static String sync_receive;
-	public static String sync_close;
-	public static String sync_error;
-
-	public static String sync_resume_send;
-	public static String sync_resume_receive;
-	public static String sync_resume_open;
-	public static String sync_resume_sending;
-	public static String sync_resume_receiving;
-	public static String sync_resume_close;
-
-	public static String auth_title;
-	public static String auth_info;
-	public static String auth_login;
-	public static String auth_password;
-	public static String auth_failed;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

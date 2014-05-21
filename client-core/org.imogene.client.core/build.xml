@@ -20,7 +20,10 @@
 	<property name="javacSource" value="1.3"/>
 	<property name="javacTarget" value="1.2"/>
 	<condition property="dir_bootclasspath" value="${java.home}/../Classes">
-		<os family="mac"/>
+		<and>
+			<os family="mac"/>
+			<available file="${java.home}/../Classes" type="dir"/>
+		</and>
 	</condition>
 	<property name="dir_bootclasspath" value="${java.home}/lib"/>
 	<path id="path_bootclasspath">
@@ -82,56 +85,464 @@
 	</target>
 
 	<target name="@dot.nestedJars">
-		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611"/>
-		<unzip src="../../../../apps/eclipse-indigo/plugins/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611.jar" dest="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611" overwrite="false">
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.301.v20130717-1549"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar" dest="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.301.v20130717-1549" overwrite="false">
 			<patternset includes="runtime_registry_compatibility.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/com.ibm.icu_50.1.1.v201304230130"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/com.ibm.icu_50.1.1.v201304230130.jar" dest="${buildDirectory}/nestedJars/com.ibm.icu_50.1.1.v201304230130" overwrite="false">
+			<patternset includes="icu-data.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.105.2.v20140211-1711"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.workbench_3.105.2.v20140211-1711.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.105.2.v20140211-1711" overwrite="false">
+			<patternset includes="e4-workbench.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.105.2.v20140211-1711"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.workbench_3.105.2.v20140211-1711.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.105.2.v20140211-1711" overwrite="false">
+			<patternset includes="compatibility.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.e4.core.services_1.1.0.v20130515-1343"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.core.services_1.1.0.v20130515-1343.jar" dest="${buildDirectory}/nestedJars/org.eclipse.e4.core.services_1.1.0.v20130515-1343" overwrite="false">
+			<patternset includes="injection_annotations.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-core-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-model-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-settings-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-settings-builder-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-repository-metadata-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-artifact-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-plugin-api-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-model-builder-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-aether-provider-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/aether-api-1.13.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/aether-util-1.13.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-interpolation-1.14.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-utils-2.0.6.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-classworlds-2.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-component-annotations-1.5.5.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-sec-dispatcher-1.3.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-embedder-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-cipher-1.7.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/commons-cli-1.2.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/maven-compat-3.0.4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/wagon-provider-api-2.2.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-shim-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/javax.inject-1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-bean-reflect-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-bean-locators-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-bean-binders-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-bean-scanners-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-bean-converters-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-metadata-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-converters-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-locators-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-binders-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-bean-inject-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-scanners-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guice-plexus-lifecycles-2.3.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/sisu-guice-3.1.0-no_aop.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/guava-10.0.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/plexus-build-api-0.0.7.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/aether-connector-wagon-1.13.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/aether-spi-1.13.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/aether-impl-1.13.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/aether-connector-asynchttpclient-1.13.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/wagon-ahc-1.2.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jars/wagon-file-2.2.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/com.ning.async-http-client_1.6.5.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/com.ning.async-http-client_1.6.5.20130531-2315.jar" dest="${buildDirectory}/nestedJars/com.ning.async-http-client_1.6.5.20130531-2315" overwrite="false">
+			<patternset includes="async-http-client-1.6.5.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.jboss.netty_3.2.5.Final-20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.jboss.netty_3.2.5.Final-20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.jboss.netty_3.2.5.Final-20130531-2315" overwrite="false">
+			<patternset includes="netty-3.2.5.Final.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="archetype-common-2.0-alpha-4.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="commons-collections-3.2.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="commons-io-1.3.2.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="commons-lang-2.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="dom4j-1.6.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jchardet-1.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="jdom-1.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="oro-2.0.8.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="plexus-velocity-1.1.3.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="velocity-1.5.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="indexer-core-3.1.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="indexer-artifact-3.1.0.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="lucene-core-2.4.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315.jar" dest="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315" overwrite="false">
+			<patternset includes="lucene-highlighter-2.4.1.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.ide_3.9.2.v20131004-0923"/>
+		<unzip src="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.ide_3.9.2.v20131004-0923.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.ide_3.9.2.v20131004-0923" overwrite="false">
+			<patternset includes="e4-ide.jar"/>
 		</unzip>
 	</target>
 	<target name="@dot" depends="init,@dot.nestedJars" unless="@dot" description="Create jar: org.imogene.client.core @dot.">
 		<delete dir="${build.result.folder}/@dot"/>
 		<mkdir dir="${build.result.folder}/@dot"/>
 		<path id="@dot.classpath">
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/javax.servlet_3.0.0.v201112011016.jar"/>
-			<pathelement path="../org.apache.derby/derby.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.derby_1.0.0/derby.jar"/>
-			<pathelement path="../org.apache.derby/derbyclient.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.derby_1.0.0/derbyclient.jar"/>
-			<pathelement path="../org.apache.derby/derbynet.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.derby_1.0.0/derbynet.jar"/>
-			<pathelement path="../org.apache.derby/derbytools.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.derby_1.0.0/derbytools.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.osgi_3.7.2.v20120110-1415.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/javax.transaction_1.1.1.v201105210645.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.core.jobs_3.5.101.v20120113-1953.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505/runtime_registry_compatibility.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505"/>
-			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611/runtime_registry_compatibility.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.equinox.preferences_3.4.2.v20120111-2020.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.core.contenttype_3.4.100.v20110423-0524.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.200.v20110110.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.equinox.app_1.3.100.v20110321.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.osgi.services_3.3.0.v20110513.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.server_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.continuation_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.mortbay.jetty.util_6.1.23.v201012071420.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.slf4j.api_1.7.2.v20121108-1250.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.http_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.io_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.util_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.jmx_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.servlet_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.security_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.webapp_8.1.14.v20131031.jar"/>
-			<pathelement path="../../../../apps/eclipse-indigo/plugins/org.eclipse.jetty.xml_8.1.14.v20131031.jar"/>
-			<pathelement path="../org.slf4j.log4j/log4j-1.2.17.jar"/>
-			<pathelement path="${build.result.folder}/../org.slf4j.log4j_2.0.0/log4j-1.2.17.jar"/>
-			<pathelement path="../org.slf4j.log4j/slf4j-api-1.7.5.jar"/>
-			<pathelement path="${build.result.folder}/../org.slf4j.log4j_2.0.0/slf4j-api-1.7.5.jar"/>
-			<pathelement path="../org.slf4j.log4j/slf4j-log4j12-1.7.5.jar"/>
-			<pathelement path="${build.result.folder}/../org.slf4j.log4j_2.0.0/slf4j-log4j12-1.7.5.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/javax.servlet_3.0.0.v201112011016.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.runtime_3.9.100.v20131218-1515.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/javax.annotation_1.1.0.v201209060031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/javax.inject_1.0.0.v20091030.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.osgi_3.9.1.v20140110-1610.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.jobs_3.5.300.v20130429-1813.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.200.v20130514-1256/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.200.v20130514-1256"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.301.v20130717-1549/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.registry_3.5.301.v20130717-1549.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/javax.xml_1.3.4.v201005080400.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.contenttype_3.4.200.v20130326-1255.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.300.v20120523-2004.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.app_1.3.100.v20130327-1442.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.osgi.services_3.3.100.v20130513-1956.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.server_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.continuation_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.http_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.io_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.util_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.slf4j.api_1.7.2.v20121108-1250.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/ch.qos.logback.slf4j_1.0.7.v20121108-1250.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/ch.qos.logback.core_1.0.7.v20121108-1250.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/javax.mail_1.4.0.v201005080615.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/javax.activation_1.1.0.v201211130549.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/ch.qos.logback.classic_1.0.7.v20121108-1250.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.logback.appender_1.4.0.20130601-0317.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jface_3.9.1.v20130725-1141.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.swt_3.102.1.v20140206-1334.jar"/>
+			<pathelement path="../../../../apps/eclipse-4.3.2-delta-pack/eclipse/plugins/org.eclipse.swt.gtk.linux.x86_64_3.102.1.v20140206-1358.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.commands_3.6.100.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.bidi_0.10.0.v20130327-1442.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.console_3.5.200.v20130514-0954.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/com.ibm.icu_50.1.1.v201304230130/icu-data.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/com.ibm.icu_50.1.1.v201304230130.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui_3.105.0.v20130522-1122.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.105.2.v20140211-1711/e4-workbench.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.105.2.v20140211-1711/compatibility.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.workbench_3.105.2.v20140211-1711.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.core.commands_0.10.2.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.expressions_3.4.501.v20131118-1915.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.core.contexts_1.3.1.v20130905-0905.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.core.di_1.3.0.v20130514-1256.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.e4.core.services_1.1.0.v20130515-1343/injection_annotations.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.core.services_1.1.0.v20130515-1343.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.workbench_1.0.2.v20131202-1739.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.model.workbench_1.0.1.v20131118-1956.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.emf.ecore_2.9.2.v20131212-0545.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.emf.common_2.9.2.v20131212-0545.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.resources_3.8.101.v20130717-0806.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ant.core_3.2.500.v20140203-1328.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.variables_3.2.700.v20130402-1741.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.filesystem_1.4.0.v20130514-1240.jar"/>
+			<pathelement path="../../../../apps/eclipse-4.3.2-delta-pack/eclipse/plugins/org.eclipse.core.filesystem.linux.x86_64_1.2.100.v20130430-1334.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.services_1.0.1.v20131118-1940.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.di_1.0.0.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.core.di.extensions_0.11.100.v20130514-1256.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.emf.ecore.change_2.9.0.v20131212-0545.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.emf.ecore.xmi_2.9.1.v20131212-0545.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.workbench.renderers.swt_0.11.2.v20140205-1834.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.workbench.swt_0.12.2.v20140117-1939.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.batik.css_1.6.0.v201011041432.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.batik.util_1.6.0.v201011041432.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.batik.util.gui_1.6.0.v201011041432.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.w3c.css.sac_1.3.1.v200903091627.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.w3c.dom.svg_1.1.0.v201011041433.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.w3c.dom.smil_1.0.0.v200806040011.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.databinding_1.4.1.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.databinding.observable_1.4.1.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.databinding.property_1.4.200.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jface.databinding_1.6.200.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.css.core_0.10.100.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.css.swt_0.11.0.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.bindings_0.10.102.v20140117-1939.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.workbench3_0.12.0.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.css.swt.theme_0.9.100.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.widgets_1.0.0.v20130515-1857.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.ds_1.4.101.v20130813-1853.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.util_1.0.500.v20130404-1337.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.event_1.3.0.v20130327-1442.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.help_3.6.0.v20130326-1254.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.e4.ui.workbench.addons.swt_1.0.2.v20131129-1621.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jface.text_3.8.101.v20130802-1147.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.text_3.5.300.v20130515-1451.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.workbench.texteditor_3.8.101.v20130729-1318.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.compare.core_3.5.300.v20130514-1224.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.core.ui_1.4.0.20130601-0317.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ltk.core.refactoring_3.6.100.v20130605-1748.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.core.filebuffers_3.5.300.v20130225-1821.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.core_1.4.0.20130601-0317.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-core-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-model-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-settings-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-settings-builder-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-repository-metadata-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-artifact-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-plugin-api-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-model-builder-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-aether-provider-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/aether-api-1.13.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/aether-util-1.13.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-interpolation-1.14.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-utils-2.0.6.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-classworlds-2.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-component-annotations-1.5.5.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-sec-dispatcher-1.3.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-embedder-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-cipher-1.7.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/commons-cli-1.2.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/maven-compat-3.0.4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/wagon-provider-api-2.2.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-shim-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/javax.inject-1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-bean-reflect-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-bean-locators-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-bean-binders-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-bean-scanners-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-bean-converters-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-metadata-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-converters-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-locators-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-binders-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-bean-inject-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-scanners-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guice-plexus-lifecycles-2.3.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/sisu-guice-3.1.0-no_aop.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/guava-10.0.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/plexus-build-api-0.0.7.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/aether-connector-wagon-1.13.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/aether-spi-1.13.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/aether-impl-1.13.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/aether-connector-asynchttpclient-1.13.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/wagon-ahc-1.2.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.runtime_1.4.0.20130531-2315/jars/wagon-file-2.2.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/com.ning.async-http-client_1.6.5.20130531-2315/async-http-client-1.6.5.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.jboss.netty_3.2.5.Final-20130531-2315/netty-3.2.5.Final.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/archetype-common-2.0-alpha-4.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/commons-collections-3.2.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/commons-io-1.3.2.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/commons-lang-2.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/dom4j-1.6.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/jchardet-1.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/jdom-1.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/oro-2.0.8.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/plexus-velocity-1.1.3.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.archetype.common_1.4.0.20130531-2315/velocity-1.5.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315/indexer-core-3.1.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315/indexer-artifact-3.1.0.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315/lucene-core-2.4.1.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.m2e.maven.indexer_1.4.0.20130531-2315/lucene-highlighter-2.4.1.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.m2e.model.edit_1.4.0.20130601-0317.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.emf.edit_2.9.0.v20140203-1126.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.emf.ecore.edit_2.8.0.v20140203-1126.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.emf_1.2.200.v201301171800.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.frameworks_1.2.200.v201203141800.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.environment_1.0.400.v200912181832.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.osgi.util_3.2.300.v20130513-1956.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.core_1.2.0.v200908252030.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.sse.core_1.1.802.v201401101620.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.uriresolver_1.2.100.v201305141800.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.validation_1.2.501.v201311151800.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.project.facet.core_1.4.300.v201111030424.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.xml.core_1.1.801.v201308100603.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.xerces_2.9.0.v201101211617.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.xml.resolver_1.2.0.v201005080400.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.xml.serializer_2.7.1.v201005080400.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jem.util_2.1.100.v201103021400.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.common.emfworkbench.integration_1.2.101.v201107140600.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.wst.xsd.core_1.1.800.v201302131613.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.xsd_2.9.1.v20140203-1126.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.ide_3.9.2.v20131004-0923/e4-ide.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.ide_3.9.2.v20131004-0923.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.views_3.6.100.v20130326-1250.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.ui.forms_3.6.1.v20130822-1117.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.p2.engine_2.3.0.v20130526-2122.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.p2.core_2.3.0.v20130327-2119.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.p2.metadata_2.2.0.v20130523-1557.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.p2.metadata.repository_1.2.100.v20130327-2119.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.p2.repository_2.3.0.v20130412-2032.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.equinox.security_1.2.0.v20130424-1801.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.servlet_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.security_8.1.14.v20131031.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.webapp_8.1.3.v20120522.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.eclipse.jetty.xml_8.1.3.v20120522.jar"/>
+			<pathelement path="../../../../apps/eclipse-kepler/plugins/org.apache.log4j_1.2.15.v201012070815.jar"/>
 			<pathelement path="bin"/>
 			<pathelement path="${build.result.folder}/../org.imogene.client.core_1.0.0/bin"/>
 		</path>
@@ -192,10 +603,6 @@
 	<target name="checkCompilationResults" if="compilation.error.occured">
 		<echo file="${compilation.problem.marker}" message="org.imogene.client.core_1.0.0${line.separator}compilation.error.occured=${compilation.error.occured}"/>
 		<eclipse.logCompileError bundle="org.imogene.client.core_1.0.0" log="${compilation.prereq.log}">
-			<include name="/home/julien/git/imogene/client-core/org.slf4j.log4j/compilation.problem"/>
-			<include name="${pluginTemp}/org.slf4j.log4j_2.0.0/compilation.problem"/>
-			<include name="/home/julien/git/imogene/client-core/org.apache.derby/compilation.problem"/>
-			<include name="${pluginTemp}/org.apache.derby_1.0.0/compilation.problem"/>
 		</eclipse.logCompileError>
 	</target>
 

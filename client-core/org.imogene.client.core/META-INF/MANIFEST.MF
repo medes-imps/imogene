@@ -6,16 +6,14 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.imogene.client.core.Activator
 Bundle-Vendor: Medes-IMPS
 Require-Bundle: javax.servlet,
- org.apache.derby,
  org.eclipse.core.runtime,
  org.eclipse.jetty.server,
  org.eclipse.jetty.servlet,
  org.eclipse.jetty.util,
  org.eclipse.jetty.webapp,
- org.slf4j.log4j
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.imogene.client.core,
- org.imogene.client.core.derby,
  org.imogene.client.core.init,
  org.imogene.client.core.jetty

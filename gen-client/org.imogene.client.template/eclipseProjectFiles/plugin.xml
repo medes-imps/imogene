@@ -67,11 +67,6 @@
             id="org.imogene.client.bugreport.BugReportPreferencePage"
             name="%bugreport.name">
       </page>
-      <page
-            class="org.imogene.client.ui.SyncPreferencePage"
-            id="org.imogene.client.ui.SyncPreferencePage"
-            name="%synchronization.name">
-      </page>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -125,20 +120,6 @@
       <initializer
             class="org.imogene.client.bugreport.BugReportPreferenceInitializer">
       </initializer>
-      <initializer
-            class="org.imogene.client.ui.SyncPreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
-         point="org.imogene.client.core.jetty.servlets">
-      <servlet
-            class="org.imogene.client.servlet.OffsetServlet"
-            name="offset">
-      </servlet>
-      <servlet
-            class="org.imogene.client.servlet.TerminalServlet"
-            name="terminal">
-      </servlet>
    </extension>
 
 </plugin>
