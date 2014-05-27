@@ -1,7 +1,6 @@
 «IMPORT core»
 «DEFINE generate(String projectName, String applicationType) FOR Project-»
 «FILE "security-context.xml"-»
-«LET "admin" AS adminType-»
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans"
@@ -21,6 +20,9 @@
 		<intercept-url pattern="/jsp/WrongLogin.jsp" access="permitAll" />
 		<intercept-url pattern="/jsp/ChangePassword.jsp" access="permitAll" />
 		
+		<!-- for web embedded  application -->
+		<intercept-url pattern="/j_client_authentication" access="permitAll" />
+		
 		<intercept-url pattern="/«projectName.toFirstUpper()».css" access="permitAll" />
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_16x16.png" access="permitAll" />
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_32x32.png" access="permitAll" />
@@ -28,7 +30,7 @@
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_admin.png" access="permitAll" />
 		<intercept-url pattern="/images/hborder.png" access="permitAll" />
 		<!-- all other URLs, access control -->
-		<intercept-url pattern="/**" access="«IF applicationType.matches(adminType)-»hasRole('administrator')«ELSE-»isAuthenticated()«ENDIF-»" />
+		<intercept-url pattern="/**" access="«IF applicationType == "admin"-»hasRole('administrator')«ELSE-»isAuthenticated()«ENDIF-»" />
 		
 		<!-- for web application -->
 		<form-login login-page="/jsp/Login.jsp"
@@ -67,6 +69,5 @@
 	</authentication-manager>                      
 
 </beans:beans>
-«ENDLET-»
 «ENDFILE»
 «ENDDEFINE»

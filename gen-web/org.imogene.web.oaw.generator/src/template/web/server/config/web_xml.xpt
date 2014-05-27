@@ -1,5 +1,5 @@
 «IMPORT core»
-«DEFINE generate(String projectName, String modelName) FOR Project»
+«DEFINE generate(String projectName, String modelName, String embedded) FOR Project»
 «FILE "web.xml" -»
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
@@ -111,6 +111,18 @@
 		<servlet-name>uploadServlet</servlet-name>
 		<url-pattern>*.gupld</url-pattern>
 	</servlet-mapping>
+	
+	«IF embedded == "true"-»
+	<!-- Client authentication servlet -->
+	<servlet>
+		<servlet-name>clientAuthServlet</servlet-name>
+		<servlet-class>org.imogene.web.server.servlet.ClientAuthenticationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>clientAuthServlet</servlet-name>
+		<url-pattern>/j_client_authentication</url-pattern>
+	</servlet-mapping>
+	«ENDIF-»
 	
 	  <!-- Spring servlet for BIRT report generation -->
 	  <servlet>

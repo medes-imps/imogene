@@ -1,12 +1,16 @@
 «IMPORT core»
 «EXTENSION template::CommonFieldUtilExt»
-«DEFINE generate(String projectName) FOR Project»
+«DEFINE generate(String projectName, String embedded) FOR Project»
 «FILE "Login.jsp"»
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+«IF embedded == "true"-»
+<%@page import="org.imogene.lib.sync.client.params.SyncParams"%>
+<%@page import="org.imogene.web.server.handler.GenericHandler"%>
+<%@page import="org.springframework.context.ApplicationContext"%>
+<%@page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
+«ENDIF-»
+<%@page import="java.util.ResourceBundle" %>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-
-<%@ page import="java.util.ResourceBundle" %>
-
 
 <html>
 
@@ -24,6 +28,13 @@
 
 <body>
 <%
+	«IF embedded == "true"-»
+	boolean authenticated = false;
+	ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+	GenericHandler handler = (GenericHandler) context.getBean("genericHandler");
+	SyncParams params = handler.find(SyncParams.class, SyncParams.ID);
+	boolean auth = params != null && params.getLogin() != null && params.getPassword() != null && params.getUrl() != null;
+	«ENDIF-»
 	ResourceBundle rb = null;
 	String locale = request.getParameter("locale");
 	if (locale==null)
@@ -65,17 +76,25 @@
 						<div class="imogene-LoginMessage"></div>
 						<div class="imogene-Login">
 							<div class="imogene-LoginPanel">
-								<%
-									if (locale != null) {
-								%>
+								«IF embedded == "true"-»
+								<%	if (!auth) { %>
+								<form action="../j_client_authentication" method="post">
+								<%	} else if (locale != null) { %>
+								«ELSE-»
+								<%	if (locale != null) { %>
+								«ENDIF-»
 								<form action="../j_spring_security_check?locale=<%=locale%>" method="post">
-								<%
-									} else {
-								%>
+								<%	} else { %>
 								<form action="../j_spring_security_check" method="post">
-								<%
-									}
-								%>
+								<%	} %>
+									«IF embedded == "true"-»
+									<%	if (!auth) { %>
+									<div class="imogene-Login-FieldPanel">
+										<div class="imogene-LoginBox"><%=rb.getString("login_url")%></div>
+										<input class="imogene-LoginText" type="text" id="j_url" name="j_url">
+									</div>
+									<%	} %>
+									«ENDIF-»
 									<div class="imogene-Login-FieldPanel">
 										<div class="imogene-LoginBox"><%=rb.getString("login_login")%></div>
 										<input class="imogene-LoginText" type="text" id="j_username" name="j_username">

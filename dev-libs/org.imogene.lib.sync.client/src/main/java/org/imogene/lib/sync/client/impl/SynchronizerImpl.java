@@ -140,9 +140,8 @@ public class SynchronizerImpl implements Synchronizer {
 
 	@Override
 	@Transactional
-	public synchronized int synchronize() {
+	public int synchronize() {
 		try {
-			/* 0 - Initialization */
 			// Load sync parameters
 			SyncParams params = genericDao.load(SyncParams.class, SyncParams.ID);
 			if (params == null) {
@@ -151,7 +150,22 @@ public class SynchronizerImpl implements Synchronizer {
 			}
 			String password = new String(
 					encryptionManager.decrypt(Base64.decodeBase64(params.getPassword().getBytes())));
-			syncClient = new OptimizedSyncClientHttp(params.getUrl(), params.getLogin(), password, params.getTerminal());
+			return synchronize(params.getUrl(), params.getLogin(), password, params.getTerminal(), params.getOffset());
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	@Override
+	@Transactional
+	public int synchronize(String url, String login, String password, String terminal, Long offset) {
+		try {
+			/* 0 - Initialization */
+			if (url == null || login == null || password == null || terminal == null) {
+				throw new SynchronizationException("Invalid synchronization parameters, thread not started",
+						SynchronizationException.ERROR_INIT);
+			}
+			syncClient = new OptimizedSyncClientHttp(url, login, password, terminal);
 
 			// Look for synchronization ERROR.
 			SyncHistory error = historyDao.loadLastError();
@@ -172,9 +186,8 @@ public class SynchronizerImpl implements Synchronizer {
 			File outFile = new File(directory, sessionId + ".lmodif");
 			FileOutputStream fos = new FileOutputStream(outFile);
 			// we take the date just before to access the database and to serialize
-			long offset = params.getOffset() != null ? params.getOffset() : 0;
-			Date tempDate = new Date(System.currentTimeMillis() + offset);
-			getDataToSynchronize(params.getLogin(), fos);
+			Date tempDate = offset != null ? new Date(System.currentTimeMillis() + offset) : new Date();
+			getDataToSynchronize(login, fos);
 			fos.close();
 			// update sync history
 			SyncHistory history = new SyncHistory();
