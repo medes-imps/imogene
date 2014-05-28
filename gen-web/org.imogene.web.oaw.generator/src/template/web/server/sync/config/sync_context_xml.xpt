@@ -114,8 +114,12 @@
 		<property name="host" value="${ntp.host}" />
 	</bean>
 
-	<task:scheduled-tasks>
-		<task:scheduled ref="ntpoffset" method="update" fixed-delay="60000" />
+	<bean id="synchronizationScheduler" class="org.imogene.web.server.scheduling.SynchronizationScheduler" />
+
+	<task:scheduler id="scheduler" />
+
+	<task:scheduled-tasks scheduler="scheduler">
+		<task:scheduled ref="ntpoffset" method="update" fixed-delay="${ntp.delay}" />
 	</task:scheduled-tasks>
 
 </beans>

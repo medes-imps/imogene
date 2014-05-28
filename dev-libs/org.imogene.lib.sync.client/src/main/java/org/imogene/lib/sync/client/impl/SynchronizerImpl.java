@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SynchronizerImpl implements Synchronizer {
 
 	private static final Logger logger = Logger.getLogger(SynchronizerImpl.class.getName());
-
+	
 	// Injected by Spring
 	private SyncHistoryDao historyDao;
 	private GenericDao genericDao;
@@ -129,12 +129,12 @@ public class SynchronizerImpl implements Synchronizer {
 		try {
 			boolean authenticated = client.authenticate();
 			if (authenticated) {
-				return 0;
+				return AUTH_SUCCESS;
 			} else {
-				return -1;
+				return AUTH_FAILURE;
 			}
 		} catch (SynchronizationException e) {
-			return -1;
+			return AUTH_FAILURE;
 		}
 	}
 
@@ -152,7 +152,7 @@ public class SynchronizerImpl implements Synchronizer {
 					encryptionManager.decrypt(Base64.decodeBase64(params.getPassword().getBytes())));
 			return synchronize(params.getUrl(), params.getLogin(), password, params.getTerminal(), params.getOffset());
 		} catch (Exception e) {
-			return -1;
+			return SYNC_FAILURE;
 		}
 	}
 
@@ -179,7 +179,7 @@ public class SynchronizerImpl implements Synchronizer {
 			/* 1 - initialize the session */
 			String sessionId = syncClient.initSession();
 			if (sessionId == null || sessionId.startsWith(SyncClient.ERROR_PREFIX)) {
-				return -1;
+				return SYNC_FAILURE;
 			}
 
 			/* 2 - send client modification */
@@ -220,9 +220,9 @@ public class SynchronizerImpl implements Synchronizer {
 			syncClient.closeSession(sessionId);
 			// now we are sure that we never need this temp file
 			outFile.delete();
-			return 0;
+			return SYNC_SUCCESS;
 		} catch (Exception e) {
-			return -1;
+			return SYNC_FAILURE;
 		}
 	}
 
@@ -340,7 +340,7 @@ public class SynchronizerImpl implements Synchronizer {
 	 * @param os output stream where to write data
 	 * @return number of entities to be synchronized
 	 */
-	private Integer getDataToSynchronize(String login, OutputStream os) throws SynchronizationException {
+	private int getDataToSynchronize(String login, OutputStream os) throws SynchronizationException {
 		Date lastSynchro = computeLastDate();
 		ImogActor actor = null;
 		try {

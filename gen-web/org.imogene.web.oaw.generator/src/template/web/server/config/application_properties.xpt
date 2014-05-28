@@ -9,7 +9,9 @@ jdbc.username=admin
 jdbc.password=admin
 hibernate.dialect=org.hibernate.dialect.DerbyDialect
 
+# NTP job properties
 ntp.host=africa.pool.ntp.org
+ntp.delay=600000
 «ELSE-»
 # JDBC properties
 jdbc.driverClassName=«jdbcDriver»

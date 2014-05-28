@@ -11,6 +11,7 @@ import javax.persistence.Table;
 public class SyncParams implements Serializable {
 
 	public static final String ID = "sync-param";
+	public static final long DEFAULT_PERIOD = 15 * 60 * 1000; // 15 min
 
 	/**
 	 * Serial version

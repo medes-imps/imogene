@@ -726,16 +726,4 @@
 		</outlet>
 	</component>
 	
-	<!-- Client Authentication Servlet-->
-	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
-		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
-			<metaModelFile value="${imogeneMetaModel}" />
-		</metaModel>
-		<expand value='template::web::server::sync::clientAuthenticationServlet::generate("${modelName}", "${embedded}") FOR project' />
-		<outlet path='${home-gen}/src/main/java'>
-			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
-		</outlet>
-	</component>
-
 </workflow>

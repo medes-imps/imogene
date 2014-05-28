@@ -9,9 +9,29 @@ package org.imogene.lib.sync.client;
 public interface Synchronizer {
 
 	/**
+	 * Result code on authentication success
+	 */
+	public static final int AUTH_SUCCESS = 0;
+
+	/**
+	 * Result code on authentication failure
+	 */
+	public static final int AUTH_FAILURE = -1;
+
+	/**
+	 * Result code on synchronization success
+	 */
+	public static final int SYNC_SUCCESS = 0;
+
+	/**
+	 * Result code on synchronization failure
+	 */
+	public static final int SYNC_FAILURE = -1;
+
+	/**
 	 * Execute a synchronization process. Returns the result of the synchronization.
 	 * 
-	 * @return if success return 0, -1 otherwise
+	 * @return if success returns {@link Synchronizer#SYNC_SUCCESS}, {@link Synchronizer#SYNC_FAILURE} otherwise
 	 */
 	public int synchronize();
 
@@ -23,7 +43,7 @@ public interface Synchronizer {
 	 * @param password The user password
 	 * @param terminal The terminal identifier
 	 * @param offset The time offset
-	 * @return if success return 0, -1 otherwise
+	 * @return if success returns {@link Synchronizer#SYNC_SUCCESS}, {@link Synchronizer#SYNC_FAILURE} otherwise
 	 */
 	public int synchronize(String url, String login, String password, String terminal, Long offset);
 
@@ -33,7 +53,7 @@ public interface Synchronizer {
 	 * @param url The synchronization server address
 	 * @param login The user login
 	 * @param password The user password
-	 * @return if success return 0, -1 otherwise
+	 * @return if success returns {@link Synchronizer#AUTH_SUCCESS}, {@link Synchronizer#AUTH_FAILURE} otherwise
 	 */
 	public int authenticate(String url, String login, String password);
 
