@@ -113,7 +113,11 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 		/* post generation tasks */
 		if (mPostGenerationTasks != null) {
 			for (PostGenerationTask task : mPostGenerationTasks) {
-				task.onPostGeneration(this);
+				try {
+					task.onPostGeneration(this);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
