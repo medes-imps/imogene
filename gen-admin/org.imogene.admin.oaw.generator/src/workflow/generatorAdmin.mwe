@@ -476,7 +476,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::web_xml::generate("${projectName}","${modelName}") FOR project' />
+		<expand value='template::web::server::config::web_xml::generate("${projectName}","${modelName}", "${embedded}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
@@ -614,7 +614,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::login_jsp::generate("${projectName}") FOR project' />
+		<expand value='template::web::webcontent::login_jsp::generate("${projectName}", "${embedded}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/jsp' />
 	</component>
 	
@@ -628,7 +628,7 @@
 	
 	<!--                  -->
 	<!--       BIRT       -->
-	<!--                  -->	
+	<!--                  -->
 	
 	<!-- csv exprt design -->
 	<component class="org.eclipse.xpand2.Generator">

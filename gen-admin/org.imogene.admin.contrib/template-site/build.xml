@@ -10,7 +10,7 @@
 
 	        <!-- Zip the template -->
 	        <zip destfile="${zip}">
-	            <zipfileset dir="${templatePath}" includes="**"  excludes="target/**,eclipseProjectFiles/**,.settings/**,**/CVS,.classpath,.project,.factorypath,.wtpmodules,pom.xml" /> 
+	            <zipfileset dir="${templatePath}" includes="**"  excludes="target/**,eclipseProjectFiles/**,.settings/**,**/CVS,.classpath,.project,.factorypath,.wtpmodules,pom.xml,embedded/**" /> 
 	        	<zipfileset dir="${templatePath}/eclipseProjectFiles" excludes="readme.txt" prefix="" />
 	        </zip>
 	    </target>
