@@ -26,24 +26,20 @@
 
 	<g:HorizontalPanel stylePrimaryName="{style.imogene-form}" verticalAlignment="middle">
 	
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" >
 			<imo1:ImogSingleRelationBox ui:field="cardEntity" />
 		</g:cell>
 		<g:cell verticalAlignment="middle">
 			<imo1:ImogSingleRelationBox ui:field="fieldGroup" />
 		</g:cell>
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" width="80px" horizontalAlignment="center">
 			<imo:ImogCheckBox ui:field="read" />
 		</g:cell>
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" width="80px" horizontalAlignment="center">
 			<imo:ImogCheckBox ui:field="write" />
 		</g:cell>
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" width="80px" horizontalAlignment="center">
 			<imo:ImogCheckBox ui:field="export" />
-		</g:cell>
-	
-		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">
-			<g:Image ui:field="clearImage" stylePrimaryName="{style.imog-clearImage}" />
 		</g:cell>
 	
 	</g:HorizontalPanel>

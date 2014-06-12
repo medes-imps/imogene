@@ -36,7 +36,6 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Composite that displays the list of Profile entries
- * 
  * @author MEDES-IMPS
  */
 public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
@@ -45,8 +44,7 @@ public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
 
 	private PushButton deleteButton;
 
-	public ProfileDynaTable(AdminRequestFactory requestFactory, ImogBeanDataProvider<ProfileProxy> provider,
-			boolean checkBoxesVisible) {
+	public ProfileDynaTable(AdminRequestFactory requestFactory, ImogBeanDataProvider<ProfileProxy> provider, boolean checkBoxesVisible) {
 		super(requestFactory, provider, checkBoxesVisible);
 	}
 
@@ -88,7 +86,6 @@ public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
 
 	/**
 	 * Creates the Create action command for the entity
-	 * 
 	 * @return the create command
 	 */
 	public Command getCreateCommand() {
@@ -106,7 +103,6 @@ public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
 
 	/**
 	 * Creates the Delete action command for the entity
-	 * 
 	 * @return the delete command
 	 */
 	public PushButton getDeleteButton() {
@@ -142,9 +138,7 @@ public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
 						AdminRenderer renderer = AdminRenderer.get();
 
 						StringBuffer msg = new StringBuffer();
-						msg.append(BaseNLS.constants().confirmation_delete_several1() + " "
-								+ AdminNLS.constants().profile_name() + " "
-								+ BaseNLS.constants().confirmation_delete_several2() + ": ");
+						msg.append(BaseNLS.constants().confirmation_delete_several1() + " " + AdminNLS.constants().profile_name() + " " + BaseNLS.constants().confirmation_delete_several2() + ": ");
 						int i = 0;
 						for (ProfileProxy entity : selectedEntities) {
 							if (count == 1 || i == count - 1)
@@ -178,22 +172,20 @@ public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
 			}));
 
 			// Selection changed handler
-			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE,
-					new SelectionChangedInTableEvent.Handler() {
-						@Override
-						public void noticeSelectionChange(int selectedItems) {
-							if (selectedItems > 0)
-								deleteButton.setVisible(true);
-							else
-								deleteButton.setVisible(false);
-						}
-					}));
+			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE, new SelectionChangedInTableEvent.Handler() {
+				@Override
+				public void noticeSelectionChange(int selectedItems) {
+					if (selectedItems > 0)
+						deleteButton.setVisible(true);
+					else
+						deleteButton.setVisible(false);
+				}
+			}));
 		}
 	}
 
 	/**
 	 * Creates the action command that enables to export the Profile entries in a csv file
-	 * 
 	 * @return the command
 	 */
 	public Command getCsvExportButton() {
@@ -225,7 +217,6 @@ public class ProfileDynaTable extends ImogDynaTable<ProfileProxy> {
 
 	/**
 	 * Column for field Name
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class NameColumn extends ImogColumn<ProfileProxy, String> {

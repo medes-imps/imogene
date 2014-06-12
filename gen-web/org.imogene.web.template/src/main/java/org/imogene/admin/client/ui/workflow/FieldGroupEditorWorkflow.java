@@ -16,8 +16,8 @@ import org.imogene.admin.shared.request.FieldGroupRequest;
 import org.imogene.web.client.ui.field.error.ImogConstraintViolation;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.ImogKeyGenerator;
-import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.FieldGroupProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
@@ -33,7 +33,6 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Worflow that manages the life of a FieldGroupProxy in the UI
- * 
  * @author MEDES-IMPS
  */
 public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
@@ -42,6 +41,7 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 	}
 
 	private AdminRequestFactory requestFactory;
+	private ImogBeanRenderer renderer;
 
 	private FieldGroupRequest request;
 	public FieldGroupProxy current;
@@ -51,7 +51,6 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the creation of a FieldGroup instance
-	 * 
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 */
@@ -61,15 +60,12 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the creation of a FieldGroup instance
-	 * 
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened
-	 *            from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public FieldGroupEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent,
-			String initField) {
+	public FieldGroupEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent, String initField) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
@@ -92,29 +88,26 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing FieldGroup instance
-	 * 
 	 * @param factory the application request factory
 	 * @param entityId the id of the FieldGroup instance to be visualized and edited
 	 * @param titleContainer the Label that will display the workflow title
 	 */
-	public FieldGroupEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer) {
-		this(factory, entityId, titleContainer, null, null);
+	public FieldGroupEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, ImogBeanRenderer renderer) {
+		this(factory, entityId, titleContainer, null, null, renderer);
 	}
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing FieldGroup instance
-	 * 
 	 * @param factory the application request factory
 	 * @param entityId the id of the FieldGroup instance to be visualized and edited
 	 * @param titleContainer the label
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened
-	 *            from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public FieldGroupEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer,
-			RelationPopupPanel parent, String initField) {
+	public FieldGroupEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, RelationPopupPanel parent, String initField, ImogBeanRenderer renderer) {
 
 		super(factory.getEventBus(), titleContainer, parent);
+		this.renderer = renderer;
 
 		requestFactory = factory;
 		if (parent != null) {
@@ -158,7 +151,6 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Get an existing instance of FieldGroup
-	 * 
 	 * @param entityId the id of the FieldGroupProxy to be fetched
 	 */
 	private void fetchFieldGroup(String entityId) {
@@ -180,13 +172,12 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Display the current instance of FieldGroup in editor
-	 * 
 	 * @param entity the FieldGroupProxy to be displayed
 	 */
 	private void viewFieldGroup(FieldGroupProxy entity) {
 
 		/* display instance information */
-		setTitle(AdminNLS.constants().fieldGroup_name() + ": " + AdminRenderer.get().getDisplayValue(entity));
+		setTitle(AdminNLS.constants().fieldGroup_name() + ": " + renderer.getDisplayValue(entity.getEntity()) + " / " + renderer.getDisplayValue(entity));
 		setMetaData((ImogBeanProxy) entity);
 
 		/* push the instance to the editor in view mode */
@@ -203,10 +194,6 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
-
-		/* display edit button */
-		if (ProfileUtil.isAdmin())
-			setModifiable(true);
 	}
 
 	/**
@@ -306,7 +293,6 @@ public class FieldGroupEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Setter to inject a CardEntity value
-	 * 
 	 * @param value the value to be injected
 	 * @param isLocked true if relation field shall be locked (non editable)
 	 */

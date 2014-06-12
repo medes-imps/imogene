@@ -4,20 +4,26 @@
 	xmlns:imo3="urn:import:org.imogene.web.client.ui.field.group">
 
 	<ui:style>
-		.imog-AddImage {
-			cursor: pointer;
-			cursor: hand;
-			margin-left: 2px;
-		}
 
 		.fieldGroup-ListEditor {
 			margin-top: 5px;
 		}
 
 		.header {
-			width: 217px;
+			width: 222px;
 			margin-bottom: 5px;
 			font-weight: bold;
+		}
+
+		.header2 {
+			width: 90px;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		.selectAll {
+			margin-top: 2px;
+			margin-bottom: 2px;
 		}
 
 		@external .fieldGroup-ListEditor;
@@ -33,21 +39,46 @@
 					    <g:Label ui:field="entityLabel" stylePrimaryName="{style.header}"/>
 					</g:cell>
 					<g:cell verticalAlignment="middle" horizontalAlignment="center">
-					    <g:Label ui:field="createLabel" stylePrimaryName="{style.header}"/>
+					    <g:VerticalPanel>
+					        <g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:Label ui:field="createLabel" stylePrimaryName="{style.header2}"/>
+					   		</g:cell>
+					   		<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:CheckBox ui:field="createAllCheckBox" stylePrimaryName="{style.selectAll}" />
+					   		</g:cell>				        
+					    </g:VerticalPanel>
 					</g:cell>
 					<g:cell verticalAlignment="middle" horizontalAlignment="center">
-					    <g:Label ui:field="deleteLabel" stylePrimaryName="{style.header}"/>
+					     <g:VerticalPanel>
+					    	 <g:cell verticalAlignment="middle" horizontalAlignment="center">
+					    		<g:Label ui:field="directAccessLabel" stylePrimaryName="{style.header2}"/>
+					    	</g:cell>
+					   		<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:CheckBox ui:field="directAccessAllCheckBox" stylePrimaryName="{style.selectAll}" />
+					   		</g:cell>	
+					   	 </g:VerticalPanel>					    
 					</g:cell>
 					<g:cell verticalAlignment="middle" horizontalAlignment="center">
-					    <g:Label ui:field="directAccessLabel" stylePrimaryName="{style.header}"/>
-					</g:cell>
+					     <g:VerticalPanel>
+					    	 <g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:Label ui:field="deleteLabel" stylePrimaryName="{style.header2}"/>
+					   		</g:cell>
+					   		<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:CheckBox ui:field="deleteAllCheckBox" stylePrimaryName="{style.selectAll}" />
+					   		</g:cell>		
+					   	 </g:VerticalPanel>				    
+					</g:cell>					
 					<g:cell verticalAlignment="middle" horizontalAlignment="center">
-					    <g:Label ui:field="exportLabel" stylePrimaryName="{style.header}"/>
+					     <g:VerticalPanel>
+					    	 <g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:Label ui:field="exportLabel" stylePrimaryName="{style.header2}"/>
+					   		</g:cell>
+					   		<g:cell verticalAlignment="middle" horizontalAlignment="center">
+					   			<g:CheckBox ui:field="exportAllCheckBox" stylePrimaryName="{style.selectAll}" />
+					   		</g:cell>	
+					   	 </g:VerticalPanel>					    
 					</g:cell>
 									
-					<g:cell verticalAlignment="middle" horizontalAlignment="right">
-					    <g:Image ui:field="addItem" stylePrimaryName="{style.imog-AddImage}" width="24px" />		
-					</g:cell>
 				</g:HorizontalPanel>	    
 			    
 				<g:VerticalPanel ui:field="listContainer" />

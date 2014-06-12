@@ -265,5 +265,7 @@ public class AdminRenderer extends ImogBeanRenderer {
 	public void setFormTypeUtil(FormTypeUtil formTypeUtil) {
 		this.formTypeUtil = formTypeUtil;
 	}
+	
+
 
 }

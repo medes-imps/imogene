@@ -5,11 +5,11 @@
 
 package org.imogene.«projectName.toLowerCase()».client;
 
+import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.util.BooleanUtil;
 import org.imogene.web.client.util.DateUtil;
 import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
-import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
 import org.imogene.«projectName.toLowerCase()».shared.proxy.LocalizedTextProxy;
@@ -167,16 +167,14 @@ public class «projectName.toFirstUpper()»Renderer extends ImogBeanRenderer {
 	
 	public String getEntityTypeDisplayValue(String name) {
 			
-			«FOREACH entities AS e»
+			«FOREACH entities AS e-»
 			if (name.equals(«e.name.toFirstUpper()»Proxy.class.getName())) {
 				return NLS.constants().«e.name.toFirstLower()»_name();
 			}						
 			«ENDFOREACH»
 			
 			return "";			
-		}	
-
-
+		}
 }
 «ENDFILE»
 «ENDDEFINE»

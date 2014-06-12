@@ -194,17 +194,6 @@ public class ProfileListPanel extends Composite {
 	}
 
 	/**
-	 * 
-	 * @param eventBus
-	 */
-	private void setListActions() {
-
-		listButton = new PopupButton(BaseNLS.constants().button_list());
-
-		wrapperPanel.addHeaderWidget(listButton);
-	}
-
-	/**
 	 * Adds a button that enables to go the the Home panel
 	 * 
 	 * @param eventBus

@@ -37,7 +37,6 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Composite that displays the list of Notification entries
- * 
  * @author MEDES-IMPS
  */
 public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
@@ -46,8 +45,7 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	private PushButton deleteButton;
 
-	public NotificationDynaTable(AdminRequestFactory requestFactory, ImogBeanDataProvider<NotificationProxy> provider,
-			boolean checkBoxesVisible) {
+	public NotificationDynaTable(AdminRequestFactory requestFactory, ImogBeanDataProvider<NotificationProxy> provider, boolean checkBoxesVisible) {
 		super(requestFactory, provider, checkBoxesVisible);
 	}
 
@@ -101,7 +99,6 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Creates the Create action command for the entity
-	 * 
 	 * @return the create command
 	 */
 	public Command getCreateCommand() {
@@ -119,7 +116,6 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Creates the Delete action command for the entity
-	 * 
 	 * @return the delete command
 	 */
 	public PushButton getDeleteButton() {
@@ -155,9 +151,8 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 						AdminRenderer renderer = AdminRenderer.get();
 
 						StringBuffer msg = new StringBuffer();
-						msg.append(BaseNLS.constants().confirmation_delete_several1() + " "
-								+ AdminNLS.constants().notification_name() + " "
-								+ BaseNLS.constants().confirmation_delete_several2() + ": ");
+						msg.append(BaseNLS.constants().confirmation_delete_several1() + " " + AdminNLS.constants().notification_name() + " " + BaseNLS.constants().confirmation_delete_several2()
+								+ ": ");
 						int i = 0;
 						for (NotificationProxy entity : selectedEntities) {
 							if (count == 1 || i == count - 1)
@@ -191,22 +186,20 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 			}));
 
 			// Selection changed handler
-			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE,
-					new SelectionChangedInTableEvent.Handler() {
-						@Override
-						public void noticeSelectionChange(int selectedItems) {
-							if (selectedItems > 0)
-								deleteButton.setVisible(true);
-							else
-								deleteButton.setVisible(false);
-						}
-					}));
+			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE, new SelectionChangedInTableEvent.Handler() {
+				@Override
+				public void noticeSelectionChange(int selectedItems) {
+					if (selectedItems > 0)
+						deleteButton.setVisible(true);
+					else
+						deleteButton.setVisible(false);
+				}
+			}));
 		}
 	}
 
 	/**
 	 * Creates the ExportExcel action command for the entity
-	 * 
 	 * @return the ExportExcel command
 	 */
 	public PushButton getExportExcelCommand() {
@@ -247,7 +240,6 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field Name
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class NameColumn extends ImogColumn<NotificationProxy, String> {
@@ -274,7 +266,6 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field FormType
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class FormTypeColumn extends ImogColumn<NotificationProxy, String> {
@@ -303,7 +294,6 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field Method
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class MethodColumn extends ImogColumn<NotificationProxy, String> {
@@ -332,7 +322,6 @@ public class NotificationDynaTable extends ImogDynaTable<NotificationProxy> {
 
 	/**
 	 * Column for field Operation
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class OperationColumn extends ImogColumn<NotificationProxy, String> {

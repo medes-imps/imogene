@@ -4,6 +4,7 @@ import org.imogene.admin.client.ui.workflow.CardEntityEditorWorkflow;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.panel.WrapperPanel;
+import org.imogene.web.client.util.ImogBeanRenderer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
@@ -15,7 +16,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Panel that contains the CardEntity Workflow
- * 
  * @author Medes-IMPS
  */
 public class CardEntityFormPanel extends Composite {
@@ -32,16 +32,13 @@ public class CardEntityFormPanel extends Composite {
 
 	/**
 	 * Constructor
-	 * 
 	 * @param requestFactory the application requestFactory
 	 * @param entityId the id of the entity to be managed by the workflow. null if an entity is being created
 	 * @param parent parent composite if the panel is contained in a RelationPopupPanel
 	 * @param initField the field that initiated the display in a RelationPopupPanel
-	 * @param returnToList true if after closing the wokflow, the application shall display the list of entities, false
-	 *            otherwise
+	 * @param returnToList true if after closing the wokflow, the application shall display the list of entities, false otherwise
 	 */
-	public CardEntityFormPanel(AdminRequestFactory requestFactory, String entityId, RelationPopupPanel parent,
-			String initField) {
+	public CardEntityFormPanel(AdminRequestFactory requestFactory, String entityId, RelationPopupPanel parent, String initField, ImogBeanRenderer renderer) {
 
 		wrapperPanel = new WrapperPanel();
 		wrapperPanel.setWidth("90%");
@@ -49,10 +46,9 @@ public class CardEntityFormPanel extends Composite {
 
 		if (entityId != null) {
 			if (parent == null)
-				editorWorkflow = new CardEntityEditorWorkflow(requestFactory, entityId, titleContainer);
+				editorWorkflow = new CardEntityEditorWorkflow(requestFactory, entityId, titleContainer, renderer);
 			else {
-				editorWorkflow = new CardEntityEditorWorkflow(requestFactory, entityId, titleContainer, parent,
-						initField);
+				editorWorkflow = new CardEntityEditorWorkflow(requestFactory, entityId, titleContainer, parent, initField, renderer);
 			}
 		} else {
 			if (parent == null) {
@@ -76,12 +72,11 @@ public class CardEntityFormPanel extends Composite {
 
 	/**
 	 * Constructor
-	 * 
 	 * @param requestFactory the application requestFactory
 	 * @param entityId the id of the entity to be managed by the workflow. null if an entity is being created
 	 */
-	public CardEntityFormPanel(AdminRequestFactory requestFactory, String entityId) {
-		this(requestFactory, entityId, null, null);
+	public CardEntityFormPanel(AdminRequestFactory requestFactory, String entityId, ImogBeanRenderer renderer) {
+		this(requestFactory, entityId, null, null, renderer);
 	}
 
 	public void setCloseEvent(GwtEvent<?> closeEvent) {

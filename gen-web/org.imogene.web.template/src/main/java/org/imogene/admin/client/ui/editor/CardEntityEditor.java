@@ -27,11 +27,9 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * Editor that provides the UI components that allow a CardEntityProxy to be viewed and edited
- * 
  * @author MEDES-IMPS
  */
-public class CardEntityEditor extends Composite implements Editor<CardEntityProxy>, HasEditorDelegate<CardEntityProxy>,
-		HasEditorErrors<CardEntityProxy> {
+public class CardEntityEditor extends Composite implements Editor<CardEntityProxy>, HasEditorDelegate<CardEntityProxy>, HasEditorErrors<CardEntityProxy> {
 
 	interface Binder extends UiBinder<Widget, CardEntityEditor> {
 	}
@@ -54,7 +52,6 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 * @param hideButtons true if the relation field buttons shall be hidden
 	 */
@@ -70,7 +67,6 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 */
 	public CardEntityEditor(AdminRequestFactory factory) {
@@ -90,7 +86,6 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 
 	/**
 	 * Sets the edition mode
-	 * 
 	 * @param isEdited true to enable the edition of the form
 	 */
 	public void setEdited(boolean isEdited) {
@@ -138,16 +133,15 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	 */
 	private void setFieldValueChangeHandler() {
 
-		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE,
-				new FieldValueChangeEvent.Handler() {
-					@Override
-					public void onValueChange(ImogField<?> field) {
+		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE, new FieldValueChangeEvent.Handler() {
+			@Override
+			public void onValueChange(ImogField<?> field) {
 
-						// field dependent visibility management
-						computeVisibility(field, false);
+				// field dependent visibility management
+				computeVisibility(field, false);
 
-					}
-				}));
+			}
+		}));
 	}
 
 	/**
@@ -158,9 +152,7 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	}
 
 	/**
-	 * Gets the CardEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
-	 * the proxy to related entities
-	 * 
+	 * Gets the CardEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit the proxy to related entities
 	 * @return
 	 */
 	public CardEntityProxy getEditedValue() {
@@ -168,9 +160,7 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 	}
 
 	/**
-	 * Sets the CardEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
-	 * the proxy to related entities
-	 * 
+	 * Sets the CardEntityProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit the proxy to related entities
 	 * @param editedValue
 	 */
 	public void setEditedValue(CardEntityProxy editedValue) {
@@ -184,24 +174,6 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 
 	}
 
-	/**
-	 */
-	private void setAllLabelWith(String width) {
-
-		/* Description field group */
-		name.setLabelWidth(width);
-
-	}
-
-	/**
-	 */
-	private void setAllBoxWith(String width) {
-
-		/* Description field group */
-		name.setBoxWidth(width);
-
-	}
-
 	@Override
 	public void setDelegate(EditorDelegate<CardEntityProxy> delegate) {
 		this.delegate = delegate;
@@ -209,16 +181,6 @@ public class CardEntityEditor extends Composite implements Editor<CardEntityProx
 
 	@Override
 	public void showErrors(List<EditorError> errors) {
-		if (errors != null && errors.size() > 0) {
-
-			for (EditorError error : errors) {
-				Object userData = error.getUserData();
-				if (userData != null && userData instanceof String) {
-					String field = (String) userData;
-
-				}
-			}
-		}
 	}
 
 	@Override

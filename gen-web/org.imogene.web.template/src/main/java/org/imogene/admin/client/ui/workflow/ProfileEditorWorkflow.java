@@ -14,9 +14,11 @@ import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.editor.ProfileEditor;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.admin.shared.request.ProfileRequest;
+import org.imogene.lib.common.profile.Profile;
 import org.imogene.web.client.ui.field.error.ImogConstraintViolation;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
@@ -35,7 +37,6 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Worflow that manages the life of a ProfileProxy in the UI
- * 
  * @author MEDES-IMPS
  */
 public class ProfileEditorWorkflow extends EditorWorkflowComposite {
@@ -53,34 +54,30 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the creation of a Profile instance
-	 * 
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 */
-	public ProfileEditorWorkflow(AdminRequestFactory factory, Label titleContainer) {
-		this(factory, titleContainer, null, null);
+	public ProfileEditorWorkflow(AdminRequestFactory factory, Label titleContainer, ImogBeanRenderer renderer) {
+		this(factory, titleContainer, null, null, renderer);
 	}
 
 	/**
 	 * Workflow constructor for the creation of a Profile instance
-	 * 
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened
-	 *            from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public ProfileEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent,
-			String initField) {
+	public ProfileEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent, String initField, ImogBeanRenderer renderer) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
 		requestFactory = factory;
 		if (parent != null) {
-			editor = new ProfileEditor(factory, true);
+			editor = new ProfileEditor(factory, true, renderer);
 			this.initField = initField;
 		} else
-			editor = new ProfileEditor(factory);
+			editor = new ProfileEditor(factory, renderer);
 
 		isNew = true;
 		setEditable(true);
@@ -94,36 +91,32 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing Profile instance
-	 * 
 	 * @param factory the application request factory
 	 * @param entityId the id of the Profile instance to be visualized and edited
 	 * @param titleContainer the Label that will display the workflow title
 	 */
-	public ProfileEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer) {
-		this(factory, entityId, titleContainer, null, null);
+	public ProfileEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, ImogBeanRenderer renderer) {
+		this(factory, entityId, titleContainer, null, null, renderer);
 	}
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing Profile instance
-	 * 
 	 * @param factory the application request factory
 	 * @param entityId the id of the Profile instance to be visualized and edited
 	 * @param titleContainer the label
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened
-	 *            from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public ProfileEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer,
-			RelationPopupPanel parent, String initField) {
+	public ProfileEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, RelationPopupPanel parent, String initField, ImogBeanRenderer renderer) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
 		requestFactory = factory;
 		if (parent != null) {
-			editor = new ProfileEditor(factory, true);
+			editor = new ProfileEditor(factory, true, renderer);
 			this.initField = initField;
 		} else
-			editor = new ProfileEditor(factory);
+			editor = new ProfileEditor(factory, renderer);
 
 		setModifiable(false);
 		isNew = false;
@@ -151,7 +144,7 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		createRequest.with("fieldGroupProfiles.cardEntity");
 		createRequest.with("fieldGroupProfiles.fieldGroup");
 		createRequest.with("fieldGroupProfiles.fieldGroup.entity");
-		
+
 		createRequest.to(new Receiver<ProfileProxy>() {
 			@Override
 			public void onSuccess(ProfileProxy response) {
@@ -162,7 +155,6 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Get an existing instance of Profile
-	 * 
 	 * @param entityId the id of the ProfileProxy to be fetched
 	 */
 	private void fetchProfile(String entityId) {
@@ -189,7 +181,6 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Display the current instance of Profile in editor
-	 * 
 	 * @param entity the ProfileProxy to be displayed
 	 * @param editet whether we are in edition mode or not
 	 */
@@ -197,7 +188,7 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		/* push the instance to the editor in view mode */
 		request = requestFactory.profileRequest();
 		current = request.edit(entity);
-		
+
 		if (entity.getId() != null) {
 			/* display instance information */
 			setTitle(AdminNLS.constants().profile_name() + ": " + AdminRenderer.get().getDisplayValue(entity));
@@ -218,11 +209,8 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 				}
 			}
 		}
-		
-		editor.setEditedValue(current);
 
-		/* set request context for list editor operations */
-		editor.setRequestContextForListEditors(request);
+		editor.setEditedValue(current);
 
 		editorDriver.edit(current, request);
 		editor.setEdited(edited);
@@ -231,7 +219,7 @@ public class ProfileEditorWorkflow extends EditorWorkflowComposite {
 		editor.computeVisibility(null, true);
 
 		/* display edit button */
-		if (!edited && ProfileUtil.isAdmin())
+		if (!edited && ProfileUtil.isAdmin() && !current.getId().equals(Profile.ADMINISTRATOR))
 			setModifiable(true);
 	}
 

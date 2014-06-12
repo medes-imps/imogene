@@ -38,7 +38,6 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Composite that displays the list of DynamicField_Template entries
- * 
  * @author MEDES-IMPS
  */
 public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTemplateProxy> {
@@ -47,8 +46,7 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	private PushButton deleteButton;
 
-	public DynamicFieldTemplateDynaTable(AdminRequestFactory requestFactory,
-			ImogBeanDataProvider<DynamicFieldTemplateProxy> provider, boolean checkBoxesVisible) {
+	public DynamicFieldTemplateDynaTable(AdminRequestFactory requestFactory, ImogBeanDataProvider<DynamicFieldTemplateProxy> provider, boolean checkBoxesVisible) {
 		super(requestFactory, provider, checkBoxesVisible);
 	}
 
@@ -80,8 +78,7 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 			Column<DynamicFieldTemplateProxy, String> templateCreatorColumn = new TemplateCreatorColumn();
 			templateCreatorColumn.setSortable(true);
-			table.addColumn(templateCreatorColumn, DynFieldsNLS.constants()
-					.dynamicField_Template_field_s_templateCreator());
+			table.addColumn(templateCreatorColumn, DynFieldsNLS.constants().dynamicField_Template_field_s_templateCreator());
 
 			Column<DynamicFieldTemplateProxy, String> descriptionColumn = new DescriptionColumn();
 			descriptionColumn.setSortable(true);
@@ -124,7 +121,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Creates the Create action command for the entity
-	 * 
 	 * @return the create command
 	 */
 	public Command getCreateCommand() {
@@ -142,7 +138,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Creates the Delete action command for the entity
-	 * 
 	 * @return the delete command
 	 */
 	public PushButton getDeleteButton() {
@@ -178,8 +173,7 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 						DynFieldsRenderer renderer = DynFieldsRenderer.get();
 
 						StringBuffer msg = new StringBuffer();
-						msg.append(BaseNLS.constants().confirmation_delete_several1() + " "
-								+ DynFieldsNLS.constants().dynamicField_Template_name() + " "
+						msg.append(BaseNLS.constants().confirmation_delete_several1() + " " + DynFieldsNLS.constants().dynamicField_Template_name() + " "
 								+ BaseNLS.constants().confirmation_delete_several2() + ": ");
 						int i = 0;
 						for (DynamicFieldTemplateProxy entity : selectedEntities) {
@@ -214,16 +208,15 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 			}));
 
 			// Selection changed handler
-			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE,
-					new SelectionChangedInTableEvent.Handler() {
-						@Override
-						public void noticeSelectionChange(int selectedItems) {
-							if (selectedItems > 0)
-								deleteButton.setVisible(true);
-							else
-								deleteButton.setVisible(false);
-						}
-					}));
+			registrations.add(requestFactory.getEventBus().addHandler(SelectionChangedInTableEvent.TYPE, new SelectionChangedInTableEvent.Handler() {
+				@Override
+				public void noticeSelectionChange(int selectedItems) {
+					if (selectedItems > 0)
+						deleteButton.setVisible(true);
+					else
+						deleteButton.setVisible(false);
+				}
+			}));
 		}
 	}
 
@@ -252,7 +245,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field FieldName
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class FieldNameColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -279,7 +271,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field FieldType
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class FieldTypeColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -296,8 +287,7 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 			if (object.getFieldType() == null)
 				value = "";
 			else
-				value = renderer.getEnumDisplayValue(DynamicFieldTemplateProxy.class, "fieldType",
-						object.getFieldType());
+				value = renderer.getEnumDisplayValue(DynamicFieldTemplateProxy.class, "fieldType", object.getFieldType());
 
 			return value;
 		}
@@ -309,7 +299,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field FormType
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class FormTypeColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -338,7 +327,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field TemplateCreator
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class TemplateCreatorColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -367,7 +355,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field Description
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class DescriptionColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -394,7 +381,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field IsDefault
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class IsDefaultColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -421,7 +407,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field FieldPosition
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class FieldPositionColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -448,7 +433,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field AllUsers
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class AllUsersColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {
@@ -475,7 +459,6 @@ public class DynamicFieldTemplateDynaTable extends ImogDynaTable<DynamicFieldTem
 
 	/**
 	 * Column for field IsActivated
-	 * 
 	 * @author MEDES-IMPS
 	 */
 	private class IsActivatedColumn extends ImogColumn<DynamicFieldTemplateProxy, String> {

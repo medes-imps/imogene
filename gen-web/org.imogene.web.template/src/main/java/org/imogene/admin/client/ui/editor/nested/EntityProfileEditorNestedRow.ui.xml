@@ -29,21 +29,17 @@
 		<g:cell verticalAlignment="middle">
 			<imo1:ImogSingleRelationBox ui:field="entity" />
 		</g:cell>
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" width="90px" horizontalAlignment="center">
 			<imo:ImogCheckBox ui:field="create" />
 		</g:cell>
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" width="90px" horizontalAlignment="center">
+			<imo:ImogCheckBox ui:field="directAccess" />
+		</g:cell>		
+		<g:cell verticalAlignment="middle" width="90px" horizontalAlignment="center">
 			<imo:ImogCheckBox ui:field="delete" />
 		</g:cell>
-		<g:cell verticalAlignment="middle">
-			<imo:ImogCheckBox ui:field="directAccess" />
-		</g:cell>
-		<g:cell verticalAlignment="middle">
+		<g:cell verticalAlignment="middle" width="90px" horizontalAlignment="center">
 			<imo:ImogCheckBox ui:field="export" />
-		</g:cell>
-	
-		<g:cell verticalAlignment="middle" width="24px" horizontalAlignment="left">
-			<g:Image ui:field="clearImage" stylePrimaryName="{style.imog-clearImage}" />
 		</g:cell>
 	
 	</g:HorizontalPanel>

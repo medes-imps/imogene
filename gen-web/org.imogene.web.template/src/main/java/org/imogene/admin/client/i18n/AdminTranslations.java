@@ -18,6 +18,8 @@ public interface AdminTranslations extends Constants {
 	String thema_users();
 
 	String thema_administration();
+	
+	String thema_model();
 
 	/* Password message */
 	String password_confirm_error();

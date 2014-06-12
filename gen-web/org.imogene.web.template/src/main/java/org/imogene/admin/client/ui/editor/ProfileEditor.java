@@ -7,13 +7,14 @@ import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.admin.client.ui.editor.nested.ProfileEntityProfilesListEditor;
 import org.imogene.admin.client.ui.editor.nested.ProfileFieldGroupProfilesListEditor;
 import org.imogene.admin.shared.AdminRequestFactory;
+import org.imogene.lib.common.profile.Profile;
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.ImogTextBox;
 import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.ProfileProxy;
-import org.imogene.web.shared.request.ImogEntityRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -29,11 +30,9 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * Editor that provides the UI components that allow a ProfileProxy to be viewed and edited
- * 
  * @author MEDES-IMPS
  */
-public class ProfileEditor extends Composite implements Editor<ProfileProxy>, HasEditorDelegate<ProfileProxy>,
-		HasEditorErrors<ProfileProxy> {
+public class ProfileEditor extends Composite implements Editor<ProfileProxy>, HasEditorDelegate<ProfileProxy>, HasEditorErrors<ProfileProxy> {
 
 	interface Binder extends UiBinder<Widget, ProfileEditor> {
 	}
@@ -45,7 +44,6 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	private EditorDelegate<ProfileProxy> delegate;
 
 	private ProfileProxy editedValue; // Not used by the editor
-	private boolean hideButtons = false;
 
 	/* Description section widgets */
 	@UiField
@@ -60,16 +58,14 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 * @param hideButtons true if the relation field buttons shall be hidden
 	 */
-	public ProfileEditor(AdminRequestFactory factory, boolean hideButtons) {
+	public ProfileEditor(AdminRequestFactory factory, boolean hideButtons, ImogBeanRenderer renderer) {
 
 		this.requestFactory = factory;
-		this.hideButtons = hideButtons;
 
-		setRelationFields();
+		setRelationFields(renderer);
 
 		initWidget(BINDER.createAndBindUi(this));
 
@@ -78,11 +74,10 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 */
-	public ProfileEditor(AdminRequestFactory factory) {
-		this(factory, false);
+	public ProfileEditor(AdminRequestFactory factory, ImogBeanRenderer renderer) {
+		this(factory, false, renderer);
 	}
 
 	/**
@@ -99,19 +94,18 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	/**
 	 * Configures the widgets that manage relation fields
 	 */
-	private void setRelationFields() {
+	private void setRelationFields(ImogBeanRenderer renderer) {
 
 		/* field entityProfiles */
-		entityProfiles = new ProfileEntityProfilesListEditor(requestFactory);
+		entityProfiles = new ProfileEntityProfilesListEditor(requestFactory, renderer);
 
 		/* field fieldGroupProfiles */
-		fieldGroupProfiles = new ProfileFieldGroupProfilesListEditor(requestFactory);
+		fieldGroupProfiles = new ProfileFieldGroupProfilesListEditor(requestFactory, renderer);
 
 	}
 
 	/**
 	 * Sets the edition mode
-	 * 
 	 * @param isEdited true to enable the edition of the form
 	 */
 	public void setEdited(boolean isEdited) {
@@ -123,9 +117,15 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 
 		/* Description section widgets */
 		name.setEdited(isEdited);
-		entityProfiles.setEdited(isEdited);
-		fieldGroupProfiles.setEdited(isEdited);
-
+		
+		if(editedValue!=null && editedValue.getId()!=null && editedValue.getId().equals(Profile.ADMINISTRATOR)) {
+			entityProfiles.setVisible(false);
+			fieldGroupProfiles.setVisible(false);
+		}
+		else {
+			entityProfiles.setEdited(isEdited);
+			fieldGroupProfiles.setEdited(isEdited);			
+		}
 	}
 
 	/**
@@ -151,36 +151,27 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	}
 
 	/**
-	 * Sets the Request Context for the List Editors
-	 */
-	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
-		entityProfiles.setRequestContextForListEditors(ctx);
-		fieldGroupProfiles.setRequestContextForListEditors(ctx);
-	}
-
-	/**
 	 * Manages editor updates when a field value changes
 	 */
 	private void setFieldValueChangeHandler() {
 
-		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE,
-				new FieldValueChangeEvent.Handler() {
-					@Override
-					public void onValueChange(ImogField<?> field) {
+		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE, new FieldValueChangeEvent.Handler() {
+			@Override
+			public void onValueChange(ImogField<?> field) {
 
-						// field dependent visibility management
-						computeVisibility(field, false);
+				// field dependent visibility management
+				computeVisibility(field, false);
 
-					}
-				}));
+			}
+		}));
 	}
 
 	/**
 	 * Computes the field visibility
 	 */
 	public void computeVisibility(ImogField<?> source, boolean allValidation) {
-		entityProfiles.computeVisibility(source, allValidation);
-		fieldGroupProfiles.computeVisibility(source, allValidation);
+//		entityProfiles.computeVisibility(source, allValidation);
+//		fieldGroupProfiles.computeVisibility(source, allValidation);
 
 	}
 
@@ -192,9 +183,7 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	}
 
 	/**
-	 * Gets the ProfileProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
-	 * the proxy to related entities
-	 * 
+	 * Gets the ProfileProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit the proxy to related entities
 	 * @return
 	 */
 	public ProfileProxy getEditedValue() {
@@ -202,9 +191,7 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 	}
 
 	/**
-	 * Sets the ProfileProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit
-	 * the proxy to related entities
-	 * 
+	 * Sets the ProfileProxy that is edited in the Workflow Not used by the editor Temporary storage used to transmit the proxy to related entities
 	 * @param editedValue
 	 */
 	public void setEditedValue(ProfileProxy editedValue) {
@@ -222,24 +209,6 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 		fieldGroupProfiles.validateFields();
 	}
 
-	/**
-	 */
-	private void setAllLabelWith(String width) {
-
-		/* Description field group */
-		name.setLabelWidth(width);
-
-	}
-
-	/**
-	 */
-	private void setAllBoxWith(String width) {
-
-		/* Description field group */
-		name.setBoxWidth(width);
-
-	}
-
 	@Override
 	public void setDelegate(EditorDelegate<ProfileProxy> delegate) {
 		this.delegate = delegate;
@@ -247,16 +216,6 @@ public class ProfileEditor extends Composite implements Editor<ProfileProxy>, Ha
 
 	@Override
 	public void showErrors(List<EditorError> errors) {
-		if (errors != null && errors.size() > 0) {
-
-			for (EditorError error : errors) {
-				Object userData = error.getUserData();
-				if (userData != null && userData instanceof String) {
-					String field = (String) userData;
-
-				}
-			}
-		}
 	}
 
 	@Override

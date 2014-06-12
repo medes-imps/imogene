@@ -12,11 +12,10 @@ import org.imogene.web.client.event.IsTableFilteredEvent;
 import org.imogene.web.client.event.SelectMenuItemEvent;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.panel.WrapperPanelForTable;
-import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.LocalSession;
-import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
@@ -66,7 +65,7 @@ public class CardEntityListPanel extends Composite {
 	 * @param requestFactory
 	 * @param searchText text that will be used to filter the table entries
 	 */
-	public CardEntityListPanel(AdminRequestFactory requestFactory, String searchText) {
+	public CardEntityListPanel(AdminRequestFactory requestFactory, String searchText, ImogBeanRenderer renderer) {
 
 		this.requestFactory = requestFactory;
 		imogResources = GWT.create(ImogResources.class);
@@ -83,10 +82,7 @@ public class CardEntityListPanel extends Composite {
 			wrapperPanel.setMessageLabel(filteringMessage);
 
 		/* dynatable */
-		if (ProfileUtil.isAdmin())
-			listComposite = new CardEntityDynaTable(requestFactory, provider, true);
-		else
-			listComposite = new CardEntityDynaTable(requestFactory, provider, false);
+		listComposite = new CardEntityDynaTable(requestFactory, provider, false, renderer);
 
 		configureWrapperPanelForTable();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -97,9 +93,10 @@ public class CardEntityListPanel extends Composite {
 	 * 
 	 * @param requestFactory
 	 */
-	public CardEntityListPanel(AdminRequestFactory requestFactory) {
-		this(requestFactory, null);
+	public CardEntityListPanel(AdminRequestFactory requestFactory, ImogBeanRenderer renderer) {
+		this(requestFactory, null, renderer);
 	}
+	
 
 	/**
 	 * Configures the Data provider that enables to get the data to feed the table that lists CardEntity entries
@@ -129,16 +126,12 @@ public class CardEntityListPanel extends Composite {
 	 */
 	private void configureWrapperPanelForTable() {
 
-		ImogFilterPanel filterPanel = listComposite.getFilterPanel();
 		Command createCommand = listComposite.getCreateCommand();
 		Command exportButton = listComposite.getCsvExportButton();
 		PushButton deleteButton = listComposite.getDeleteButton();
 
 		// add pager
 		wrapperPanel.addHeaderWidget(listComposite.getTablePager());
-
-		// add filter panel
-		setFilterButton(filterPanel);
 
 		// add create and export buttons
 		setOtherActions(createCommand, exportButton);
@@ -149,20 +142,6 @@ public class CardEntityListPanel extends Composite {
 
 		// add goHome button
 		wrapperPanel.addHeaderWidget(goHomeButton());
-	}
-
-	/**
-	 * Adds a Filter button that enables to filter the table entries to the wrapper panel
-	 * 
-	 * @param eventBus
-	 */
-	private void setFilterButton(ImogFilterPanel filterPanel) {
-
-		if (filterPanel != null) {
-			filterButton = new PopupButton(BaseNLS.constants().button_filter());
-			filterButton.addPopupPanelContent(filterPanel);
-			wrapperPanel.addHeaderWidget(filterButton);
-		}
 	}
 
 	/**
@@ -191,17 +170,6 @@ public class CardEntityListPanel extends Composite {
 
 			wrapperPanel.addHeaderWidget(plusButton);
 		}
-	}
-
-	/**
-	 * 
-	 * @param eventBus
-	 */
-	private void setListActions() {
-
-		listButton = new PopupButton(BaseNLS.constants().button_list());
-
-		wrapperPanel.addHeaderWidget(listButton);
 	}
 
 	/**

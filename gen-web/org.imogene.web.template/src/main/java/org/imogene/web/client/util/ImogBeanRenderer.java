@@ -27,7 +27,7 @@ public abstract class ImogBeanRenderer {
 	 * @param fieldValue the bean field value    
 	 * @return string representation for IHM display
 	 */
-	public abstract String getEnumDisplayValue(Class<?> beanClass, String fieldName,	String fieldValue);
+	public abstract String getEnumDisplayValue(Class<?> beanClass, String fieldName, String fieldValue);
 
 	
 	/**
