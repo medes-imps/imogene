@@ -79,7 +79,7 @@
 		.multiRelation-selectAll-checkbox {
 			text-align: left;
 			padding-left: 4px;
-			border-bottom: 1px solid #777777;
+			border-bottom: 1px solid #C4C4C4;
 			width: 22px;
 		}
 
