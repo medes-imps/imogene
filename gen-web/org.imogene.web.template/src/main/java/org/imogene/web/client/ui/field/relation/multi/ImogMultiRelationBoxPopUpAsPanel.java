@@ -8,6 +8,7 @@ import org.imogene.web.client.css.ImogResources;
 import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.panel.WrapperPanel;
 import org.imogene.web.client.ui.table.ImogBeanDataProvider;
+import org.imogene.web.client.ui.table.ImogDynaTable.CheckHeader;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.table.pager.ImogSimplePager;
 import org.imogene.web.client.ui.widget.ImageButton;
@@ -18,6 +19,7 @@ import org.imogene.web.shared.proxy.ImogBeanProxy;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Ignore;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,6 +36,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -167,7 +170,17 @@ public class ImogMultiRelationBoxPopUpAsPanel<T extends ImogBeanProxy> {
 		};
 
 		Column<T, Boolean> checkColumn = new CheckColumn();
-		table.addColumn(checkColumn);
+		
+		CheckHeader checkHeader = new CheckHeader();
+		checkHeader.setUpdater(new ValueUpdater<Boolean>() {
+			@Override
+			public void update(Boolean value) {
+				for (T item : table.getVisibleItems())
+					selectionModel.setSelected(item, value);
+			}
+		});
+		
+		table.addColumn(checkColumn, checkHeader);
 		table.addStyleName("imogene-MultiRelation-with-checkboxes");
 
 		selectionModel = new MultiSelectionModel<T>();
@@ -417,6 +430,26 @@ public class ImogMultiRelationBoxPopUpAsPanel<T extends ImogBeanProxy> {
 	/*
 	 * Internal classes
 	 */
+	
+	/**
+	 * @author MEDES-IMPS
+	 */
+	public class CheckHeader extends Header<Boolean> {
+
+		public CheckHeader() {
+			super(new CheckboxCell(true, false));
+			this.setHeaderStyleNames("multiRelation-selectAll-checkbox");
+		}
+
+		@Override
+		public Boolean getValue() {
+			for (T item : table.getVisibleItems()) {
+				if (!selectionModel.isSelected(item))
+					return false;
+			}
+			return table.getVisibleItems().size() > 0;
+		}
+	}
 
 	/**
 	 * @author MEDES-IMPS

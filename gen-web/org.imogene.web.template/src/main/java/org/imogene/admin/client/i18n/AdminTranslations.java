@@ -64,8 +64,6 @@ public interface AdminTranslations extends Constants {
 
 	String imogActor_field_synchronizableList();
 
-	String imogActor_field_regionAppliUserFilterField();
-
 	String imogActor_field_s_login();
 
 	/* SynchronizableEntity texts */

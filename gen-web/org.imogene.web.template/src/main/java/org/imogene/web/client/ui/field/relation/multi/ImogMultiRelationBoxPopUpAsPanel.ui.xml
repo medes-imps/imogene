@@ -76,7 +76,16 @@
 			background-color: #FFFFFF;
 		}
 
-		@external .imogene-MultiRelation-Filter-TextBox, .Caption, .imogene-MultiRelation-with-checkboxes, .imogene-MultiRelation-select-checkbox;
+		.multiRelation-selectAll-checkbox {
+			text-align: left;
+			padding-left: 4px;
+			border-bottom: 1px solid #777777;
+			width: 22px;
+		}
+
+
+
+		@external .imogene-MultiRelation-Filter-TextBox, .Caption, .imogene-MultiRelation-with-checkboxes, .imogene-MultiRelation-select-checkbox, .multiRelation-selectAll-checkbox;
 	</ui:style>
 
 	<g:DialogBox ui:field="popup"
