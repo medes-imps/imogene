@@ -3,18 +3,14 @@ package org.imogene.admin.client.ui.editor.nested;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.imogene.admin.client.AdminRenderer;
 import org.imogene.admin.client.dataprovider.CardEntityDataProvider;
-import org.imogene.admin.client.event.save.SaveCardEntityEvent;
-import org.imogene.admin.client.ui.workflow.panel.CardEntityFormPanel;
 import org.imogene.admin.shared.AdminRequestFactory;
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.i18n.BaseNLS;
-import org.imogene.web.client.ui.field.ImogBooleanBox;
 import org.imogene.web.client.ui.field.ImogCheckBox;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.relation.single.ImogSingleRelationBox;
-import org.imogene.web.client.ui.panel.RelationPopupPanel;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.EntityProfileProxy;
@@ -25,22 +21,17 @@ import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.editor.client.HasEditorDelegate;
 import com.google.gwt.editor.client.HasEditorErrors;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * Editor that provides the UI components that allow a EntityProfileProxy to be viewed and edited in an editor list
- * 
  * @author MEDES-IMPS
  */
-public class EntityProfileEditorNestedRow extends Composite implements Editor<EntityProfileProxy>,
-		HasEditorDelegate<EntityProfileProxy>, HasEditorErrors<EntityProfileProxy> {
+public class EntityProfileEditorNestedRow extends Composite implements Editor<EntityProfileProxy>, HasEditorDelegate<EntityProfileProxy>, HasEditorErrors<EntityProfileProxy> {
 
 	interface Binder extends UiBinder<Widget, EntityProfileEditorNestedRow> {
 	}
@@ -55,9 +46,6 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 	private int index = 0;
 	private boolean isNewProxy = false;
 
-	@UiField
-	Image clearImage;
-
 	@UiField(provided = true)
 	ImogSingleRelationBox<CardEntityProxy> entity;
 	@UiField
@@ -71,32 +59,27 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 * @param hideButtons true if the relation field buttons shall be hidden
 	 */
-	public EntityProfileEditorNestedRow(AdminRequestFactory factory, boolean hideButtons) {
+	public EntityProfileEditorNestedRow(AdminRequestFactory factory, boolean hideButtons, ImogBeanRenderer renderer) {
 
 		this.requestFactory = factory;
 		this.hideButtons = hideButtons;
 
-		setRelationFields();
+		setRelationFields(renderer);
 
 		initWidget(BINDER.createAndBindUi(this));
-
-		clearImage.setTitle(BaseNLS.constants().button_remove());
-		clearImage.setUrl(GWT.getModuleBaseURL() + "images/relation_remove.png");
 
 		properties();
 	}
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 */
-	public EntityProfileEditorNestedRow(AdminRequestFactory factory) {
-		this(factory, false);
+	public EntityProfileEditorNestedRow(AdminRequestFactory factory, ImogBeanRenderer renderer) {
+		this(factory, false, renderer);
 	}
 
 	/**
@@ -104,53 +87,45 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 	 */
 	public void properties() {
 
-		// entity.setLabel(NLS.constants().entityProfile_field_entity(), HasHorizontalAlignment.ALIGN_RIGHT);
 		entity.setLabelWidth("0px");
-		// create.setLabel(NLS.constants().entityProfile_field_create(), HasHorizontalAlignment.ALIGN_RIGHT);
 		create.setLabelWidth("0px");
-		// delete.setLabel(NLS.constants().entityProfile_field_delete(), HasHorizontalAlignment.ALIGN_RIGHT);
 		delete.setLabelWidth("0px");
-		// directAccess.setLabel(NLS.constants().entityProfile_field_directAccess(),
-		// HasHorizontalAlignment.ALIGN_RIGHT);
 		directAccess.setLabelWidth("0px");
-		// export.setLabel(NLS.constants().entityProfile_field_export(), HasHorizontalAlignment.ALIGN_RIGHT);
 		export.setLabelWidth("0px");
 	}
 
 	/**
 	 * Configures the widgets that manage relation fields
 	 */
-	public void setRelationFields() {
+	private void setRelationFields(ImogBeanRenderer renderer) {
 
 		/* field entity */
 		CardEntityDataProvider entityDataProvider;
 		entityDataProvider = new CardEntityDataProvider(requestFactory);
 		if (hideButtons) // in popup, relation buttons hidden
-			entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get(), true);
+			entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, renderer, true);
 		else {// in wrapper panel, relation buttons enabled
 			if (ProfileUtil.isAdmin())
-				entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, AdminRenderer.get());
+				entity = new ImogSingleRelationBox<CardEntityProxy>(entityDataProvider, renderer);
 			else
-				entity = new ImogSingleRelationBox<CardEntityProxy>(false, entityDataProvider, AdminRenderer.get());
+				entity = new ImogSingleRelationBox<CardEntityProxy>(false, entityDataProvider, renderer);
 		}
+		entity.hideButtonPanel(true);
 
 	}
 
 	/**
 	 * Sets the edition mode
-	 * 
 	 * @param isEdited true to enable the edition of the form
 	 */
 	public void setEdited(boolean isEdited) {
-
-		clearImage.setVisible(isEdited);
 
 		if (isEdited)
 			setFieldEditAccess();
 		else
 			setFieldReadAccess();
 
-		entity.setEdited(isEdited);
+		entity.setEdited(false);
 		create.setEdited(isEdited);
 		delete.setEdited(isEdited);
 		directAccess.setEdited(isEdited);
@@ -188,16 +163,15 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 	 */
 	private void setFieldValueChangeHandler() {
 
-		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE,
-				new FieldValueChangeEvent.Handler() {
-					@Override
-					public void onValueChange(ImogField<?> field) {
+		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE, new FieldValueChangeEvent.Handler() {
+			@Override
+			public void onValueChange(ImogField<?> field) {
 
-						// field dependent visibility management
-						computeVisibility(field, false);
+				// field dependent visibility management
+				computeVisibility(field, false);
 
-					}
-				}));
+			}
+		}));
 	}
 
 	/**
@@ -207,74 +181,14 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 
 	}
 
-	public void setDeleteClickHandler(ClickHandler handler) {
-		// registrations.add(clearImage.addClickHandler(handler));
-		clearImage.addClickHandler(handler);
-	}
-
 	/**
 	 * Setter to inject a CardEntity value
-	 * 
 	 * @param value the value to be injected into the editor
 	 * @param isLocked true if relation field shall be locked (non editable)
 	 */
 	public void setEntity(CardEntityProxy value, boolean isLocked) {
 		entity.setLocked(isLocked);
 		entity.setValue(value);
-
-	}
-
-	/** Widget update for field entity */
-	private void clearEntityWidget() {
-		entity.clear();
-	}
-
-	/**
-	 * Configures the handlers of the widgets that manage relation fields
-	 */
-	private void setRelationHandlers() {
-
-		/* 'Information' button for field Entity */
-		entity.setViewClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (entity.getValue() != null) {
-					RelationPopupPanel relationPopup = new RelationPopupPanel();
-					CardEntityFormPanel form = new CardEntityFormPanel(requestFactory, entity.getValue().getId(),
-							relationPopup, "entity");
-					relationPopup.addWidget(form);
-					relationPopup.show();
-				}
-			}
-		});
-
-		/* 'Add' button for field Entity */
-		entity.setAddClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				RelationPopupPanel relationPopup = new RelationPopupPanel();
-				CardEntityFormPanel form = new CardEntityFormPanel(requestFactory, null, relationPopup, "entity");
-				/* common fields */
-
-				relationPopup.addWidget(form);
-				relationPopup.show();
-			}
-		});
-
-		/* SaveEvent handler when a CardEntity is created or updated from the relation field Entity */
-		registrations.add(requestFactory.getEventBus().addHandler(SaveCardEntityEvent.TYPE,
-				new SaveCardEntityEvent.Handler() {
-					@Override
-					public void saveCardEntity(CardEntityProxy value) {
-						entity.setValue(value);
-					}
-
-					@Override
-					public void saveCardEntity(CardEntityProxy value, String initField) {
-						if (initField.equals("entity"))
-							entity.setValue(value, true);
-					}
-				}));
 
 	}
 
@@ -339,8 +253,23 @@ public class EntityProfileEditorNestedRow extends Composite implements Editor<En
 
 	@Override
 	protected void onLoad() {
-		setRelationHandlers();
 		setFieldValueChangeHandler();
 		super.onLoad();
+	}
+
+	public void setCreateBoxValue(boolean value) {
+		create.setValue(value);
+	}
+
+	public void setDeleteBoxValue(boolean value) {
+		delete.setValue(value);
+	}
+
+	public void setDirectAccessBoxValue(boolean value) {
+		directAccess.setValue(value);
+	}
+
+	public void setExportBoxValue(boolean value) {
+		export.setValue(value);
 	}
 }

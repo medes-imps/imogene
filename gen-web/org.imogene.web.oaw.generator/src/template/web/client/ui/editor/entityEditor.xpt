@@ -24,6 +24,7 @@ import org.imogene.«projectName.toLowerCase()».client.ui.field.ImogLocalizedText
 import org.imogene.«projectName.toLowerCase()».client.ui.field.ImogLocalizedTextAreaBox;
 import org.imogene.«projectName.toLowerCase()».shared.constants.«projectName.toFirstUpper()»EnumConstants;
 import org.imogene.«projectName.toLowerCase()».shared.proxy.«name.toFirstUpper()»Proxy;
+import org.imogene.«projectName.toLowerCase()».shared.request.«name.toFirstUpper()»Request;
 
 import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.i18n.BaseNLS;
@@ -68,6 +69,7 @@ import org.imogene.web.client.ui.field.ImogPasswordBox;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
+import org.imogene.«projectName.toLowerCase()».client.AvionAdminUtilRenderer;
 	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 		«FOREACH ((Actor)this).filters AS fil-»
 import org.imogene.«projectName.toLowerCase()».client.dataprovider.«fil.entity.name.toFirstUpper()»DataProvider;
@@ -276,10 +278,10 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		profiles = new ImogMultiRelationBox<ProfileProxy>(profilesDataProvider, AdminRenderer.get(), true);
 		profiles.setPopUpTitle(AdminNLS.constants().profile_select_title());
 
-		/* field  synchronizables */
+		/* field synchronizables */
 		CardEntityDataProvider synchronizablesDataProvider;
-		synchronizablesDataProvider = new CardEntityDataProvider(requestFactory);	
-		synchronizables = new ImogMultiRelationBox<CardEntityProxy>(synchronizablesDataProvider, AdminRenderer.get(), true);
+		synchronizablesDataProvider = new CardEntityDataProvider(requestFactory);
+		synchronizables = new ImogMultiRelationBox<CardEntityProxy>(synchronizablesDataProvider, AvionAdminUtilRenderer.get(), true);
 		synchronizables.setPopUpTitle(AdminNLS.constants().cardEntity_select_title());
 		synchronizables.setFilterPanel(new CardEntityFilterPanel());
 		
@@ -397,7 +399,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	/**
 	 * Sets the Request Context for the List Editors
 	 */	
-	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
+	public void setRequestContextForListEditors(«name.toFirstUpper()»Request ctx) {
 		«EXPAND setRequestContextForListEditors FOREACH groups.fields-»
 		«IF hasDynamicFields-»
 		dynamicFieldValues.setRequestContext(ctx);

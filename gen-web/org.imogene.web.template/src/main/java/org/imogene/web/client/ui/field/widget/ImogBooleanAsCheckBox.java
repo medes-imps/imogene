@@ -55,11 +55,6 @@ public class ImogBooleanAsCheckBox extends ImogWidget<Boolean> {
 	 */
 	public void setEnabled(boolean enabled) {
 		checkBox.setEnabled(enabled);
-		if (!enabled) {
-			checkBox.addStyleDependentName("disabled");
-		} else {
-			checkBox.removeStyleDependentName("disabled");
-		}
 		edited = enabled;
 	}
 	

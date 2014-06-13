@@ -58,19 +58,13 @@
 					<g:cell horizontalAlignment="center">
 						<imo:FieldGroupPanel ui:field="temaAdministration">
 							<g:FlowPanel>
+								<imo2:EntityPanel ui:field="profile" />
 								<imo2:EntityPanel ui:field="notification" />
 								<imo2:EntityPanel ui:field="dynamicField_Template" />
 							</g:FlowPanel>			
 						</imo:FieldGroupPanel>	
 					</g:cell>
 					
-					<g:cell horizontalAlignment="center">
-						<imo:FieldGroupPanel ui:field="temaProfiles">
-							<g:FlowPanel>
-								<imo2:EntityPanel ui:field="profile" />
-							</g:FlowPanel>
-						</imo:FieldGroupPanel>
-					</g:cell>
 					<g:cell horizontalAlignment="center">
 						<imo:FieldGroupPanel ui:field="temaModel">
 							<g:FlowPanel>

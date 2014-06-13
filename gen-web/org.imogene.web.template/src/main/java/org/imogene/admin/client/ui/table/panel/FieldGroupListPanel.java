@@ -15,8 +15,8 @@ import org.imogene.web.client.ui.panel.WrapperPanelForTable;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.widget.PopupButton;
 import org.imogene.web.client.ui.widget.SimpleMenuItem;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.LocalSession;
-import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
@@ -66,7 +66,7 @@ public class FieldGroupListPanel extends Composite {
 	 * @param requestFactory
 	 * @param searchText text that will be used to filter the table entries
 	 */
-	public FieldGroupListPanel(AdminRequestFactory requestFactory, String searchText) {
+	public FieldGroupListPanel(AdminRequestFactory requestFactory, String searchText, ImogBeanRenderer renderer) {
 
 		this.requestFactory = requestFactory;
 		imogResources = GWT.create(ImogResources.class);
@@ -83,10 +83,7 @@ public class FieldGroupListPanel extends Composite {
 			wrapperPanel.setMessageLabel(filteringMessage);
 
 		/* dynatable */
-		if (ProfileUtil.isAdmin())
-			listComposite = new FieldGroupDynaTable(requestFactory, provider, true);
-		else
-			listComposite = new FieldGroupDynaTable(requestFactory, provider, false);
+		listComposite = new FieldGroupDynaTable(requestFactory, provider, false, renderer);
 
 		configureWrapperPanelForTable();
 		initWidget(uiBinder.createAndBindUi(this));
@@ -97,8 +94,8 @@ public class FieldGroupListPanel extends Composite {
 	 * 
 	 * @param requestFactory
 	 */
-	public FieldGroupListPanel(AdminRequestFactory requestFactory) {
-		this(requestFactory, null);
+	public FieldGroupListPanel(AdminRequestFactory requestFactory, ImogBeanRenderer renderer) {
+		this(requestFactory, null, renderer);
 	}
 
 	/**
@@ -191,17 +188,6 @@ public class FieldGroupListPanel extends Composite {
 
 			wrapperPanel.addHeaderWidget(plusButton);
 		}
-	}
-
-	/**
-	 * 
-	 * @param eventBus
-	 */
-	private void setListActions() {
-
-		listButton = new PopupButton(BaseNLS.constants().button_list());
-
-		wrapperPanel.addHeaderWidget(listButton);
 	}
 
 	/**

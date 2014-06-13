@@ -33,6 +33,7 @@ import org.imogene.admin.client.ui.workflow.panel.CardEntityFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.FieldGroupFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.NotificationFormPanel;
 import org.imogene.admin.client.ui.workflow.panel.ProfileFormPanel;
+import org.imogene.web.client.dynamicfields.ui.renderer.DynFieldsRenderer;
 import org.imogene.web.client.dynamicfields.ui.workflow.panel.DynamicFieldTemplateFormPanel;
 import org.imogene.web.client.event.CreateDynamicFieldTemplateEvent;
 import org.imogene.web.client.event.GoHomeEvent;
@@ -478,11 +479,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 			}
 		}));
 		
-				/* Create Profile Handler */
+		/* Create Profile Handler */
 		registrations.add(eventBus.addHandler(CreateProfileEvent.TYPE, new CreateProfileEvent.Handler() {
 			public void createNewProfile(GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, null);
+					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, null, AvionAdminUtilRenderer.get());
 					profileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(profileForm);
 				}
@@ -493,7 +494,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ViewProfileEvent.TYPE, new ViewProfileEvent.Handler() {
 			public void viewProfile(String entityId, GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, entityId);
+					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, entityId, AvionAdminUtilRenderer.get());
 					profileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(profileForm);
 				}
@@ -517,22 +518,11 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		 * Handlers for entity CardEntity
 		 * */
 
-		/* Create CardEntity Handler */
-		registrations.add(eventBus.addHandler(CreateCardEntityEvent.TYPE, new CreateCardEntityEvent.Handler() {
-			public void createNewCardEntity(GwtEvent<?> closeEvent) {
-				if (ProfileUtil.isAdmin()) {
-					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, null);
-					cardEntityForm.setCloseEvent(closeEvent);
-					displayWrapperPanel(cardEntityForm);
-				}
-			}
-		}));
-
 		/* View CardEntity Handler */
 		registrations.add(eventBus.addHandler(ViewCardEntityEvent.TYPE, new ViewCardEntityEvent.Handler() {
 			public void viewCardEntity(String entityId, GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, entityId);
+					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, entityId, AvionAdminUtilRenderer.get());
 					cardEntityForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(cardEntityForm);
 				}
@@ -543,34 +533,23 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ListCardEntityEvent.TYPE, new ListCardEntityEvent.Handler() {
 			public void listCardEntity() {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new CardEntityListPanel(requestFactory));
+					displayWrapperPanel(new CardEntityListPanel(requestFactory, AvionAdminUtilRenderer.get()));
 			}
 
 			public void listCardEntity(String searchText) {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new CardEntityListPanel(requestFactory, searchText));
+					displayWrapperPanel(new CardEntityListPanel(requestFactory, searchText, AvionAdminUtilRenderer.get()));
 			}
 		}));
 		/**
 		 * Handlers for entity FieldGroup
 		 * */
 
-		/* Create FieldGroup Handler */
-		registrations.add(eventBus.addHandler(CreateFieldGroupEvent.TYPE, new CreateFieldGroupEvent.Handler() {
-			public void createNewFieldGroup(GwtEvent<?> closeEvent) {
-				if (ProfileUtil.isAdmin()) {
-					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, null);
-					fieldgroupForm.setCloseEvent(closeEvent);
-					displayWrapperPanel(fieldgroupForm);
-				}
-			}
-		}));
-
 		/* View FieldGroup Handler */
 		registrations.add(eventBus.addHandler(ViewFieldGroupEvent.TYPE, new ViewFieldGroupEvent.Handler() {
 			public void viewFieldGroup(String entityId, GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, entityId);
+					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, entityId, AvionAdminUtilRenderer.get());
 					fieldgroupForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(fieldgroupForm);
 				}
@@ -581,12 +560,12 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ListFieldGroupEvent.TYPE, new ListFieldGroupEvent.Handler() {
 			public void listFieldGroup() {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new FieldGroupListPanel(requestFactory));
+					displayWrapperPanel(new FieldGroupListPanel(requestFactory, AvionAdminUtilRenderer.get()));
 			}
 
 			public void listFieldGroup(String searchText) {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new FieldGroupListPanel(requestFactory, searchText));
+					displayWrapperPanel(new FieldGroupListPanel(requestFactory, searchText, AvionAdminUtilRenderer.get()));
 			}
 		}));
 		첚NDIF-�		

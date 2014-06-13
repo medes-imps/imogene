@@ -18,6 +18,8 @@ public interface AdminTranslations extends Constants {
 	String thema_users();
 
 	String thema_administration();
+	
+	String thema_model();
 
 	/* Password message */
 	String password_confirm_error();
@@ -61,8 +63,6 @@ public interface AdminTranslations extends Constants {
 	String imogActor_field_idFile_text();
 
 	String imogActor_field_synchronizableList();
-
-	String imogActor_field_regionAppliUserFilterField();
 
 	String imogActor_field_s_login();
 

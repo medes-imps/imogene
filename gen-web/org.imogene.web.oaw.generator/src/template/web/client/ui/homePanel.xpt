@@ -91,10 +91,6 @@ public class HomePanel extends Composite {
 	EntityPanel notification;
 	@UiField(provided = true)
 	EntityPanel dynamicField_Template;
-	
-	/* thema Profiles */
-	@UiField(provided = true)
-	FieldGroupPanel temaProfiles;
 	@UiField(provided = true)
 	EntityPanel profile;
 
@@ -160,15 +156,11 @@ public class HomePanel extends Composite {
 		temaAdministration.setGroupTitle(AdminNLS.constants().thema_administration());
 		notification = new EntityPanel(AdminNLS.constants().notification_name(), AdminIconConstants.NOTIFICATION_ICON);
 		dynamicField_Template = new EntityPanel(DynFieldsNLS.constants().dynamicField_Template_name(), AdminIconConstants.DYNAMICFIELD_TEMPLATE_ICON);
-		
-		/* thema Profiles */
-		temaProfiles = new FieldGroupPanel();
-		temaProfiles.setGroupTitle("Profiles");
 		profile = new EntityPanel(AdminNLS.constants().profile_name());
 
 		/* thema Model */
 		temaModel = new FieldGroupPanel();
-		temaModel.setGroupTitle("Model");
+		temaModel.setGroupTitle(AdminNLS.constants().thema_model());
 		cardEntity = new EntityPanel(AdminNLS.constants().cardEntity_name());
 		fieldGroup = new EntityPanel(AdminNLS.constants().fieldGroup_name());
 «ELSE-»
@@ -200,8 +192,6 @@ public class HomePanel extends Composite {
 	«ENDIF-»
 «ENDIF-»	
 
-
-		
 		initWidget(BINDER.createAndBindUi(this));
 
 		configMenus();
@@ -286,12 +276,7 @@ public class HomePanel extends Composite {
 		/* FieldGroup Menu */
 
 		if (ProfileUtil.isAdmin()) {
-			fieldGroup.setCreateClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					History.newItem(TokenHelper.TK_NEW + "/fieldgroup/", true);
-				}
-			});
+			fieldGroup.setCreateClickHandler(null);
 
 			fieldGroup.setListClickHandler(new ClickHandler() {
 				@Override
@@ -347,12 +332,7 @@ public class HomePanel extends Composite {
 		/* CardEntity Menu */
 
 		if (ProfileUtil.isAdmin()) {
-			cardEntity.setCreateClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					History.newItem(TokenHelper.TK_NEW + "/cardentity/", true);
-				}
-			});
+			cardEntity.setCreateClickHandler(null);
 			cardEntity.setListClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -405,13 +385,10 @@ public class HomePanel extends Composite {
 			temaUsers.setVisible(false);
 
 		/* thema  Administration */
-		boolean showAdministrationTema = false;
-		
+		temaAdministration.setVisible(true);
 		«IF hasNotifications(entities)-»
 		if (!ProfileUtil.isAdmin())
 			notification.setVisible(false);
-		else
-			showAdministrationTema = true;
 		«ELSE-»
 		/* no notification defined in model, panel hidden */	
 		notification.setVisible(false);
@@ -420,19 +397,12 @@ public class HomePanel extends Composite {
 		«IF hasDynamicFields(entities)-»
 		if (!ProfileUtil.isAdmin())
 			dynamicField_Template.setVisible(false);
-		else
-			showAdministrationTema = true;	
 		«ELSE-»
 		/* no dynamic field defined in model, panel hidden */
 		dynamicField_Template.setVisible(false);
 		«ENDIF-»
-	
-		if (!showAdministrationTema)
-			temaAdministration.setVisible(false);
-		
-		/* thema Profiles */
+
 		profile.setVisible(true);
-		temaProfiles.setVisible(true);
 
 		/* thema Model */
 		cardEntity.setVisible(true);

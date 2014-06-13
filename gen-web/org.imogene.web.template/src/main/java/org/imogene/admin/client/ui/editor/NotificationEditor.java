@@ -31,7 +31,6 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * Editor that provides the UI components that allow a NotificationProxy to be viewed and edited
- * 
  * @author MEDES-IMPS
  */
 public class NotificationEditor extends Composite implements Editor<NotificationProxy> {
@@ -74,12 +73,10 @@ public class NotificationEditor extends Composite implements Editor<Notification
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 * @param hideButtons true if the relation field buttons shall be hidden
 	 */
-	public NotificationEditor(AdminRequestFactory factory, boolean hideButtons, FormTypeUtil formTypeUtil,
-			ImogBeanRenderer renderer) {
+	public NotificationEditor(AdminRequestFactory factory, boolean hideButtons, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
 
 		this.requestFactory = factory;
 		// this.hideButtons = hideButtons;
@@ -95,7 +92,6 @@ public class NotificationEditor extends Composite implements Editor<Notification
 
 	/**
 	 * Constructor
-	 * 
 	 * @param factory the application request factory
 	 */
 	public NotificationEditor(AdminRequestFactory factory, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
@@ -158,7 +154,6 @@ public class NotificationEditor extends Composite implements Editor<Notification
 
 	/**
 	 * Sets the edition mode
-	 * 
 	 * @param isEdited true to enable the edition of the form
 	 */
 	public void setEdited(boolean isEdited) {
@@ -215,16 +210,15 @@ public class NotificationEditor extends Composite implements Editor<Notification
 	 */
 	private void setFieldValueChangeHandler() {
 
-		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE,
-				new FieldValueChangeEvent.Handler() {
-					@Override
-					public void onValueChange(ImogField<?> field) {
+		registrations.add(requestFactory.getEventBus().addHandler(FieldValueChangeEvent.TYPE, new FieldValueChangeEvent.Handler() {
+			@Override
+			public void onValueChange(ImogField<?> field) {
 
-						// field dependent visibility management
-						computeVisibility(field, false);
+				// field dependent visibility management
+				computeVisibility(field, false);
 
-					}
-				}));
+			}
+		}));
 	}
 
 	/**

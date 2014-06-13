@@ -39,9 +39,7 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
  */
 public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 
-	interface Driver
-			extends
-				RequestFactoryEditorDriver<NotificationProxy, NotificationEditor> {
+	interface Driver extends RequestFactoryEditorDriver<NotificationProxy, NotificationEditor> {
 	}
 
 	private AdminRequestFactory requestFactory;
@@ -57,8 +55,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 */
-	public NotificationEditorWorkflow(AdminRequestFactory factory,
-			Label titleContainer, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationEditorWorkflow(AdminRequestFactory factory, Label titleContainer, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
 		this(factory, titleContainer, null, null, formTypeUtil, renderer);
 	}
 
@@ -67,11 +64,9 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField  the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public NotificationEditorWorkflow(AdminRequestFactory factory,
-			Label titleContainer, RelationPopupPanel parent, String initField,
-			FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent, String initField, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
@@ -95,25 +90,23 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 	/**
 	 * Workflow constructor for the visualization and edition of an existing Notification instance
 	 * @param factory the application request factory
-	 * @param entityId the id of the Notification instance to be visualized and edited	 
-	 * @param titleContainer the Label that will display the workflow title	 
+	 * @param entityId the id of the Notification instance to be visualized and edited
+	 * @param titleContainer the Label that will display the workflow title
 	 */
-	public NotificationEditorWorkflow(AdminRequestFactory factory,
-			String entityId, Label titleContainer, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
 		this(factory, entityId, titleContainer, null, null, formTypeUtil, renderer);
 	}
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing Notification instance
 	 * @param factory the application request factory
-	 * @param entityId the id of the Notification instance to be visualized and edited	
-	 * @param entityId the id of the Notification instance to be visualized and edited	 	 
+	 * @param entityId the id of the Notification instance to be visualized and edited
+	 * @param entityId the id of the Notification instance to be visualized and edited
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField  the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public NotificationEditorWorkflow(AdminRequestFactory factory,
-			String entityId, Label titleContainer, RelationPopupPanel parent,
-			String initField, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, RelationPopupPanel parent, String initField, FormTypeUtil formTypeUtil,
+			ImogBeanRenderer renderer) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
@@ -143,8 +136,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 		request = requestFactory.notificationRequest();
 
 		/* create a new intance of Notification */
-		NotificationProxy newNotification = request
-				.create(NotificationProxy.class);
+		NotificationProxy newNotification = request.create(NotificationProxy.class);
 		newNotification.setId(ImogKeyGenerator.generateKeyId("NOTIF"));
 
 		/* push the instance to the editor */
@@ -184,8 +176,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 	private void viewNotification(NotificationProxy entity) {
 
 		/* display instance information */
-		setTitle(AdminNLS.constants().notification_name() + ": "
-				+ AdminRenderer.get().getDisplayValue(entity));
+		setTitle(AdminNLS.constants().notification_name() + ": " + AdminRenderer.get().getDisplayValue(entity));
 		setMetaData((ImogBeanProxy) entity);
 
 		/* push the instance to the editor in view mode */
@@ -231,7 +222,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 
 		// Check for errors on the client side
 		if (editorDriver.hasErrors()) {
-			//Window.alert("Notification form not validated locally");
+			// Window.alert("Notification form not validated locally");
 			return;
 		}
 
@@ -239,16 +230,15 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 		saveRequest.to(new Receiver<Void>() {
 			@Override
 			public void onSuccess(Void response) {
-				requestFactory.getEventBus().fireEvent(
-						new SaveNotificationEvent(current, initField));
+				requestFactory.getEventBus().fireEvent(new SaveNotificationEvent(current, initField));
 				closeForm();
 			}
 
 			@Override
 			public void onConstraintViolation(Set<ConstraintViolation<?>> errors) {
-				//Window.alert("Notification form not validated on server");
+				// Window.alert("Notification form not validated on server");
 
-				//TODO manage errors on client side when made available by GWT				
+				// TODO manage errors on client side when made available by GWT
 				if (errors != null && errors.size() > 0) {
 					// convert ConstraintViolation to get localized messages
 					AdminRenderer renderer = AdminRenderer.get();
@@ -258,8 +248,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 						violation.setLeafBean((BaseProxy) error.getLeafBean());
 						violation.setPropertyPath(error.getPropertyPath());
 						violation.setRootBean((BaseProxy) error.getRootBean());
-						violation.setMessage(renderer.getI18nErrorMessage(error
-								.getMessage()));
+						violation.setMessage(renderer.getI18nErrorMessage(error.getMessage()));
 						imogErrors.add(violation);
 					}
 					editorDriver.setConstraintViolations(imogErrors);
@@ -284,8 +273,7 @@ public class NotificationEditorWorkflow extends EditorWorkflowComposite {
 			if (isNew)
 				requestFactory.getEventBus().fireEvent(new GoHomeEvent());
 			else
-				requestFactory.getEventBus().fireEvent(
-						new ViewNotificationEvent(current.getId()));
+				requestFactory.getEventBus().fireEvent(new ViewNotificationEvent(current.getId()));
 		}
 
 	}

@@ -42,9 +42,8 @@ public class NotificationFormPanel extends Composite {
 	 * @param initField the field that initiated the display in a RelationPopupPanel
 	 * @param returnToList true if after closing the wokflow, the application shall display the list of entities, false otherwise
 	 */
-	public NotificationFormPanel(AdminRequestFactory requestFactory,
-			String entityId, RelationPopupPanel parent, String initField,
-			Boolean returnToList, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationFormPanel(AdminRequestFactory requestFactory, String entityId, RelationPopupPanel parent, String initField, Boolean returnToList, FormTypeUtil formTypeUtil,
+			ImogBeanRenderer renderer) {
 
 		wrapperPanel = new WrapperPanel();
 		wrapperPanel.setWidth("90%");
@@ -53,23 +52,19 @@ public class NotificationFormPanel extends Composite {
 
 		if (entityId != null) {
 			if (parent == null)
-				editorWorkflow = new NotificationEditorWorkflow(requestFactory,
-						entityId, titleContainer, formTypeUtil, renderer);
+				editorWorkflow = new NotificationEditorWorkflow(requestFactory, entityId, titleContainer, formTypeUtil, renderer);
 			else {
-				editorWorkflow = new NotificationEditorWorkflow(requestFactory,
-						entityId, titleContainer, parent, initField, formTypeUtil, renderer);
+				editorWorkflow = new NotificationEditorWorkflow(requestFactory, entityId, titleContainer, parent, initField, formTypeUtil, renderer);
 			}
 		} else {
 			if (parent == null) {
-				editorWorkflow = new NotificationEditorWorkflow(
-						requestFactory, titleContainer, formTypeUtil, renderer);
+				editorWorkflow = new NotificationEditorWorkflow(requestFactory, titleContainer, formTypeUtil, renderer);
 				if (returnToList != null && returnToList)
 					editorWorkflow.setCloseEvent(new ListNotificationEvent());
 				else
 					editorWorkflow.setCloseEvent(new GoHomeEvent());
 			} else {
-				editorWorkflow = new NotificationEditorWorkflow(requestFactory,
-						titleContainer, parent, initField, formTypeUtil, renderer);
+				editorWorkflow = new NotificationEditorWorkflow(requestFactory, titleContainer, parent, initField, formTypeUtil, renderer);
 			}
 		}
 
@@ -90,8 +85,7 @@ public class NotificationFormPanel extends Composite {
 	 * @param requestFactory the application requestFactory
 	 * @param entityId the id of the entity to be managed by the workflow. null if an entity is being created
 	 */
-	public NotificationFormPanel(AdminRequestFactory requestFactory,
-			String entityId, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationFormPanel(AdminRequestFactory requestFactory, String entityId, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
 		this(requestFactory, entityId, null, null, null, formTypeUtil, renderer);
 	}
 
@@ -101,11 +95,10 @@ public class NotificationFormPanel extends Composite {
 	 * @param entityId the id of the entity to be managed by the workflow. null if an entity is being created
 	 * @param returnToList true if after closing the wokflow, the application shall display the list of entities, false otherwise
 	 */
-	public NotificationFormPanel(AdminRequestFactory requestFactory,
-			String entityId, Boolean returnToList, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
+	public NotificationFormPanel(AdminRequestFactory requestFactory, String entityId, Boolean returnToList, FormTypeUtil formTypeUtil, ImogBeanRenderer renderer) {
 		this(requestFactory, entityId, null, null, returnToList, formTypeUtil, renderer);
 	}
-	
+
 	public void setCloseEvent(GwtEvent<?> closeEvent) {
 		editorWorkflow.setCloseEvent(closeEvent);
 	}

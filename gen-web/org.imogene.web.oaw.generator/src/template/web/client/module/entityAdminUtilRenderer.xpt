@@ -1,0 +1,129 @@
+«IMPORT core»
+
+«DEFINE generate(String projectName) FOR Project»
+«FILE projectName.toLowerCase() + "/client/" + projectName.toFirstUpper() + "AdminUtilRenderer.java"»
+
+package org.imogene.«projectName.toLowerCase()».client;
+
+import org.imogene.admin.client.i18n.AdminNLS;
+import org.imogene.web.client.dynamicfields.i18n.DynFieldsNLS;
+import org.imogene.web.client.util.ImogBeanRenderer;
+import org.imogene.web.shared.proxy.CardEntityProxy;
+import org.imogene.web.shared.proxy.FieldGroupProxy;
+import org.imogene.web.shared.proxy.ImogBeanProxy;
+import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
+
+
+/**
+ * Singleton that enables to render a display value of the beans
+ * @author MEDES-IMPS
+ */
+public class «projectName.toFirstUpper()»AdminUtilRenderer extends ImogBeanRenderer {
+
+	private static «projectName.toFirstUpper()»AdminUtilRenderer instance = new «projectName.toFirstUpper()»AdminUtilRenderer();
+	
+	
+	private «projectName.toFirstUpper()»AdminUtilRenderer() {
+		super();
+	}
+	
+	public static «projectName.toFirstUpper()»AdminUtilRenderer get() {
+		return instance;
+	}
+
+	/**
+	 * Get display representation for a ImogBeanProxy     
+	 * @param bean the ImogBeanProxy
+	 * @return string representation for IHM display
+	 */
+	public String getDisplayValue(ImogBeanProxy bean) {
+		
+		if(bean instanceof CardEntityProxy)
+			return getDisplayValue((CardEntityProxy)bean);
+		
+		else if (bean instanceof FieldGroupProxy)
+			return getDisplayValue((FieldGroupProxy)bean);
+
+		return "";
+	}
+		
+
+	private String getDisplayValue(CardEntityProxy bean) {
+		String id = bean.getId();
+		
+		«FOREACH entities AS e-»
+		if (id.equals("«e.name.toLowerCase()»")) {
+			return NLS.constants().«e.name.toFirstLower()»_name();
+		}									
+		«ENDFOREACH»
+
+		// For admin card entities
+
+		if (id.equals("profile")) {
+			return AdminNLS.constants().profile_name();
+		}
+
+		if (id.equals("entityProfile")) {
+			return AdminNLS.constants().entityProfile_name();
+		}
+
+		if (id.equals("fieldGroupProfile")) {
+			return AdminNLS.constants().fieldGroupProfile_name();
+		}
+
+		if (id.equals("cardEntity")) {
+			return AdminNLS.constants().cardEntity_name();
+		}
+
+		if (id.equals("fieldGroup")) {
+			return AdminNLS.constants().fieldGroup_name();
+		}
+
+		if (id.equals("notification")) {
+			return AdminNLS.constants().notification_name();
+		}
+
+		if (id.equals("dynamicFieldTemplate")) {
+			return DynFieldsNLS.constants().dynamicField_Template_name();
+		}
+
+		if (id.equals("dynamicFieldInstance")) {
+			return DynFieldsNLS.constants().dynamicField_Instance_name();
+		}
+
+		if (id.equals("binary")) {
+			return AdminNLS.constants().binary_name();
+		}
+
+		if (id.equals("defaultUser")) {
+			return AdminNLS.constants().imogActor_name();
+		}
+		return "";
+	}
+
+
+	private String getDisplayValue(FieldGroupProxy bean) {
+		String id = bean.getId();
+		
+		«FOREACH entities AS e-»
+			«FOREACH e.groups AS g-»
+		if (id.equals("«e.name.toLowerCase()».«g.name.toLowerCase()»")) {
+			return NLS.constants().«e.name.toFirstLower()»_group_«g.name.toFirstLower()»();
+		}	
+			«ENDFOREACH-»							
+		«ENDFOREACH»	
+
+		return "";
+	}
+
+	@Override
+	public String getEnumDisplayValue(Class<?> beanClass, String fieldName, String fieldValue) {
+		return "";
+	}
+
+
+}
+«ENDFILE»
+«ENDDEFINE»
+
+

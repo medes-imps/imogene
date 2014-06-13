@@ -16,8 +16,8 @@ import org.imogene.admin.shared.request.CardEntityRequest;
 import org.imogene.web.client.ui.field.error.ImogConstraintViolation;
 import org.imogene.web.client.ui.panel.RelationPopupPanel;
 import org.imogene.web.client.ui.workflow.EditorWorkflowComposite;
+import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.client.util.ImogKeyGenerator;
-import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 
@@ -32,7 +32,6 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Worflow that manages the life of a CardEntityProxy in the UI
- * 
  * @author MEDES-IMPS
  */
 public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
@@ -41,6 +40,7 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 	}
 
 	private AdminRequestFactory requestFactory;
+	private ImogBeanRenderer renderer;
 
 	private CardEntityRequest request;
 	public CardEntityProxy current;
@@ -50,7 +50,6 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the creation of a CardEntity instance
-	 * 
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 */
@@ -60,15 +59,12 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the creation of a CardEntity instance
-	 * 
 	 * @param factory the application request factory
 	 * @param titleContainer the Label that will display the workflow title
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened
-	 *            from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public CardEntityEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent,
-			String initField) {
+	public CardEntityEditorWorkflow(AdminRequestFactory factory, Label titleContainer, RelationPopupPanel parent, String initField) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
@@ -91,31 +87,28 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing CardEntity instance
-	 * 
 	 * @param factory the application request factory
 	 * @param entityId the id of the CardEntity instance to be visualized and edited
 	 * @param titleContainer the Label that will display the workflow title
 	 */
-	public CardEntityEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer) {
-		this(factory, entityId, titleContainer, null, null);
+	public CardEntityEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, ImogBeanRenderer renderer) {
+		this(factory, entityId, titleContainer, null, null, renderer);
 	}
 
 	/**
 	 * Workflow constructor for the visualization and edition of an existing CardEntity instance
-	 * 
 	 * @param factory the application request factory
 	 * @param entityId the id of the CardEntity instance to be visualized and edited
 	 * @param titleContainer the label
 	 * @param parent the parent RelationPopupPanel when the workflow is opened from a relation field
-	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened
-	 *            from a relation field
+	 * @param initField the name of the field that initiated the opening of the workflow when the workflow is opened from a relation field
 	 */
-	public CardEntityEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer,
-			RelationPopupPanel parent, String initField) {
+	public CardEntityEditorWorkflow(AdminRequestFactory factory, String entityId, Label titleContainer, RelationPopupPanel parent, String initField, ImogBeanRenderer renderer) {
 
 		super(factory.getEventBus(), titleContainer, parent);
 
 		requestFactory = factory;
+		this.renderer = renderer;
 		if (parent != null) {
 			editor = new CardEntityEditor(factory, true);
 			this.initField = initField;
@@ -162,7 +155,6 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Get an existing instance of CardEntity
-	 * 
 	 * @param entityId the id of the CardEntityProxy to be fetched
 	 */
 	private void fetchCardEntity(String entityId) {
@@ -182,13 +174,12 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 
 	/**
 	 * Display the current instance of CardEntity in editor
-	 * 
 	 * @param entity the CardEntityProxy to be displayed
 	 */
 	private void viewCardEntity(CardEntityProxy entity) {
 
 		/* display instance information */
-		setTitle(AdminNLS.constants().cardEntity_name() + ": " + AdminRenderer.get().getDisplayValue(entity));
+		setTitle(AdminNLS.constants().cardEntity_name() + ": " + renderer.getDisplayValue(entity));
 		setMetaData((ImogBeanProxy) entity);
 
 		/* push the instance to the editor in view mode */
@@ -205,10 +196,6 @@ public class CardEntityEditorWorkflow extends EditorWorkflowComposite {
 
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
-
-		/* display edit button */
-		if (ProfileUtil.isAdmin())
-			setModifiable(true);
 	}
 
 	/**
