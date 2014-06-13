@@ -1,10 +1,12 @@
 package org.imogene.web.contrib.builder;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -13,30 +15,44 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.imogene.studio.contrib.tools.FileHelper;
 
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 
+/**
+ * This builder is in charge of copying the gwt-servlet.jar to the project library folder given the user version of the
+ * GWT SDK.
+ * 
+ * @author MEDES-IMPS
+ * 
+ */
 public class GWTJarBuilder extends IncrementalProjectBuilder {
 
 	private static String LIBRARY_PATH = "src/main/webapp/WEB-INF/lib/";
 
 	@Override
-	protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor)
+			throws CoreException {
 		if (kind == FULL_BUILD) {
-			IJavaProject project = JavaCore.create(getProject());
+			IProject project = getProject();
+			IJavaProject javaProject = JavaCore.create(project);
 
-			GWTRuntime runtime = GWTRuntime.findSdkFor(project);
-			for (File f : Arrays.asList(runtime.getWebAppClasspathFiles(project.getProject()))) {
-				IFolder library = (IFolder) project.getProject().findMember(LIBRARY_PATH);
-				File folder = new File(library.getLocation().toOSString());
+			GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
+			for (File f : Arrays.asList(runtime.getWebAppClasspathFiles(project))) {
+				IFolder libraryFolder = project.getFolder(LIBRARY_PATH);
+				if (!libraryFolder.exists()) {
+					libraryFolder.create(true, true, monitor);
+				}
+				IFile libraryFile = libraryFolder.getFile(f.getName());
+				if (libraryFile.exists()) {
+					libraryFile.delete(true, monitor);
+				}
 				try {
-					FileHelper.copyFile(f, new File(folder, f.getName()));
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
+					libraryFile.create(new FileInputStream(f), true, monitor);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
 				}
 			}
-			project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
 		return null;
 	}

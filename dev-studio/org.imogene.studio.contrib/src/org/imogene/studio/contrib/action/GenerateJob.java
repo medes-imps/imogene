@@ -17,7 +17,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -56,21 +55,15 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 	private static final char DELIMITER = '%';
 
 	private final IProject mSelectedProject;
-
 	private final String mProjectName;
-
 	private final InputStream mArchive;
-
 	private final InputStream mDefinition;
-
 	private final HashMap<String, String> mProperties;
-
 	private final String mWorkflowPath;
-
 	private final boolean mUnCompressArchive;
 
+	private IProject mGeneratedProject;
 	private List<PostGenerationTask> mPostGenerationTasks = null;
-
 	private FilePatternSet patternSet;
 
 	public GenerateJob(IProject selectedProject, String projectName, InputStream archive, InputStream definition,
@@ -87,16 +80,20 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 
 	@Override
 	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-		IProject project = getGeneratedProject();
-
-		if (!createProject(mProjectName, monitor))
+		mGeneratedProject = createProject(mProjectName, monitor);
+		if (mGeneratedProject == null) {
 			return Status.CANCEL_STATUS;
+		}
+
+		if (!mGeneratedProject.isOpen()) {
+			mGeneratedProject.open(monitor);
+		}
 
 		if (mUnCompressArchive) {
 			/* unzip the template and parse the properties */
-			unCompressArchive(project.getLocation().toOSString(), mArchive);
+			unCompressArchive(mGeneratedProject.getLocation().toOSString(), mArchive);
 			parseTemplate();
-			processFile(project.getLocation().toFile());
+			processFile(mGeneratedProject.getLocation().toFile());
 		}
 
 		/* generation process */
@@ -108,7 +105,10 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 			runner.run(mWorkflowPath, new ImogeneProgressMonitor(monitor), mProperties, slotContents);
 		}
 
-		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+		mGeneratedProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+
+		mGeneratedProject.close(monitor);
+		mGeneratedProject.open(monitor);
 
 		/* post generation tasks */
 		if (mPostGenerationTasks != null) {
@@ -121,10 +121,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 			}
 		}
 
-		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-
-		project.close(monitor);
-		project.open(monitor);
+		mGeneratedProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
 		// organizeImport(project, monitor);
 
@@ -143,7 +140,7 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 	}
 
 	public IProject getGeneratedProject() {
-		return ResourcesPlugin.getWorkspace().getRoot().getProject(mProjectName);
+		return mGeneratedProject;
 	}
 
 	public IProject getSelectedProject() {
@@ -156,18 +153,17 @@ public class GenerateJob extends WorkspaceJob implements GenerationManager {
 	}
 
 	/** create the new project into the workspace if it doesn't exist */
-	private boolean createProject(final String projectName, IProgressMonitor monitor) {
+	private IProject createProject(final String projectName, IProgressMonitor monitor) {
 		try {
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 			if (!project.exists()) {
-				IProjectDescription desc = project.getWorkspace().newProjectDescription(projectName);
-				project.create(desc, null);
+				project.create(monitor);
 			}
-			project.open(monitor);
-			return true;
+			// project.open(monitor);
+			return project;
 		} catch (CoreException e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 
 	}

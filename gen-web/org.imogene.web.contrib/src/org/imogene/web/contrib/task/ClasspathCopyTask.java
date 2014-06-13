@@ -1,4 +1,4 @@
-package org.imogene.web.contrib;
+package org.imogene.web.contrib.task;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +15,13 @@ import org.imogene.studio.contrib.interfaces.PostGenerationTask;
 import org.imogene.studio.contrib.ui.navigator.WebEmbeddedShadow;
 import org.imogene.studio.contrib.ui.navigator.WebShadow;
 
+/**
+ * This task copies the libraries needed by the generated web application from the imogene studio to the project library
+ * folder.
+ * 
+ * @author MEDES-IMPS
+ * 
+ */
 public class ClasspathCopyTask implements PostGenerationTask {
 
 	private static final String LIBRARY_PATH = "src/main/webapp/WEB-INF/lib";

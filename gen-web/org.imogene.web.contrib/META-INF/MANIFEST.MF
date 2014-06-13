@@ -10,8 +10,11 @@ Require-Bundle: org.eclipse.ui,
  org.imogene.studio.contrib,
  org.imogene.library.contrib,
  com.google.gwt.eclipse.core,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.launching
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Medes-IMPS
-Export-Package: org.imogene.web.contrib
+Export-Package: org.imogene.web.contrib,
+ org.imogene.web.contrib.task

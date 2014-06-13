@@ -49,7 +49,15 @@
   
 	<!-- Module sources -->
 	<source path="client"/>  
-	<source path="shared"/>  
+	<source path="shared"/> 
+	
+	<!-- SuperDevMode configuration and parameteres -->
+	<add-linker name="xsiframe" />
+	<set-property name="compiler.useSourceMaps" value="true" />
+	<set-configuration-property name="devModeRedirectEnabled" value="true" />
+	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE' />
+	<set-configuration-property name="gwt.codeserver.port" value="9876" />
+
 </module>
 «ENDLET-»
 «ENDFILE»

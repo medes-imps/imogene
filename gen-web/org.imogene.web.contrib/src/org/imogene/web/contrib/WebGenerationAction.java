@@ -18,7 +18,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.imogene.studio.contrib.ui.generation.GenerationWizard;
-
+import org.imogene.web.contrib.task.AddEmbeddedSourceFolderTask;
+import org.imogene.web.contrib.task.AddSuperDevModeLaunchConfiguationTask;
+import org.imogene.web.contrib.task.ClasspathCopyTask;
+import org.imogene.web.contrib.task.WebIconCopyTask;
 
 public class WebGenerationAction implements IObjectActionDelegate {
 
@@ -41,18 +44,17 @@ public class WebGenerationAction implements IObjectActionDelegate {
 			wizard.addPropertiesPage(new SpecificWizardPage());
 			wizard.setWindowTitle("Generation of a Web project");
 			wizard.setSelectedProject(mSelectedProject);
-			wizard.setArchive(FileLocator
-					.openStream(Activator.getDefault().getBundle(), new Path(
-							"template-site/template.zip"), false));
-			wizard.setDefinition(FileLocator.openStream(Activator.getDefault()
-					.getBundle(), new Path("template-site/templates.xml"),
-					false));
+			wizard.setArchive(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
+					"template-site/template.zip"), false));
+			wizard.setDefinition(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
+					"template-site/templates.xml"), false));
 			wizard.setWorkflow("workflow/generatorWeb.mwe");
 			wizard.addPostGenerationTask(new WebIconCopyTask());
 			wizard.addPostGenerationTask(new ClasspathCopyTask());
+			wizard.addPostGenerationTask(new AddEmbeddedSourceFolderTask());
+			wizard.addPostGenerationTask(new AddSuperDevModeLaunchConfiguationTask());
 			fillTheList(wizard);
-			WizardDialog dialog = new WizardDialog(Display.getCurrent()
-					.getActiveShell(), wizard);
+			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 			dialog.open();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -65,17 +67,17 @@ public class WebGenerationAction implements IObjectActionDelegate {
 		mSelection = (IStructuredSelection) selection;
 		mSelectedProject = (IProject) (mSelection).getFirstElement();
 	}
-	
+
 	/**
 	 * Fill the workflow list by reading the dedicated extension point.
 	 */
-	private void fillTheList(GenerationWizard wizard){
+	private void fillTheList(GenerationWizard wizard) {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint extensionPoint = registry.getExtensionPoint("org.imogene.web.contrib.specificworkflow");
+		IExtensionPoint extensionPoint = registry.getExtensionPoint("org.imogene.web.contrib.specificworkflow");
 		if (extensionPoint != null) {
-			IExtension[] extensions = extensionPoint.getExtensions();		
+			IExtension[] extensions = extensionPoint.getExtensions();
 			for (IExtension extension : extensions) {
-				for(IConfigurationElement element : extension.getConfigurationElements()){
+				for (IConfigurationElement element : extension.getConfigurationElements()) {
 					wizard.addSpecificWorkflow(element.getAttribute("name"), element.getAttribute("path"));
 				}
 			}

@@ -1,4 +1,4 @@
-package org.imogene.web.contrib;
+package org.imogene.web.contrib.task;
 
 import java.io.File;
 
