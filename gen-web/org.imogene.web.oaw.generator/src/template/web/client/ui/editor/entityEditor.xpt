@@ -69,7 +69,7 @@ import org.imogene.web.client.ui.field.ImogPasswordBox;
 import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.proxy.CardEntityProxy;
 import org.imogene.web.shared.proxy.ProfileProxy;
-import org.imogene.«projectName.toLowerCase()».client.AvionAdminUtilRenderer;
+import org.imogene.«projectName.toLowerCase()».client.«projectName.toFirstUpper()»AdminUtilRenderer;
 	«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 		«FOREACH ((Actor)this).filters AS fil-»
 import org.imogene.«projectName.toLowerCase()».client.dataprovider.«fil.entity.name.toFirstUpper()»DataProvider;
@@ -281,7 +281,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		/* field synchronizables */
 		CardEntityDataProvider synchronizablesDataProvider;
 		synchronizablesDataProvider = new CardEntityDataProvider(requestFactory);
-		synchronizables = new ImogMultiRelationBox<CardEntityProxy>(synchronizablesDataProvider, AvionAdminUtilRenderer.get(), true);
+		synchronizables = new ImogMultiRelationBox<CardEntityProxy>(synchronizablesDataProvider, «projectName.toFirstUpper()»AdminUtilRenderer.get(), true);
 		synchronizables.setPopUpTitle(AdminNLS.constants().cardEntity_select_title());
 		synchronizables.setFilterPanel(new CardEntityFilterPanel());
 		
@@ -397,14 +397,17 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	}
 	
 	/**
-	 * Sets the Request Context for the List Editors
+	 * Sets the Request Context for the List Editors.
+	 * 
+	 * IMPORTANT: We are passing an ImogEntityRequest rather than a specific entity request because this editor
+	 * can be used in embedded forms where it may be difficult to now in advance with request will be used. 
 	 */	
 	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
 		«EXPAND setRequestContextForListEditors FOREACH groups.fields-»
 		«IF hasDynamicFields-»
 		dynamicFieldValues.setRequestContext(ctx);
 		«ENDIF -»
-	}		 
+	}
 	
 	/**
 	 * Manages editor updates when a field value changes

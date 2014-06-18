@@ -483,7 +483,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(CreateProfileEvent.TYPE, new CreateProfileEvent.Handler() {
 			public void createNewProfile(GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, null, AvionAdminUtilRenderer.get());
+					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, null, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get());
 					profileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(profileForm);
 				}
@@ -494,7 +494,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ViewProfileEvent.TYPE, new ViewProfileEvent.Handler() {
 			public void viewProfile(String entityId, GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, entityId, AvionAdminUtilRenderer.get());
+					ProfileFormPanel profileForm = new ProfileFormPanel(requestFactory, entityId, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get());
 					profileForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(profileForm);
 				}
@@ -522,7 +522,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ViewCardEntityEvent.TYPE, new ViewCardEntityEvent.Handler() {
 			public void viewCardEntity(String entityId, GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, entityId, AvionAdminUtilRenderer.get());
+					CardEntityFormPanel cardEntityForm = new CardEntityFormPanel(requestFactory, entityId, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get());
 					cardEntityForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(cardEntityForm);
 				}
@@ -533,12 +533,12 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ListCardEntityEvent.TYPE, new ListCardEntityEvent.Handler() {
 			public void listCardEntity() {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new CardEntityListPanel(requestFactory, AvionAdminUtilRenderer.get()));
+					displayWrapperPanel(new CardEntityListPanel(requestFactory, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get()));
 			}
 
 			public void listCardEntity(String searchText) {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new CardEntityListPanel(requestFactory, searchText, AvionAdminUtilRenderer.get()));
+					displayWrapperPanel(new CardEntityListPanel(requestFactory, searchText, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get()));
 			}
 		}));
 		/**
@@ -549,7 +549,7 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ViewFieldGroupEvent.TYPE, new ViewFieldGroupEvent.Handler() {
 			public void viewFieldGroup(String entityId, GwtEvent<?> closeEvent) {
 				if (ProfileUtil.isAdmin()) {
-					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, entityId, AvionAdminUtilRenderer.get());
+					FieldGroupFormPanel fieldgroupForm = new FieldGroupFormPanel(requestFactory, entityId, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get());
 					fieldgroupForm.setCloseEvent(closeEvent);
 					displayWrapperPanel(fieldgroupForm);
 				}
@@ -560,12 +560,12 @@ public class 쳎rojectName.toFirstUpper()틿ntryPoint implements EntryPoint, Value
 		registrations.add(eventBus.addHandler(ListFieldGroupEvent.TYPE, new ListFieldGroupEvent.Handler() {
 			public void listFieldGroup() {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new FieldGroupListPanel(requestFactory, AvionAdminUtilRenderer.get()));
+					displayWrapperPanel(new FieldGroupListPanel(requestFactory, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get()));
 			}
 
 			public void listFieldGroup(String searchText) {
 				if (ProfileUtil.isAdmin())
-					displayWrapperPanel(new FieldGroupListPanel(requestFactory, searchText, AvionAdminUtilRenderer.get()));
+					displayWrapperPanel(new FieldGroupListPanel(requestFactory, searchText, 쳎rojectName.toFirstUpper()틻dminUtilRenderer.get()));
 			}
 		}));
 		첚NDIF-�		
