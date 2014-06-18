@@ -399,7 +399,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	/**
 	 * Sets the Request Context for the List Editors
 	 */	
-	public void setRequestContextForListEditors(«name.toFirstUpper()»Request ctx) {
+	public void setRequestContextForListEditors(ImogEntityRequest ctx) {
 		«EXPAND setRequestContextForListEditors FOREACH groups.fields-»
 		«IF hasDynamicFields-»
 		dynamicFieldValues.setRequestContext(ctx);
