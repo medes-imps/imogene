@@ -19,7 +19,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.imogene.studio.contrib.ui.generation.GenerationWizard;
 import org.imogene.web.contrib.task.AddEmbeddedSourceFolderTask;
-import org.imogene.web.contrib.task.AddSuperDevModeLaunchConfiguationTask;
+import org.imogene.web.contrib.task.AddSuperDevModeLaunchConfigurationTask;
 import org.imogene.web.contrib.task.ClasspathCopyTask;
 import org.imogene.web.contrib.task.WebIconCopyTask;
 
@@ -52,7 +52,7 @@ public class WebGenerationAction implements IObjectActionDelegate {
 			wizard.addPostGenerationTask(new WebIconCopyTask());
 			wizard.addPostGenerationTask(new ClasspathCopyTask());
 			wizard.addPostGenerationTask(new AddEmbeddedSourceFolderTask());
-			wizard.addPostGenerationTask(new AddSuperDevModeLaunchConfiguationTask());
+			wizard.addPostGenerationTask(new AddSuperDevModeLaunchConfigurationTask());
 			fillTheList(wizard);
 			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 			dialog.open();

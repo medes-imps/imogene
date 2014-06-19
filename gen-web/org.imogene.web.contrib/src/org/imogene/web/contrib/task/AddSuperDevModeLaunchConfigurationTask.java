@@ -26,7 +26,7 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntime;
  * @author MEDES-IMPS
  * 
  */
-public class AddSuperDevModeLaunchConfiguationTask implements PostGenerationTask {
+public class AddSuperDevModeLaunchConfigurationTask implements PostGenerationTask {
 
 	private static final String PROGRAM_ARGS = "-noprecompile";
 	private static final String MAIN_CLASS = "com.google.gwt.dev.codeserver.CodeServer";
