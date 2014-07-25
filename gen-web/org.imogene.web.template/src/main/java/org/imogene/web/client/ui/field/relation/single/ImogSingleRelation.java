@@ -236,6 +236,10 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 		
 	}
 	
+	public void setButtonPanelWidth(String width) {
+		buttonPanel.getElement().getStyle().setProperty("width", width);
+	}	
+	
 	/**
 	 * CLear the content of the MedanyListBox TextBox
 	 */

@@ -133,7 +133,7 @@ public class ImogMultiRelationBoxPopUpAsList<T extends ImogBeanProxy> {
 		//table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);		
 
 		//pager.setRangeLimited(false);
-		addMouseWheelHandler();
+		//addMouseWheelHandler();
 		
 		filterButton.setText(BaseNLS.constants().button_search());
 		okButton.setText(BaseNLS.constants().button_ok());

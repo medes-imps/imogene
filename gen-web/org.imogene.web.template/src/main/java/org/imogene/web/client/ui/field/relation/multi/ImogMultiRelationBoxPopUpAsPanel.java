@@ -257,7 +257,7 @@ public class ImogMultiRelationBoxPopUpAsPanel<T extends ImogBeanProxy> {
 		cancelButton.setStylePrimaryName(imogResources.imogStyle().imogButton());
 
 		setButtonHandlers();
-		addMouseWheelHandler();
+		//addMouseWheelHandler();
 	}
 	
 

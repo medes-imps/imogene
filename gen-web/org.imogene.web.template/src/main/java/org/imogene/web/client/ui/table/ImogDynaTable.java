@@ -290,13 +290,13 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 							pager.previousPage();
 					}
 				} else {
-					// Scrolling down
-					int maxScrollBottom = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
-					if (lastScrollPos >= maxScrollBottom) {
-						// We are near the end, so next page.
-						if (pager.hasNextPage())
-							pager.nextPage();
-					}
+//					// Scrolling down
+//					int maxScrollBottom = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
+//					if (lastScrollPos >= maxScrollBottom) {
+//						// We are near the end, so next page.
+//						if (pager.hasNextPage())
+//							pager.nextPage();
+//					}
 				}
 			}
 		}));
