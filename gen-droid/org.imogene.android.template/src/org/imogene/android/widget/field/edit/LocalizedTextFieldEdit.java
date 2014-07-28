@@ -55,7 +55,8 @@ public class LocalizedTextFieldEdit extends StringFieldEdit<LocalizedText> {
 				language.setText(displayArray[i]);
 				first = false;
 			} else {
-				ViewGroup entry = (ViewGroup) inflate(context, R.layout.imog__localized_text_editor, mEntries);
+				ViewGroup entry = (ViewGroup) inflate(context, R.layout.imog__localized_text_editor, null);
+				mEntries.addView(entry);
 				mEditors.put(isoArray[i], (EditText) entry.findViewById(R.id.imog__localized));
 				TextView language = (TextView) entry.findViewById(R.id.imog__locale);
 				language.setText(displayArray[i]);

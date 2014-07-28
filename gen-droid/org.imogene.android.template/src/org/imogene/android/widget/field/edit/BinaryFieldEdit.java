@@ -56,8 +56,8 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 	}
 
 	@Override
-	protected void onChangeValue() {
-		super.onChangeValue();
+	protected void onValueChange() {
+		super.onValueChange();
 		final Uri uri = getValue();
 		if (uri == null) {
 			findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);
@@ -88,7 +88,7 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 	protected void acquire(int requestCode) {
 		Intent acquire = new Intent(Intent.ACTION_GET_CONTENT);
 		onCreateIntent(acquire);
-		getFieldManager().getActivity().startActivityForResult(acquire, mRequestCode);
+		startActivityForResult(acquire, mRequestCode);
 	}
 
 	protected void onCreateIntent(Intent acquire) {

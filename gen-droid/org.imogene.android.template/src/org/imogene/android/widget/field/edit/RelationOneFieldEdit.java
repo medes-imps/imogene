@@ -52,19 +52,19 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 			return;
 		}
 		if (isReadOnly() && getValue() != null) {
-			getContext().startActivity(new Intent(Intent.ACTION_VIEW, getValue()));
+			startActivity(new Intent(Intent.ACTION_VIEW, getValue()));
 			return;
 		}
 		if (mOppositeCardinality == 1 && !mHasReverse) {
 			final Uri uri = getValue();
 			if (uri != null) {
-				getContext().startActivity(new Intent(Intent.ACTION_EDIT, uri));
+				startActivity(new Intent(Intent.ACTION_EDIT, uri));
 			} else {
 				boolean wizard = Preferences.getPreferences(getContext()).isWizardEnabled();
 				Intent intent = new Intent(Intent.ACTION_INSERT, mContentUri);
 				intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
 				intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
-				getFieldManager().getActivity().startActivityForResult(intent, mRequestCode);
+				startActivityForResult(intent, mRequestCode);
 			}
 			return;
 		}

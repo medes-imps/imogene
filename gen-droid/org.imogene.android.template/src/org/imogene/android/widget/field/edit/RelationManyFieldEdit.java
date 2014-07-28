@@ -67,7 +67,7 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 
 			final int size = list.size();
 			if (size == 1) {
-				getContext().startActivity(new Intent(Intent.ACTION_VIEW, list.get(0)));
+				startActivity(new Intent(Intent.ACTION_VIEW, list.get(0)));
 			} else {
 				Intent intent = new Intent(Intent.ACTION_VIEW, mContentUri);
 				long[] ids = new long[size];
@@ -77,7 +77,7 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 				Where where = new Where();
 				where.in(ImogBean.Columns._ID, ids);
 				IntentUtils.putWhereExtras(intent, where);
-				getContext().startActivity(intent);
+				startActivity(intent);
 			}
 			return;
 		}

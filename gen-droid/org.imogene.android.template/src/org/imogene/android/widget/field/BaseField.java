@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -44,6 +45,8 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	private boolean mDependent = false;
 	private boolean mHidden = false;
 	private String mEmptyText;
+
+	private boolean mUpdateDisplayOnChange = true;
 
 	private ArrayList<OnDependencyChangeListener> mDependents;
 
@@ -215,8 +218,7 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	 */
 	public void setValue(T value) {
 		mValue = value;
-		onChangeValue();
-		notifyDependencyChange();
+		onValueChange();
 	}
 
 	/**
@@ -241,6 +243,14 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		return mManager;
 	}
 
+	protected void startActivity(Intent intent) {
+		mManager.getActivity().startActivity(intent);
+	}
+
+	protected void startActivityForResult(Intent intent, int requestCode) {
+		mManager.getActivity().startActivityForResult(intent, requestCode);
+	}
+
 	protected void setDialogFactory(DialogFactory factory) {
 		mFactory = factory;
 	}
@@ -259,6 +269,58 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		mManager = manager;
 	}
 
+	@Override
+	public boolean matchesDependencyValue(String dependencyValue) {
+		return mValue != null;
+	}
+
+	@Override
+	public void onDependencyChanged() {
+		final boolean visible = isDependentVisible();
+		setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	protected void enableUpdateDisplayOnChange() {
+		if (!mUpdateDisplayOnChange) {
+			mUpdateDisplayOnChange = true;
+		}
+	}
+
+	protected void disableUpdateDisplayOnChange() {
+		if (mUpdateDisplayOnChange) {
+			mUpdateDisplayOnChange = false;
+		}
+	}
+
+	protected void onValueChange() {
+		if (mUpdateDisplayOnChange) {
+			mValueView.setText(getFieldDisplay());
+		}
+		notifyDependencyChange();
+	}
+
+	@Override
+	public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
+		if (mDependsOn == null) {
+			mDependsOn = new ArrayList<DependsOnEntry>();
+			// First time mark the field as dependent
+			setDependent(true);
+		}
+
+		mDependsOn.add(new DependsOnEntry(matcher, dependencyValue));
+	}
+
+	protected boolean isDependentVisible() {
+		if (mDependent && mDependsOn != null) {
+			for (DependsOnEntry entry : mDependsOn) {
+				if (!entry.first.matchesDependencyValue(entry.second)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Register an {@link OnDependencyChangeListener} to be run when the value of this field changes.
 	 * 
@@ -275,43 +337,6 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		dependent.registerDependsOn(this, dependencyValue);
 
 		dependent.onDependencyChanged();
-	}
-
-	@Override
-	public boolean matchesDependencyValue(String dependencyValue) {
-		return mValue != null;
-	}
-
-	protected boolean isDependentVisible() {
-		if (mDependent && mDependsOn != null) {
-			for (DependsOnEntry entry : mDependsOn) {
-				if (!entry.first.matchesDependencyValue(entry.second)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public void onDependencyChanged() {
-		final boolean visible = isDependentVisible();
-		setVisibility(visible ? View.VISIBLE : View.GONE);
-	}
-
-	@Override
-	public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
-		if (mDependsOn == null) {
-			mDependsOn = new ArrayList<DependsOnEntry>();
-			// First time mark the field as dependent
-			setDependent(true);
-		}
-
-		mDependsOn.add(new DependsOnEntry(matcher, dependencyValue));
-	}
-
-	protected void onChangeValue() {
-		mValueView.setText(getFieldDisplay());
 	}
 
 	private void notifyDependencyChange() {

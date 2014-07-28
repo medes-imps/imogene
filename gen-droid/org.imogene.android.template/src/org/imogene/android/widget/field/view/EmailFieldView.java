@@ -20,7 +20,7 @@ public class EmailFieldView extends BaseFieldView<String> {
 	@Override
 	protected void dispatchClick(View v) {
 		Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getValue(), null));
-		getContext().startActivity(intent);
+		startActivity(intent);
 	}
 
 	@Override

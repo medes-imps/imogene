@@ -28,7 +28,7 @@ public class BinaryFieldView extends BaseFieldView<Uri> {
 	protected void dispatchClick(View v) {
 		if (getValue() != null) {
 			Intent intent = new Intent(Intent.ACTION_VIEW, getValue());
-			getContext().startActivity(intent);
+			startActivity(intent);
 		}
 	}
 

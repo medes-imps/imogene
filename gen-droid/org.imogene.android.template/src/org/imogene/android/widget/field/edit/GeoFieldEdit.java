@@ -65,8 +65,8 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 	}
 
 	@Override
-	protected void onChangeValue() {
-		super.onChangeValue();
+	protected void onValueChange() {
+		super.onValueChange();
 		final Location location = getValue();
 		if (!isReadOnly()) {
 			if (location == null) {
@@ -105,7 +105,7 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 				acquire.addCategory(MapsConstants.CATEGORY_BEST);
 				break;
 			}
-			getFieldManager().getActivity().startActivityForResult(acquire, mRequestCode);
+			startActivityForResult(acquire, mRequestCode);
 			break;
 		case R.id.imog__delete:
 			setValue(null);
@@ -116,7 +116,7 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 				Intent intent = new Intent(getContext(), LocationViewer.class);
 				intent.putExtra(MapsConstants.EXTRA_LATITUDE, l.getLatitude());
 				intent.putExtra(MapsConstants.EXTRA_LONGITUDE, l.getLongitude());
-				getContext().startActivity(intent);
+				startActivity(intent);
 			}
 			break;
 		}

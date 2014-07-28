@@ -16,7 +16,6 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Toast;
 import fr.medes.android.database.sqlite.stmt.Where;
 
 public abstract class BaseFieldEdit<T> extends BaseField<T> implements ConstraintBuilder {
@@ -30,15 +29,15 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 
 	private ArrayList<BaseField<?>> mConstraintDependents;
 
+	private OnValueChangeListener mListener;
+
 	private boolean mNotifyValueChanged = true;
-	private boolean mUpdateDisplayOnChange = true;
 	private boolean mAutomaticVisibility = true;
 	private boolean mReadOnly;
 	private boolean mRequired;
 	private int mHelpId;
 
 	private Dialog mHelpDialog;
-	private OnValueChangeListener mListener;
 
 	public BaseFieldEdit(Context context, int layoutId) {
 		super(context, layoutId);
@@ -150,10 +149,6 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		mAutomaticVisibility = automatic;
 	}
 
-	public void setOnValueChangeListener(OnValueChangeListener listener) {
-		mListener = listener;
-	}
-
 	@Override
 	public void onDependencyChanged() {
 		if (!mAutomaticVisibility) {
@@ -162,42 +157,32 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		super.onDependencyChanged();
 	}
 
-	protected void enableUpdateDisplayOnChange() {
-		if (!mUpdateDisplayOnChange) {
-			mUpdateDisplayOnChange = true;
-		}
-	}
-
-	protected void disableUpdateDisplayOnChange() {
-		if (mUpdateDisplayOnChange) {
-			mUpdateDisplayOnChange = false;
-		}
-	}
-
-	private void enableNotifyValueChanged() {
+	protected void enableNotifyValueChanged() {
 		if (!mNotifyValueChanged) {
 			mNotifyValueChanged = true;
 		}
 	}
 
-	private void disableNotifyValueChanged() {
+	protected void disableNotifyValueChanged() {
 		if (mNotifyValueChanged) {
 			mNotifyValueChanged = false;
 		}
 	}
 
 	@Override
-	protected void onChangeValue() {
-		if (mUpdateDisplayOnChange) {
-			super.onChangeValue();
+	protected void onValueChange() {
+		super.onValueChange();
+		if (mRequired && mRequiredView != null) {
+			mRequiredView.setVisibility(isEmpty() ? View.VISIBLE : View.GONE);
 		}
 		if (mNotifyValueChanged) {
 			notifyValueChange();
 			notifyConstraintDependentsChange();
 		}
-		if (mRequired && mRequiredView != null) {
-			mRequiredView.setVisibility(isEmpty() ? View.VISIBLE : View.GONE);
-		}
+	}
+
+	public void setOnValueChangeListener(OnValueChangeListener listener) {
+		mListener = listener;
 	}
 
 	private void notifyValueChange() {
@@ -217,7 +202,6 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 
 	@Override
 	public Where onCreateConstraint(String column) {
-		showToastUnset();
 		return null;
 	}
 
@@ -230,11 +214,6 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		for (int i = 0; i < size; i++) {
 			mConstraintDependents.get(i).setValue(null);
 		}
-	}
-
-	protected void showToastUnset() {
-		String message = getResources().getString(R.string.imog__relation_hierarchical_parent_unset, getTitle());
-		Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
 
 	@Override

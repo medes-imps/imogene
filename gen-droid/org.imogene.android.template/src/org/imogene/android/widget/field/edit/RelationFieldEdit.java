@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Toast;
 import fr.medes.android.database.sqlite.stmt.Where;
 import fr.medes.android.util.Arrays;
 
@@ -193,7 +194,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 			IntentUtils.putWhereExtras(intent, where);
 		}
 		intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
-		getFieldManager().getActivity().startActivityForResult(intent, mRequestCode);
+		startActivityForResult(intent, mRequestCode);
 	}
 
 	protected Bundle createBundle() {
@@ -225,6 +226,11 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 
 	protected Where onPrepareWhere() {
 		return null;
+	}
+
+	protected void showToastUnset() {
+		String message = getResources().getString(R.string.imog__relation_hierarchical_parent_unset, getTitle());
+		Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
 
 	/**

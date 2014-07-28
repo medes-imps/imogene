@@ -29,7 +29,7 @@ public class PhoneFieldView extends BaseFieldView<String> {
 	@Override
 	protected void dispatchClick(View v) {
 		Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", getValue(), null));
-		getContext().startActivity(intent);
+		startActivity(intent);
 	}
 
 	@Override

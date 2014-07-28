@@ -30,8 +30,8 @@ public abstract class BaseFieldView<T> extends BaseField<T> {
 	}
 
 	@Override
-	protected void onChangeValue() {
-		super.onChangeValue();
+	protected void onValueChange() {
+		super.onValueChange();
 		final boolean visible = !isEmpty() && isDependentVisible();
 		setVisibility(visible ? View.VISIBLE : View.GONE);
 	}

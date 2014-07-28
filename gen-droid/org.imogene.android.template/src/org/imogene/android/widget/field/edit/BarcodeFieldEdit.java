@@ -71,8 +71,8 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 	}
 
 	@Override
-	protected void onChangeValue() {
-		super.onChangeValue();
+	protected void onValueChange() {
+		super.onValueChange();
 		final String value = getValue();
 		if (TextUtils.isEmpty(value)) {
 			findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);

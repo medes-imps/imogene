@@ -50,7 +50,7 @@ public class RelationOneFieldView extends BaseFieldView<Uri> {
 	protected void dispatchClick(View v) {
 		final Uri uri = getValue();
 		if (uri != null) {
-			getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
+			startActivity(new Intent(Intent.ACTION_VIEW, uri));
 		}
 	}
 
