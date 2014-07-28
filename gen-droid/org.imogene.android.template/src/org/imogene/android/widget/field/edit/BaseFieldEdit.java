@@ -85,19 +85,39 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		return mRequired;
 	}
 
+	/**
+	 * Set if the field is read-only or not.
+	 * 
+	 * @param readOnly {@code true} if the is read-only, {@code false} otherwise.
+	 */
 	public void setReadOnly(boolean readOnly) {
 		mReadOnly = readOnly;
 		setEnabled(!readOnly);
 	}
 
+	/**
+	 * Returns if the field is read-only or not.
+	 * 
+	 * @return Whether the field is read-only or not.
+	 */
 	public boolean isReadOnly() {
 		return mReadOnly;
 	}
 
+	/**
+	 * Checks if the field is valid or not given the constraints (required, validation rules).
+	 * 
+	 * @return Whether the field is valid or not.
+	 */
 	public boolean isValid() {
 		return mRequired ? !isEmpty() : true;
 	}
 
+	/**
+	 * Set the help display resource to display when help is clicked.
+	 * 
+	 * @param helpId The help display resource identifier.
+	 */
 	public void setHelpId(int helpId) {
 		mHelpId = helpId;
 		if (mHelpView != null) {
@@ -106,6 +126,11 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		}
 	}
 
+	/**
+	 * Returns the help display resource identifier.
+	 * 
+	 * @return The help display resource identifier.
+	 */
 	public int getHelpId() {
 		return mHelpId;
 	}

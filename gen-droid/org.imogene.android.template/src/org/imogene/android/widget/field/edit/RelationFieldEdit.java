@@ -23,7 +23,17 @@ import fr.medes.android.util.Arrays;
 
 public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements OnActivityResultListener {
 
+	/**
+	 * Interface to allow passing values when creating a new form from a related one. The extras contains the name of
+	 * the target field and the value that must be given to the field.
+	 */
 	public static interface ExtraBuilder {
+
+		/**
+		 * Method called when a new form is about to be created and the values to pass as extras argument must be set.
+		 * 
+		 * @param bundle The bundle in which we can add extras values.
+		 */
 		public void onCreateExtra(Bundle bundle);
 	}
 
@@ -88,10 +98,20 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		setOnLongClickListener(readOnly ? null : this);
 	}
 
+	/**
+	 * Set the content URI of the related entity.
+	 * 
+	 * @param contentUri The content URI of the related entity.
+	 */
 	public void setContentUri(Uri contentUri) {
 		mContentUri = contentUri;
 	}
 
+	/**
+	 * Set the drawable color chip representing the related entity.
+	 * 
+	 * @param drawable The drawable color chip.
+	 */
 	public void setDrawable(Drawable drawable) {
 		final View color = findViewById(R.id.imog__color);
 		if (color != null) {
@@ -99,6 +119,13 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		}
 	}
 
+	/**
+	 * Convenient method to add a common field. The value of the first field will be given to the field of the related
+	 * entity which column name is given as second argument.
+	 * 
+	 * @param commonField The field which value will be passed to the new form.
+	 * @param commonName The column name of the related entity to be set.
+	 */
 	public void registerCommonField(RelationFieldEdit<?> commonField, String commonName) {
 		if (mCommonFields == null) {
 			mCommonFields = new ArrayList<CommonFieldEntry>();
@@ -107,6 +134,12 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		mCommonFields.add(new CommonFieldEntry(commonField, commonName));
 	}
 
+	/**
+	 * Convenient method to add an {@link ExtraBuilder}. The extras values will be passed to the related entity when
+	 * created.
+	 * 
+	 * @param builder The extra builder to add.
+	 */
 	public void registerExtraBuilder(ExtraBuilder builder) {
 		if (mBuilders == null) {
 			mBuilders = new ArrayList<ExtraBuilder>();
@@ -115,6 +148,13 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		mBuilders.add(builder);
 	}
 
+	/**
+	 * Convenient method to add a hierarchical filter. The constraint builder will build a where clause to filter data
+	 * upon the given column.
+	 * 
+	 * @param builder The constraint builder to build the where clause.
+	 * @param column The column to filter upon.
+	 */
 	public void registerConstraintBuilder(ConstraintBuilder builder, String column) {
 		if (mConstraintsBuilders == null) {
 			mConstraintsBuilders = new ArrayList<ConstraintEntry>();
@@ -187,6 +227,10 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		return null;
 	}
 
+	/**
+	 * Container to ease passing around a tuple of constraint builder and a column to filter upon on which the where
+	 * clause will apply.
+	 */
 	private static final class ConstraintEntry extends Pair<ConstraintBuilder, String> {
 
 		public ConstraintEntry(ConstraintBuilder first, String second) {
@@ -195,6 +239,10 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 
 	};
 
+	/**
+	 * Container to ease passing around a tuple of the field which value will be passed to the related form and the name
+	 * of the field that will receive the value.
+	 */
 	private static class CommonFieldEntry extends Pair<RelationFieldEdit<?>, String> {
 
 		public CommonFieldEntry(RelationFieldEdit<?> first, String second) {

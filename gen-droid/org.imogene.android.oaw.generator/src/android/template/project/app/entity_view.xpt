@@ -56,8 +56,7 @@ import org.imogene.android.widget.field.view.RelationOneFieldView;
 import org.imogene.android.widget.field.view.TextFieldView;
 import org.imogene.android.widget.field.view.TimeFieldView;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()-»;
-«EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
+import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements

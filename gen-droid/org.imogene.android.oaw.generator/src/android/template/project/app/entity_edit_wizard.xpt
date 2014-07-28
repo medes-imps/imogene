@@ -43,8 +43,7 @@ import org.imogene.android.widget.field.edit.RelationOneFieldEdit;
 import org.imogene.android.widget.field.edit.TextFieldEdit;
 import org.imogene.android.widget.field.edit.TimeFieldEdit;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()-»;
-«EXPAND android::template::EntityUtil::organizeEntityImport(projectName) FOREACH groups.fields-»
+import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implements 

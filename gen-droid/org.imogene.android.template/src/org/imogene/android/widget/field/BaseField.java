@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.imogene.android.template.R;
 import org.imogene.android.widget.field.FieldManager.OnActivityDestroyListener;
+import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -23,6 +24,11 @@ import android.view.View.OnLongClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * Basic view that represents a class.
+ * 
+ * @param <T> The field value type.
+ */
 public abstract class BaseField<T> extends LinearLayout implements DependencyMatcher, OnDependencyChangeListener,
 		OnClickListener, OnLongClickListener, OnDismissListener, OnActivityDestroyListener {
 
@@ -35,8 +41,8 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	private DialogFactory mFactory;
 	private Dialog mDialog;
 
-	private boolean mDependent;
-	private boolean mHidden;
+	private boolean mDependent = false;
+	private boolean mHidden = false;
 	private String mEmptyText;
 
 	private ArrayList<OnDependencyChangeListener> mDependents;
@@ -88,43 +94,93 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		super.setVisibility(mHidden ? View.GONE : visibility);
 	}
 
+	/**
+	 * Returns the view containing the displayed value of the field.
+	 * 
+	 * @return The field display value view.
+	 */
 	public TextView getValueView() {
 		return mValueView;
 	}
 
+	/**
+	 * Returns whether the field is hidden or not.
+	 * 
+	 * @return {@code true} if the field is hidden, {@code false} otherwise.
+	 */
 	public boolean isHidden() {
 		return mHidden;
 	}
 
+	/**
+	 * Set the hidden state of this field.
+	 * 
+	 * @param hidden The hidden state.
+	 */
 	public void setHidden(boolean hidden) {
 		mHidden = hidden;
 		setVisibility(hidden ? View.GONE : View.VISIBLE);
 	}
 
+	/**
+	 * Set the title resource identifier of the field.
+	 * 
+	 * @param titleId The title resource identifier.
+	 */
 	public void setTitle(int titleId) {
 		mTitleView.setText(titleId);
 	}
 
+	/**
+	 * Set the title string representation of the field.
+	 * 
+	 * @param title The title.
+	 */
 	public void setTitle(CharSequence title) {
 		mTitleView.setText(title);
 	}
 
+	/**
+	 * Returns the title of the field.
+	 * 
+	 * @return The title.
+	 */
 	public CharSequence getTitle() {
 		return mTitleView.getText();
 	}
 
+	/**
+	 * Set the text to display when the field is empty.
+	 * 
+	 * @param emptyText The empty text.
+	 */
 	public void setEmptyText(String emptyText) {
 		mEmptyText = emptyText;
 	}
 
+	/**
+	 * Set the text resource identifier to display when the field is empty.
+	 * 
+	 * @param emptyTextId The text resource identifier.
+	 */
 	public void setEmptyText(int emptyTextId) {
 		mEmptyText = getResources().getString(emptyTextId);
 	}
 
+	/**
+	 * Returns the text to be displayed when the field is empty.
+	 * 
+	 * @return The text when field is empty.
+	 */
 	public String getEmptyText() {
 		return mEmptyText;
 	}
 
+	/**
+	 * Set whether the field visibility is dependent of an other field value.
+	 * 
+	 * @param dependent {@code true} if the field visibility depends on an other field value, {@code false} if not.
+	 */
 	public void setDependent(boolean dependent) {
 		mDependent = dependent;
 		if (mDependentView != null) {
@@ -132,24 +188,51 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		}
 	}
 
-	public boolean isDependendent() {
+	/**
+	 * Returns whether the field visibility is dependent of an other field value.
+	 * 
+	 * @return {@code true} if the field visibility depends on an other field value, {@code false} if not.
+	 */
+	public boolean isDependent() {
 		return mDependent;
 	}
 
+	/**
+	 * Method to call to initialize the view. This method won't dispatch changes if not needed.
+	 * 
+	 * @param value The value to initialize the field with.
+	 */
 	public void init(T value) {
 		setValue(value);
 	}
 
+	/**
+	 * Set the value of this field. This method will update dependent fields and everything that need to be notified.
+	 * 
+	 * @see BaseField#init(Object)
+	 * 
+	 * @param value The value.
+	 */
 	public void setValue(T value) {
 		mValue = value;
 		onChangeValue();
 		notifyDependencyChange();
 	}
 
+	/**
+	 * Returns the current value of this field.
+	 * 
+	 * @return The current value.
+	 */
 	public T getValue() {
 		return mValue;
 	}
 
+	/**
+	 * Returns whether this field is empty or not.
+	 * 
+	 * @return {@code true} if the field is empty, {@code false} otherwise.
+	 */
 	public boolean isEmpty() {
 		return mValue == null;
 	}
@@ -166,10 +249,22 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		return getResources().getString(android.R.string.unknownName);
 	}
 
+	/**
+	 * Method to be called when a field is attached to a field manager. This will ensure
+	 * {@link OnActivityDestroyListener} and {@link OnActivityResultListener} will be dispatch correctly to targets.
+	 * 
+	 * @param manager The manager who is managing the fields.
+	 */
 	public void onAttachedToHierarchy(FieldManager manager) {
 		mManager = manager;
 	}
 
+	/**
+	 * Register an {@link OnDependencyChangeListener} to be run when the value of this field changes.
+	 * 
+	 * @param dependent The {@link OnDependencyChangeListener} to handle the changes.
+	 * @param dependencyValue The visibility dependency field value.
+	 */
 	public void registerDependent(OnDependencyChangeListener dependent, String dependencyValue) {
 		if (mDependents == null) {
 			mDependents = new ArrayList<OnDependencyChangeListener>();
@@ -208,6 +303,8 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
 		if (mDependsOn == null) {
 			mDependsOn = new ArrayList<DependsOnEntry>();
+			// First time mark the field as dependent
+			setDependent(true);
 		}
 
 		mDependsOn.add(new DependsOnEntry(matcher, dependencyValue));
@@ -352,10 +449,21 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 
 	}
 
+	/**
+	 * Interface to define a dialog factory to be used when the field must open a dialog box when clicked.
+	 */
 	public interface DialogFactory {
+		/**
+		 * Creates the dialog box to be displayed.
+		 * 
+		 * @return The dialog box.
+		 */
 		public Dialog createDialog();
 	}
 
+	/**
+	 * Container to ease passing around a tuple of {@link DependencyMatcher} and a visibility dependency rule.
+	 */
 	private static class DependsOnEntry extends Pair<DependencyMatcher, String> {
 
 		public DependsOnEntry(DependencyMatcher matcher, String dependencyValue) {

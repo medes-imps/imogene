@@ -22,8 +22,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::layout::entity_edit::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 		
 	<!-- Entities edition wizard layouts -->
@@ -33,8 +32,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::layout::entity_wizard_edit::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- Entities view layouts -->
@@ -44,8 +42,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::layout::entity_view::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- ===== Values ===== -->
@@ -57,8 +54,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::values::strings_xml::generate FOR project' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- Arrays -->
@@ -68,8 +64,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::values::arrays_xml::generate FOR project' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- ===== Xml -->
@@ -81,8 +76,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::xml::general_settings::generate(${Android_multilogin}) FOR project' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- Project Filter Preference screen -->
@@ -92,8 +86,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::xml::project_filter_preference_screen::generate("${WEBSERVICE}") FOR project' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- Entity filter preference screen -->
@@ -103,8 +96,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::xml::entity_filter_preference_screen::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- Hidden settings -->
@@ -114,8 +106,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::xml::hidden_settings::generate(${Android_multilogin}, "${Android_sntpServer}") FOR project' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- More menu for view -->
@@ -125,8 +116,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::menu::entity_view_menu::generate FOREACH project.entities' />
-		<genPath value="${home-gen}/res/" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}/res/' />
 	</component>
 	
 	<!-- ********************************************* -->
@@ -139,8 +129,7 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::config::manifest_xml::generate("${VERSIONPATH}", "${Android_codeHidden}") FOR project' />
-		<genPath value="${home-gen}" />
-		<beautifier class="org.eclipse.xpand2.output.XmlBeautifier" />
+		<outlet path='${home-gen}' />
 	</component>
 	
 	<!-- ********************************************* -->
@@ -156,8 +145,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::project_app::generate(${Android_multilogin}) FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Thema listing -->
@@ -167,8 +157,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::thema_listing::generate(${Android_multilogin}) FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entities listing -->
@@ -178,8 +169,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::entity_list::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entities listing and map -->
@@ -189,8 +181,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::entity_list_and_map::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	
@@ -201,8 +194,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::entity_edit::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entities wizard editors -->
@@ -212,8 +206,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::entity_edit_wizard::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entities viewers -->
@@ -223,8 +218,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::entity_view::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- User listing -->
@@ -234,8 +230,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::user_listing::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- project filter preference screen -->
@@ -245,8 +242,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::project_filter_preference_screen::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- entity filter preference screen -->
@@ -256,8 +254,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::app::entity_filter_preference_screen::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- ===== Access Policy ===== -->
@@ -268,8 +267,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::security::access_policy::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- ===== Provider ===== -->
@@ -281,8 +281,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::provider::project_provider::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- ===== Database ===== -->
@@ -294,8 +295,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::database::sqlite::entity_cursor::generate(project.name) FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- sqlite: OpenHelper -->
@@ -305,8 +307,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::database::sqlite::project_open_helper::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- ===== Entities ===== -->
@@ -318,8 +321,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::domain::entity_java::generate(project.name, "${modelName}") FOREACH project.entities' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Localized text -->
@@ -329,8 +333,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::domain::localized_text::generate(project.name) FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 	<!-- Entities helper -->
@@ -340,8 +345,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::project::domain::project_entity_helper::generate FOR project' />
-		<genPath value="${home-gen}/src_gen/org/imogene/android/" />
-		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier" />
+		<outlet path='${home-gen}/src_gen/org/imogene/android/'>
+			<postprocessor class="org.eclipse.xpand2.output.JavaBeautifier"/>
+		</outlet>
 	</component>
 	
 </workflow>
