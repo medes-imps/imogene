@@ -129,7 +129,7 @@ public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
 		}));
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);		
 
-		addMouseWheelHandler();
+		// addMouseWheelHandler();
 		
 		searchLabel.setText(BaseNLS.constants().button_search());
 		

@@ -193,5 +193,9 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 	public void setBoxWidth(String width) {
 		singleRelationBox.setBoxWidth(width);
 	}
+	
+	public void setButtonPanelWidth(String width) {
+		singleRelationBox.setButtonPanelWidth(width);
+	}
 
 }
