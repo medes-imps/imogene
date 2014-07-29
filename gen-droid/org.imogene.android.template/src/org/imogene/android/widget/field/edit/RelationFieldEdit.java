@@ -50,6 +50,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	protected String mOppositeRelationField;
 	protected String mFieldName;
 	protected String mTableName;
+	protected Drawable mDrawable;
 
 	protected int mRequestCode;
 	protected Uri mContentUri;
@@ -58,8 +59,8 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		super(context, R.layout.imog__field_relation);
 	}
 
-	public RelationFieldEdit(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.imog__field_relation);
+	public RelationFieldEdit(Context context, AttributeSet attrs, int layoutId) {
+		super(context, attrs, layoutId);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
 		mHasReverse = a.getBoolean(R.styleable.RelationField_hasReverse, false);
 		mDisplayRes = a.getResourceId(R.styleable.RelationField_display, R.string.imog__numberOfEntities);
@@ -67,6 +68,10 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		mType = a.getInt(R.styleable.RelationField_relationType, 0);
 		a.recycle();
 		setOnClickListener(this);
+	}
+
+	public RelationFieldEdit(Context context, AttributeSet attrs) {
+		this(context, attrs, R.layout.imog__field_relation);
 	}
 
 	public void setDisplay(int display) {
@@ -114,9 +119,10 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	 * @param drawable The drawable color chip.
 	 */
 	public void setDrawable(Drawable drawable) {
+		mDrawable = drawable;
 		final View color = findViewById(R.id.imog__color);
 		if (color != null) {
-			color.setBackgroundDrawable(drawable);
+			color.setBackgroundDrawable(mDrawable);
 		}
 	}
 

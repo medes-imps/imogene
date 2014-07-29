@@ -4,39 +4,82 @@
 
 
 
-«DEFINE nameEditField FOR FieldEntity-»Nothing«ENDDEFINE»
+«DEFINE classEdit FOR FieldEntity-»ERROR«ENDDEFINE»
 
-«DEFINE nameEditField FOR StringField-»TextFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR StringField-»TextFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR TextField-»«IF translatable»LocalizedTextFieldEdit«ELSE»TextFieldEdit«ENDIF»«ENDDEFINE»
+«DEFINE classEdit FOR TextField-»«IF translatable-»LocalizedTextFieldEdit«ELSE-»TextFieldEdit«ENDIF-»«ENDDEFINE»
 
-«DEFINE nameEditField FOR BarcodeField-»BarcodeFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR BarcodeField-»BarcodeFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR GeoField-»GeoFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR GeoField-»GeoFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR BooleanField-»BooleanFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR FloatField-»FloatFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldEdit«ELSE»EnumSingleFieldEdit«ENDIF»«ENDDEFINE»
+«DEFINE classEdit FOR IntegerField-»«IF max != null && max.length > 0 && min != null && min.length > 0-»BoundedIntegerFieldEdit«ELSE-»IntegerFieldEdit«ENDIF-»«ENDDEFINE»
 
-«DEFINE nameEditField FOR DateField»DateFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR BooleanField-»BooleanFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR TimeField»TimeFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldEdit«ELSE-»EnumSingleFieldEdit«ENDIF-»«ENDDEFINE»
 
-«DEFINE nameEditField FOR DateTimeField»DateTimeFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR DateField-»DateFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR BinaryField»BinaryFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR TimeField-»TimeFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR FloatField»FloatFieldEdit«ENDDEFINE»
+«DEFINE classEdit FOR DateTimeField-»DateTimeFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR IntegerField-»
-«IF max != null && max.length > 0 && min != null && min.length > 0-»
-BoundedIntegerFieldEdit
-«ELSE-»
-IntegerFieldEdit
-«ENDIF-»
-«ENDDEFINE»
+«DEFINE classEdit FOR BinaryField»BinaryFieldEdit«ENDDEFINE»
 
-«DEFINE nameEditField FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldEdit«ELSE»RelationManyFieldEdit«ENDIF»«ENDDEFINE»
+«DEFINE classEdit FOR PhotoField»PhotoFieldEdit«ENDDEFINE»
+
+«DEFINE classEdit FOR VideoField»VideoFieldEdit«ENDDEFINE»
+
+«DEFINE classEdit FOR SoundField»SoundFieldEdit«ENDDEFINE»
+
+«DEFINE classEdit FOR RelationFieldEntity-»«IF cardinality == 1-»RelationOneFieldEdit«ELSE-»«IF nestedForm-»NestedRowFieldEdit«ELSE-»RelationManyFieldEdit«ENDIF-»«ENDIF-»«ENDDEFINE»
+
+
+
+
+
+
+«DEFINE classView FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE classView FOR StringField-»TextFieldView«ENDDEFINE»
+
+«DEFINE classView FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE classView FOR AddressField-»AddressFieldView«ENDDEFINE»
+
+«DEFINE classView FOR EmailField-»EmailFieldView«ENDDEFINE»
+
+«DEFINE classView FOR PhoneField-»PhoneFieldView«ENDDEFINE»
+
+«DEFINE classView FOR GeoField-»GeoFieldView«ENDDEFINE»
+
+«DEFINE classView FOR BooleanField-»BooleanFieldView«ENDDEFINE»
+
+«DEFINE classView FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE classView FOR DateField-»DateFieldView«ENDDEFINE»
+
+«DEFINE classView FOR TimeField-»TimeFieldView«ENDDEFINE»
+
+«DEFINE classView FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
+
+«DEFINE classView FOR FloatField»FloatFieldView«ENDDEFINE»
+
+«DEFINE classView FOR IntegerField»IntegerFieldView«ENDDEFINE»
+
+«DEFINE classView FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldView«ELSE-»«IF nestedForm»NestedRowFieldView«ELSE»RelationManyFieldView«ENDIF»«ENDIF-»«ENDDEFINE»
+
+«DEFINE classView FOR BinaryField»BinaryFieldView«ENDDEFINE»
+
+«DEFINE classView FOR PhotoField»PhotoFieldView«ENDDEFINE»
+
+«DEFINE classView FOR VideoField»VideoFieldView«ENDDEFINE»
+
+«DEFINE classView FOR SoundField»SoundFieldView«ENDDEFINE»
 
 
 

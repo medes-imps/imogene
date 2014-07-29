@@ -38,23 +38,7 @@ import org.imogene.android.widget.ImogPagerAdapter;
 import org.imogene.android.widget.InfoAdapter;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.FieldContainer;
-import org.imogene.android.widget.field.view.AddressFieldView;
-import org.imogene.android.widget.field.view.BinaryFieldView;
-import org.imogene.android.widget.field.view.BooleanFieldView;
-import org.imogene.android.widget.field.view.DateFieldView;
-import org.imogene.android.widget.field.view.DateTimeFieldView;
-import org.imogene.android.widget.field.view.EmailFieldView;
-import org.imogene.android.widget.field.view.EnumMultipleFieldView;
-import org.imogene.android.widget.field.view.EnumSingleFieldView;
-import org.imogene.android.widget.field.view.FloatFieldView;
-import org.imogene.android.widget.field.view.GeoFieldView;
-import org.imogene.android.widget.field.view.IntegerFieldView;
-import org.imogene.android.widget.field.view.LocalizedTextFieldView;
-import org.imogene.android.widget.field.view.PhoneFieldView;
-import org.imogene.android.widget.field.view.RelationManyFieldView;
-import org.imogene.android.widget.field.view.RelationOneFieldView;
-import org.imogene.android.widget.field.view.TextFieldView;
-import org.imogene.android.widget.field.view.TimeFieldView;
+import org.imogene.android.widget.field.view.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
@@ -81,7 +65,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	private ImogPagerAdapter mAdapter;
 
 	«FOREACH groups.fields AS f-»
-	private «EXPAND nameViewField FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorsUtil::classView FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity = null;
@@ -111,7 +95,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()-»_view, getViewPager(), true);
 
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND nameViewField FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::classView FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 
 		«FOREACH groups.fields AS f-»
@@ -343,39 +327,6 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 «ENDFILE»
 «ENDDEFINE»
 
-
-
-«DEFINE nameViewField FOR FieldEntity-»Nothing«ENDDEFINE»
-
-«DEFINE nameViewField FOR StringField-»TextFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR TextField»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
-
-«DEFINE nameViewField FOR AddressField-»AddressFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR EmailField-»EmailFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR PhoneField-»PhoneFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR GeoField-»GeoFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR BooleanField-»BooleanFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
-
-«DEFINE nameViewField FOR DateField»DateFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR TimeField»TimeFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR DateTimeField»DateTimeFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR BinaryField»BinaryFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR FloatField»FloatFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR IntegerField»IntegerFieldView«ENDDEFINE»
-
-«DEFINE nameViewField FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldView«ELSE»RelationManyFieldView«ENDIF»«ENDDEFINE»
 
 
 

@@ -120,6 +120,9 @@
     <string name="imog__filter_string_equal">Equal %s</string>
     <string name="imog__filter_relation_downloading">Downloading</string>
     <string name="imog__filter_relation_download_error">Download error</string>
+    
+    <!-- Nested fields -->
+    <string name="imog__nested_add">Click + to add an element</string>
 
     <!-- Dynamic Fields -->
     <string name="imog__dynamic_field_group">Dynamic fields</string>

@@ -120,6 +120,9 @@
     <string name="imog__filter_string_equal">Egal %s</string>
     <string name="imog__filter_relation_downloading">Chargement</string>
     <string name="imog__filter_relation_download_error">Erreur de chargement</string>
+    
+    <!-- Nested fields -->
+    <string name="imog__nested_add">Cliquer sur + pour ajouter un élément</string>
 
     <!-- Dynamic Fields -->
     <string name="imog__dynamic_field_group">Champs dynamiques</string>

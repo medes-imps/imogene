@@ -49,7 +49,7 @@
 
 
 «DEFINE layout FOR FieldEntity-»
-<org.imogene.android.widget.field.view.«EXPAND class FOR this-»
+<org.imogene.android.widget.field.view.«EXPAND android::template::EditorsUtil::classView FOR this-»
 	style="@style/BaseField"
 	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
 	app:dependent="«fieldDependentVisibility.size > 0»"
@@ -59,43 +59,6 @@
 />
 «ENDDEFINE»
 
-«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
-
-«DEFINE class FOR StringField-»TextFieldView«ENDDEFINE»
-
-«DEFINE class FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
-
-«DEFINE class FOR AddressField-»AddressFieldView«ENDDEFINE»
-
-«DEFINE class FOR EmailField-»EmailFieldView«ENDDEFINE»
-
-«DEFINE class FOR PhoneField-»PhoneFieldView«ENDDEFINE»
-
-«DEFINE class FOR GeoField-»GeoFieldView«ENDDEFINE»
-
-«DEFINE class FOR BooleanField-»BooleanFieldView«ENDDEFINE»
-
-«DEFINE class FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
-
-«DEFINE class FOR DateField-»DateFieldView«ENDDEFINE»
-
-«DEFINE class FOR TimeField-»TimeFieldView«ENDDEFINE»
-
-«DEFINE class FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
-
-«DEFINE class FOR FloatField»FloatFieldView«ENDDEFINE»
-
-«DEFINE class FOR IntegerField»IntegerFieldView«ENDDEFINE»
-
-«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldView«ELSE-»RelationManyFieldView«ENDIF-»«ENDDEFINE»
-
-«DEFINE class FOR BinaryField»BinaryFieldView«ENDDEFINE»
-
-«DEFINE class FOR PhotoField»PhotoFieldView«ENDDEFINE»
-
-«DEFINE class FOR VideoField»VideoFieldView«ENDDEFINE»
-
-«DEFINE class FOR SoundField»SoundFieldView«ENDDEFINE»
 
 
 

@@ -24,9 +24,6 @@ public abstract class BaseFieldView<T> extends BaseField<T> {
 
 	private void init() {
 		mIconView = (ImageView) findViewById(R.id.imog__icon);
-		if (mIconView != null) {
-			mIconView.setSaveEnabled(false);
-		}
 	}
 
 	@Override

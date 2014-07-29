@@ -5,7 +5,7 @@
 
 
 «DEFINE layout FOR FieldEntity-»
-<org.imogene.android.widget.field.edit.«EXPAND class FOR this-»
+<org.imogene.android.widget.field.edit.«EXPAND android::template::EditorsUtil::classEdit FOR this-»
 	style="@style/BaseField"
 	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
 	app:dependent="«fieldDependentVisibility.size > 0»"
@@ -19,37 +19,6 @@
 	«EXPAND specificAttributes FOR this-»
 />
 «ENDDEFINE»
-
-«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
-
-«DEFINE class FOR StringField-»TextFieldEdit«ENDDEFINE»
-
-«DEFINE class FOR TextField-»«IF translatable»LocalizedTextFieldEdit«ELSE»TextFieldEdit«ENDIF»«ENDDEFINE»
-
-«DEFINE class FOR BarcodeField»BarcodeFieldEdit«ENDDEFINE»
-
-«DEFINE class FOR GeoField»GeoFieldEdit«ENDDEFINE»
-
-«DEFINE class FOR FloatField»FloatFieldEdit«ENDDEFINE»
-
-«DEFINE class FOR IntegerField-»
-«IF max != null && max.length > 0 && min != null && min.length > 0-»
-BoundedIntegerFieldEdit
-«ELSE-»
-IntegerFieldEdit
-«ENDIF-»
-«ENDDEFINE»
-
-«DEFINE class FOR BooleanField»BooleanFieldEdit«ENDDEFINE»
-
-«DEFINE class FOR EnumField»«IF multipleSelection»EnumMultipleFieldEdit«ELSE»EnumSingleFieldEdit«ENDIF»«ENDDEFINE»
-
-«DEFINE class FOR DatesField»«IF DateField.isAssignableFrom(metaType)-»DateFieldEdit«ELSEIF TimeField.isAssignableFrom(metaType)-»TimeFieldEdit«ELSE-»DateTimeFieldEdit«ENDIF»«ENDDEFINE»
-
-«DEFINE class FOR BinaryField»«IF PhotoField.isAssignableFrom(metaType)-»PhotoFieldEdit«ELSEIF VideoField.isAssignableFrom(metaType)-»VideoFieldEdit«ELSEIF SoundField.isAssignableFrom(metaType)-»SoundFieldEdit«ELSE»BinaryFieldEdit«ENDIF»«ENDDEFINE»
-
-«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»RelationOneFieldEdit«ELSE-»RelationManyFieldEdit«ENDIF-»«ENDDEFINE»
-
 
 
 

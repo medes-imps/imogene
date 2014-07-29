@@ -19,9 +19,12 @@ import fr.medes.android.util.Arrays;
 
 public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 
+	public RelationManyFieldEdit(Context context, AttributeSet attrs, int layoutId) {
+		super(context, attrs, layoutId);
+	}
+
 	public RelationManyFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		setValue(new ArrayList<Uri>());
 	}
 
 	@Override
@@ -37,11 +40,6 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 			return value != null && !value.isEmpty();
 		}
 		return true;
-	}
-
-	@Override
-	public void setContentUri(Uri contentUri) {
-		mContentUri = contentUri;
 	}
 
 	@Override

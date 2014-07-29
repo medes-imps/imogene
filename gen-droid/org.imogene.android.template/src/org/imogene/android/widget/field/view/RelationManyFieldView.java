@@ -22,6 +22,13 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 
 	private Uri contentUri;
 
+	protected Drawable drawable;
+
+	public RelationManyFieldView(Context context, AttributeSet attrs, int layoutId) {
+		super(context, attrs, layoutId);
+		displayRes = 0;
+	}
+
 	public RelationManyFieldView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_relation);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
@@ -36,6 +43,7 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 	}
 
 	public void setDrawable(Drawable drawable) {
+		this.drawable = drawable;
 		final View color = findViewById(R.id.imog__color);
 		if (color != null) {
 			color.setBackgroundDrawable(drawable);

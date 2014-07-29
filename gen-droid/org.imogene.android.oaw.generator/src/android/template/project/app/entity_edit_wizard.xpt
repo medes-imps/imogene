@@ -24,24 +24,8 @@ import org.imogene.android.util.IamLost;
 import org.imogene.android.widget.field.FieldFlipper;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.FieldContainer;
-import org.imogene.android.widget.field.edit.BaseFieldEdit;
 import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
-import org.imogene.android.widget.field.edit.BarcodeFieldEdit;
-import org.imogene.android.widget.field.edit.BinaryFieldEdit;
-import org.imogene.android.widget.field.edit.BooleanFieldEdit;
-import org.imogene.android.widget.field.edit.BoundedIntegerFieldEdit;
-import org.imogene.android.widget.field.edit.DateFieldEdit;
-import org.imogene.android.widget.field.edit.DateTimeFieldEdit;
-import org.imogene.android.widget.field.edit.EnumMultipleFieldEdit;
-import org.imogene.android.widget.field.edit.EnumSingleFieldEdit;
-import org.imogene.android.widget.field.edit.FloatFieldEdit;
-import org.imogene.android.widget.field.edit.GeoFieldEdit;
-import org.imogene.android.widget.field.edit.IntegerFieldEdit;
-import org.imogene.android.widget.field.edit.LocalizedTextFieldEdit;
-import org.imogene.android.widget.field.edit.RelationManyFieldEdit;
-import org.imogene.android.widget.field.edit.RelationOneFieldEdit;
-import org.imogene.android.widget.field.edit.TextFieldEdit;
-import org.imogene.android.widget.field.edit.TimeFieldEdit;
+import org.imogene.android.widget.field.edit.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
@@ -54,7 +38,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	private FieldManager mManager;
 
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::EditorsUtil::nameEditField FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorsUtil::classEdit FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity;
@@ -95,7 +79,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		getLayoutInflater().inflate(R.layout.«name.toLowerCase()»_edit_wizard, flipper, true);
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::nameEditField FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::classEdit FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 
 		«FOREACH groups.fields AS f-»

@@ -56,14 +56,7 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 
 	private void init() {
 		mHelpView = findViewById(R.id.imog__help);
-		if (mHelpView != null) {
-			mHelpView.setSaveEnabled(false);
-		}
-
 		mRequiredView = findViewById(R.id.imog__required);
-		if (mRequiredView != null) {
-			mRequiredView.setSaveEnabled(false);
-		}
 	}
 
 	@Override

@@ -78,18 +78,13 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		if (mValueView == null) {
 			throw new NullPointerException();
 		}
-		mValueView.setSaveEnabled(false);
 
 		mTitleView = (TextView) findViewById(R.id.imog__title);
 		if (mTitleView == null) {
 			throw new NullPointerException();
 		}
-		mTitleView.setSaveEnabled(false);
 
 		mDependentView = findViewById(R.id.imog__arrow);
-		if (mDependentView != null) {
-			mDependentView.setSaveEnabled(false);
-		}
 	}
 
 	@Override
