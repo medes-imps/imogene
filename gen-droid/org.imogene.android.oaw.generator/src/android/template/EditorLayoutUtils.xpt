@@ -4,8 +4,11 @@
 
 
 
+
+
+
 «DEFINE layout FOR FieldEntity-»
-<org.imogene.android.widget.field.edit.«EXPAND android::template::EditorsUtil::classEdit FOR this-»
+<org.imogene.android.widget.field.edit.«EXPAND android::template::EditorUtils::class FOR this-»
 	style="@style/BaseField"
 	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
 	app:dependent="«fieldDependentVisibility.size > 0»"
@@ -19,6 +22,10 @@
 	«EXPAND specificAttributes FOR this-»
 />
 «ENDDEFINE»
+
+
+
+
 
 
 

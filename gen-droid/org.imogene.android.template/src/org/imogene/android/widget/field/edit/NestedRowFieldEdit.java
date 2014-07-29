@@ -30,6 +30,7 @@ public class NestedRowFieldEdit extends RelationManyFieldEdit {
 		mEntries = (ViewGroup) findViewById(R.id.imog__nested_rows);
 
 		setOnClickListener(null);
+		setOnLongClickListener(null);
 
 		findViewById(R.id.imog__nested_add_row).setOnClickListener(this);
 	}
@@ -62,7 +63,7 @@ public class NestedRowFieldEdit extends RelationManyFieldEdit {
 			entry.findViewById(android.R.id.background).setBackgroundDrawable(mDrawable);
 
 			final ImageView deleteIcon = (ImageView) entry.findViewById(android.R.id.icon);
-			deleteIcon.setImageResource(R.drawable.imog__ic_minus);
+			deleteIcon.setImageResource(R.drawable.imog__ic_action_remove);
 			deleteIcon.setTag(uri);
 			deleteIcon.setOnClickListener(mOnClickDeleteListener);
 

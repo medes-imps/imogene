@@ -19,7 +19,7 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical" >
 		
-		«EXPAND android::template::LayoutUtil::layout FOREACH  group.fields-»
+		«EXPAND android::template::EditorLayoutUtils::layout FOREACH  group.fields-»
 
 		</LinearLayout>
 

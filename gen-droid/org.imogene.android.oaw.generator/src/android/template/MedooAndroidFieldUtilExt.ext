@@ -51,8 +51,11 @@ List[FieldGroup] getFilteredGroups(List[FieldEntity] filters) :
 Integer getGeoType(GeoField field) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getGeoType(org.imogene.model.core.GeoField);
   
-boolean hasConstraint(FieldEntity field) :
-  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.hasConstraint(org.imogene.model.core.FieldEntity);
-
 int next() :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.next();
+
+boolean isNested(Project project, CardEntity entity) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.isNested(org.imogene.model.core.Project, org.imogene.model.core.CardEntity);
+  
+List[FieldEntity] getNestedFields(CardEntity entity) :
+  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getNestedFields(org.imogene.model.core.CardEntity);

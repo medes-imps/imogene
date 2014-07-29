@@ -29,6 +29,10 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 		super(context, attrs);
 	}
 
+	public RelationOneFieldEdit(Context context, AttributeSet attrs, int layoutId) {
+		super(context, attrs, layoutId);
+	}
+
 	@Override
 	public String getFieldDisplay() {
 		final Uri uri = getValue();

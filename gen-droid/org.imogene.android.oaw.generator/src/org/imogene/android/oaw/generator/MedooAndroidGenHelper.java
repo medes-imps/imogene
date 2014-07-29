@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.imogene.model.core.CardEntity;
-import org.imogene.model.core.DatesField;
 import org.imogene.model.core.Description;
 import org.imogene.model.core.FieldDependentVisibility;
 import org.imogene.model.core.FieldEntity;
 import org.imogene.model.core.FieldGroup;
 import org.imogene.model.core.GeoField;
-import org.imogene.model.core.NumericField;
 import org.imogene.model.core.Project;
 import org.imogene.model.core.RelationFieldEntity;
 import org.imogene.model.core.ReverseRelationFieldEntity;
-import org.imogene.model.core.StringField;
 import org.imogene.model.core.TextField;
 import org.imogene.model.core.Thema;
-import org.imogene.model.core.ValidationRule;
 
 /**
  */
@@ -161,42 +157,38 @@ public class MedooAndroidGenHelper {
 		return field.getType().getValue();
 	}
 
-	public static boolean hasConstraint(FieldEntity field) {
-		if (field.isRequired()) {
-			return true;
-		}
-		if (field instanceof NumericField) {
-			String min = ((NumericField) field).getMin();
-			if (min != null && !min.isEmpty()) {
-				return true;
-			}
-			String max = ((NumericField) field).getMax();
-			if (max != null && !max.isEmpty()) {
-				return true;
-			}
-		} else if (field instanceof DatesField) {
-			String min = ((DatesField) field).getMin();
-			if (min != null && !min.isEmpty()) {
-				return true;
-			}
-			String max = ((DatesField) field).getMax();
-			if (max != null && !max.isEmpty()) {
-				return true;
-			}
-		} else if (field instanceof StringField) {
-			List<ValidationRule> rules = ((StringField) field).getValidationRules();
-			if (rules != null && !rules.isEmpty()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static int next() {
 		if (increment == 0) {
 			increment = (int) System.currentTimeMillis() / 1000;
 		}
 		return increment++;
+	}
+
+	public static List<FieldEntity> getNestedFields(CardEntity entity) {
+		if (entity.getNestedFields() != null && entity.getNestedFields().size() > 0) {
+			return entity.getNestedFields();
+		} else {
+			ArrayList<FieldEntity> fields = new ArrayList<FieldEntity>();
+			for (FieldGroup group : entity.getGroups()) {
+				fields.addAll(group.getFields());
+			}
+			return fields;
+		}
+	}
+
+	public static boolean isNested(Project project, CardEntity entity) {
+		for (CardEntity ce : project.getEntities()) {
+			for (FieldGroup group : ce.getGroups()) {
+				for (FieldEntity field : group.getFields()) {
+					if (field instanceof RelationFieldEntity && ((RelationFieldEntity) field).getEntity() == entity
+							&& ((RelationFieldEntity) field).isNestedForm()
+							&& ((RelationFieldEntity) field).getCardinality() == 1) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }

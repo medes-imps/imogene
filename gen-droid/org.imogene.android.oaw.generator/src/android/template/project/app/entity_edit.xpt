@@ -63,7 +63,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	«ENDIF-»
 	
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::EditorsUtil::classEdit FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorUtils::class FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity;
@@ -115,12 +115,12 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()»_edit, getViewPager(), true);
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::classEdit FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 	
 		«FOREACH groups.fields AS f-»
-			«EXPAND android::template::EditorsUtil::specificInit FOR f-»
-			«EXPAND android::template::EditorsUtil::dependency FOREACH f.fieldDependentVisibility-»
+			«EXPAND android::template::EditorUtils::specificInit FOR f-»
+			«EXPAND android::template::EditorUtils::dependency FOREACH f.fieldDependentVisibility-»
 			«f.name.toFirstLower()».setOnValueChangeListener(this);
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH»
@@ -295,11 +295,13 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	private void updateErrorEntries() {
 		mErrors.clear();
 		«FOREACH groups.fields AS f-»
-		«IF hasConstraint(f)-»
 		if (!«f.name.toFirstLower()».isValid()) {
+			«IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity) f).nestedForm && ((RelationFieldEntity) f).cardinality == 1-»
+			«f.name.toFirstLower()».updateErrorEntries(mErrors, R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f.parentGroup»);
+			«ELSE-»
 			mErrors.add(«f.name.toFirstLower()».getErrorEntry(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f.parentGroup»));
+			«ENDIF-»
 		}
-		«ENDIF-»
 		«ENDFOREACH-»
 		«IF hasDynamicFields-»
 		if (mDynamicFieldList != null) {
@@ -316,11 +318,9 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	
 	private boolean validate() {
 		«FOREACH groups.fields AS f-»
-		«IF hasConstraint(f)-»
 		if (!«f.name.toFirstLower()».isValid()) {
 			return false;
 		}
-		«ENDIF-»
 		«ENDFOREACH-»
 		«IF hasDynamicFields-»
 		if (mDynamicFieldList != null) {
@@ -337,12 +337,22 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	
 	private void save(boolean temporary) {
 		if (temporary) {
+			«FOREACH groups.fields AS f-»
+			«IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity) f).nestedForm && ((RelationFieldEntity) f).cardinality == 1-»
+			«f.name.toFirstLower()».save(temporary);
+			«ENDIF-»
+			«ENDFOREACH-»
 			mEntity.prepareForSave(this);
 			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
 			mEntity.saveOrUpdate(this);
 			return;
 		}
 		if (validate()) {
+			«FOREACH groups.fields AS f-»
+			«IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity) f).nestedForm && ((RelationFieldEntity) f).cardinality == 1-»
+			«f.name.toFirstLower()».save(temporary);
+			«ENDIF-»
+			«ENDFOREACH-»
 			«IF hasDynamicFields-»
 			mDynamicFieldManager.saveDynamicFields(mEntity);
 			«ENDIF-»

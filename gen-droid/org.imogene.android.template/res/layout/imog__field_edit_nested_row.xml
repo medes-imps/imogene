@@ -4,72 +4,38 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dip"
         android:duplicateParentState="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <View
-            android:layout_width="10dip"
-            android:layout_height="0dip" />
+        <include layout="@layout/imog__field_title_bar" />
 
-        <ImageView style="@style/FieldArrowView" />
-
-        <View
-            android:layout_width="10dip"
-            android:layout_height="0dip" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/imog__value"
             android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:duplicateParentState="true"
-            android:gravity="center_vertical"
-            android:orientation="vertical" >
-
-            <include layout="@layout/imog__field_title_bar" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:duplicateParentState="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/imog__value"
-                    android:layout_width="0dip"
-                    android:layout_height="0dip"
-                    android:saveEnabled="false"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:text="@string/imog__nested_add"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <ImageView style="@style/FieldHelpView" />
-
-                <ImageView
-                    android:id="@+id/imog__nested_add_row"
-                    android:layout_width="40dip"
-                    android:layout_height="40dip"
-                    android:layout_marginRight="15dip"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/imog__ic_plus" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_height="0dip"
+            android:saveEnabled="false"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/imog__nested_rows"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/imog__nested_add_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:duplicateParentState="true"
+        android:paddingLeft="16dip"
+        android:text="@string/imog__nested_add"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorSecondary" />
 
 </LinearLayout>

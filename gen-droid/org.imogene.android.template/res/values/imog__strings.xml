@@ -122,7 +122,7 @@
     <string name="imog__filter_relation_download_error">Download error</string>
     
     <!-- Nested fields -->
-    <string name="imog__nested_add">Click + to add an element</string>
+    <string name="imog__nested_add">Add new</string>
 
     <!-- Dynamic Fields -->
     <string name="imog__dynamic_field_group">Dynamic fields</string>

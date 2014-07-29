@@ -1,0 +1,70 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+
+
+
+
+
+«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE class FOR StringField-»TextFieldView«ENDDEFINE»
+
+«DEFINE class FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR AddressField-»AddressFieldView«ENDDEFINE»
+
+«DEFINE class FOR EmailField-»EmailFieldView«ENDDEFINE»
+
+«DEFINE class FOR PhoneField-»PhoneFieldView«ENDDEFINE»
+
+«DEFINE class FOR GeoField-»GeoFieldView«ENDDEFINE»
+
+«DEFINE class FOR BooleanField-»BooleanFieldView«ENDDEFINE»
+
+«DEFINE class FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE class FOR DateField-»DateFieldView«ENDDEFINE»
+
+«DEFINE class FOR TimeField-»TimeFieldView«ENDDEFINE»
+
+«DEFINE class FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
+
+«DEFINE class FOR FloatField»FloatFieldView«ENDDEFINE»
+
+«DEFINE class FOR IntegerField»IntegerFieldView«ENDDEFINE»
+
+«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedView«ELSE»RelationOneFieldView«ENDIF»«ELSE-»«IF nestedForm»NestedRowFieldView«ELSE»RelationManyFieldView«ENDIF»«ENDIF-»«ENDDEFINE»
+
+«DEFINE class FOR BinaryField»BinaryFieldView«ENDDEFINE»
+
+«DEFINE class FOR PhotoField»PhotoFieldView«ENDDEFINE»
+
+«DEFINE class FOR VideoField»VideoFieldView«ENDDEFINE»
+
+«DEFINE class FOR SoundField»SoundFieldView«ENDDEFINE»
+
+
+
+
+
+
+«DEFINE specificInit FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE specificInit FOR RelationFieldEntity-»
+«name.toFirstLower()».setDrawable(«entity.name.toFirstUpper()-».Columns.COLOR);
+«IF cardinality != 1»
+«name.toFirstLower()».setContentUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI);
+«ENDIF»
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE dependency FOR FieldDependentVisibility-»
+«IF !dependencyField.hidden-»
+«dependencyField.name.toFirstLower()».registerDependent(«parentFieldEntity.name.toFirstLower()», "«dependencyFieldValue»");
+«ENDIF-»
+«ENDDEFINE»

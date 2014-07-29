@@ -1,0 +1,108 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity»
+«IF isNested((Project) eContainer, this)»
+«FILE "/widget/field/view/" + name.toFirstUpper() + "NestedView.java"»
+package org.imogene.android.widget.field.view;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.Context;
+import android.net.Uri;
+import android.util.AttributeSet;
+
+import org.imogene.android.widget.field.FieldManager;
+import org.imogene.android.widget.field.view.*;
+import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».domain.*;
+import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
+
+public class «name.toFirstUpper()»NestedView extends RelationOneFieldView {
+«LET getNestedFields() AS fields-»
+
+	«FOREACH fields AS f-»
+	private «EXPAND android::template::ViewerUtils::class FOR f» «f.name.toFirstLower()»;
+	«ENDFOREACH»
+	
+	private «name.toFirstUpper()» mEntity;
+	private AccessPolicy mPolicy;
+	
+	public «name.toFirstUpper()»NestedView(Context context, AttributeSet attrs) {
+		super(context, attrs, R.layout.«name.toLowerCase()»_view_nested);
+
+		«FOREACH fields AS f-»
+		«f.name.toFirstLower()» = («EXPAND android::template::ViewerUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+		«ENDFOREACH-»
+	
+		«FOREACH fields AS f-»
+		«EXPAND android::template::ViewerUtils::specificInit FOR f-»
+		«EXPAND android::template::ViewerUtils::dependency FOREACH f.fieldDependentVisibility-»
+		«ENDFOREACH»
+		
+		setOnClickListener(null);
+		setOnLongClickListener(null);
+
+		«REM»
+		«FOREACH groups AS group»
+		if (mPolicy.canRead«name.toFirstUpper()»«group.name.toFirstUpper()»() ||
+			mPolicy.canEdit«name.toFirstUpper()»«group.name.toFirstUpper()»()) {
+			adapter.addPage(R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group», R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR group»);
+
+			if (!mPolicy.canEdit«name.toFirstUpper()»«group.name.toFirstUpper()»()) {
+				«FOREACH group.fields AS f-»
+				«f.name.toFirstLower()».setReadOnly(true);
+				«ENDFOREACH-»
+			}
+		}
+		«ENDFOREACH»
+		«ENDREM»
+	}
+	
+	@Override
+	public void onAttachedToHierarchy(FieldManager manager) {
+		super.onAttachedToHierarchy(manager);
+		«FOREACH fields AS f-»
+		«f.name.toFirstLower()».onAttachedToHierarchy(manager);
+		«ENDFOREACH-»
+	}
+	
+	@Override
+	public void init(Uri value) {
+		super.init(value);
+		// At this point onValueChange() has already been called and the entity is initialized
+		if (mEntity != null) {
+			«FOREACH fields AS f-»
+			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
+			«ENDFOREACH»
+		}
+	}
+
+	@Override
+	public void setValue(Uri value) {
+		super.setValue(value);
+		// At this point onValueChange() has already been called and the entity is initialized
+		if (mEntity != null) {
+			«FOREACH fields AS f-»
+			«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
+			«ENDFOREACH»
+		}
+	}
+	
+	@Override
+	protected void onValueChange() {
+		super.onValueChange();
+		Uri uri = getValue();
+		if (uri != null) {
+			mEntity = «name.toFirstUpper()».fromUri(uri);
+		} else {
+			mEntity = null;
+		}
+	}
+	
+«ENDLET-»
+}
+«ENDFILE»
+«ENDIF»
+«ENDDEFINE»

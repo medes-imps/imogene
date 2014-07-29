@@ -13,14 +13,18 @@ import android.view.View;
 
 public class RelationOneFieldView extends BaseFieldView<Uri> {
 
-	public RelationOneFieldView(Context context) {
-		super(context, R.layout.imog__field_relation);
+	public RelationOneFieldView(Context context, AttributeSet attrs, int layoutId) {
+		super(context, attrs, layoutId);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);
 	}
 
 	public RelationOneFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.imog__field_relation);
+		this(context, attrs, R.layout.imog__field_relation);
+	}
+
+	public RelationOneFieldView(Context context) {
+		super(context, R.layout.imog__field_relation);
 		setOnClickListener(this);
 		setIconId(android.R.drawable.sym_contact_card);
 	}

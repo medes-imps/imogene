@@ -65,7 +65,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	private ImogPagerAdapter mAdapter;
 
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::EditorsUtil::classView FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::ViewerUtils::class FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity = null;
@@ -95,12 +95,12 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()-»_view, getViewPager(), true);
 
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::classView FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::ViewerUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 
 		«FOREACH groups.fields AS f-»
-			«EXPAND specificInit FOR f-»
-			«EXPAND dependency FOREACH f.fieldDependentVisibility-»
+			«EXPAND android::template::ViewerUtils::specificInit FOR f-»
+			«EXPAND android::template::ViewerUtils::dependency FOREACH f.fieldDependentVisibility-»
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH-»
 		
@@ -325,29 +325,4 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	
 }
 «ENDFILE»
-«ENDDEFINE»
-
-
-
-
-
-
-«DEFINE specificInit FOR FieldEntity-»
-«ENDDEFINE»
-
-«DEFINE specificInit FOR RelationFieldEntity-»
-«name.toFirstLower()».setDrawable(«entity.name.toFirstUpper()-».Columns.COLOR);
-«IF cardinality != 1»
-«name.toFirstLower()».setContentUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI);
-«ENDIF»
-«ENDDEFINE»
-
-
-
-
-
-«DEFINE dependency FOR FieldDependentVisibility-»
-«IF !dependencyField.hidden-»
-«dependencyField.name.toFirstLower()».registerDependent(«parentFieldEntity.name.toFirstLower()», "«dependencyFieldValue»");
-«ENDIF-»
 «ENDDEFINE»

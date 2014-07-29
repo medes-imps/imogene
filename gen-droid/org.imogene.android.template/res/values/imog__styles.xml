@@ -56,6 +56,19 @@
         <item name="android:saveEnabled">false</item>
     </style>
 
+    <style name="FieldTitleNestedText">
+        <item name="android:id">@id/imog__title</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/imog__nested_form_title</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">8dip</item>
+        <item name="android:saveEnabled">false</item>
+    </style>
+
     <style name="FieldValueText">
         <item name="android:id">@id/imog__value</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>

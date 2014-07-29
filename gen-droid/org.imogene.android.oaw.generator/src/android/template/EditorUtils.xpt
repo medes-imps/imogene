@@ -1,0 +1,86 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+
+
+
+«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE class FOR StringField-»TextFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR TextField-»«IF translatable-»LocalizedTextFieldEdit«ELSE-»TextFieldEdit«ENDIF-»«ENDDEFINE»
+
+«DEFINE class FOR BarcodeField-»BarcodeFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR GeoField-»GeoFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR FloatField-»FloatFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR IntegerField-»«IF max != null && max.length > 0 && min != null && min.length > 0-»BoundedIntegerFieldEdit«ELSE-»IntegerFieldEdit«ENDIF-»«ENDDEFINE»
+
+«DEFINE class FOR BooleanField-»BooleanFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldEdit«ELSE-»EnumSingleFieldEdit«ENDIF-»«ENDDEFINE»
+
+«DEFINE class FOR DateField-»DateFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR TimeField-»TimeFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR DateTimeField-»DateTimeFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR BinaryField»BinaryFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR PhotoField»PhotoFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR VideoField»VideoFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR SoundField»SoundFieldEdit«ENDDEFINE»
+
+«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedEdit«ELSE»RelationOneFieldEdit«ENDIF»«ELSE»«IF nestedForm»NestedRowFieldEdit«ELSE»RelationManyFieldEdit«ENDIF»«ENDIF»«ENDDEFINE»
+
+
+
+
+
+
+
+
+«DEFINE specificInit FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE specificInit FOR StringField-»
+«IF validationRules.size > 0-»
+«name.toFirstLower()».setRegexs(new String[] {«FOREACH validationRules AS v SEPARATOR ","»"«v.validationRegularExpression-»"«ENDFOREACH»});
+«name.toFirstLower()».setRegexDisplayIds(new int[] {«FOREACH validationRules AS v ITERATOR i SEPARATOR ","-»R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_val«i.counter0-»«ENDFOREACH-»});
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE specificInit FOR RelationFieldEntity-»
+«name.toFirstLower()».setContentUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI);
+«name.toFirstLower()».setDrawable(«entity.name.toFirstUpper()-».Columns.COLOR);
+«name.toFirstLower()».setTableName(«parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME);
+«name.toFirstLower()».setFieldName(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»);
+«IF oppositeRelationField != null-»
+«name.toFirstLower()».setOppositeRelationField(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+«ENDIF-»
+«IF relationHierarchicalFilter.size == 2-»
+«name.toFirstLower()».registerConstraintBuilder(«relationHierarchicalFilter.get(0).name.toFirstLower()», «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR relationHierarchicalFilter.get(1)»);
+«ENDIF-»
+«FOREACH commonFields AS c ITERATOR i-»
+«IF (mod2(i.counter0) == 0)-»
+«name.toFirstLower()».registerCommonField(«commonFields.get(i.counter0).name.toFirstLower()», «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR commonFields.get(i.counter1)»);
+«ENDIF-»
+«ENDFOREACH-»
+«ENDDEFINE»
+
+
+
+
+
+
+
+«DEFINE dependency FOR FieldDependentVisibility-»
+«IF !dependencyField.hidden-»
+«dependencyField.name.toFirstLower()».registerDependent(«parentFieldEntity.name.toFirstLower()», "«dependencyFieldValue»");
+«ENDIF-»
+«ENDDEFINE»

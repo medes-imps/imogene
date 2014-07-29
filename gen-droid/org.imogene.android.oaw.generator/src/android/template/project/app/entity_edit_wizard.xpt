@@ -38,7 +38,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	private FieldManager mManager;
 
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::EditorsUtil::classEdit FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorUtils::class FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity;
@@ -79,13 +79,13 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		getLayoutInflater().inflate(R.layout.«name.toLowerCase()»_edit_wizard, flipper, true);
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::EditorsUtil::classEdit FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 
 		«FOREACH groups.fields AS f-»
 			«f.name.toFirstLower()».setAutomaticManageVisibility(false);
-			«EXPAND android::template::EditorsUtil::specificInit FOR f-»
-			«EXPAND android::template::EditorsUtil::dependency FOREACH f.fieldDependentVisibility-»
+			«EXPAND android::template::EditorUtils::specificInit FOR f-»
+			«EXPAND android::template::EditorUtils::dependency FOREACH f.fieldDependentVisibility-»
 			«f.name.toFirstLower()».setOnValueChangeListener(this);
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH»

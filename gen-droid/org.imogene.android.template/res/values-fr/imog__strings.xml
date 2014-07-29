@@ -122,7 +122,7 @@
     <string name="imog__filter_relation_download_error">Erreur de chargement</string>
     
     <!-- Nested fields -->
-    <string name="imog__nested_add">Cliquer sur + pour ajouter un élément</string>
+    <string name="imog__nested_add">Ajouter</string>
 
     <!-- Dynamic Fields -->
     <string name="imog__dynamic_field_group">Champs dynamiques</string>

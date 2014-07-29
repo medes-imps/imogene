@@ -1,0 +1,25 @@
+«IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
+«EXTENSION android::template::MedooAndroidFieldUtilExt»
+«DEFINE generate(String projectName) FOR CardEntity-»
+«IF isNested((Project) eContainer, this)»
+«FILE 'layout/'+ name.toLowerCase() + '_view_nested.xml'-»
+<?xml version="1.0" encoding="utf-8"?>
+<merge 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/org.imogene.android.«projectName.toLowerCase()»" >
+	
+    <TextView style="@style/FieldTitleNestedText" />
+
+    <TextView
+        android:id="@id/imog__value"
+        android:layout_width="0dip"
+        android:layout_height="0dip"
+        android:visibility="gone" />
+	
+	«EXPAND android::template::ViewerLayoutUtils::layout FOREACH getNestedFields()-»
+
+</merge>
+«ENDFILE»
+«ENDIF-»
+«ENDDEFINE»
