@@ -25,6 +25,36 @@ import fr.medes.android.util.Arrays;
 public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements OnActivityResultListener {
 
 	/**
+	 * Interface to define a container able to manipulate relation fields of an entity.
+	 */
+	public static interface RelationManager {
+
+		/**
+		 * The basic content URI representing the entity.
+		 * 
+		 * @return The content URI.
+		 */
+		public Uri getContentUri();
+
+		/**
+		 * Returns the entity identifier managed by the {@link FieldContainer}. This method temporally saves the entity
+		 * if there is no identifier.
+		 * 
+		 * @return The entity identifier.
+		 */
+		public String getIdentifier();
+
+		/**
+		 * Return the content URI of the entity managed by the {@link FieldContainer}. This method temporally saves the
+		 * entity if there is no content URI.
+		 * 
+		 * @return The content URI of the entity.
+		 */
+		public Uri getUri();
+
+	}
+
+	/**
 	 * Interface to allow passing values when creating a new form from a related one. The extras contains the name of
 	 * the target field and the value that must be given to the field.
 	 */
@@ -42,11 +72,11 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	private ArrayList<CommonFieldEntry> mCommonFields;
 	private ArrayList<ExtraBuilder> mBuilders;
 
+	protected RelationManager mRelationManager;
 	protected boolean mHasReverse = false;
 	protected int mDisplayRes = R.string.imog__numberOfEntities;
 	protected int mOppositeCardinality = -1;
-	protected int mType; // 0 for main relation field; 1 for reverse relation
-							// field
+	protected int mType; // 0 for main relation field; 1 for reverse relation field
 	protected String mOppositeRelationField;
 	protected String mFieldName;
 	protected String mTableName;
@@ -76,6 +106,10 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 
 	public void setDisplay(int display) {
 		mDisplayRes = display;
+	}
+
+	public void setRelationManager(RelationManager relationManager) {
+		mRelationManager = relationManager;
 	}
 
 	public void setOppositeRelationField(String oppositerelationField) {
@@ -206,7 +240,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	protected Bundle createBundle() {
 		Bundle bundle = new Bundle();
 		if (mHasReverse && mOppositeCardinality == 1) {
-			bundle.putParcelable(mOppositeRelationField, getFieldManager().getUri());
+			bundle.putParcelable(mOppositeRelationField, mRelationManager.getUri());
 		}
 		if (mCommonFields != null && !mCommonFields.isEmpty()) {
 			for (CommonFieldEntry entry : mCommonFields) {

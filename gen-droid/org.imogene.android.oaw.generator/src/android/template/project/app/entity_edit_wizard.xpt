@@ -23,15 +23,15 @@ import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.widget.field.FieldFlipper;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.FieldManager.FieldContainer;
 import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implements 
-		OnClickListener, FieldContainer, OnValueChangeListener {
+		OnClickListener, OnValueChangeListener, RelationManager {
 
 	private static final int DIALOG_UNCOMPLETE_ID = 1;
 	
@@ -213,22 +213,21 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		}
 	}
 	
-	public Activity getActivity() {
-		return this;
+	@Override
+	public Uri getContentUri() {
+		return «name.toFirstUpper()».Columns.CONTENT_URI;
 	}
 	
-	public String getId() {
+	@Override
+	public String getIdentifier() {
 		if (mEntity.getId() == null)
 			save(true);
 		return mEntity.getId();
 	}
 	
+	@Override
 	public Uri getUri() {
-		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getId());
-	}
-	
-	public Uri getContentUri() {
-		return «name.toFirstUpper()».Columns.CONTENT_URI;
+		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getIdentifier());
 	}
 
 }

@@ -37,14 +37,12 @@ import org.imogene.android.util.IntentUtils;
 import org.imogene.android.widget.ImogPagerAdapter;
 import org.imogene.android.widget.InfoAdapter;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.FieldManager.FieldContainer;
 import org.imogene.android.widget.field.view.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements
-		FieldContainer, OnClickListener {
+public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity implements OnClickListener {
 
 	private static final int DIALOG_DELETE_ID = 1;
 	private static final int DIALOG_INFO_ID = 2;
@@ -305,22 +303,6 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		if (which == Dialog.BUTTON_POSITIVE) {
 			getContentResolver().delete(mUri, null, null);
 		}
-	}
-	
-	public Activity getActivity() {
-		return this;
-	}
-	
-	public String getId() {
-		return mEntity.getId();
-	}
-	
-	public Uri getUri() {
-		return mUri;
-	}
-	
-	public Uri getContentUri() {
-		return «name.toFirstUpper()».Columns.CONTENT_URI;
 	}
 	
 }

@@ -4,14 +4,13 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 
 /**
  * Field manager that dispatches activity events to the field views.
  */
 public class FieldManager {
 
-	private final FieldContainer mContainer;
+	private final Activity mActivity;
 
 	private int mNextId = 0;
 
@@ -22,11 +21,11 @@ public class FieldManager {
 	/**
 	 * Constructor for this manager.
 	 * 
-	 * @param container The field container.
+	 * @param activity The parent activity.
 	 * @param firstRequestCode The first value of the activity launcher request code.
 	 */
-	public FieldManager(FieldContainer container, int firstRequestCode) {
-		mContainer = container;
+	public FieldManager(Activity activity, int firstRequestCode) {
+		mActivity = activity;
 		mNextId = firstRequestCode;
 	}
 
@@ -36,36 +35,7 @@ public class FieldManager {
 	 * @return The Activity containing the {@link FieldContainer}.
 	 */
 	public Activity getActivity() {
-		return mContainer.getActivity();
-	}
-
-	/**
-	 * Return the content URI of the entity managed by the {@link FieldContainer}. This method temporally saves the
-	 * entity if there is no content URI.
-	 * 
-	 * @return The content URI of the entity.
-	 */
-	public Uri getUri() {
-		return mContainer.getUri();
-	}
-
-	/**
-	 * Returns the entity identifier managed by the {@link FieldContainer}. This method temporally saves the entity if
-	 * there is no identifier.
-	 * 
-	 * @return The entity identifier.
-	 */
-	public String getId() {
-		return mContainer.getId();
-	}
-
-	/**
-	 * The basic content URI representing the entity.
-	 * 
-	 * @return The content URI.
-	 */
-	public Uri getContentUri() {
-		return mContainer.getContentUri();
+		return mActivity;
 	}
 
 	/**
@@ -203,49 +173,6 @@ public class FieldManager {
 		 * This method is called when an {@link Activity} is destroyed.
 		 */
 		public void onActivityDestroy();
-	}
-
-	/**
-	 * Interface to define a field container that will make use of a field manager.
-	 */
-	public static interface FieldContainer extends RelationManager {
-
-		/**
-		 * Returns the {@link Activity} using the {@link FieldManager}.
-		 * 
-		 * @return The {@link Activity}.
-		 */
-		public Activity getActivity();
-
-	}
-
-	/**
-	 * Interface to define a container able to manipulate relation fields of an entity.
-	 */
-	public static interface RelationManager {
-
-		/**
-		 * Return the content URI of the entity managed by the {@link FieldContainer}. This method temporally saves the
-		 * entity if there is no content URI.
-		 * 
-		 * @return The content URI of the entity.
-		 */
-		public Uri getUri();
-
-		/**
-		 * Returns the entity identifier managed by the {@link FieldContainer}. This method temporally saves the entity
-		 * if there is no identifier.
-		 * 
-		 * @return The entity identifier.
-		 */
-		public String getId();
-
-		/**
-		 * The basic content URI representing the entity.
-		 * 
-		 * @return The content URI.
-		 */
-		public Uri getContentUri();
 	}
 
 }

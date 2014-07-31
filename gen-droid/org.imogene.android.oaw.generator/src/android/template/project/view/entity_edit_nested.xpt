@@ -11,17 +11,21 @@ import java.util.List;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.util.AttributeSet;
+
+import fr.medes.android.util.content.ContentUrisUtils;
 
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implements OnValueChangeListener {
+public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implements OnValueChangeListener, RelationManager {
 «LET getNestedFields() AS fields-»
 
 	«FOREACH fields AS f-»
@@ -90,6 +94,16 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 	}
 	
 	@Override
+	public boolean isValid() {
+		«FOREACH fields AS f-»
+		if (!«f.name.toFirstLower()».isValid()) {
+			return false;
+		}
+		«ENDFOREACH-»
+		return true;
+	}
+	
+	@Override
 	protected void onValueChange() {
 		super.onValueChange();
 		Uri uri = getValue();
@@ -100,6 +114,13 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 		}
 	}
 	
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		save(true);
+		return super.onSaveInstanceState();
+	}
+
+	@Override
 	public void onValueChange(BaseFieldEdit<?> field) {
 		switch (field.getId()) {
 		«FOREACH fields AS f-»
@@ -110,16 +131,6 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 		default:
 			break;
 		}
-	}
-	
-	@Override
-	public boolean isValid() {
-		«FOREACH fields AS f-»
-		if (!«f.name.toFirstLower()».isValid()) {
-			return false;
-		}
-		«ENDFOREACH-»
-		return true;
 	}
 	
 	public void updateErrorEntries(List<ErrorEntry> errors, int tag) {
@@ -135,15 +146,28 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 	}
 	
 	public void save(boolean temporary) {
+		mEntity.prepareForSave(getContext());
 		if (temporary) {
-			mEntity.prepareForSave(getContext());
 			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
-			mEntity.saveOrUpdate(getContext());
-			return;
-		} else {
-			mEntity.prepareForSave(getContext());
-			setValue(mEntity.saveOrUpdate(getContext()));
 		}
+		setValue(mEntity.saveOrUpdate(getContext()));
+	}
+
+	@Override
+	public Uri getContentUri() {
+		return «name.toFirstUpper()».Columns.CONTENT_URI;
+	}
+	
+	@Override
+	public String getIdentifier() {
+		if (mEntity.getId() == null)
+			save(true);
+		return mEntity.getId();
+	}
+	
+	@Override
+	public Uri getUri() {
+		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getIdentifier());
 	}
 	
 «ENDLET-»

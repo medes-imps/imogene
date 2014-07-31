@@ -94,7 +94,7 @@ public class RelationManyFieldEdit extends RelationFieldEdit<List<Uri>> {
 	@Override
 	protected Where onPrepareWhere() {
 		if (mHasReverse && mOppositeCardinality == 1) {
-			return new Where().eq(mOppositeRelationField, getFieldManager().getId()).or()
+			return new Where().eq(mOppositeRelationField, mRelationManager.getIdentifier()).or()
 					.isNull(mOppositeRelationField);
 		}
 		return null;

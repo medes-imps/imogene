@@ -38,15 +38,15 @@ import org.imogene.android.widget.ErrorAdapter;
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.ImogPagerAdapter;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.FieldManager.FieldContainer;
 import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity implements 
-		OnClickListener, FieldContainer, OnValueChangeListener {
+		OnClickListener, OnValueChangeListener, RelationManager {
 
 	private static final int DIALOG_UNSAVED_ID = 1;
 	private static final int DIALOG_ERROR_ID = 2;
@@ -371,22 +371,21 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		}
 	}
 	
-	public Activity getActivity() {
-		return this;
+	@Override
+	public Uri getContentUri() {
+		return «name.toFirstUpper()».Columns.CONTENT_URI;
 	}
 	
-	public String getId() {
+	@Override
+	public String getIdentifier() {
 		if (mEntity.getId() == null)
 			save(true);
 		return mEntity.getId();
 	}
 	
+	@Override
 	public Uri getUri() {
-		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getId());
-	}
-	
-	public Uri getContentUri() {
-		return «name.toFirstUpper()».Columns.CONTENT_URI;
+		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getIdentifier());
 	}
 	
 	«IF hasDynamicFields-»

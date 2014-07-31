@@ -80,7 +80,7 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 		if (mHasReverse && mOppositeCardinality == 1 && mType == 0) {
 			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(mTableName);
 			builder.selectColumns(mFieldName);
-			builder.where().ne(ImogBean.Columns._ID, getFieldManager().getId()).and().isNotNull(mFieldName).and()
+			builder.where().ne(ImogBean.Columns._ID, mRelationManager.getIdentifier()).and().isNotNull(mFieldName).and()
 					.ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 			return new Where().notIn(ImogBean.Columns._ID, builder);
 		}
