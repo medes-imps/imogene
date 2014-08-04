@@ -126,9 +126,12 @@
 			android:label="@string/«entity.name.toLowerCase()-»_des_pl"
 			«IF entity.icon.length > 0-»android:icon="@drawable/«entity.icon.split("\\.").get(0).toLowerCase()»"«ENDIF-» >
 			<intent-filter>
+				«REM»
 				«IF entity.georeferenced == null-»
 				<action android:name="android.intent.action.VIEW" />
 				«ENDIF-»
+				«ENDREM»
+				<action android:name="android.intent.action.VIEW" />
 				<action android:name="android.intent.action.PICK" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<data android:mimeType="vnd.org.imogene.android.«name.toLowerCase()-».cursor.dir/«entity.name.toLowerCase()-»"/>
