@@ -3,6 +3,7 @@ package org.imogene.android.database.sqlite;
 import org.imogene.android.common.model.FieldGroup;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,9 +11,8 @@ import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
-import android.net.Uri;
 
-public class FieldGroupProfileCursor extends ImogBeanCursorImpl {
+public class FieldGroupProfileCursor extends ImogBeanCursorImpl<FieldGroupProfile> {
 
 	public FieldGroupProfileCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -27,17 +27,19 @@ public class FieldGroupProfileCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public FieldGroupProfile newBean() {
-		return new FieldGroupProfile(this);
+		FieldGroupProfile bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new FieldGroupProfile(this);
+		}
+		return bean;
 	}
 
-	public final Uri getProfile() {
-		return getEntity(Profile.Columns.CONTENT_URI, Profile.Columns.TABLE_NAME,
-				getColumnIndexOrThrow(FieldGroupProfile.Columns.PROFILE));
+	public final Profile getProfile() {
+		return getEntity(Profile.Columns.CONTENT_URI, getColumnIndexOrThrow(FieldGroupProfile.Columns.PROFILE));
 	}
 
-	public final Uri getFieldGroup() {
-		return getEntity(FieldGroup.Columns.CONTENT_URI, FieldGroup.Columns.TABLE_NAME,
-				getColumnIndexOrThrow(FieldGroupProfile.Columns.FIELDGROUP));
+	public final FieldGroup getFieldGroup() {
+		return getEntity(FieldGroup.Columns.CONTENT_URI, getColumnIndexOrThrow(FieldGroupProfile.Columns.FIELDGROUP));
 	}
 
 	public final Boolean getRead() {
@@ -54,16 +56,12 @@ public class FieldGroupProfileCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public String getMainDisplay(Context context) {
-		StringBuilder str = new StringBuilder();
-		buildRelationDisplay(context, str, getProfile());
-		buildRelationDisplay(context, str, getFieldGroup());
-		return str.toString();
+		return null;
 	}
 
 	@Override
 	public String getSecondaryDisplay(Context context) {
-		StringBuilder str = new StringBuilder();
-		return str.toString();
+		return null;
 	}
 
 }

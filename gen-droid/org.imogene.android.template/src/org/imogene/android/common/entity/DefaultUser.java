@@ -17,11 +17,11 @@ public class DefaultUser extends ImogActorImpl {
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 	}
 
-	public DefaultUser() {
+	public DefaultUser(DefaultUserCursor cursor) {
+		super(cursor);
 	}
 
-	public DefaultUser(DefaultUserCursor defaultUserCursor) {
-		init(defaultUserCursor);
+	public DefaultUser() {
 	}
 
 	@Override

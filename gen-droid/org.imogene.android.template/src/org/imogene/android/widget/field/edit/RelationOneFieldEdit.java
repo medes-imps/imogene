@@ -3,7 +3,6 @@ package org.imogene.android.widget.field.edit;
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
@@ -12,14 +11,14 @@ import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Toast;
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.database.sqlite.stmt.Where;
+import fr.medes.android.util.content.ContentUrisUtils;
 
-public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnActivityResultListener {
+public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<T> implements OnActivityResultListener {
 
 	public RelationOneFieldEdit(Context context) {
 		super(context);
@@ -35,17 +34,12 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 
 	@Override
 	public String getFieldDisplay() {
-		final Uri uri = getValue();
-		final String result;
-		if (uri != null) {
-			ImogBeanCursor cursor = (ImogBeanCursor) ImogOpenHelper.getHelper().query(uri);
-			cursor.moveToFirst();
-			result = cursor.getMainDisplay(getContext());
-			cursor.close();
+		final ImogBean value = getValue();
+		if (value != null) {
+			return value.getMainDisplay(getContext());
 		} else {
-			result = getEmptyText();
+			return getEmptyText();
 		}
-		return result;
 	}
 
 	@Override
@@ -55,14 +49,15 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 			Toast.makeText(getContext(), R.string.imog__relation_unsettable, Toast.LENGTH_LONG).show();
 			return;
 		}
-		if (isReadOnly() && getValue() != null) {
-			startActivity(new Intent(Intent.ACTION_VIEW, getValue()));
+		ImogBean value = getValue();
+		if (isReadOnly() && value != null) {
+			startActivity(new Intent(Intent.ACTION_VIEW, ContentUrisUtils.withAppendedId(mContentUri, value.getId())));
 			return;
 		}
 		if (mOppositeCardinality == 1 && !mHasReverse) {
-			final Uri uri = getValue();
-			if (uri != null) {
-				startActivity(new Intent(Intent.ACTION_EDIT, uri));
+			if (value != null) {
+				startActivity(new Intent(Intent.ACTION_EDIT,
+						ContentUrisUtils.withAppendedId(mContentUri, value.getId())));
 			} else {
 				boolean wizard = Preferences.getPreferences(getContext()).isWizardEnabled();
 				Intent intent = new Intent(Intent.ACTION_INSERT, mContentUri);
@@ -80,8 +75,8 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 		if (mHasReverse && mOppositeCardinality == 1 && mType == 0) {
 			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(mTableName);
 			builder.selectColumns(mFieldName);
-			builder.where().ne(ImogBean.Columns._ID, mRelationManager.getIdentifier()).and().isNotNull(mFieldName).and()
-					.ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+			builder.where().ne(ImogBean.Columns._ID, mRelationManager.getParentBean()).and().isNotNull(mFieldName)
+					.and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 			return new Where().notIn(ImogBean.Columns._ID, builder);
 		}
 		return null;
@@ -89,9 +84,9 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 
 	@Override
 	public Where onCreateConstraint(String column) {
-		final Uri uri = getValue();
-		if (uri != null) {
-			return new Where().eq(column, uri.getLastPathSegment());
+		final ImogBean value = getValue();
+		if (value != null) {
+			return new Where().eq(column, value.getId());
 		}
 		showToastUnset();
 		return null;
@@ -100,10 +95,8 @@ public class RelationOneFieldEdit extends RelationFieldEdit<Uri> implements OnAc
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
-			final Uri uri = data.getData();
-			if (!uri.equals(getValue())) {
-				setValue(uri);
-			}
+			T value = ImogOpenHelper.fromUri(data.getData());
+			setValue(value);
 			return true;
 		}
 		return false;

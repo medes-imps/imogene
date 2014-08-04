@@ -528,6 +528,7 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 				WakefulIntentService.sendWakefulWork(mContext, intent);
 			}
+			c.close();
 			return null;
 		}
 

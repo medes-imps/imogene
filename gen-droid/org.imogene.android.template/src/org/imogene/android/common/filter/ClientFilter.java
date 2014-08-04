@@ -129,7 +129,7 @@ public class ClientFilter extends ImogBeanImpl {
 	}
 
 	public ClientFilter(ClientFilterCursor cursor) {
-		init(cursor);
+		super(cursor);
 		userId = cursor.getUserId();
 		terminalId = cursor.getTerminalId();
 		cardEntity = cursor.getCardEntity();

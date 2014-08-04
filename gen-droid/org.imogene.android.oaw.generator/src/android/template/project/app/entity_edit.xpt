@@ -30,6 +30,7 @@ import fr.medes.android.util.content.ContentUrisUtils;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.android.common.dynamicfields.DynamicFieldManager;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.DialogFactory;
@@ -46,7 +47,7 @@ import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity implements 
-		OnClickListener, OnValueChangeListener, RelationManager {
+		OnClickListener, OnValueChangeListener, RelationManager<«name.toFirstUpper()»> {
 
 	private static final int DIALOG_UNSAVED_ID = 1;
 	private static final int DIALOG_ERROR_ID = 2;
@@ -63,7 +64,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	«ENDIF-»
 	
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::EditorUtils::class FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorUtils::classInClass FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity;
@@ -94,7 +95,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 				}
 			} else {
 				mUri = getIntent().getData();
-				mEntity = «name.toFirstUpper()».fromUri(mUri);
+				mEntity = ImogOpenHelper.fromUri(mUri);
 				if (!mEntity.getFlagRead()) {
 					mMarkAsRead = true;
 				}
@@ -115,7 +116,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()»_edit, getViewPager(), true);
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::classInClass FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 	
 		«FOREACH groups.fields AS f-»
@@ -212,7 +213,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 			showDialog(DIALOG_IAMLOST_ID);
 			return true;
 		case R.id.imog__menu_save :
-			save(false);
+			save();
 			return true;
 		default :
 			return super.onOptionsItemSelected(item);
@@ -272,7 +273,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
 		case Dialog.BUTTON_POSITIVE:
-			save(false);
+			save();
 			break;
 		case Dialog.BUTTON_NEGATIVE:
 			finish();
@@ -335,24 +336,9 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		return true;
 	}
 	
-	private void save(boolean temporary) {
-		if (temporary) {
-			«FOREACH groups.fields AS f-»
-			«IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity) f).nestedForm && ((RelationFieldEntity) f).cardinality == 1-»
-			«f.name.toFirstLower()».save(temporary);
-			«ENDIF-»
-			«ENDFOREACH-»
-			mEntity.prepareForSave(this);
-			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
-			mEntity.saveOrUpdate(this);
-			return;
-		}
+	private void save() {
 		if (validate()) {
-			«FOREACH groups.fields AS f-»
-			«IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity) f).nestedForm && ((RelationFieldEntity) f).cardinality == 1-»
-			«f.name.toFirstLower()».save(temporary);
-			«ENDIF-»
-			«ENDFOREACH-»
+			«EXPAND android::template::EditorUtils::saveNestedForm FOREACH groups.fields-»
 			«IF hasDynamicFields-»
 			mDynamicFieldManager.saveDynamicFields(mEntity);
 			«ENDIF-»
@@ -372,20 +358,8 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	}
 	
 	@Override
-	public Uri getContentUri() {
-		return «name.toFirstUpper()».Columns.CONTENT_URI;
-	}
-	
-	@Override
-	public String getIdentifier() {
-		if (mEntity.getId() == null)
-			save(true);
-		return mEntity.getId();
-	}
-	
-	@Override
-	public Uri getUri() {
-		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getIdentifier());
+	public «name.toFirstUpper()» getParentBean() {
+		return mEntity;
 	}
 	
 	«IF hasDynamicFields-»

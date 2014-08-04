@@ -135,6 +135,7 @@
 			</intent-filter>
 		</activity>
 		
+		«REM»
 		«IF entity.georeferenced != null-»
 		<activity
 			android:name=".app.«entity.name.toFirstUpper()»ListAndMap"
@@ -147,6 +148,7 @@
 			</intent-filter>
 		</activity>
 		«ENDIF-»
+		«ENDREM»
 		
 		<activity
 			android:name=".app.«entity.name.toFirstUpper()-»View" 

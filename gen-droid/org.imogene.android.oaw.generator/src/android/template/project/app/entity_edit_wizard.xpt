@@ -18,6 +18,7 @@ import fr.medes.android.util.content.ContentUrisUtils;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.FieldFlipperActivity;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.IamLost;
@@ -31,14 +32,14 @@ import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
 public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implements 
-		OnClickListener, OnValueChangeListener, RelationManager {
+		OnClickListener, OnValueChangeListener, RelationManager<«name.toFirstUpper()»> {
 
 	private static final int DIALOG_UNCOMPLETE_ID = 1;
 	
 	private FieldManager mManager;
 
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::EditorUtils::class FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorUtils::classInClass FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity;
@@ -66,7 +67,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 				}
 			} else {
 				mUri = getIntent().getData();
-				mEntity = «name.toFirstUpper()».fromUri(mUri);
+				mEntity = ImogOpenHelper.fromUri(mUri);
 				if (!mEntity.getFlagRead()) {
 					mMarkAsRead = true;
 				}
@@ -79,7 +80,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		getLayoutInflater().inflate(R.layout.«name.toLowerCase()»_edit_wizard, flipper, true);
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::classInClass FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 
 		«FOREACH groups.fields AS f-»
@@ -168,7 +169,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	
 	@Override
 	public void onFinishClick() {
-		save(false);
+		save();
 	}
 	
 	@Override
@@ -193,43 +194,25 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		notifier.suspendMessageNotification(suspend, «name.toFirstUpper()».Columns.NOTIFICATION_ID);
 	}
 	
-	private void save(boolean temporary) {
-		if (temporary) {
-			mEntity.prepareForSave(this);
-			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
-			mEntity.saveOrUpdate(this);
-			return;
+	private void save() {
+		«EXPAND android::template::EditorUtils::saveNestedForm FOREACH groups.fields-»
+		mEntity.prepareForSave(this);
+		Uri uri = mEntity.saveOrUpdate(this);
+		if (uri != null) {
+			Toast.makeText(this, R.string.«name.toLowerCase()»_des_registered, Toast.LENGTH_SHORT).show();
+			setResult(RESULT_OK, new Intent().setData(uri));
+			finish();
 		} else {
-			mEntity.prepareForSave(this);
-			Uri uri = mEntity.saveOrUpdate(this);
-			if (uri != null) {
-				Toast.makeText(this, R.string.«name.toLowerCase()»_des_registered, Toast.LENGTH_SHORT).show();
-				setResult(RESULT_OK, new Intent().setData(uri));
-				finish();
-			} else {
-				setResult(RESULT_CANCELED);
-				finish();
-			}
+			setResult(RESULT_CANCELED);
+			finish();
 		}
 	}
 	
 	@Override
-	public Uri getContentUri() {
-		return «name.toFirstUpper()».Columns.CONTENT_URI;
+	public «name.toFirstUpper()» getParentBean() {
+		return mEntity;
 	}
 	
-	@Override
-	public String getIdentifier() {
-		if (mEntity.getId() == null)
-			save(true);
-		return mEntity.getId();
-	}
-	
-	@Override
-	public Uri getUri() {
-		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getIdentifier());
-	}
-
 }
 «ENDFILE»
 «ENDDEFINE»

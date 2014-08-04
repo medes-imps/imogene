@@ -2,6 +2,7 @@ package org.imogene.android.database.sqlite;
 
 import org.imogene.android.common.model.CardEntity;
 import org.imogene.android.common.model.FieldGroup;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,9 +10,8 @@ import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
-import android.net.Uri;
 
-public class FieldGroupCursor extends ImogBeanCursorImpl {
+public class FieldGroupCursor extends ImogBeanCursorImpl<FieldGroup> {
 
 	public FieldGroupCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -26,34 +26,29 @@ public class FieldGroupCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public FieldGroup newBean() {
-		return new FieldGroup(this);
+		FieldGroup bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new FieldGroup(this);
+		}
+		return bean;
 	}
 
 	public final String getName() {
 		return getString(FieldGroup.Columns.NAME);
 	}
 
-	public final Uri getEntity() {
-		return getEntity(CardEntity.Columns.CONTENT_URI, CardEntity.Columns.TABLE_NAME,
-				getColumnIndexOrThrow(FieldGroup.Columns.ENTITY));
+	public final CardEntity getEntity() {
+		return getEntity(CardEntity.Columns.CONTENT_URI, getColumnIndexOrThrow(FieldGroup.Columns.ENTITY));
 	}
 
 	@Override
 	public String getMainDisplay(Context context) {
-		StringBuilder str = new StringBuilder();
-		buildRelationDisplay(context, str, getEntity());
-		String name = getName();
-		if (name != null) {
-			str.append(name);
-			str.append(" ");
-		}
-		return str.toString();
+		return null;
 	}
 
 	@Override
 	public String getSecondaryDisplay(Context context) {
-		StringBuilder str = new StringBuilder();
-		return str.toString();
+		return null;
 	}
 
 }

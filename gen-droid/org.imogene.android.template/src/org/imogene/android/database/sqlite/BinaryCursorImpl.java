@@ -5,6 +5,7 @@ import java.io.File;
 import org.imogene.android.common.binary.Binary;
 import org.imogene.android.common.binary.BinaryFile;
 import org.imogene.android.database.BinaryCursor;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
 import android.net.Uri;
 
-public class BinaryCursorImpl extends ImogBeanCursorImpl implements BinaryCursor {
+public class BinaryCursorImpl extends ImogBeanCursorImpl<BinaryFile> implements BinaryCursor<BinaryFile> {
 
 	public BinaryCursorImpl(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -29,7 +30,11 @@ public class BinaryCursorImpl extends ImogBeanCursorImpl implements BinaryCursor
 
 	@Override
 	public BinaryFile newBean() {
-		return new BinaryFile(this);
+		BinaryFile bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new BinaryFile(this);
+		}
+		return bean;
 	}
 
 	@Override

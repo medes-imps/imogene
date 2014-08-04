@@ -77,6 +77,8 @@ public abstract class NumberFilter<T extends Number> extends ClientFilter {
 		case SUPREMUM:
 			mSupremum = toType(str);
 			return;
+		default:
+			return;
 		}
 	}
 
@@ -104,9 +106,11 @@ public abstract class NumberFilter<T extends Number> extends ClientFilter {
 			setOperator(operator(mOperator));
 			setFieldValue(mSupremum != null ? mSupremum.toString() : null);
 			return;
+		default:
+			setOperator(operator(NumberOperator.UNDEF));
+			setFieldValue(null);
+			return;
 		}
-		setOperator(operator(NumberOperator.UNDEF));
-		setFieldValue(null);
 	}
 
 	protected abstract NumberOperator fromOperator(String str);

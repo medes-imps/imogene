@@ -19,21 +19,20 @@ import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()»NestedView extends RelationOneFieldView {
+public class «name.toFirstUpper()»NestedView extends RelationOneFieldView<«name.toFirstUpper()»> {
 «LET getNestedFields() AS fields-»
 
 	«FOREACH fields AS f-»
-	private «EXPAND android::template::ViewerUtils::class FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::ViewerUtils::classInClass FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
-	private «name.toFirstUpper()» mEntity;
 	private AccessPolicy mPolicy;
 	
 	public «name.toFirstUpper()»NestedView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.«name.toLowerCase()»_view_nested);
 
 		«FOREACH fields AS f-»
-		«f.name.toFirstLower()» = («EXPAND android::template::ViewerUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+		«f.name.toFirstLower()» = («EXPAND android::template::ViewerUtils::classInClass FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 	
 		«FOREACH fields AS f-»
@@ -42,8 +41,6 @@ public class «name.toFirstUpper()»NestedView extends RelationOneFieldView {
 		«ENDFOREACH»
 		
 		setOnClickListener(null);
-		setOnLongClickListener(null);
-
 		«REM»
 		«FOREACH groups AS group»
 		if (mPolicy.canRead«name.toFirstUpper()»«group.name.toFirstUpper()»() ||
@@ -69,35 +66,24 @@ public class «name.toFirstUpper()»NestedView extends RelationOneFieldView {
 	}
 	
 	@Override
-	public void init(Uri value) {
+	public void init(«name.toFirstUpper()» value) {
 		super.init(value);
 		// At this point onValueChange() has already been called and the entity is initialized
-		if (mEntity != null) {
+		if (value != null) {
 			«FOREACH fields AS f-»
-			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
+			«f.name.toFirstLower()».init(value.get«f.name.toFirstUpper()»());
 			«ENDFOREACH»
 		}
 	}
 
 	@Override
-	public void setValue(Uri value) {
+	public void setValue(«name.toFirstUpper()» value) {
 		super.setValue(value);
 		// At this point onValueChange() has already been called and the entity is initialized
-		if (mEntity != null) {
+		if (value != null) {
 			«FOREACH fields AS f-»
-			«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
+			«f.name.toFirstLower()».setValue(value.get«f.name.toFirstUpper()»());
 			«ENDFOREACH»
-		}
-	}
-	
-	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		Uri uri = getValue();
-		if (uri != null) {
-			mEntity = «name.toFirstUpper()».fromUri(uri);
-		} else {
-			mEntity = null;
 		}
 	}
 	

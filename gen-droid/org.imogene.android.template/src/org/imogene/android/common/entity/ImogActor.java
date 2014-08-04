@@ -2,7 +2,7 @@ package org.imogene.android.common.entity;
 
 import java.util.List;
 
-import android.net.Uri;
+import org.imogene.android.common.profile.Profile;
 
 public interface ImogActor extends ImogEntity {
 
@@ -23,8 +23,8 @@ public interface ImogActor extends ImogEntity {
 
 	public byte[] getPassword();
 
-	public List<Uri> getProfiles();
+	public List<Profile> getProfiles();
 
-	public void setProfiles(List<Uri> profiles);
+	public void setProfiles(List<Profile> profiles);
 
 }

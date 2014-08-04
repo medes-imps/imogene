@@ -1,15 +1,14 @@
 package org.imogene.android.common.dynamicfields;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Vector;
 
 import org.imogene.android.common.binary.Binary;
-import org.imogene.android.common.binary.BinaryFile;
 import org.imogene.android.common.entity.ImogEntity;
 import org.imogene.android.database.sqlite.DynamicFieldTemplateCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
@@ -86,11 +85,9 @@ public class DynamicFieldManager implements OnValueChangeListener {
 		}
 	}
 
-	public void loadtemplate(Uri uri) {
-		String id = uri.getLastPathSegment();
-		if (!templatesMap.containsKey(id)) {
-			DynamicFieldTemplate template = new DynamicFieldTemplate(uri);
-			templatesMap.put(id, template);
+	public void loadtemplate(DynamicFieldTemplate template) {
+		if (!templatesMap.containsKey(template.getId())) {
+			templatesMap.put(template.getId(), template);
 		}
 	}
 
@@ -98,7 +95,7 @@ public class DynamicFieldManager implements OnValueChangeListener {
 		loadtemplate(instance.getFieldTemplate());
 		String tmpId = UUID.randomUUID().toString();
 		instancesMap.put(tmpId, instance);
-		templatesToInstancesMap.put(instance.getFieldTemplate().getLastPathSegment(), tmpId);
+		templatesToInstancesMap.put(instance.getFieldTemplate().getId(), tmpId);
 	}
 
 	public void loadInstancesUris(List<Uri> instances) {
@@ -106,7 +103,8 @@ public class DynamicFieldManager implements OnValueChangeListener {
 			return;
 		}
 		for (Uri uri : instances) {
-			loadInstance(new DynamicFieldInstance(uri));
+			DynamicFieldInstance instance = ImogOpenHelper.fromUri(uri);
+			loadInstance(instance);
 		}
 	}
 
@@ -134,31 +132,11 @@ public class DynamicFieldManager implements OnValueChangeListener {
 	}
 
 	public void saveDynamicFields(ImogEntity bean) {
-		List<Uri> dynamicFields = null;
 		for (DynamicFieldInstance instance : instancesMap.values()) {
-			DynamicFieldTemplate template = templatesMap.get(instance.getFieldTemplate().getLastPathSegment());
-			switch (template.getFieldType()) {
-			case BIN:
-			case IMG:
-				if (instance.getFieldValue() != null) {
-					Uri uri = Uri.parse(instance.getFieldValue());
-					if (uri.getScheme() != null) {
-						Uri bin = BinaryFile.toBinary(context, uri);
-						instance.setFieldValue(bin != null ? bin.getLastPathSegment() : null);
-					}
-				}
-				break;
-			}
 			instance.prepareForSave(context);
-			Uri uri = instance.saveOrUpdate(context);
-			if (uri != null) {
-				if (dynamicFields == null) {
-					dynamicFields = new Vector<Uri>();
-				}
-				dynamicFields.add(uri);
-			}
+			instance.saveOrUpdate(context);
 		}
-		bean.setDynamicFieldValues(dynamicFields);
+		bean.setDynamicFieldValues(new ArrayList<DynamicFieldInstance>(instancesMap.values()));
 	}
 
 	public void attachViewsForEdition(ViewGroup group, FieldManager manager) {
@@ -232,8 +210,7 @@ public class DynamicFieldManager implements OnValueChangeListener {
 
 	public void attachViewsForView(ViewGroup group, FieldManager manager) {
 		for (DynamicFieldInstance instance : instancesMap.values()) {
-			DynamicFieldTemplate template = templatesMap.get(instance.getFieldTemplate().getLastPathSegment());
-
+			DynamicFieldTemplate template = instance.getFieldTemplate();
 			BaseFieldView<?> view = obtainBaseView(template);
 			view.setTitle(template.getFieldName());
 			view.onAttachedToHierarchy(manager);
@@ -327,8 +304,7 @@ public class DynamicFieldManager implements OnValueChangeListener {
 		DynamicFieldInstance instance = instancesMap.get(templatesToInstancesMap.get(templateId));
 		if (instance == null) {
 			instance = new DynamicFieldInstance();
-			instance.setFieldTemplate(ContentUrisUtils.withAppendedId(DynamicFieldTemplate.Columns.CONTENT_URI,
-					templateId));
+			instance.setFieldTemplate(template);
 			loadInstance(instance);
 		}
 		switch (template.getFieldType()) {
@@ -337,9 +313,9 @@ public class DynamicFieldManager implements OnValueChangeListener {
 			break;
 		case IMG:
 		case BIN:
-			Uri uri = ((BinaryFieldEdit) field).getValue();
-			if (uri != null) {
-				instance.setFieldValue(BinaryFile.isBinary(uri) ? uri.getLastPathSegment() : uri.toString());
+			Binary binary = ((BinaryFieldEdit) field).getValue();
+			if (binary != null) {
+				instance.setFieldValue(binary.getId());
 			} else {
 				instance.setFieldValue(null);
 			}

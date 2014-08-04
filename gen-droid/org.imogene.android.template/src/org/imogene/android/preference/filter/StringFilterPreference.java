@@ -34,6 +34,8 @@ public class StringFilterPreference extends FilterPreference<StringFilter> imple
 			return getContext().getString(R.string.imog__filter_string_equal, filter.getFieldValue());
 		case STARTWITH:
 			return getContext().getString(R.string.imog__filter_string_startwith, filter.getFieldValue());
+		default:
+			break;
 		}
 		return getContext().getString(android.R.string.unknownName);
 	}

@@ -2,16 +2,18 @@ package org.imogene.android.database;
 
 import java.util.List;
 
-import android.content.Context;
-import android.net.Uri;
+import org.imogene.android.common.entity.ImogActor;
+import org.imogene.android.common.profile.Profile;
 
-public interface ImogActorCursor extends ImogEntityCursor {
+import android.content.Context;
+
+public interface ImogActorCursor<T extends ImogActor> extends ImogEntityCursor<T> {
 
 	public String getLogin();
 
 	public byte[] getPassword();
 
-	public List<Uri> getProfiles();
+	public List<Profile> getProfiles();
 
 	public String getUserDisplay(Context context);
 }

@@ -4,7 +4,6 @@ import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.FieldGroupCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,47 +28,23 @@ public class FieldGroup extends ImogBeanImpl {
 		public static final String ENTITY = "entity";
 	}
 
-	public static FieldGroup fromUri(Uri uri) {
-		if (uri == null) {
-			return null;
-		}
-		FieldGroupCursor cursor = (FieldGroupCursor) ImogOpenHelper.getHelper().query(uri);
-		if (cursor == null) {
-			return null;
-		}
-		try {
-			if (!cursor.moveToFirst()) {
-				return null;
-			}
-			if (cursor.getCount() > 1) {
-				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
-			}
-			return new FieldGroup(cursor);
-		} finally {
-			cursor.close();
-		}
-	}
-
 	@XmlAlias("name")
 	private String name;
 	@XmlAlias("entity")
-	private Uri entity;
+	private CardEntity entity;
 
 	public FieldGroup() {
 	}
 
-	public FieldGroup(FieldGroupCursor cursor) {
-		init(cursor);
-	}
-
 	public FieldGroup(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(Columns.ENTITY)) {
 			entity = bundle.getParcelable(Columns.ENTITY);
 		}
 	}
 
-	private void init(FieldGroupCursor cursor) {
-		super.init(cursor);
+	public FieldGroup(FieldGroupCursor cursor) {
+		super(cursor);
 		name = cursor.getName();
 		entity = cursor.getEntity();
 	}
@@ -78,7 +53,7 @@ public class FieldGroup extends ImogBeanImpl {
 		return name;
 	}
 
-	public final Uri getEntity() {
+	public final CardEntity getEntity() {
 		return entity;
 	}
 
@@ -86,14 +61,14 @@ public class FieldGroup extends ImogBeanImpl {
 		this.name = name;
 	}
 
-	public final void setEntity(Uri entity) {
+	public final void setEntity(CardEntity entity) {
 		this.entity = entity;
 	}
 
 	@Override
 	protected final void addValues(Context context, ContentValues values) {
 		values.put(Columns.NAME, name);
-		values.put(Columns.ENTITY, entity != null ? entity.getLastPathSegment() : null);
+		values.put(Columns.ENTITY, entity != null ? entity.getId() : null);
 
 	}
 

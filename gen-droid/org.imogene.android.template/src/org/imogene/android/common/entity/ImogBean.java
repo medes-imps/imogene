@@ -4,9 +4,10 @@ import java.util.Date;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 
-public interface ImogBean {
+public interface ImogBean extends Parcelable {
 
 	public static interface Columns extends BaseColumns {
 		public static final String MODIFIED = "modified";
@@ -62,4 +63,8 @@ public interface ImogBean {
 	public Uri saveOrUpdate(Context context);
 
 	public void reset();
+
+	public String getMainDisplay(Context context);
+
+	public String getSecondaryDisplay(Context context);
 }

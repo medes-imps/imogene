@@ -52,13 +52,13 @@ public class AccessPolicy {
 		if (actor == null) {
 			return;
 		}
-		List<Profile> profiles = Profile.fromUris(actor.getProfiles());
+		List<Profile> profiles = actor.getProfiles();
 		if (profiles != null) {
 			for (Profile profile : profiles) {
-				List<EntityProfile> entityProfiles = EntityProfile.fromUris(profile.getEntityProfiles());
+				List<EntityProfile> entityProfiles = profile.getEntityProfiles();
 				if (entityProfiles != null) {
 					for (EntityProfile entityProfile : entityProfiles) {
-						String id = CardEntity.fromUri(entityProfile.getEntity()).getId();
+						String id = entityProfile.getEntity().getId();
 						«FOREACH entities AS e SEPARATOR " else "-»
 						if ("«e.name.toLowerCase()»".equals(id)) {
 							if (entityProfile.getCreate() != null) {
@@ -77,10 +77,10 @@ public class AccessPolicy {
 						«ENDFOREACH-»
 					}
 				}
-				List<FieldGroupProfile> fieldGroupProfiles = FieldGroupProfile.fromUris(profile.getFieldGroupProfiles());
+				List<FieldGroupProfile> fieldGroupProfiles = profile.getFieldGroupProfiles();
 				if (fieldGroupProfiles != null) {
 					for (FieldGroupProfile fieldGroupProfile : fieldGroupProfiles) {
-						String id = FieldGroup.fromUri(fieldGroupProfile.getFieldGroup()).getId();
+						String id = fieldGroupProfile.getFieldGroup().getId();
 						«FOREACH entities.groups AS g SEPARATOR " else "-»
 						if ("«g.parentCard.name.toLowerCase()».«g.name.toLowerCase()»".equals(id)) {
 							if (fieldGroupProfile.getRead() != null) {

@@ -1,6 +1,7 @@
 package org.imogene.android.database.sqlite;
 
 import org.imogene.android.common.entity.DefaultUser;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
 
-public class DefaultUserCursor extends ImogActorCursorImpl {
+public class DefaultUserCursor extends ImogActorCursorImpl<DefaultUser> {
 
 	public static class Factory implements CursorFactory {
 
@@ -26,7 +27,11 @@ public class DefaultUserCursor extends ImogActorCursorImpl {
 
 	@Override
 	public DefaultUser newBean() {
-		return new DefaultUser(this);
+		DefaultUser bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new DefaultUser(this);
+		}
+		return bean;
 	}
 
 	@Override

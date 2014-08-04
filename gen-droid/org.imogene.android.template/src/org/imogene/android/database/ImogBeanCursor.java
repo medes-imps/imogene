@@ -7,9 +7,9 @@ import org.imogene.android.common.entity.ImogBean;
 import android.content.Context;
 import android.database.Cursor;
 
-public interface ImogBeanCursor extends Cursor /* CrossProcessCursor */{
+public interface ImogBeanCursor<T extends ImogBean> extends Cursor /* CrossProcessCursor */{
 
-	public ImogBean newBean();
+	public T newBean();
 
 	public String getId();
 

@@ -9,8 +9,8 @@ import org.imogene.android.xml.converters.CollectionConverter;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.xml.annotation.XmlAlias;
 import fr.medes.android.xml.annotation.XmlConverter;
@@ -25,19 +25,25 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 
 	@XmlAlias("profiles")
 	@XmlConverter(CollectionConverter.class)
-	private List<Uri> profiles;
-
-	public ImogActorImpl() {
-	}
+	private List<Profile> profiles;
 
 	public ImogActorImpl(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(ImogActor.Columns.PROFILES)) {
 			profiles = bundle.getParcelableArrayList(ImogActor.Columns.PROFILES);
 		}
 	}
 
-	protected void init(ImogActorCursor cursor) {
-		super.init(cursor);
+	public ImogActorImpl(Parcel in) {
+		super(in);
+		login = in.readString();
+	}
+
+	public ImogActorImpl() {
+	}
+
+	public ImogActorImpl(ImogActorCursor<? extends ImogActor> cursor) {
+		super(cursor);
 		login = cursor.getLogin();
 		password = cursor.getPassword();
 		profiles = cursor.getProfiles();
@@ -64,12 +70,12 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 	}
 
 	@Override
-	public final void setProfiles(List<Uri> profiles) {
+	public final void setProfiles(List<Profile> profiles) {
 		this.profiles = profiles;
 	}
 
 	@Override
-	public final List<Uri> getProfiles() {
+	public final List<Profile> getProfiles() {
 		return profiles;
 	}
 
@@ -89,8 +95,8 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 		if (profiles != null) {
 			ContentValues v = new ContentValues();
 			v.put(ImogActor.Columns.TABLE_NAME, getId());
-			for (Uri uri : profiles) {
-				v.put(Profile.Columns.TABLE_NAME, uri.getLastPathSegment());
+			for (Profile profile : profiles) {
+				v.put(Profile.Columns.TABLE_NAME, profile.getId());
 				ImogOpenHelper.getHelper().insert(ImogActor.Columns.TABLE_ACTOR_PROFILES, v);
 			}
 		}
@@ -100,6 +106,11 @@ public abstract class ImogActorImpl extends ImogEntityImpl implements ImogActor 
 	public void reset() {
 		super.reset();
 		profiles = null;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		super.writeToParcel(dest, flags);
 	}
 
 }

@@ -25,21 +25,20 @@ import org.imogene.android.«projectName.toLowerCase()».R;
 import org.imogene.android.«projectName.toLowerCase()».domain.*;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
-public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implements OnValueChangeListener, RelationManager {
+public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.toFirstUpper()»> implements OnValueChangeListener, RelationManager<«name.toFirstUpper()»> {
 «LET getNestedFields() AS fields-»
 
 	«FOREACH fields AS f-»
-	private «EXPAND android::template::EditorUtils::class FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::EditorUtils::classInClass FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
-	private «name.toFirstUpper()» mEntity;
 	private AccessPolicy mPolicy;
 	
 	public «name.toFirstUpper()»NestedEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.«name.toLowerCase()»_edit_nested);
 
 		«FOREACH fields AS f-»
-		«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+		«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::classInClass FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 	
 		«FOREACH fields AS f-»
@@ -50,7 +49,7 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 		
 		setOnClickListener(null);
 		setOnLongClickListener(null);
-
+		setRequired(false);
 		«REM»
 		«FOREACH groups AS group»
 		if (mPolicy.canRead«name.toFirstUpper()»«group.name.toFirstUpper()»() ||
@@ -76,21 +75,26 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 	}
 	
 	@Override
-	public void init(Uri value) {
+	public void init(«name.toFirstUpper()» value) {
 		super.init(value);
-		// At this point onValueChange() has already been called and the entity is initialized
-		«FOREACH fields AS f-»
-		«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
-		«ENDFOREACH»
+		if (value != null) {
+			«FOREACH fields AS f-»
+			«f.name.toFirstLower()».init(value.get«f.name.toFirstUpper()»());
+			«ENDFOREACH»
+		}
 	}
 
 	@Override
-	public void setValue(Uri value) {
+	public void setValue(«name.toFirstUpper()» value) {
+		if (value == null) {
+			value = new «name.toFirstUpper()»();
+		}
 		super.setValue(value);
-		// At this point onValueChange() has already been called and the entity is initialized
-		«FOREACH fields AS f-»
-		«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
-		«ENDFOREACH»
+		if (value != null) {
+			«FOREACH fields AS f-»
+			«f.name.toFirstLower()».setValue(value.get«f.name.toFirstUpper()»());
+			«ENDFOREACH»
+		}
 	}
 	
 	@Override
@@ -104,33 +108,18 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 	}
 	
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		Uri uri = getValue();
-		if (uri != null) {
-			mEntity = «name.toFirstUpper()».fromUri(uri);
-		} else {
-			mEntity = new «name.toFirstUpper()»();
-		}
-	}
-	
-	@Override
-	protected Parcelable onSaveInstanceState() {
-		save(true);
-		return super.onSaveInstanceState();
-	}
-
-	@Override
 	public void onValueChange(BaseFieldEdit<?> field) {
+		«name.toFirstUpper()» value = getValue();
 		switch (field.getId()) {
 		«FOREACH fields AS f-»
 		case R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»:
-			mEntity.set«f.name.toFirstUpper()»(«f.name.toFirstLower()».getValue());
+			value.set«f.name.toFirstUpper()»(«f.name.toFirstLower()».getValue());
 			break;
 		«ENDFOREACH-»
 		default:
 			break;
 		}
+		super.onValueChange();
 	}
 	
 	public void updateErrorEntries(List<ErrorEntry> errors, int tag) {
@@ -145,29 +134,8 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit implem
 		«ENDFOREACH-»
 	}
 	
-	public void save(boolean temporary) {
-		mEntity.prepareForSave(getContext());
-		if (temporary) {
-			mEntity.setModifiedFrom(«name.toFirstUpper()».Columns.SYNC_SYSTEM);
-		}
-		setValue(mEntity.saveOrUpdate(getContext()));
-	}
-
-	@Override
-	public Uri getContentUri() {
-		return «name.toFirstUpper()».Columns.CONTENT_URI;
-	}
-	
-	@Override
-	public String getIdentifier() {
-		if (mEntity.getId() == null)
-			save(true);
-		return mEntity.getId();
-	}
-	
-	@Override
-	public Uri getUri() {
-		return ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, getIdentifier());
+	public «name.toFirstUpper()» getParentBean() {
+		return getValue();
 	}
 	
 «ENDLET-»

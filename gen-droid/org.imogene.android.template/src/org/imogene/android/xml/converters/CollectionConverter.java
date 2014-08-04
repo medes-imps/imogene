@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.entity.ImogHelper.EntityInfo;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.xml.converters.AbstractFieldConverter;
 import fr.medes.android.xml.mapper.Mapper;
@@ -35,37 +34,41 @@ public class CollectionConverter extends AbstractFieldConverter {
 		}
 		parser.require(XmlPullParser.START_TAG, null, "collection");
 
-		ContentResolver res = context.getContentResolver();
-		List<Uri> uris = null;
+		List<ImogBean> beans = null;
 
 		while (parser.nextTag() == XmlPullParser.START_TAG) {
-			Uri uri = mapper.realUri(parser.getName());
-			if (uri != null) {
-				String id = parser.getAttributeValue(null, "id");
-				Cursor c = res.query(uri, new String[] { ImogBean.Columns._ID },
-						ImogBean.Columns._ID + "='" + id + "'", null, null);
-				if (c.getCount() != 1) {
-					c.close();
-					ContentValues values = new ContentValues();
-					values.put(ImogBean.Columns._ID, id);
-					values.put(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
-					if (uris == null) {
-						uris = new ArrayList<Uri>();
-					}
-					uris.add(res.insert(uri, values));
-				} else {
-					c.moveToFirst();
-					String sId = c.getString(0);
-					c.close();
-					if (uris == null) {
-						uris = new ArrayList<Uri>();
-					}
-					uris.add(ContentUrisUtils.withAppendedId(uri, sId));
-				}
+			Class<?> clazz = mapper.realClass(parser.getName());
+			if (clazz == null) {
+				continue;
 			}
+			EntityInfo info = ImogHelper.getEntityInfo((Class<? extends ImogBean>) clazz);
+			if (info == null) {
+				continue;
+			}
+			String id = parser.getAttributeValue(null, "id");
+
+			ImogBean bean = ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(info.contentUri, id));
+			if (bean == null) {
+				try {
+					bean = (ImogBean) clazz.newInstance();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (bean == null) {
+					continue;
+				}
+				bean.reset();
+				bean.setId(id);
+				bean.setModifiedFrom(ImogBean.Columns.SYNC_SYSTEM);
+				bean.saveOrUpdate(context);
+			}
+			if (beans == null) {
+				beans = new ArrayList<ImogBean>();
+			}
+			beans.add(bean);
 			parser.nextTag();
 		}
-		return uris;
+		return beans;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -73,11 +76,11 @@ public class CollectionConverter extends AbstractFieldConverter {
 	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException,
 			IOException {
 		serializer.startTag(null, "collection");
-		List<Uri> uris = (List<Uri>) obj;
-		for (Uri uri : uris) {
-			String packageName = mapper.serializeUri(uri);
+		List<ImogBean> beans = (List<ImogBean>) obj;
+		for (ImogBean bean : beans) {
+			String packageName = mapper.serializedClass(bean.getClass());
 			serializer.startTag(null, packageName);
-			serializer.attribute(null, "id", uri.getLastPathSegment());
+			serializer.attribute(null, "id", bean.getId());
 			serializer.endTag(null, packageName);
 		}
 		serializer.endTag(null, "collection");

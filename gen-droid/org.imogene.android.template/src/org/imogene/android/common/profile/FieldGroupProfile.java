@@ -1,13 +1,10 @@
 package org.imogene.android.common.profile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
+import org.imogene.android.common.model.FieldGroup;
 import org.imogene.android.database.sqlite.FieldGroupProfileCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,45 +32,10 @@ public class FieldGroupProfile extends ImogBeanImpl {
 		public static final String EXPORT = "canExport";
 	}
 
-	public static FieldGroupProfile fromUri(Uri uri) {
-		if (uri == null) {
-			return null;
-		}
-		FieldGroupProfileCursor cursor = (FieldGroupProfileCursor) ImogOpenHelper.getHelper().query(uri);
-		if (cursor == null) {
-			return null;
-		}
-		try {
-			if (!cursor.moveToFirst()) {
-				return null;
-			}
-			if (cursor.getCount() > 1) {
-				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
-			}
-			return new FieldGroupProfile(cursor);
-		} finally {
-			cursor.close();
-		}
-	}
-
-	public static List<FieldGroupProfile> fromUris(List<Uri> uris) {
-		if (uris == null) {
-			return null;
-		}
-		ArrayList<FieldGroupProfile> result = new ArrayList<FieldGroupProfile>();
-		for (Uri uri : uris) {
-			FieldGroupProfile profile = FieldGroupProfile.fromUri(uri);
-			if (profile != null) {
-				result.add(profile);
-			}
-		}
-		return result;
-	}
-
 	@XmlAlias("profile")
-	private Uri profile;
+	private Profile profile;
 	@XmlAlias("fieldGroup")
-	private Uri fieldGroup;
+	private FieldGroup fieldGroup;
 	@XmlAlias("read")
 	private Boolean read;
 	@XmlAlias("write")
@@ -84,11 +46,8 @@ public class FieldGroupProfile extends ImogBeanImpl {
 	public FieldGroupProfile() {
 	}
 
-	public FieldGroupProfile(FieldGroupProfileCursor cursor) {
-		init(cursor);
-	}
-
 	public FieldGroupProfile(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(Columns.PROFILE)) {
 			profile = bundle.getParcelable(Columns.PROFILE);
 		}
@@ -97,8 +56,8 @@ public class FieldGroupProfile extends ImogBeanImpl {
 		}
 	}
 
-	private void init(FieldGroupProfileCursor cursor) {
-		super.init(cursor);
+	public FieldGroupProfile(FieldGroupProfileCursor cursor) {
+		super(cursor);
 		profile = cursor.getProfile();
 		fieldGroup = cursor.getFieldGroup();
 		read = cursor.getRead();
@@ -106,11 +65,11 @@ public class FieldGroupProfile extends ImogBeanImpl {
 		export = cursor.getExport();
 	}
 
-	public final Uri getProfile() {
+	public final Profile getProfile() {
 		return profile;
 	}
 
-	public final Uri getFieldGroup() {
+	public final FieldGroup getFieldGroup() {
 		return fieldGroup;
 	}
 
@@ -126,11 +85,11 @@ public class FieldGroupProfile extends ImogBeanImpl {
 		return export;
 	}
 
-	public final void setProfile(Uri profile) {
+	public final void setProfile(Profile profile) {
 		this.profile = profile;
 	}
 
-	public final void setFieldGroup(Uri fieldGroup) {
+	public final void setFieldGroup(FieldGroup fieldGroup) {
 		this.fieldGroup = fieldGroup;
 	}
 
@@ -148,9 +107,9 @@ public class FieldGroupProfile extends ImogBeanImpl {
 
 	@Override
 	protected final void addValues(Context context, ContentValues values) {
-		values.put(Columns.PROFILE, profile != null ? profile.getLastPathSegment() : null);
+		values.put(Columns.PROFILE, profile != null ? profile.getId() : null);
 
-		values.put(Columns.FIELDGROUP, fieldGroup != null ? fieldGroup.getLastPathSegment() : null);
+		values.put(Columns.FIELDGROUP, fieldGroup != null ? fieldGroup.getId() : null);
 
 		values.put(Columns.READ, read != null ? read.toString() : null);
 		values.put(Columns.WRITE, write != null ? write.toString() : null);

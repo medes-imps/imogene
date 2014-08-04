@@ -430,7 +430,7 @@ public class SynchronizationController implements Runnable {
 			QueryBuilder b = ImogOpenHelper.getHelper().queryBuilder(uri);
 			b.where().gt(ImogBean.Columns.MODIFIED, date).and().eq(ImogBean.Columns.MODIFIEDFROM, hardwareId);
 			b.orderBy(ImogBean.Columns.MODIFIED, true);
-			ImogBeanCursor cursor = (ImogBeanCursor) b.query();
+			ImogBeanCursor<?> cursor = (ImogBeanCursor<?>) b.query();
 			for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
 				mConverter.serialize(serializer, cursor.newBean());
 				count++;

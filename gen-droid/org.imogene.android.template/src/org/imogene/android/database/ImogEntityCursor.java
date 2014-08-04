@@ -2,10 +2,11 @@ package org.imogene.android.database;
 
 import java.util.List;
 
-import android.net.Uri;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.android.common.entity.ImogEntity;
 
-public interface ImogEntityCursor extends ImogBeanCursor {
+public interface ImogEntityCursor<T extends ImogEntity> extends ImogBeanCursor<T> {
 
-	public List<Uri> getDynamicFieldValues();
+	public List<DynamicFieldInstance> getDynamicFieldValues();
 
 }

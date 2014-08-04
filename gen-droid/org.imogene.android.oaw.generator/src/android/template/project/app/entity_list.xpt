@@ -37,7 +37,6 @@ import fr.medes.android.util.content.ContentUrisUtils;
 
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
@@ -47,6 +46,7 @@ import org.imogene.android.util.DialogFactory;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.widget.ImogBeanCursorAdapter;
 import org.imogene.android.«projectName.toLowerCase()».R;
+import org.imogene.android.«projectName.toLowerCase()».database.sqlite.«name.toFirstUpper()»Cursor;
 import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
 import org.imogene.android.«projectName.toLowerCase()».security.AccessPolicy;
 
@@ -74,7 +74,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 	// Activity request code
 	private static final int ACTIVITY_INSERT = 1;
 	
-	private ImogBeanCursor mCursor;
+	private «name.toFirstUpper()»Cursor mCursor;
 	private ImogBeanCursorAdapter mAdapter;
 
 	private AccessPolicy mPolicy;
@@ -134,14 +134,10 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 			
 			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 			if (getIntent().hasExtra(Extras.EXTRA_SELECTED)) {
-				ArrayList<Uri> selected = getIntent().getParcelableArrayListExtra(Extras.EXTRA_SELECTED);
-				if (selected != null) {
-					for (int i = 0; i < mAdapter.getCount(); i++) {
-						String id = mAdapter.getItemStringId(i);
-						Uri uri = ContentUrisUtils.withAppendedId(«name.toFirstUpper()».Columns.CONTENT_URI, id);
-						if (selected.contains(uri)) {
-							getListView().setItemChecked(i, true);
-						}
+				ArrayList<String> selected = getIntent().getStringArrayListExtra(Extras.EXTRA_SELECTED);
+				for (int i = 0; i < mAdapter.getCount(); i++) {
+					if (selected.contains(mAdapter.getItemStringId(i))) {
+						getListView().setItemChecked(i, true);
 					}
 				}
 			}
@@ -308,7 +304,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 			menu.add(Menu.NONE, CMENU_DELETE_ID, Menu.NONE, R.string.imog__menu_delete);
 		}
 
-		ImogBeanCursor c = (ImogBeanCursor) getListAdapter().getItem(
+		«name.toFirstUpper()»Cursor c = («name.toFirstUpper()»Cursor) getListAdapter().getItem(
 				info.position - getListView().getHeaderViewsCount());
 		if (c.getFlagRead()) {
 			menu.add(Menu.NONE, CMENU_MARK_AS_UNREAD_ID, Menu.NONE, R.string.imog__menu_mark_as_unread);
@@ -389,21 +385,21 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 		case R.id.imog__saveButton:
 			ListView list = getListView();
 			SparseBooleanArray spa = list.getCheckedItemPositions();
-			ArrayList<Uri> uris = null;
+			ArrayList<String> ids = null;
 			if (spa.size() != 0) {
 				for (int i = 0; i < mAdapter.getCount(); i++) {
 					if (spa.get(i)) {
 						String id = mAdapter.getItemStringId(i);
 						if (id != null) {
-							if (uris == null) {
-								uris = new ArrayList<Uri>();
+							if (ids == null) {
+								ids = new ArrayList<String>();
 							}
-							uris.add(ContentUrisUtils.withAppendedId(«name.toFirstUpper()-».Columns.CONTENT_URI, id));
+							ids.add(id);
 						}
 					}
 				}
 			}
-			Intent data = new Intent().putParcelableArrayListExtra(Extras.EXTRA_SELECTED, uris);
+			Intent data = new Intent().putStringArrayListExtra(Extras.EXTRA_SELECTED, ids);
 			setResult(RESULT_OK, data);
 			finish();
 			break;
@@ -436,7 +432,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 		return mCursor;
 	}
 
-	private ImogBeanCursor query(CharSequence constraint) {
+	private «name.toFirstUpper()»Cursor query(CharSequence constraint) {
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(«name.toFirstUpper()».Columns.CONTENT_URI);
 		Where where = builder.where();
 		if (mWhereClause != null) {
@@ -444,7 +440,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 		}
 		buildWhereClause(where, constraint, true);
 		builder.orderBy(mSortKey, mAscending);
-		return (ImogBeanCursor) builder.query();
+		return builder.query();
 	}
 	
 	private void requery() {

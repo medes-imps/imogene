@@ -56,7 +56,7 @@ public final class Constants {
 		public static final String EXTRA_MULTIPLE = "org.imogene.android.extra.MULTIPLE";
 
 		/**
-		 * A {@link ArrayList<Uri>} of preselected entities to pass to a multiple selection list
+		 * A {@link ArrayList<String>} of preselected entities identifiers to pass to a multiple selection list
 		 */
 		public static final String EXTRA_SELECTED = "org.imogene.android.extra.SELECTED";
 		/**

@@ -1,13 +1,10 @@
 package org.imogene.android.common.profile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
+import org.imogene.android.common.model.CardEntity;
 import org.imogene.android.database.sqlite.EntityProfileCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,45 +33,10 @@ public class EntityProfile extends ImogBeanImpl {
 		public static final String EXPORT = "canExport";
 	}
 
-	public static EntityProfile fromUri(Uri uri) {
-		if (uri == null) {
-			return null;
-		}
-		EntityProfileCursor cursor = (EntityProfileCursor) ImogOpenHelper.getHelper().query(uri);
-		if (cursor == null) {
-			return null;
-		}
-		try {
-			if (!cursor.moveToFirst()) {
-				return null;
-			}
-			if (cursor.getCount() > 1) {
-				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
-			}
-			return new EntityProfile(cursor);
-		} finally {
-			cursor.close();
-		}
-	}
-
-	public static List<EntityProfile> fromUris(List<Uri> uris) {
-		if (uris == null) {
-			return null;
-		}
-		ArrayList<EntityProfile> result = new ArrayList<EntityProfile>();
-		for (Uri uri : uris) {
-			EntityProfile profile = EntityProfile.fromUri(uri);
-			if (profile != null) {
-				result.add(profile);
-			}
-		}
-		return result;
-	}
-
 	@XmlAlias("profile")
-	private Uri profile;
+	private Profile profile;
 	@XmlAlias("entity")
-	private Uri entity;
+	private CardEntity entity;
 	@XmlAlias("create")
 	private Boolean create;
 	@XmlAlias("directAccess")
@@ -87,11 +49,8 @@ public class EntityProfile extends ImogBeanImpl {
 	public EntityProfile() {
 	}
 
-	public EntityProfile(EntityProfileCursor cursor) {
-		init(cursor);
-	}
-
 	public EntityProfile(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(Columns.PROFILE)) {
 			profile = bundle.getParcelable(Columns.PROFILE);
 		}
@@ -100,8 +59,8 @@ public class EntityProfile extends ImogBeanImpl {
 		}
 	}
 
-	private void init(EntityProfileCursor cursor) {
-		super.init(cursor);
+	public EntityProfile(EntityProfileCursor cursor) {
+		super(cursor);
 		profile = cursor.getProfile();
 		entity = cursor.getEntity();
 		create = cursor.getCreate();
@@ -110,11 +69,11 @@ public class EntityProfile extends ImogBeanImpl {
 		export = cursor.getExport();
 	}
 
-	public final Uri getProfile() {
+	public final Profile getProfile() {
 		return profile;
 	}
 
-	public final Uri getEntity() {
+	public final CardEntity getEntity() {
 		return entity;
 	}
 
@@ -134,11 +93,11 @@ public class EntityProfile extends ImogBeanImpl {
 		return export;
 	}
 
-	public final void setProfile(Uri profile) {
+	public final void setProfile(Profile profile) {
 		this.profile = profile;
 	}
 
-	public final void setEntity(Uri entity) {
+	public final void setEntity(CardEntity entity) {
 		this.entity = entity;
 	}
 
@@ -160,9 +119,9 @@ public class EntityProfile extends ImogBeanImpl {
 
 	@Override
 	protected final void addValues(Context context, ContentValues values) {
-		values.put(Columns.PROFILE, profile != null ? profile.getLastPathSegment() : null);
+		values.put(Columns.PROFILE, profile != null ? profile.getId() : null);
 
-		values.put(Columns.ENTITY, entity != null ? entity.getLastPathSegment() : null);
+		values.put(Columns.ENTITY, entity != null ? entity.getId() : null);
 
 		values.put(Columns.CREATE, create != null ? create.toString() : null);
 		values.put(Columns.DIRECTACCESS, directAccess != null ? directAccess.toString() : null);

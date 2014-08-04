@@ -73,6 +73,8 @@ public class DateFilterPreference extends FilterPreference<DateFilter> implement
 			if (e != null)
 				return getContext().getString(R.string.imog__filter_date_equal, FormatHelper.displayDate(e));
 			break;
+		default:
+			break;
 		}
 		return getContext().getString(android.R.string.unknownName);
 	}

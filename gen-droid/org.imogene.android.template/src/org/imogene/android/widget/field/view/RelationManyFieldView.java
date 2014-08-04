@@ -4,63 +4,36 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.template.R;
 import org.imogene.android.util.IntentUtils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import fr.medes.android.database.sqlite.stmt.Where;
+import fr.medes.android.util.content.ContentUrisUtils;
 
-public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
-
-	private final int displayRes;
-
-	private Uri contentUri;
-
-	protected Drawable drawable;
+public class RelationManyFieldView<T extends ImogBean> extends RelationFieldView<List<T>> {
 
 	public RelationManyFieldView(Context context, AttributeSet attrs, int layoutId) {
 		super(context, attrs, layoutId);
-		displayRes = 0;
 	}
 
 	public RelationManyFieldView(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.imog__field_relation);
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RelationField, 0, 0);
-		displayRes = a.getResourceId(R.styleable.RelationField_display, R.string.imog__numberOfEntities);
-		a.recycle();
-		setOnClickListener(this);
-		setIconId(android.R.drawable.sym_contact_card);
-	}
-
-	public void setContentUri(Uri uri) {
-		contentUri = uri;
-	}
-
-	public void setDrawable(Drawable drawable) {
-		this.drawable = drawable;
-		final View color = findViewById(R.id.imog__color);
-		if (color != null) {
-			color.setBackgroundDrawable(drawable);
-		}
+		super(context, attrs);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		final List<Uri> list = getValue();
-		return list == null || list.size() == 0;
+		final List<T> value = getValue();
+		return value == null || value.size() == 0;
 	}
 
 	@Override
 	public String getFieldDisplay() {
-		final List<Uri> uris = getValue();
-		if (uris != null && !uris.isEmpty()) {
-			int size = uris.size();
+		final List<T> value = getValue();
+		if (value != null && !value.isEmpty()) {
+			int size = value.size();
 			String fmt = getResources().getString(displayRes);
 			return MessageFormat.format(fmt, size);
 		}
@@ -69,20 +42,21 @@ public class RelationManyFieldView extends BaseFieldView<List<Uri>> {
 
 	@Override
 	protected void dispatchClick(View v) {
-		final List<Uri> list = getValue();
+		final List<T> value = getValue();
 
-		if (list == null || list.size() == 0) {
+		if (value == null || value.size() == 0) {
 			return;
 		}
 
-		final int size = list.size();
+		final int size = value.size();
 		if (size == 1) {
-			startActivity(new Intent(Intent.ACTION_VIEW, list.get(0)));
+			startActivity(new Intent(Intent.ACTION_VIEW, ContentUrisUtils.withAppendedId(contentUri, value.get(0)
+					.getId())));
 		} else {
 			Intent intent = new Intent(Intent.ACTION_VIEW, contentUri);
 			Object[] ids = new String[size];
 			for (int i = 0; i < size; i++) {
-				ids[i] = list.get(i).getLastPathSegment();
+				ids[i] = value.get(i).getId();
 			}
 			Where where = new Where();
 			where.in(ImogBean.Columns._ID, ids);

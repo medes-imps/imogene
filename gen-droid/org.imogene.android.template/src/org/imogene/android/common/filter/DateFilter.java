@@ -79,6 +79,8 @@ public class DateFilter extends ClientFilter {
 		case EQUAL:
 			mEqual = FormatHelper.toDate(str);
 			return;
+		default:
+			return;
 		}
 	}
 
@@ -105,9 +107,11 @@ public class DateFilter extends ClientFilter {
 			setOperator(mOperator.operator());
 			setFieldValue(mEqual != null ? mEqual.toString() : null);
 			return;
+		default:
+			setOperator(DateOperator.UNDEF.operator());
+			setFieldValue(null);
+			return;
 		}
-		setOperator(DateOperator.UNDEF.operator());
-		setFieldValue(null);
 	}
 
 	public DateOperator getDateOperator() {

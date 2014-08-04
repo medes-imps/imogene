@@ -3,35 +3,45 @@ package org.imogene.android.common.entity;
 import java.util.List;
 
 import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
-import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.ImogEntityCursor;
 import org.imogene.android.xml.converters.CollectionConverter;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcel;
 import fr.medes.android.xml.annotation.XmlAlias;
 import fr.medes.android.xml.annotation.XmlConverter;
 
 public abstract class ImogEntityImpl extends ImogBeanImpl implements ImogEntity {
 
-	@Override
-	protected void init(ImogBeanCursor cursor) {
-		super.init(cursor);
-		dynamicFieldValues = ((ImogEntityCursor) cursor).getDynamicFieldValues();
+	public ImogEntityImpl(ImogEntityCursor<? extends ImogEntity> cursor) {
+		super(cursor);
+		dynamicFieldValues = cursor.getDynamicFieldValues();
+	}
+
+	public ImogEntityImpl(Parcel in) {
+		super(in);
+	}
+	
+	public ImogEntityImpl(Bundle bundle) {
+		super(bundle);
+	}
+
+	public ImogEntityImpl() {
 	}
 
 	@XmlAlias("dynamicFieldValues")
 	@XmlConverter(CollectionConverter.class)
-	private List<Uri> dynamicFieldValues;
+	private List<DynamicFieldInstance> dynamicFieldValues;
 
 	@Override
-	public void setDynamicFieldValues(List<Uri> dynamicFieldValues) {
+	public void setDynamicFieldValues(List<DynamicFieldInstance> dynamicFieldValues) {
 		this.dynamicFieldValues = dynamicFieldValues;
 	}
 
 	@Override
-	public List<Uri> getDynamicFieldValues() {
+	public List<DynamicFieldInstance> getDynamicFieldValues() {
 		return dynamicFieldValues;
 	}
 
@@ -43,9 +53,9 @@ public abstract class ImogEntityImpl extends ImogBeanImpl implements ImogEntity 
 		context.getContentResolver().update(DynamicFieldInstance.Columns.CONTENT_URI, v,
 				DynamicFieldInstance.Columns.FORMINSTANCE + "= ?", new String[] { getId() });
 		if (dynamicFieldValues != null) {
-			v.put(DynamicFieldInstance.Columns.FORMINSTANCE, getId());
-			for (Uri uri : dynamicFieldValues) {
-				context.getContentResolver().update(uri, v, null, null);
+			for (DynamicFieldInstance dynamicFieldInstance : dynamicFieldValues) {
+				dynamicFieldInstance.setFormInstance(this);
+				dynamicFieldInstance.saveOrUpdate(context);
 			}
 		}
 	}

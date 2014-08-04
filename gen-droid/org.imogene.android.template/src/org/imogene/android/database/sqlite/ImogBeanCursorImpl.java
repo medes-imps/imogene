@@ -12,18 +12,16 @@ import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.database.ImogBeanCursor;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
 import android.location.Location;
 import android.net.Uri;
-import android.text.TextUtils;
 import fr.medes.android.database.sqlite.BaseCursor;
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.util.content.ContentUrisUtils;
 
-public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanCursor {
+public abstract class ImogBeanCursorImpl<T extends ImogBean> extends BaseCursor implements ImogBeanCursor<T> {
 
 	private HashMap<Uri, String> mBuffer;
 
@@ -85,7 +83,7 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 		return getBoolean(ImogBean.Columns.FLAG_SYNCHRONIZED);
 	}
 
-	protected final Uri getEntity(String id) {
+	protected final ImogBean getEntity(String id) {
 		ImogOpenHelper helper = ImogOpenHelper.getHelper();
 		for (String table : ImogHelper.getInstance().getAllTables()) {
 			QueryBuilder builder = helper.queryBuilder(table);
@@ -93,32 +91,32 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 			builder.where().idEq(id).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 			long count = builder.queryForLong();
 			if (count == 1) {
-				return ContentUrisUtils.withAppendedId(
-						ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, table), id);
+				return ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(
+						ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, table), id));
 			}
 		}
 		return null;
 	}
 
-	protected final Uri getEntity(Uri contentUri, String table, int columnIndex) {
+	protected final Uri getEntityUri(Uri contentUri, int columnIndex) {
 		String id = getString(columnIndex);
 		if (id == null) {
 			return null;
 		}
-		ImogOpenHelper helper = ImogOpenHelper.getHelper();
-		QueryBuilder builder = helper.queryBuilder(table);
-		builder.selectColumns(ImogBean.Columns._ID);
-		builder.where().idEq(id).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
-		String sId = builder.queryForString();
-		if (sId != null) {
-			return ContentUrisUtils.withAppendedId(contentUri, sId);
-		}
-		return null;
+		return ContentUrisUtils.withAppendedId(contentUri, id);
 	}
 
-	protected final Uri getEntity(Uri contentUri, String table, String key) {
+	protected final <U extends ImogBean> U getEntity(Uri contentUri, int columnIndex) {
+		String id = getString(columnIndex);
+		if (id == null) {
+			return null;
+		}
+		return ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(contentUri, id));
+	}
+
+	protected final Uri getEntityUri(Uri contentUri, String key) {
 		ImogOpenHelper helper = ImogOpenHelper.getHelper();
-		QueryBuilder builder = helper.queryBuilder(table);
+		QueryBuilder builder = helper.queryBuilder(contentUri);
 		builder.selectColumns(ImogBean.Columns._ID);
 		builder.where().eq(key, getId()).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 		String sId = builder.queryForString();
@@ -128,28 +126,38 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 		return null;
 	}
 
-	protected final List<Uri> getEntities(Uri contentUri, String table, String key) {
+	protected final <U extends ImogBean> U getEntity(Uri contentUri, String key) {
 		ImogOpenHelper helper = ImogOpenHelper.getHelper();
-		QueryBuilder builder = helper.queryBuilder(table);
-		builder.selectColumns(ImogBean.Columns._ID);
+		QueryBuilder builder = helper.queryBuilder(contentUri);
 		builder.where().eq(key, getId()).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
-		List<Uri> result = null;
-		Cursor c = builder.query();
-		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			String sId = c.getString(0);
-			if (!TextUtils.isEmpty(sId)) {
-				if (result == null) {
-					result = new ArrayList<Uri>();
-				}
-				result.add(ContentUrisUtils.withAppendedId(contentUri, sId));
-			}
+		ImogBeanCursor<U> c = builder.query();
+		U result = null;
+		if (c.moveToFirst()) {
+			result = c.newBean();
 		}
 		c.close();
 		return result;
 	}
 
-	protected final List<Uri> getEntities(Uri contentUri, String table, String relTable, String fromKey, String toKey) {
-		ArrayList<Uri> result = null;
+	protected final <U extends ImogBean> List<U> getEntities(Uri contentUri, String key) {
+		ImogOpenHelper helper = ImogOpenHelper.getHelper();
+		QueryBuilder builder = helper.queryBuilder(contentUri);
+		builder.where().eq(key, getId()).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+		List<U> result = null;
+		ImogBeanCursor<U> c = builder.query();
+		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			if (result == null) {
+				result = new ArrayList<U>();
+			}
+			result.add(c.newBean());
+		}
+		c.close();
+		return result;
+	}
+
+	protected final <U extends ImogBean> List<U> getEntities(Uri contentUri, String relTable, String fromKey,
+			String toKey) {
+		ArrayList<U> result = null;
 
 		ImogOpenHelper helper = ImogOpenHelper.getHelper();
 
@@ -157,20 +165,16 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 		subQueryBuilder.selectColumns(toKey);
 		subQueryBuilder.where().eq(fromKey, getId());
 
-		QueryBuilder builder = helper.queryBuilder(table);
-		builder.selectColumns(new String[] { ImogBean.Columns._ID });
+		QueryBuilder builder = helper.queryBuilder(contentUri);
 		builder.where().in(ImogBean.Columns._ID, subQueryBuilder).and()
 				.ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 
-		Cursor c = builder.query();
+		ImogBeanCursor<U> c = builder.query();
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			String sId = c.getString(0);
-			if (!TextUtils.isEmpty(sId)) {
-				if (result == null) {
-					result = new ArrayList<Uri>();
-				}
-				result.add(ContentUrisUtils.withAppendedId(contentUri, sId));
+			if (result == null) {
+				result = new ArrayList<U>();
 			}
+			result.add(c.newBean());
 		}
 		c.close();
 
@@ -207,12 +211,11 @@ public abstract class ImogBeanCursorImpl extends BaseCursor implements ImogBeanC
 			if (mBuffer.containsKey(uri)) {
 				builder.append(mBuffer.get(uri)).append(" ");
 			} else {
-				ImogBeanCursor c = (ImogBeanCursor) ImogOpenHelper.getHelper().query(uri);
-				c.moveToFirst();
-				String main = c.getMainDisplay(context);
-				c.close();
+				ImogBeanCursor<?> c = (ImogBeanCursor<?>) ImogOpenHelper.getHelper().query(uri);
+				String main = c.moveToFirst() ? c.getMainDisplay(context) : " ";
 				builder.append(main).append(" ");
 				mBuffer.put(uri, main);
+				c.close();
 			}
 		}
 	}

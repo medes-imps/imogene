@@ -31,7 +31,7 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 	}
 
 	public String getItemStringId(int position) {
-		ImogBeanCursor c = (ImogBeanCursor) getItem(position);
+		ImogBeanCursor<?> c = (ImogBeanCursor<?>) getItem(position);
 		if (c != null) {
 			return c.getId();
 		}
@@ -40,7 +40,7 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		ImogBeanCursor c = (ImogBeanCursor) cursor;
+		ImogBeanCursor<?> c = (ImogBeanCursor<?>) cursor;
 
 		view.findViewById(android.R.id.background).setBackgroundDrawable(mColor);
 

@@ -35,7 +35,7 @@ public class OverlayLoader extends AsyncTask<QueryBuilder, Void, ArrayList<Overl
 
 	@Override
 	protected ArrayList<OverlayItem> doInBackground(QueryBuilder... params) {
-		GeoreferencedCursor c = (GeoreferencedCursor) params[0].query();
+		GeoreferencedCursor<?> c = (GeoreferencedCursor<?>) params[0].query();
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 			Location l = c.getGeoreference();
 			if (l != null) {

@@ -1,6 +1,7 @@
 package org.imogene.android.database.sqlite;
 
 import org.imogene.android.common.filter.ClientFilter;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
 
-public class ClientFilterCursor extends ImogBeanCursorImpl {
+public class ClientFilterCursor extends ImogBeanCursorImpl<ClientFilter> {
 
 	public ClientFilterCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -24,7 +25,11 @@ public class ClientFilterCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public ClientFilter newBean() {
-		return new ClientFilter(this);
+		ClientFilter bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new ClientFilter(this);
+		}
+		return bean;
 	}
 
 	public final String getUserId() {

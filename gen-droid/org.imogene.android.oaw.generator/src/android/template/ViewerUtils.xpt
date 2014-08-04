@@ -6,43 +6,88 @@
 
 
 
-«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
+«DEFINE classInClass FOR FieldEntity-»ERROR«ENDDEFINE»
 
-«DEFINE class FOR StringField-»TextFieldView«ENDDEFINE»
+«DEFINE classInClass FOR StringField-»TextFieldView«ENDDEFINE»
 
-«DEFINE class FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
+«DEFINE classInClass FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
 
-«DEFINE class FOR AddressField-»AddressFieldView«ENDDEFINE»
+«DEFINE classInClass FOR AddressField-»AddressFieldView«ENDDEFINE»
 
-«DEFINE class FOR EmailField-»EmailFieldView«ENDDEFINE»
+«DEFINE classInClass FOR EmailField-»EmailFieldView«ENDDEFINE»
 
-«DEFINE class FOR PhoneField-»PhoneFieldView«ENDDEFINE»
+«DEFINE classInClass FOR PhoneField-»PhoneFieldView«ENDDEFINE»
 
-«DEFINE class FOR GeoField-»GeoFieldView«ENDDEFINE»
+«DEFINE classInClass FOR GeoField-»GeoFieldView«ENDDEFINE»
 
-«DEFINE class FOR BooleanField-»BooleanFieldView«ENDDEFINE»
+«DEFINE classInClass FOR BooleanField-»BooleanFieldView«ENDDEFINE»
 
-«DEFINE class FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
+«DEFINE classInClass FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
 
-«DEFINE class FOR DateField-»DateFieldView«ENDDEFINE»
+«DEFINE classInClass FOR DateField-»DateFieldView«ENDDEFINE»
 
-«DEFINE class FOR TimeField-»TimeFieldView«ENDDEFINE»
+«DEFINE classInClass FOR TimeField-»TimeFieldView«ENDDEFINE»
 
-«DEFINE class FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
+«DEFINE classInClass FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
 
-«DEFINE class FOR FloatField»FloatFieldView«ENDDEFINE»
+«DEFINE classInClass FOR FloatField»FloatFieldView«ENDDEFINE»
 
-«DEFINE class FOR IntegerField»IntegerFieldView«ENDDEFINE»
+«DEFINE classInClass FOR IntegerField»IntegerFieldView«ENDDEFINE»
 
-«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedView«ELSE»RelationOneFieldView«ENDIF»«ELSE-»«IF nestedForm»NestedRowFieldView«ELSE»RelationManyFieldView«ENDIF»«ENDIF-»«ENDDEFINE»
+«DEFINE classInClass FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedView«ELSE»RelationOneFieldView<«entity.name.toFirstUpper()»>«ENDIF»«ELSE-»«IF nestedForm»NestedRowFieldView<«entity.name.toFirstUpper()»>«ELSE»RelationManyFieldView<«entity.name.toFirstUpper()»>«ENDIF»«ENDIF-»«ENDDEFINE»
 
-«DEFINE class FOR BinaryField»BinaryFieldView«ENDDEFINE»
+«DEFINE classInClass FOR BinaryField»BinaryFieldView«ENDDEFINE»
 
-«DEFINE class FOR PhotoField»PhotoFieldView«ENDDEFINE»
+«DEFINE classInClass FOR PhotoField»PhotoFieldView«ENDDEFINE»
 
-«DEFINE class FOR VideoField»VideoFieldView«ENDDEFINE»
+«DEFINE classInClass FOR VideoField»VideoFieldView«ENDDEFINE»
 
-«DEFINE class FOR SoundField»SoundFieldView«ENDDEFINE»
+«DEFINE classInClass FOR SoundField»SoundFieldView«ENDDEFINE»
+
+
+
+
+
+
+
+«DEFINE classInLayout FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE classInLayout FOR StringField-»TextFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR TextField-»«IF translatable»LocalizedTextFieldView«ELSE»TextFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE classInLayout FOR AddressField-»AddressFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR EmailField-»EmailFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR PhoneField-»PhoneFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR GeoField-»GeoFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR BooleanField-»BooleanFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR EnumField-»«IF multipleSelection»EnumMultipleFieldView«ELSE»EnumSingleFieldView«ENDIF»«ENDDEFINE»
+
+«DEFINE classInLayout FOR DateField-»DateFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR TimeField-»TimeFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR DateTimeField-»DateTimeFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR FloatField»FloatFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR IntegerField»IntegerFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedView«ELSE»RelationOneFieldView«ENDIF»«ELSE-»«IF nestedForm»NestedRowFieldView«ELSE»RelationManyFieldView«ENDIF»«ENDIF-»«ENDDEFINE»
+
+«DEFINE classInLayout FOR BinaryField»BinaryFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR PhotoField»PhotoFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR VideoField»VideoFieldView«ENDDEFINE»
+
+«DEFINE classInLayout FOR SoundField»SoundFieldView«ENDDEFINE»
+
 
 
 
@@ -54,9 +99,7 @@
 
 «DEFINE specificInit FOR RelationFieldEntity-»
 «name.toFirstLower()».setDrawable(«entity.name.toFirstUpper()-».Columns.COLOR);
-«IF cardinality != 1»
 «name.toFirstLower()».setContentUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI);
-«ENDIF»
 «ENDDEFINE»
 
 

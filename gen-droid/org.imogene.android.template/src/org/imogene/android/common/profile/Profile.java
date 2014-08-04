@@ -1,12 +1,10 @@
 package org.imogene.android.common.profile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.database.sqlite.ProfileCursor;
 import org.imogene.android.xml.converters.CollectionConverter;
 
@@ -35,58 +33,20 @@ public class Profile extends ImogBeanImpl {
 		public static final String FIELDGROUPPROFILES = "fieldGroupProfiles";
 	}
 
-	public static Profile fromUri(Uri uri) {
-		if (uri == null) {
-			return null;
-		}
-		ProfileCursor cursor = (ProfileCursor) ImogOpenHelper.getHelper().query(uri);
-		if (cursor == null) {
-			return null;
-		}
-		try {
-			if (!cursor.moveToFirst()) {
-				return null;
-			}
-			if (cursor.getCount() > 1) {
-				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
-			}
-			return new Profile(cursor);
-		} finally {
-			cursor.close();
-		}
-	}
-
-	public static List<Profile> fromUris(List<Uri> uris) {
-		if (uris == null) {
-			return null;
-		}
-		ArrayList<Profile> result = new ArrayList<Profile>();
-		for (Uri uri : uris) {
-			Profile profile = Profile.fromUri(uri);
-			if (profile != null) {
-				result.add(profile);
-			}
-		}
-		return result;
-	}
-
 	@XmlAlias("name")
 	private String name;
 	@XmlAlias("entityProfiles")
 	@XmlConverter(CollectionConverter.class)
-	private List<Uri> entityProfiles;
+	private List<EntityProfile> entityProfiles;
 	@XmlAlias("fieldGroupProfiles")
 	@XmlConverter(CollectionConverter.class)
-	private List<Uri> fieldGroupProfiles;
+	private List<FieldGroupProfile> fieldGroupProfiles;
 
 	public Profile() {
 	}
 
-	public Profile(ProfileCursor cursor) {
-		init(cursor);
-	}
-
 	public Profile(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(Columns.ENTITYPROFILES)) {
 			entityProfiles = bundle.getParcelableArrayList(Columns.ENTITYPROFILES);
 		}
@@ -95,8 +55,8 @@ public class Profile extends ImogBeanImpl {
 		}
 	}
 
-	private void init(ProfileCursor cursor) {
-		super.init(cursor);
+	public Profile(ProfileCursor cursor) {
+		super(cursor);
 		name = cursor.getName();
 		entityProfiles = cursor.getEntityProfiles();
 		fieldGroupProfiles = cursor.getFieldGroupProfiles();
@@ -106,11 +66,11 @@ public class Profile extends ImogBeanImpl {
 		return name;
 	}
 
-	public final List<Uri> getEntityProfiles() {
+	public final List<EntityProfile> getEntityProfiles() {
 		return entityProfiles;
 	}
 
-	public final List<Uri> getFieldGroupProfiles() {
+	public final List<FieldGroupProfile> getFieldGroupProfiles() {
 		return fieldGroupProfiles;
 	}
 
@@ -118,11 +78,11 @@ public class Profile extends ImogBeanImpl {
 		this.name = name;
 	}
 
-	public final void setEntityProfiles(List<Uri> entityProfiles) {
+	public final void setEntityProfiles(List<EntityProfile> entityProfiles) {
 		this.entityProfiles = entityProfiles;
 	}
 
-	public final void setFieldGroupProfiles(List<Uri> fieldGroupProfiles) {
+	public final void setFieldGroupProfiles(List<FieldGroupProfile> fieldGroupProfiles) {
 		this.fieldGroupProfiles = fieldGroupProfiles;
 	}
 
@@ -142,8 +102,9 @@ public class Profile extends ImogBeanImpl {
 					EntityProfile.Columns.PROFILE + "='" + getId() + "'", null);
 			if (entityProfiles != null) {
 				v.put(EntityProfile.Columns.PROFILE, getId());
-				for (Uri uri : entityProfiles) {
-					context.getContentResolver().update(uri, v, null, null);
+				for (EntityProfile entityProfile : entityProfiles) {
+					entityProfile.setProfile(this);
+					entityProfile.saveOrUpdate(context);
 				}
 			}
 		}
@@ -154,9 +115,9 @@ public class Profile extends ImogBeanImpl {
 			context.getContentResolver().update(FieldGroupProfile.Columns.CONTENT_URI, v,
 					FieldGroupProfile.Columns.PROFILE + "='" + getId() + "'", null);
 			if (fieldGroupProfiles != null) {
-				v.put(FieldGroupProfile.Columns.PROFILE, getId());
-				for (Uri uri : fieldGroupProfiles) {
-					context.getContentResolver().update(uri, v, null, null);
+				for (FieldGroupProfile fieldGroupProfile : fieldGroupProfiles) {
+					fieldGroupProfile.setProfile(this);
+					fieldGroupProfile.saveOrUpdate(context);
 				}
 			}
 		}

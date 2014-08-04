@@ -1,60 +1,37 @@
 package org.imogene.android.widget.field.view;
 
-import org.imogene.android.database.ImogBeanCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.template.R;
+import org.imogene.android.common.entity.ImogBean;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.util.content.ContentUrisUtils;
 
-public class RelationOneFieldView extends BaseFieldView<Uri> {
+public class RelationOneFieldView<T extends ImogBean> extends RelationFieldView<T> {
 
 	public RelationOneFieldView(Context context, AttributeSet attrs, int layoutId) {
 		super(context, attrs, layoutId);
-		setOnClickListener(this);
-		setIconId(android.R.drawable.sym_contact_card);
 	}
 
 	public RelationOneFieldView(Context context, AttributeSet attrs) {
-		this(context, attrs, R.layout.imog__field_relation);
-	}
-
-	public RelationOneFieldView(Context context) {
-		super(context, R.layout.imog__field_relation);
-		setOnClickListener(this);
-		setIconId(android.R.drawable.sym_contact_card);
-	}
-
-	public void setDrawable(Drawable drawable) {
-		final View color = findViewById(R.id.imog__color);
-		if (color != null) {
-			color.setBackgroundDrawable(drawable);
-		}
+		super(context, attrs);
 	}
 
 	@Override
 	public String getFieldDisplay() {
-		final Uri uri = getValue();
-		if (uri != null) {
-			final String result;
-			ImogBeanCursor cursor = (ImogBeanCursor) ImogOpenHelper.getHelper().query(uri);
-			cursor.moveToFirst();
-			result = cursor.getMainDisplay(getContext());
-			cursor.close();
-			return result;
+		final T value = getValue();
+		if (value != null) {
+			return value.getMainDisplay(getContext());
 		}
 		return super.getFieldDisplay();
 	}
 
 	@Override
 	protected void dispatchClick(View v) {
-		final Uri uri = getValue();
-		if (uri != null) {
-			startActivity(new Intent(Intent.ACTION_VIEW, uri));
+		final T value = getValue();
+		if (value != null) {
+			startActivity(new Intent(Intent.ACTION_VIEW, ContentUrisUtils.withAppendedId(contentUri, value.getId())));
 		}
 	}
 

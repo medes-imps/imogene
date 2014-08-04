@@ -6,6 +6,12 @@ import java.lang.reflect.Field;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
+import org.imogene.android.xml.converters.AssociationConverter;
+import org.imogene.android.xml.converters.BinaryConverter;
+import org.imogene.android.xml.converters.CollectionConverter;
+import org.imogene.android.xml.converters.ContentConverter;
+import org.imogene.android.xml.converters.DynamicFieldTypeConverter;
+import org.imogene.android.xml.converters.LocalizedTextConverter;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -14,26 +20,57 @@ import android.content.Context;
 import android.net.Uri;
 import fr.medes.android.util.annotation.ReflectionUtils;
 import fr.medes.android.util.annotation.ReflectionUtils.FieldCallback;
+import fr.medes.android.xml.DefaultConverterLookup;
 import fr.medes.android.xml.annotation.XmlAlias;
 import fr.medes.android.xml.annotation.XmlConverter;
+import fr.medes.android.xml.converters.BooleanConverter;
+import fr.medes.android.xml.converters.ByteArrayConverter;
 import fr.medes.android.xml.converters.Converter;
 import fr.medes.android.xml.converters.ConverterLookup;
+import fr.medes.android.xml.converters.DateConverter;
+import fr.medes.android.xml.converters.EnumConverter;
+import fr.medes.android.xml.converters.EnumMultiConverter;
+import fr.medes.android.xml.converters.FloatConverter;
+import fr.medes.android.xml.converters.GpsConverter;
+import fr.medes.android.xml.converters.IntegerConverter;
+import fr.medes.android.xml.converters.LongConverter;
+import fr.medes.android.xml.converters.StringConverter;
 import fr.medes.android.xml.mapper.ClassMapper;
 
 public class ImogXmlConverter {
 
 	private Context context;
-	private ConverterLookup lookup;
+	private ConverterLookup fieldLookup;
+	private ConverterLookup classLookup;
 	private ClassMapper mapper = new ClassMapper();
 
 	public ImogXmlConverter(Context context) {
 		this.context = context;
-		lookup = new ImogConverterLookup(context, mapper);
+		fieldLookup = new DefaultConverterLookup();
+		fieldLookup.addConverter(new BooleanConverter());
+		fieldLookup.addConverter(new ByteArrayConverter());
+		fieldLookup.addConverter(new DateConverter());
+		fieldLookup.addConverter(new EnumConverter());
+		fieldLookup.addConverter(new EnumMultiConverter(context));
+		fieldLookup.addConverter(new FloatConverter());
+		fieldLookup.addConverter(new GpsConverter());
+		fieldLookup.addConverter(new IntegerConverter());
+		fieldLookup.addConverter(new LongConverter());
+		fieldLookup.addConverter(new StringConverter());
+		fieldLookup.addConverter(new AssociationConverter(context, mapper));
+		fieldLookup.addConverter(new CollectionConverter(context, mapper));
+		fieldLookup.addConverter(new ContentConverter(context));
+		fieldLookup.addConverter(new DynamicFieldTypeConverter());
+		fieldLookup.addConverter(new LocalizedTextConverter());
+
+		classLookup = new DefaultConverterLookup();
+		classLookup.addConverter(new BinaryConverter(fieldLookup));
+
 		ImogHelper.getInstance().doWithImogBeans(new ImogBeanCallback() {
 
 			@Override
 			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
-				processAnnotations(clazz, uri);
+				processAnnotations(clazz);
 			}
 		});
 	}
@@ -47,19 +84,10 @@ public class ImogXmlConverter {
 		}
 	}
 
-	public void processAnnotations(Class<?> type, Uri uri) {
-		XmlAlias alias = type.getAnnotation(XmlAlias.class);
-		if (alias != null) {
-			mapper.addClassAlias(alias.value(), type, uri);
-		} else {
-			mapper.addClassAlias(type.getName(), type, uri);
-		}
-	}
-
 	public void serialize(final XmlSerializer serializer, Object object) throws IllegalArgumentException,
 			IllegalStateException, IOException {
 		serializer.startTag(null, mapper.serializedClass(object.getClass()));
-		Converter converter = lookup.lookupConverterForType(object.getClass());
+		Converter converter = classLookup.lookupConverterForType(object.getClass());
 		if (converter != null) {
 			converter.serialize(serializer, object);
 		} else {
@@ -137,12 +165,12 @@ public class ImogXmlConverter {
 
 			XmlConverter converter = field.getAnnotation(XmlConverter.class);
 			if (converter != null) {
-				fc = lookup.lookupConverterOfType(converter.value());
+				fc = fieldLookup.lookupConverterOfType(converter.value());
 				if (fc != null) {
 					fc.setInteger(converter.integer());
 				}
 			} else {
-				fc = lookup.lookupConverterForType(field.getType());
+				fc = fieldLookup.lookupConverterForType(field.getType());
 			}
 			if (fc == null) {
 				continue;
@@ -182,12 +210,12 @@ public class ImogXmlConverter {
 			Converter fc = null;
 			XmlConverter converter = field.getAnnotation(XmlConverter.class);
 			if (converter != null) {
-				fc = lookup.lookupConverterOfType(converter.value());
+				fc = fieldLookup.lookupConverterOfType(converter.value());
 				if (fc != null) {
 					fc.setInteger(converter.integer());
 				}
 			} else {
-				fc = lookup.lookupConverterForType(field.getType());
+				fc = fieldLookup.lookupConverterForType(field.getType());
 			}
 
 			if (fc == null) {

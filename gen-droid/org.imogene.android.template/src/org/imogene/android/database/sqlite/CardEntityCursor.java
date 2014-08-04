@@ -1,6 +1,7 @@
 package org.imogene.android.database.sqlite;
 
 import org.imogene.android.common.model.CardEntity;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
 
-public class CardEntityCursor extends ImogBeanCursorImpl {
+public class CardEntityCursor extends ImogBeanCursorImpl<CardEntity> {
 
 	public CardEntityCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -24,7 +25,11 @@ public class CardEntityCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public CardEntity newBean() {
-		return new CardEntity(this);
+		CardEntity bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new CardEntity(this);
+		}
+		return bean;
 	}
 
 	public final String getName() {

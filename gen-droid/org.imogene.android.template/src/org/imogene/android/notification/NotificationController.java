@@ -135,7 +135,7 @@ public class NotificationController {
 			@Override
 			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
 				EntityInfo info = ImogHelper.getEntityInfo(clazz);
-				if (info == null) {
+				if (info == null || info.notificationId < 0) {
 					// Not an observable entity
 					return;
 				}
@@ -307,7 +307,7 @@ public class NotificationController {
 			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(mInfo.contentUri);
 			builder.where().eq(ImogBean.Columns.FLAG_READ, 0);
 			builder.orderBy(ImogBean.Columns.MODIFIED, false);
-			ImogBeanCursor c = (ImogBeanCursor) builder.query();
+			ImogBeanCursor<?> c = (ImogBeanCursor<?>) builder.query();
 			if (c == null) {
 				return;
 			}

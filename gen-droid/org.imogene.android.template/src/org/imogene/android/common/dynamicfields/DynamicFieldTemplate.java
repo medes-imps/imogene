@@ -4,7 +4,6 @@ import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.DynamicFieldTemplateCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -73,7 +72,7 @@ public class DynamicFieldTemplate extends ImogBeanImpl {
 	@XmlAlias("formType")
 	private String formType;
 	@XmlAlias("templateCreator")
-	private Uri templateCreator;
+	private ImogBean templateCreator;
 	@XmlAlias("description")
 	private String description;
 	@XmlAlias("reason")
@@ -98,25 +97,15 @@ public class DynamicFieldTemplate extends ImogBeanImpl {
 	public DynamicFieldTemplate() {
 	}
 
-	public DynamicFieldTemplate(Uri uri) {
-		DynamicFieldTemplateCursor cursor = (DynamicFieldTemplateCursor) ImogOpenHelper.getHelper().query(uri);
-		cursor.moveToFirst();
-		init(cursor);
-		cursor.close();
-	}
-
-	public DynamicFieldTemplate(DynamicFieldTemplateCursor cursor) {
-		init(cursor);
-	}
-
 	public DynamicFieldTemplate(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(Columns.TEMPLATECREATOR)) {
 			templateCreator = bundle.getParcelable(Columns.TEMPLATECREATOR);
 		}
 	}
 
-	private void init(DynamicFieldTemplateCursor cursor) {
-		super.init(cursor);
+	public DynamicFieldTemplate(DynamicFieldTemplateCursor cursor) {
+		super(cursor);
 		fieldName = cursor.getFieldName();
 		fieldType = cursor.getFieldType();
 		parameters = cursor.getParameters();
@@ -150,7 +139,7 @@ public class DynamicFieldTemplate extends ImogBeanImpl {
 		return formType;
 	}
 
-	public final Uri getTemplateCreator() {
+	public final ImogBean getTemplateCreator() {
 		return templateCreator;
 	}
 
@@ -210,7 +199,7 @@ public class DynamicFieldTemplate extends ImogBeanImpl {
 		this.formType = formType;
 	}
 
-	public final void setTemplateCreator(Uri templateCreator) {
+	public final void setTemplateCreator(ImogBean templateCreator) {
 		this.templateCreator = templateCreator;
 	}
 
@@ -261,7 +250,7 @@ public class DynamicFieldTemplate extends ImogBeanImpl {
 		values.put(Columns.PARAMETERS, parameters);
 		values.put(Columns.FORMTYPE, formType);
 		if (templateCreator != null) {
-			values.put(Columns.TEMPLATECREATOR, templateCreator.getLastPathSegment());
+			values.put(Columns.TEMPLATECREATOR, templateCreator.getId());
 		} else {
 			values.putNull(Columns.TEMPLATECREATOR);
 		}

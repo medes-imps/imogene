@@ -2,6 +2,7 @@ package org.imogene.android.common.entity;
 
 import java.util.Date;
 
+import org.imogene.android.database.DatabaseCache;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
@@ -12,6 +13,8 @@ import org.imogene.android.util.NTPClock;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcel;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.xml.annotation.XmlAlias;
 import fr.medes.android.xml.annotation.XmlOmitField;
@@ -45,7 +48,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 	@XmlOmitField
 	private boolean flagSynchronized;
 
-	protected void init(ImogBeanCursor cursor) {
+	public ImogBeanImpl(ImogBeanCursor<? extends ImogBean> cursor) {
 		id = cursor.getId();
 		modified = cursor.getModified();
 		modifiedBy = cursor.getModifiedBy();
@@ -55,6 +58,28 @@ public abstract class ImogBeanImpl implements ImogBean {
 		createdBy = cursor.getCreatedBy();
 		flagRead = cursor.getFlagRead();
 		flagSynchronized = cursor.getFlagSynchronized();
+		DatabaseCache.getInstance().put(this);
+	}
+	
+	public ImogBeanImpl(Bundle bundle) {
+	}
+
+	public ImogBeanImpl(Parcel in) {
+		id = in.readString();
+		Long modifiedValue = (Long) in.readValue(null);
+		modified = modifiedValue != null ? new Date(modifiedValue) : null;
+		modifiedBy = in.readString();
+		modifiedFrom = in.readString();
+		Long uploadDateValue = (Long) in.readValue(null);
+		uploadDate = uploadDate != null ? new Date(uploadDateValue) : null;
+		Long createdValue = (Long) in.readValue(null);
+		created = createdValue != null ? new Date(createdValue) : null;
+		createdBy = in.readString();
+		flagRead = in.readInt() == 1;
+		flagSynchronized = in.readInt() == 1;
+	}
+
+	public ImogBeanImpl() {
 	}
 
 	@Override
@@ -221,6 +246,36 @@ public abstract class ImogBeanImpl implements ImogBean {
 		}
 
 		return uri;
+	}
+	
+	@Override
+	public String getMainDisplay(Context context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public String getSecondaryDisplay(Context context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(id);
+		dest.writeValue(modified != null ? modified.getTime() : null);
+		dest.writeString(modifiedBy);
+		dest.writeString(modifiedFrom);
+		dest.writeValue(uploadDate != null ? uploadDate.getTime() : null);
+		dest.writeValue(created != null ? created.getTime() : null);
+		dest.writeString(createdBy);
+		dest.writeInt(flagRead ? 1 : 0);
+		dest.writeInt(flagSynchronized ? 1 : 0);
 	}
 
 }

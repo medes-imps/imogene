@@ -21,20 +21,20 @@ import java.util.List;
 
 import org.imogene.android.common.binary.Binary;
 import org.imogene.android.common.entity.LocalizedText;
+import org.imogene.android.database.DatabaseCache;
 import org.imogene.android.database.GeoreferencedCursor;
 import org.imogene.android.database.sqlite.ImogActorCursorImpl;
 import org.imogene.android.database.sqlite.ImogBeanCursorImpl;
 import org.imogene.android.database.sqlite.ImogEntityCursorImpl;
 import org.imogene.android.«projectName.toLowerCase()».R;
-import org.imogene.android.«projectName.toLowerCase()».domain.«name.toFirstUpper()»;
-«EXPAND organizeImports(projectName) FOREACH groups.fields-»
+import org.imogene.android.«projectName.toLowerCase()».domain.*;
 
-public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(metaType)-»ImogActorCursorImpl«ELSE»«IF hasDynamicFields»ImogEntityCursorImpl«ELSE»ImogBeanCursorImpl«ENDIF»«ENDIF»
+public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(metaType)-»ImogActorCursorImpl«ELSE»«IF hasDynamicFields»ImogEntityCursorImpl«ELSE»ImogBeanCursorImpl«ENDIF»«ENDIF»<«name.toFirstUpper()»>
 	«IF georeferenced != null-»
-	implements GeoreferencedCursor
+	implements GeoreferencedCursor<«name.toFirstUpper()»>
 	«ENDIF-»
  {
-
+ 
 	public «name.toFirstUpper()-»Cursor(SQLiteDatabase db, SQLiteCursorDriver driver,
 			String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -50,7 +50,11 @@ public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(meta
 	
 	@Override
 	public «name.toFirstUpper()» newBean() {
-		return new «name.toFirstUpper()»(this);
+		«name.toFirstUpper()» bean = DatabaseCache.getInstance().get(getId());;
+		if (bean == null) {
+			bean = new «name.toFirstUpper()»(this);
+		}
+		return bean;
 	}
 	
 	«EXPAND createGetter FOREACH groups.fields»
@@ -89,16 +93,6 @@ public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(meta
 «ENDDEFINE»
 
 
-
-
-
-
-«DEFINE organizeImports(String projectName) FOR FieldEntity-»
-«ENDDEFINE»
-
-«DEFINE organizeImports(String projectName) FOR RelationFieldEntity-»
-import org.imogene.android.«projectName.toLowerCase()-».domain.«entity.name.toFirstUpper()-»;
-«ENDDEFINE»
 
 
 
@@ -153,8 +147,8 @@ public final Date get«name.toFirstUpper()»() {
 «ENDDEFINE»
 
 «DEFINE createGetter FOR BinaryField-»
-public final Uri get«name.toFirstUpper()-»() {
-	return getEntity(Binary.Columns.CONTENT_URI, Binary.Columns.TABLE_NAME, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+public final Binary get«name.toFirstUpper()-»() {
+	return getEntity(Binary.Columns.CONTENT_URI, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
 }
 «ENDDEFINE»
 
@@ -183,11 +177,15 @@ public final Location get«name.toFirstUpper()-»() {
 
 «DEFINE createGetter FOR RelationFieldEntity-»
 «IF cardinality == 1-»
-public final Uri get«name.toFirstUpper()-»() {
+public final «entity.name.toFirstUpper()» get«name.toFirstUpper()»() {
 	return «EXPAND getterSingleForRelation FOR this -»
 }
+
+public final Uri get«name.toFirstUpper()»Uri() {
+	return «EXPAND getterSingleUriForRelation FOR this-»
+}
 «ELSE-»
-public final List<Uri> get«name.toFirstUpper()-»() {
+public final List<«entity.name.toFirstUpper()»> get«name.toFirstUpper()»() {
 	return «EXPAND getterMultiForRelation FOR this-»
 }
 «ENDIF-»
@@ -202,18 +200,41 @@ public final List<Uri> get«name.toFirstUpper()-»() {
 «ENDDEFINE»
 
 «DEFINE getterSingleForRelation FOR MainRelationFieldEntity-»
-getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
 «ENDDEFINE»
 
 «DEFINE getterSingleForRelation FOR ReverseRelationFieldEntity-»
 «IF oppositeRelationField != null-»
 «IF oppositeRelationField.cardinality == 1-»
-getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 «ELSE-»
-getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
 «ENDIF-»
 «ENDIF-»
 «ENDDEFINE»
+
+
+
+
+
+
+«DEFINE getterSingleUriForRelation FOR RelationFieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getterSingleUriForRelation FOR MainRelationFieldEntity-»
+getEntityUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+«ENDDEFINE»
+
+«DEFINE getterSingleUriForRelation FOR ReverseRelationFieldEntity-»
+«IF oppositeRelationField != null-»
+«IF oppositeRelationField.cardinality == 1-»
+getEntityUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+«ELSE-»
+getEntityUri(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, getColumnIndexOrThrow(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»));
+«ENDIF-»
+«ENDIF-»
+«ENDDEFINE»
+
 
 
 
@@ -226,21 +247,21 @@ getEntity(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirs
 «DEFINE getterMultiForRelation FOR MainRelationFieldEntity-»
 «IF oppositeRelationField != null-»
 «IF oppositeRelationField.cardinality == 1-»
-getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 «ELSE-»
-getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
 «ENDIF-»
 «ELSEIF InverseCardinality == -1 -»
-getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
 «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getterMultiForRelation FOR ReverseRelationFieldEntity-»
 «IF oppositeRelationField != null-»
 «IF oppositeRelationField.cardinality == 1-»
-getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 «ELSE-»
-getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «entity.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
+getEntities(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «entity.name.toFirstUpper()».Columns.TABLE_NAME);
 «ENDIF-»
 «ENDIF-»
 «ENDDEFINE»
@@ -356,6 +377,6 @@ if («name.toFirstLower()» != null) {
 
 «DEFINE getDisplay FOR RelationFieldEntity-»
 «IF cardinality == 1-»
-buildRelationDisplay(context, str, get«name.toFirstUpper()-»());
+buildRelationDisplay(context, str, get«name.toFirstUpper()»Uri());
 «ENDIF-»
 «ENDDEFINE»

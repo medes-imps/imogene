@@ -2,6 +2,8 @@ package org.imogene.android.database.sqlite;
 
 import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,9 +11,8 @@ import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
-import android.net.Uri;
 
-public class DynamicFieldInstanceCursor extends ImogBeanCursorImpl {
+public class DynamicFieldInstanceCursor extends ImogBeanCursorImpl<DynamicFieldInstance> {
 
 	public DynamicFieldInstanceCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -26,11 +27,15 @@ public class DynamicFieldInstanceCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public DynamicFieldInstance newBean() {
-		return new DynamicFieldInstance(this);
+		DynamicFieldInstance bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new DynamicFieldInstance(this);
+		}
+		return bean;
 	}
 
-	public final Uri getFieldTemplate() {
-		return getEntity(DynamicFieldTemplate.Columns.CONTENT_URI, DynamicFieldTemplate.Columns.TABLE_NAME,
+	public final DynamicFieldTemplate getFieldTemplate() {
+		return getEntity(DynamicFieldTemplate.Columns.CONTENT_URI,
 				getColumnIndexOrThrow(DynamicFieldInstance.Columns.FIELDTEMPLATE));
 	}
 
@@ -38,7 +43,7 @@ public class DynamicFieldInstanceCursor extends ImogBeanCursorImpl {
 		return getString(DynamicFieldInstance.Columns.FIELDVALUE);
 	}
 
-	public final Uri getFormInstance() {
+	public final ImogBean getFormInstance() {
 		return getEntity(getString(DynamicFieldInstance.Columns.FORMINSTANCE));
 	}
 

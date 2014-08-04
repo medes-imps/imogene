@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.database.ImogBeanCursor;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class NestedRowFieldEdit extends RelationManyFieldEdit {
+public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdit<T> {
 
 	private final ViewGroup mEntries;
 
@@ -43,28 +43,24 @@ public class NestedRowFieldEdit extends RelationManyFieldEdit {
 	@Override
 	protected void onValueChange() {
 		super.onValueChange();
-		List<Uri> uris = getValue();
+		List<T> value = getValue();
 		mEntries.removeAllViews();
-		if (uris == null) {
+		if (value == null) {
 			return;
 		}
-		for (Uri uri : uris) {
+		for (T bean : value) {
 			ViewGroup entry = (ViewGroup) inflate(mEntries.getContext(), R.layout.imog__entity_row, null);
-			entry.setTag(uri);
+			entry.setTag(bean);
 			mEntries.addView(entry);
 
-			ImogBeanCursor cursor = (ImogBeanCursor) ImogOpenHelper.getHelper().query(uri);
-			if (cursor.moveToFirst()) {
-				((TextView) entry.findViewById(android.R.id.text1)).setText(cursor.getMainDisplay(getContext()));
-				((TextView) entry.findViewById(android.R.id.text2)).setText(cursor.getSecondaryDisplay(getContext()));
-			}
-			cursor.close();
+			((TextView) entry.findViewById(android.R.id.text1)).setText(bean.getMainDisplay(getContext()));
+			((TextView) entry.findViewById(android.R.id.text2)).setText(bean.getSecondaryDisplay(getContext()));
 
 			entry.findViewById(android.R.id.background).setBackgroundDrawable(mDrawable);
 
 			final ImageView deleteIcon = (ImageView) entry.findViewById(android.R.id.icon);
 			deleteIcon.setImageResource(R.drawable.imog__ic_action_remove);
-			deleteIcon.setTag(uri);
+			deleteIcon.setTag(bean);
 			deleteIcon.setOnClickListener(mOnClickDeleteListener);
 
 			entry.setOnClickListener(mOnClickViewListener);
@@ -84,12 +80,16 @@ public class NestedRowFieldEdit extends RelationManyFieldEdit {
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
 			Uri uri = data.getData();
-			List<Uri> values = getValue();
-			if (values == null) {
-				values = new ArrayList<Uri>();
+			T value = ImogOpenHelper.fromUri(uri);
+			if (value == null) {
+				return true;
 			}
-			if (!values.contains(uri)) {
-				values.add(uri);
+			List<T> values = getValue();
+			if (values == null) {
+				values = new ArrayList<T>();
+			}
+			if (!values.contains(value)) {
+				values.add(value);
 			}
 			setValue(values);
 			return true;
@@ -102,7 +102,7 @@ public class NestedRowFieldEdit extends RelationManyFieldEdit {
 		@Override
 		public void onClick(View v) {
 			Uri uri = (Uri) v.getTag();
-			List<Uri> uris = getValue();
+			List<T> uris = getValue();
 			if (uri != null) {
 				if (uris.remove(uri)) {
 					setValue(uris);

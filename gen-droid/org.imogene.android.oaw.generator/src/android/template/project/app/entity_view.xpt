@@ -27,6 +27,7 @@ import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.dynamicfields.DynamicFieldManager;
 import org.imogene.android.database.ImogBeanObserver;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.SynchronizationService;
@@ -63,7 +64,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	private ImogPagerAdapter mAdapter;
 
 	«FOREACH groups.fields AS f-»
-	private «EXPAND android::template::ViewerUtils::class FOR f» «f.name.toFirstLower()»;
+	private «EXPAND android::template::ViewerUtils::classInClass FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
 	
 	private «name.toFirstUpper()» mEntity = null;
@@ -93,7 +94,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()-»_view, getViewPager(), true);
 
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()» = («EXPAND android::template::ViewerUtils::class FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
+			«f.name.toFirstLower()» = («EXPAND android::template::ViewerUtils::classInClass FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
 
 		«FOREACH groups.fields AS f-»
@@ -150,7 +151,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	}
 	
 	private void refresh() {
-		mEntity = «name.toFirstUpper()».fromUri(mUri);
+		mEntity = ImogOpenHelper.fromUri(mUri);
 		if (mEntity == null) {
 			// Entity deleted.
 			onBackPressed();
@@ -260,7 +261,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 			«IF f.oppositeRelationField.cardinality == 1-»
 			bundle.putParcelable(
 				«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR f.oppositeRelationField»,
-				getUri());
+				mEntity);
 			«ENDIF-»
 			intent.putExtra(Extras.EXTRA_ENTITY, bundle);
 			«ENDIF-»

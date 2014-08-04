@@ -13,12 +13,17 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
+import fr.medes.android.util.FormatHelper;
 import fr.medes.android.util.Tools;
 import fr.medes.android.util.content.ContentUrisUtils;
+import fr.medes.android.util.field.EnumHelper;
 import fr.medes.android.xml.annotation.XmlAlias;
 import fr.medes.android.xml.annotation.XmlConverter;
+import fr.medes.android.xml.annotation.XmlOmitField;
 import fr.medes.android.xml.converters.BooleanConverter;
 import fr.medes.android.xml.converters.DateConverter;
 import fr.medes.android.xml.converters.EnumConverter;
@@ -34,7 +39,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.imogene.android.Constants;
-import org.imogene.android.common.binary.BinaryFile;
+import org.imogene.android.common.binary.Binary;
 import org.imogene.android.common.entity.GpsLocation;
 import org.imogene.android.common.entity.ImogActor;
 import org.imogene.android.common.entity.ImogActorImpl;
@@ -74,45 +79,26 @@ public class «name.toFirstUpper()» extends
 		«EXPAND columnGetter FOREACH groups.fields-»
 	}
 	
-	public static «name.toFirstUpper()» fromUri(Uri uri) {
-		if (uri == null) {
-			return null;
-		}
-		«name.toFirstUpper()»Cursor cursor = («name.toFirstUpper()»Cursor) ImogOpenHelper.getHelper().query(uri);
-		if (cursor == null) {
-			return null;
-		}
-		try {
-			if (!cursor.moveToFirst()) {
-				return null;
-			}
-			if (cursor.getCount() > 1) {
-				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
-			}
-			return new «name.toFirstUpper()»(cursor);
-		} finally {
-			cursor.close();
-		}
-	}
-	
 	«EXPAND declaration FOREACH groups.fields-»
 	
 	public «name.toFirstUpper()»() {
 	}
 	
 	public «name.toFirstUpper()»(«name.toFirstUpper()»Cursor cursor) {
-		init(cursor);
-	}
-
-	public «name.toFirstUpper()»(Bundle bundle) {
-		«EXPAND createFromBundle FOREACH groups.fields-»
-	}
-	
-	private void init(«name.toFirstUpper()»Cursor cursor) {
-		super.init(cursor);
+		super(cursor);
 		«FOREACH groups.fields AS field-»
 		«field.name.toFirstLower()» = cursor.get«field.name.toFirstUpper()-»();
 		«ENDFOREACH-»
+	}
+
+	public «name.toFirstUpper()»(Bundle bundle) {
+		super(bundle);
+		«EXPAND createFromBundle FOREACH groups.fields-»
+	}
+	
+	public «name.toFirstUpper()»(Parcel in) {
+		super(in);
+		«EXPAND createFromParcel FOREACH groups.fields-»
 	}
 	
 	«EXPAND generateGetter FOREACH groups.fields»
@@ -153,6 +139,37 @@ public class «name.toFirstUpper()» extends
 	public void prepareForSave(Context context) {
 		prepareForSave(context, Columns.BEAN_TYPE);
 	}
+	
+	@Override
+	public String getMainDisplay(Context context) {
+		StringBuilder str = new StringBuilder();
+		«EXPAND getDisplay FOREACH getMainFields(this)-»
+		return str.toString();
+	}
+	
+	@Override
+	public String getSecondaryDisplay(Context context) {
+		StringBuilder str = new StringBuilder();
+		«EXPAND getDisplay FOREACH secondaryFields-»
+		return str.toString();
+	}
+	
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		super.writeToParcel(dest, flags);
+		«EXPAND writeToParcel FOREACH groups.fields-»
+	}
+	
+	@XmlOmitField
+	public static final Parcelable.Creator<«name.toFirstUpper()»> CREATOR = new Parcelable.Creator<«name.toFirstUpper()»>() {
+		public «name.toFirstUpper()» createFromParcel(Parcel in) {
+			return new «name.toFirstUpper()»(in);
+		}
+
+		public «name.toFirstUpper()»[] newArray(int size) {
+			return new «name.toFirstUpper()»[size];
+		}
+	};
 
 }
 «ENDFILE»
@@ -291,7 +308,7 @@ private Boolean «name.toFirstLower()»;
 
 «DEFINE declaration FOR BinaryField-»
 @XmlAlias("«EXPAND template::CommonFieldUtil::propertyName FOR this»")
-private Uri «name.toFirstLower()»;
+private Binary «name.toFirstLower()»;
 «ENDDEFINE»
 
 «DEFINE declaration FOR EnumField-»
@@ -318,11 +335,11 @@ private Location «name.toFirstLower()»;
 «DEFINE declaration FOR RelationFieldEntity-»
 «IF cardinality == 1-»
 @XmlAlias("«EXPAND template::CommonFieldUtil::propertyName FOR this»")
-private Uri «name.toFirstLower()»;
+private «entity.name.toFirstUpper()» «name.toFirstLower()»;
 «ELSE-»
 @XmlAlias("«EXPAND template::CommonFieldUtil::propertyName FOR this»")
 @XmlConverter(CollectionConverter.class)
-private List<Uri> «name.toFirstLower()»;
+private List<«entity.name.toFirstUpper()»> «name.toFirstLower()»;
 «ENDIF-»
 «ENDDEFINE»
 
@@ -395,7 +412,7 @@ public final Date get«name.toFirstUpper()-»() {
 «ENDDEFINE»
 
 «DEFINE generateGetter FOR BinaryField-»
-public final Uri get«name.toFirstUpper()-»() {
+public final Binary get«name.toFirstUpper()-»() {
 	return «name.toFirstLower()»;
 }
 «ENDDEFINE»
@@ -420,11 +437,11 @@ public final Location get«name.toFirstUpper()-»() {
 
 «DEFINE generateGetter FOR RelationFieldEntity-»
 «IF cardinality == 1-»
-public final Uri get«name.toFirstUpper()-»() {
+public final «entity.name.toFirstUpper()» get«name.toFirstUpper()-»() {
 	return «name.toFirstLower()»;
 }
 «ELSE»
-public final List<Uri> get«name.toFirstUpper()-»() {
+public final List<«entity.name.toFirstUpper()»> get«name.toFirstUpper()-»() {
 	return «name.toFirstLower()»;
 }
 «ENDIF»
@@ -481,7 +498,7 @@ public final void set«name.toFirstUpper()-»(Date «name.toFirstLower()-») {
 «ENDDEFINE»
 
 «DEFINE generateSetter FOR BinaryField-»
-public final void set«name.toFirstUpper()-»(Uri «name.toFirstLower()-») {
+public final void set«name.toFirstUpper()-»(Binary «name.toFirstLower()-») {
 	this.«name.toFirstLower()» = «name.toFirstLower()-»;
 }
 «ENDDEFINE»
@@ -506,11 +523,11 @@ public final void set«name.toFirstUpper()-»(Location «name.toFirstLower()-») {
 
 «DEFINE generateSetter FOR RelationFieldEntity-»
 «IF cardinality == 1-»
-public final void set«name.toFirstUpper()-»(Uri «name.toFirstLower()-») {
+public final void set«name.toFirstUpper()-»(«entity.name.toFirstUpper()» «name.toFirstLower()-») {
 	this.«name.toFirstLower()» = «name.toFirstLower()-»;
 }
 «ELSE-»
-public final void set«name.toFirstUpper()-»(List<Uri> «name.toFirstLower()-») {
+public final void set«name.toFirstUpper()-»(List<«entity.name.toFirstUpper()»> «name.toFirstLower()-») {
 	this.«name.toFirstLower()» = «name.toFirstLower()-»;
 }
 «ENDIF-»
@@ -533,6 +550,97 @@ if (bundle.containsKey(Columns.«name.toUpperCase()»)) {
 	«name.toFirstLower()» = bundle.getParcelableArrayList(Columns.«name.toUpperCase()»);
 	«ENDIF-»
 }
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE createFromParcel FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR StringField-»
+«name.toFirstLower()» = in.readString();
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR TextField-»
+«IF !translatable-»
+«name.toFirstLower()» = in.readString();
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR FloatField-»
+«name.toFirstLower()» = (Float) in.readValue(null);
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR IntegerField-»
+«name.toFirstLower()» = (Integer) in.readValue(null);
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR DatesField-»
+Long «name.toFirstLower()»LongValue = (Long) in.readValue(null);
+«name.toFirstLower()» = «name.toFirstLower()»LongValue != null ? new Date(«name.toFirstLower()»LongValue) : null;
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR GeoField-»
+«name.toFirstLower()» = in.readParcelable(null);
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR BooleanField-»
+«name.toFirstLower()» = (Boolean) in.readValue(null);
+«ENDDEFINE»
+
+«DEFINE createFromParcel FOR EnumField-»
+«IF multipleSelection-»
+in.readBooleanArray(«name.toFirstLower()»);
+«ELSE-»
+«name.toFirstLower()» = in.readInt();
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE writeToParcel FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR StringField-»
+dest.writeString(«name.toFirstLower()»);
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR TextField-»
+«IF !translatable-»
+dest.writeString(«name.toFirstLower()»);
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR FloatField-»
+dest.writeValue(«name.toFirstLower()»);
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR IntegerField-»
+dest.writeValue(«name.toFirstLower()»);
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR DatesField-»
+dest.writeValue(«name.toFirstLower()» != null ? «name.toFirstLower()».getTime() : null);
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR GeoField-»
+dest.writeParcelable(«name.toFirstLower()», 0);
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR BooleanField-»
+dest.writeValue(«name.toFirstLower()»);
+«ENDDEFINE»
+
+«DEFINE writeToParcel FOR EnumField-»
+«IF multipleSelection-»
+dest.writeBooleanArray(«name.toFirstLower()»);
+«ELSE-»
+dest.writeInt(«name.toFirstLower()»);
+«ENDIF-»
 «ENDDEFINE»
 
 
@@ -580,19 +688,18 @@ values.put(Columns.«name.toUpperCase()», GpsLocation.saveLocation(context, «name
 «ENDDEFINE»
 
 «DEFINE commit FOR BinaryField-»
-«name.toFirstLower()» = BinaryFile.toBinary(context, «name.toFirstLower()»);
-values.put(Columns.«name.toUpperCase()», «name.toFirstLower()» != null ? «name.toFirstLower()».getLastPathSegment() : null);
+values.put(Columns.«name.toUpperCase()», «name.toFirstLower()» != null ? «name.toFirstLower()».getId() : null);
 «ENDDEFINE»
 
 «DEFINE commit FOR MainRelationFieldEntity-»
 «IF cardinality == 1-»
-values.put(Columns.«name.toUpperCase()», «name.toFirstLower()» != null ? «name.toFirstLower()».getLastPathSegment() : null);
-«ENDIF»
+values.put(Columns.«name.toUpperCase()», «name.toFirstLower()» != null ? «name.toFirstLower()».getId() : null);
+«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE commit FOR ReverseRelationFieldEntity-»
-«IF getOppositeCardinality(this) != 1 && cardinality == 1 -»
-values.put(Columns.«name.toUpperCase()», «name.toFirstLower()» != null ? «name.toFirstLower()».getLastPathSegment() : null);
+«IF cardinality == 1 && getOppositeCardinality(this) != 1-»
+values.put(Columns.«name.toUpperCase()», «name.toFirstLower()» != null ? «name.toFirstLower()».getId() : null);
 «ENDIF-»
 «ENDDEFINE»
 
@@ -611,9 +718,9 @@ ContentValues v = new ContentValues();
 v.putNull(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 context.getContentResolver().update(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, v, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField» + "='" + getId() + "'", null);
 if («name.toFirstLower()» != null) {
-	v.put(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField», getId());
-	for (Uri uri : «name.toFirstLower()») {
-		context.getContentResolver().update(uri, v, null, null);
+	for («entity.name.toFirstUpper()» e : «name.toFirstLower()») {
+		e.set«oppositeRelationField.name.toFirstUpper()»(this);
+		e.saveOrUpdate(context);
 	}
 }
 }
@@ -625,8 +732,8 @@ builder.delete();
 if («name.toFirstLower()» != null) {
 	ContentValues v = new ContentValues();
 	v.put(«parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, getId());
-	for (Uri uri : «name.toFirstLower()») {
-		v.put(«entity.name.toFirstUpper()».Columns.TABLE_NAME, uri.getLastPathSegment());
+	for («entity.name.toFirstUpper()» e : «name.toFirstLower()») {
+		v.put(«entity.name.toFirstUpper()».Columns.TABLE_NAME, e.getId());
 		ImogOpenHelper.getHelper().insert(Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», v);
 	}
 }
@@ -654,9 +761,9 @@ ContentValues v = new ContentValues();
 v.putNull(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 context.getContentResolver().update(«entity.name.toFirstUpper()».Columns.CONTENT_URI, v, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField» + "='" + getId() + "'", null);
 if («name.toFirstLower()» != null) {
-	v.put(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField», getId());
-	for (Uri uri : «name.toFirstLower()») {
-		context.getContentResolver().update(uri, v, null, null);
+	for («entity.name.toFirstUpper()» e : «name.toFirstLower()») {
+		e.set«oppositeRelationField.name.toFirstUpper()»(this);
+		e.saveOrUpdate(context);
 	}
 }
 }
@@ -668,8 +775,8 @@ builder.delete();
 if («name.toFirstLower()» != null) {
 	ContentValues v = new ContentValues();
 	v.put(Columns.TABLE_NAME, getId());
-	for (Uri uri : «name.toFirstLower()») {
-		v.put(«entity.name.toFirstUpper()».Columns.TABLE_NAME, uri.getLastPathSegment());
+	for («entity.name.toFirstUpper()» e : «name.toFirstLower()») {
+		v.put(«entity.name.toFirstUpper()».Columns.TABLE_NAME, uri.getId());
 		ImogOpenHelper.getHelper().insert(Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()», v);
 	}
 }
@@ -677,4 +784,100 @@ if («name.toFirstLower()» != null) {
 «ENDIF»
 «ENDIF»
 «ENDIF»
+«ENDDEFINE»
+
+
+
+
+
+«DEFINE getDisplay FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR StringField-»
+if («name.toFirstLower()» != null) {
+	str.append(«name.toFirstLower()»);
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR TextField-»
+«IF translatable-»
+if («name.toFirstLower()» != null) {
+	String localized = «name.toFirstLower()».getLocalized();
+	if (localized != null) {
+		str.append(localized);
+		str.append(" ");
+	}
+}
+«ELSE-»
+if («name.toFirstLower()» != null) {
+	str.append(«name.toFirstLower()»);
+	str.append(" ");
+}
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR NumericField-»
+if («name.toFirstLower()» != null) {
+	str.append(context.getString(R.string.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_format, «name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR DateField-»
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayDate(«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR DateTimeField-»
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayDateTime(«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR TimeField-»
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayTime(«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR EnumField-»
+«IF multipleSelection»
+if («name.toFirstLower()» != null) {
+	str.append(EnumHelper.displayEnumMulti(
+			context,
+			R.array.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»,
+			«name.toFirstLower()»));
+	str.append(" ");
+}
+«ELSE»
+if («name.toFirstLower()» != -1) {
+	str.append(EnumHelper.displayEnumSingle(
+			context,
+			R.array.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»,
+			R.array.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»_values,
+			«name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR GeoField-»
+if («name.toFirstLower()» != null) {
+	str.append(FormatHelper.displayLocation(context, «name.toFirstLower()»));
+	str.append(" ");
+}
+«ENDDEFINE»
+
+«DEFINE getDisplay FOR RelationFieldEntity-»
+«IF cardinality == 1-»
+if («name.toFirstLower()» != null) {
+	str.append(«name.toFirstLower()».getMainDisplay(context));
+	str.append(" ");
+}
+«ENDIF-»
 «ENDDEFINE»

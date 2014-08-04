@@ -4,7 +4,6 @@ import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.DynamicFieldInstanceCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,7 +27,7 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 	}
 
 	@XmlAlias("fieldTemplate")
-	private Uri fieldTemplate;
+	private DynamicFieldTemplate fieldTemplate;
 	@XmlAlias("fieldValue")
 	private String fieldValue;
 
@@ -36,36 +35,26 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 	 * Be careful the form instance will not be saved !!
 	 */
 	@XmlOmitField
-	private Uri formInstance;
+	private ImogBean formInstance;
 
 	public DynamicFieldInstance() {
 	}
 
-	public DynamicFieldInstance(Uri uri) {
-		DynamicFieldInstanceCursor cursor = (DynamicFieldInstanceCursor) ImogOpenHelper.getHelper().query(uri);
-		cursor.moveToFirst();
-		init(cursor);
-		cursor.close();
-	}
-
-	public DynamicFieldInstance(DynamicFieldInstanceCursor cursor) {
-		init(cursor);
-	}
-
 	public DynamicFieldInstance(Bundle bundle) {
+		super(bundle);
 		if (bundle.containsKey(Columns.FIELDTEMPLATE)) {
 			fieldTemplate = bundle.getParcelable(Columns.FIELDTEMPLATE);
 		}
 	}
 
-	private void init(DynamicFieldInstanceCursor cursor) {
-		super.init(cursor);
+	public DynamicFieldInstance(DynamicFieldInstanceCursor cursor) {
+		super(cursor);
 		fieldTemplate = cursor.getFieldTemplate();
 		fieldValue = cursor.getFieldValue();
 		formInstance = cursor.getFormInstance();
 	}
 
-	public final Uri getFieldTemplate() {
+	public final DynamicFieldTemplate getFieldTemplate() {
 		return fieldTemplate;
 	}
 
@@ -73,11 +62,11 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 		return fieldValue;
 	}
 
-	public Uri getFormInstance() {
+	public ImogBean getFormInstance() {
 		return formInstance;
 	}
 
-	public final void setFieldTemplate(Uri fieldTemplate) {
+	public final void setFieldTemplate(DynamicFieldTemplate fieldTemplate) {
 		this.fieldTemplate = fieldTemplate;
 	}
 
@@ -85,7 +74,7 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 		this.fieldValue = fieldValue;
 	}
 
-	public void setFormInstance(Uri formInstance) {
+	public void setFormInstance(ImogBean formInstance) {
 		this.formInstance = formInstance;
 	}
 
@@ -93,7 +82,7 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 	protected final void addValues(Context context, ContentValues values) {
 		super.addValues(context, values);
 		if (fieldTemplate != null) {
-			values.put(Columns.FIELDTEMPLATE, fieldTemplate.getLastPathSegment());
+			values.put(Columns.FIELDTEMPLATE, fieldTemplate.getId());
 		} else {
 			values.putNull(Columns.FIELDTEMPLATE);
 		}

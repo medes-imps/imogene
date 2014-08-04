@@ -3,14 +3,15 @@ package org.imogene.android.xml.converters;
 import java.io.IOException;
 
 import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.entity.ImogHelper.EntityInfo;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.xml.converters.AbstractFieldConverter;
@@ -28,7 +29,7 @@ public class AssociationConverter extends AbstractFieldConverter {
 
 	@Override
 	public boolean canConvert(Class<?> clazz) {
-		return clazz.equals(Uri.class);
+		return ImogBean.class.isAssignableFrom(clazz);
 	}
 
 	@Override
@@ -37,37 +38,35 @@ public class AssociationConverter extends AbstractFieldConverter {
 			return null;
 		}
 
-		Uri uri = mapper.realUri(parser.getName());
-		if (uri == null) {
+		Class<?> clazz = mapper.realClass(parser.getName());
+		if (clazz == null) {
+			return null;
+		}
+		EntityInfo info = ImogHelper.getEntityInfo(clazz.asSubclass(ImogBean.class));
+		if (info == null) {
 			return null;
 		}
 
 		String id = parser.getAttributeValue(null, "id");
 
-		ContentResolver res = context.getContentResolver();
-		Cursor c = res.query(uri, new String[] { ImogBean.Columns._ID }, ImogBean.Columns._ID + "='" + id + "'", null,
-				null);
-		if (c.getCount() != 1) {
-			c.close();
+		ImogBean bean = ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(info.contentUri, id));
+		if (bean == null) {
 			ContentValues values = new ContentValues();
 			values.put(ImogBean.Columns._ID, id);
 			values.put(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
-			return res.insert(uri, values);
-		} else {
-			c.moveToFirst();
-			String sId = c.getString(0);
-			c.close();
-			return ContentUrisUtils.withAppendedId(uri, sId);
+			Uri insertUri = context.getContentResolver().insert(info.contentUri, values);
+			bean = ImogOpenHelper.fromUri(insertUri);
 		}
+		return bean;
 	}
 
 	@Override
 	public void serialize(XmlSerializer serializer, Object obj) throws IllegalArgumentException, IllegalStateException,
 			IOException {
-		Uri uri = (Uri) obj;
-		String packageName = mapper.serializeUri(uri);
+		ImogBean bean = (ImogBean) obj;
+		String packageName = mapper.serializedClass(bean.getClass());
 		serializer.startTag(null, packageName);
-		serializer.attribute(null, "id", uri.getLastPathSegment());
+		serializer.attribute(null, "id", bean.getId());
 		serializer.endTag(null, packageName);
 	}
 

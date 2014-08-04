@@ -3,6 +3,7 @@ package org.imogene.android.database.sqlite;
 import org.imogene.android.common.model.CardEntity;
 import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.Profile;
+import org.imogene.android.database.DatabaseCache;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,9 +11,8 @@ import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteQuery;
-import android.net.Uri;
 
-public class EntityProfileCursor extends ImogBeanCursorImpl {
+public class EntityProfileCursor extends ImogBeanCursorImpl<EntityProfile> {
 
 	public EntityProfileCursor(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -27,17 +27,19 @@ public class EntityProfileCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public EntityProfile newBean() {
-		return new EntityProfile(this);
+		EntityProfile bean = DatabaseCache.getInstance().get(getId());
+		if (bean == null) {
+			bean = new EntityProfile(this);
+		}
+		return bean;
 	}
 
-	public final Uri getProfile() {
-		return getEntity(Profile.Columns.CONTENT_URI, Profile.Columns.TABLE_NAME,
-				getColumnIndexOrThrow(EntityProfile.Columns.PROFILE));
+	public final Profile getProfile() {
+		return getEntity(Profile.Columns.CONTENT_URI, getColumnIndexOrThrow(EntityProfile.Columns.PROFILE));
 	}
 
-	public final Uri getEntity() {
-		return getEntity(CardEntity.Columns.CONTENT_URI, CardEntity.Columns.TABLE_NAME,
-				getColumnIndexOrThrow(EntityProfile.Columns.ENTITY));
+	public final CardEntity getEntity() {
+		return getEntity(CardEntity.Columns.CONTENT_URI, getColumnIndexOrThrow(EntityProfile.Columns.ENTITY));
 	}
 
 	public final Boolean getCreate() {
@@ -58,16 +60,12 @@ public class EntityProfileCursor extends ImogBeanCursorImpl {
 
 	@Override
 	public String getMainDisplay(Context context) {
-		StringBuilder str = new StringBuilder();
-		buildRelationDisplay(context, str, getProfile());
-		buildRelationDisplay(context, str, getEntity());
-		return str.toString();
+		return null;
 	}
 
 	@Override
 	public String getSecondaryDisplay(Context context) {
-		StringBuilder str = new StringBuilder();
-		return str.toString();
+		return null;
 	}
 
 }

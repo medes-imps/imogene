@@ -2,12 +2,12 @@ package org.imogene.android.common.entity;
 
 import java.util.List;
 
-import android.net.Uri;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 
 public interface ImogEntity extends ImogBean {
 
-	public void setDynamicFieldValues(List<Uri> dynamicFieldValues);
+	public void setDynamicFieldValues(List<DynamicFieldInstance> dynamicFieldValues);
 
-	public List<Uri> getDynamicFieldValues();
+	public List<DynamicFieldInstance> getDynamicFieldValues();
 
 }

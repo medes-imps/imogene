@@ -3,6 +3,7 @@ package org.imogene.android.widget.field.edit;
 import java.util.ArrayList;
 
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.template.R;
 import org.imogene.android.util.IntentUtils;
 import org.imogene.android.widget.field.ConstraintBuilder;
@@ -27,30 +28,14 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	/**
 	 * Interface to define a container able to manipulate relation fields of an entity.
 	 */
-	public static interface RelationManager {
+	public static interface RelationManager<U extends ImogBean> {
 
 		/**
-		 * The basic content URI representing the entity.
+		 * Retrieve the parent {@link ImogBean} to set in the child opposite relation field.
 		 * 
-		 * @return The content URI.
+		 * @return The parent {@link ImogBean} if any, {@code null} otherwise
 		 */
-		public Uri getContentUri();
-
-		/**
-		 * Returns the entity identifier managed by the {@link FieldContainer}. This method temporally saves the entity
-		 * if there is no identifier.
-		 * 
-		 * @return The entity identifier.
-		 */
-		public String getIdentifier();
-
-		/**
-		 * Return the content URI of the entity managed by the {@link FieldContainer}. This method temporally saves the
-		 * entity if there is no content URI.
-		 * 
-		 * @return The content URI of the entity.
-		 */
-		public Uri getUri();
+		public U getParentBean();
 
 	}
 
@@ -72,7 +57,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	private ArrayList<CommonFieldEntry> mCommonFields;
 	private ArrayList<ExtraBuilder> mBuilders;
 
-	protected RelationManager mRelationManager;
+	protected RelationManager<?> mRelationManager;
 	protected boolean mHasReverse = false;
 	protected int mDisplayRes = R.string.imog__numberOfEntities;
 	protected int mOppositeCardinality = -1;
@@ -108,7 +93,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		mDisplayRes = display;
 	}
 
-	public void setRelationManager(RelationManager relationManager) {
+	public void setRelationManager(RelationManager<?> relationManager) {
 		mRelationManager = relationManager;
 	}
 
@@ -240,15 +225,15 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	protected Bundle createBundle() {
 		Bundle bundle = new Bundle();
 		if (mHasReverse && mOppositeCardinality == 1) {
-			bundle.putParcelable(mOppositeRelationField, mRelationManager.getUri());
+			bundle.putParcelable(mOppositeRelationField, mRelationManager.getParentBean());
 		}
 		if (mCommonFields != null && !mCommonFields.isEmpty()) {
 			for (CommonFieldEntry entry : mCommonFields) {
 				if (entry.first instanceof RelationOneFieldEdit) {
-					bundle.putParcelable(entry.second, ((RelationOneFieldEdit) entry.first).getValue());
+					bundle.putParcelable(entry.second, ((RelationOneFieldEdit<?>) entry.first).getValue());
 				} else if (entry.first instanceof RelationManyFieldEdit) {
 					bundle.putParcelableArrayList(entry.second,
-							Arrays.asArrayList(((RelationManyFieldEdit) entry.first).getValue()));
+							Arrays.asArrayList(((RelationManyFieldEdit<?>) entry.first).getValue()));
 				}
 			}
 		}

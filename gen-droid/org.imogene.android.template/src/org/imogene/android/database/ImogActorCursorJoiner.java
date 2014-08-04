@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
+import org.imogene.android.common.entity.ImogActor;
+import org.imogene.android.common.profile.Profile;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -15,18 +17,18 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-public class ImogActorCursorJoiner implements ImogActorCursor {
+public class ImogActorCursorJoiner implements ImogActorCursor<ImogActor> {
 
 	private final ArrayList<Join> mCursors = new ArrayList<Join>();
 
 	private int current = 0;
 
 	@Override
-	public ImogBean newBean() {
+	public ImogActor newBean() {
 		return null;
 	}
 
-	public boolean newCursor(ImogActorCursor cursor, Drawable drawable, Uri uri) {
+	public boolean newCursor(ImogActorCursor<? extends ImogActor> cursor, Drawable drawable, Uri uri) {
 		return mCursors.add(new Join(cursor, uri, drawable));
 	}
 
@@ -49,7 +51,7 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	}
 
 	@Override
-	public List<Uri> getProfiles() {
+	public List<Profile> getProfiles() {
 		return mCursors.get(current).cursor.getProfiles();
 	}
 
@@ -94,7 +96,7 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 	}
 
 	@Override
-	public List<Uri> getDynamicFieldValues() {
+	public List<DynamicFieldInstance> getDynamicFieldValues() {
 		return mCursors.get(current).cursor.getDynamicFieldValues();
 	}
 
@@ -348,11 +350,11 @@ public class ImogActorCursorJoiner implements ImogActorCursor {
 
 	private static class Join {
 
-		private final ImogActorCursor cursor;
+		private final ImogActorCursor<? extends ImogActor> cursor;
 		private final Drawable drawable;
 		private final Uri uri;
 
-		public Join(ImogActorCursor cursor, Uri uri, Drawable drawable) {
+		public Join(ImogActorCursor<? extends ImogActor> cursor, Uri uri, Drawable drawable) {
 			this.cursor = cursor;
 			this.drawable = drawable;
 			this.uri = uri;

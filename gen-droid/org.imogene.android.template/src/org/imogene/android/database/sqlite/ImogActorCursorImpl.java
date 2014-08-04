@@ -10,9 +10,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQuery;
-import android.net.Uri;
 
-public abstract class ImogActorCursorImpl extends ImogEntityCursorImpl implements ImogActorCursor {
+public abstract class ImogActorCursorImpl<T extends ImogActor> extends ImogEntityCursorImpl<T> implements ImogActorCursor<T> {
 
 	public ImogActorCursorImpl(SQLiteDatabase db, SQLiteCursorDriver driver, String editTable, SQLiteQuery query) {
 		super(db, driver, editTable, query);
@@ -29,8 +28,8 @@ public abstract class ImogActorCursorImpl extends ImogEntityCursorImpl implement
 	}
 
 	@Override
-	public final List<Uri> getProfiles() {
-		return getEntities(Profile.Columns.CONTENT_URI, Profile.Columns.TABLE_NAME,
+	public final List<Profile> getProfiles() {
+		return getEntities(Profile.Columns.CONTENT_URI,
 				ImogActor.Columns.TABLE_ACTOR_PROFILES, ImogActor.Columns.TABLE_NAME, Profile.Columns.TABLE_NAME);
 	}
 

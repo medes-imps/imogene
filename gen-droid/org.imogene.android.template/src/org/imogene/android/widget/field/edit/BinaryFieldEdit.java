@@ -1,5 +1,7 @@
 package org.imogene.android.widget.field.edit;
 
+import org.imogene.android.common.binary.Binary;
+import org.imogene.android.common.binary.BinaryFile;
 import org.imogene.android.template.R;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
@@ -10,8 +12,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.util.content.ContentUrisUtils;
 
-public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityResultListener {
+public class BinaryFieldEdit extends BaseFieldEdit<Binary> implements OnActivityResultListener {
 
 	private int mRequestCode;
 
@@ -52,14 +55,14 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 
 	@Override
 	public String getFieldDisplay() {
-		return getValue() != null ? getResources().getString(displayId()) : getEmptyText();
+		return getValue() != null ? getValue().getMainDisplay(getContext()) : getEmptyText();
 	}
 
 	@Override
 	protected void onValueChange() {
 		super.onValueChange();
-		final Uri uri = getValue();
-		if (uri == null) {
+		final Binary binary = getValue();
+		if (binary == null) {
 			findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);
 			findViewById(R.id.imog__delete).setVisibility(View.GONE);
 			findViewById(R.id.imog__view).setVisibility(View.GONE);
@@ -101,14 +104,19 @@ public class BinaryFieldEdit extends BaseFieldEdit<Uri> implements OnActivityRes
 	}
 
 	protected void view() {
-		Intent show = new Intent(Intent.ACTION_VIEW, getValue());
-		getContext().startActivity(show);
+		Binary value = getValue();
+		if (value != null) {
+			Uri uri = ContentUrisUtils.withAppendedId(Binary.Columns.CONTENT_URI, value.getId());
+			Intent show = new Intent(Intent.ACTION_VIEW, uri);
+			getContext().startActivity(show);
+		}
 	}
 
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
-			setValue(data.getData());
+			Binary binary = BinaryFile.toBinary(getContext(), data.getData());
+			setValue(binary);
 			return true;
 		}
 		return false;

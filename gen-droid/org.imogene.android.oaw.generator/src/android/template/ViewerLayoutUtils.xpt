@@ -5,7 +5,7 @@
 
 
 «DEFINE layout FOR FieldEntity-»
-<org.imogene.android.widget.field.view.«EXPAND android::template::ViewerUtils::class FOR this-»
+<org.imogene.android.widget.field.view.«EXPAND android::template::ViewerUtils::classInLayout FOR this-»
 	style="@style/BaseField"
 	android:id="@+id/«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR this»"
 	app:dependent="«fieldDependentVisibility.size > 0»"

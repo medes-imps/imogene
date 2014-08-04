@@ -4,40 +4,77 @@
 
 
 
-«DEFINE class FOR FieldEntity-»ERROR«ENDDEFINE»
+«DEFINE classInClass FOR FieldEntity-»ERROR«ENDDEFINE»
 
-«DEFINE class FOR StringField-»TextFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR StringField-»TextFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR TextField-»«IF translatable-»LocalizedTextFieldEdit«ELSE-»TextFieldEdit«ENDIF-»«ENDDEFINE»
+«DEFINE classInClass FOR TextField-»«IF translatable-»LocalizedTextFieldEdit«ELSE-»TextFieldEdit«ENDIF-»«ENDDEFINE»
 
-«DEFINE class FOR BarcodeField-»BarcodeFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR BarcodeField-»BarcodeFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR GeoField-»GeoFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR GeoField-»GeoFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR FloatField-»FloatFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR FloatField-»FloatFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR IntegerField-»«IF max != null && max.length > 0 && min != null && min.length > 0-»BoundedIntegerFieldEdit«ELSE-»IntegerFieldEdit«ENDIF-»«ENDDEFINE»
+«DEFINE classInClass FOR IntegerField-»«IF max != null && max.length > 0 && min != null && min.length > 0-»BoundedIntegerFieldEdit«ELSE-»IntegerFieldEdit«ENDIF-»«ENDDEFINE»
 
-«DEFINE class FOR BooleanField-»BooleanFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR BooleanField-»BooleanFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldEdit«ELSE-»EnumSingleFieldEdit«ENDIF-»«ENDDEFINE»
+«DEFINE classInClass FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldEdit«ELSE-»EnumSingleFieldEdit«ENDIF-»«ENDDEFINE»
 
-«DEFINE class FOR DateField-»DateFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR DateField-»DateFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR TimeField-»TimeFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR TimeField-»TimeFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR DateTimeField-»DateTimeFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR DateTimeField-»DateTimeFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR BinaryField»BinaryFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR BinaryField»BinaryFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR PhotoField»PhotoFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR PhotoField»PhotoFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR VideoField»VideoFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR VideoField»VideoFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR SoundField»SoundFieldEdit«ENDDEFINE»
+«DEFINE classInClass FOR SoundField»SoundFieldEdit«ENDDEFINE»
 
-«DEFINE class FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedEdit«ELSE»RelationOneFieldEdit«ENDIF»«ELSE»«IF nestedForm»NestedRowFieldEdit«ELSE»RelationManyFieldEdit«ENDIF»«ENDIF»«ENDDEFINE»
+«DEFINE classInClass FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedEdit«ELSE»RelationOneFieldEdit<«entity.name.toFirstUpper()»>«ENDIF»«ELSE»«IF nestedForm»NestedRowFieldEdit<«entity.name.toFirstUpper()»>«ELSE»RelationManyFieldEdit<«entity.name.toFirstUpper()»>«ENDIF»«ENDIF»«ENDDEFINE»
 
+
+
+
+
+«DEFINE classInLayout FOR FieldEntity-»ERROR«ENDDEFINE»
+
+«DEFINE classInLayout FOR StringField-»TextFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR TextField-»«IF translatable-»LocalizedTextFieldEdit«ELSE-»TextFieldEdit«ENDIF-»«ENDDEFINE»
+
+«DEFINE classInLayout FOR BarcodeField-»BarcodeFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR GeoField-»GeoFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR FloatField-»FloatFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR IntegerField-»«IF max != null && max.length > 0 && min != null && min.length > 0-»BoundedIntegerFieldEdit«ELSE-»IntegerFieldEdit«ENDIF-»«ENDDEFINE»
+
+«DEFINE classInLayout FOR BooleanField-»BooleanFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR EnumField-»«IF multipleSelection-»EnumMultipleFieldEdit«ELSE-»EnumSingleFieldEdit«ENDIF-»«ENDDEFINE»
+
+«DEFINE classInLayout FOR DateField-»DateFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR TimeField-»TimeFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR DateTimeField-»DateTimeFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR BinaryField»BinaryFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR PhotoField»PhotoFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR VideoField»VideoFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR SoundField»SoundFieldEdit«ENDDEFINE»
+
+«DEFINE classInLayout FOR RelationFieldEntity»«IF cardinality == 1»«IF nestedForm»«entity.name.toFirstUpper()»NestedEdit«ELSE»RelationOneFieldEdit«ENDIF»«ELSE»«IF nestedForm»NestedRowFieldEdit«ELSE»RelationManyFieldEdit«ENDIF»«ENDIF»«ENDDEFINE»
 
 
 
@@ -83,5 +120,21 @@
 «DEFINE dependency FOR FieldDependentVisibility-»
 «IF !dependencyField.hidden-»
 «dependencyField.name.toFirstLower()».registerDependent(«parentFieldEntity.name.toFirstLower()», "«dependencyFieldValue»");
+«ENDIF-»
+«ENDDEFINE»
+
+
+
+
+«DEFINE saveNestedForm FOR FieldEntity-»
+«ENDDEFINE»
+
+«DEFINE saveNestedForm FOR RelationFieldEntity-»
+«IF nestedForm && cardinality == 1-»
+if (mEntity.get«name.toFirstUpper()»() != null) {
+	«entity.name.toFirstUpper()» nested = mEntity.get«name.toFirstUpper()»();
+	nested.prepareForSave(this);
+	nested.saveOrUpdate(this);
+}
 «ENDIF-»
 «ENDDEFINE»

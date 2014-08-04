@@ -4,7 +4,6 @@ import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.sqlite.CardEntityCursor;
-import org.imogene.android.database.sqlite.ImogOpenHelper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,27 +27,6 @@ public class CardEntity extends ImogBeanImpl {
 		public static final String NAME = "name";
 	}
 
-	public static CardEntity fromUri(Uri uri) {
-		if (uri == null) {
-			return null;
-		}
-		CardEntityCursor cursor = (CardEntityCursor) ImogOpenHelper.getHelper().query(uri);
-		if (cursor == null) {
-			return null;
-		}
-		try {
-			if (!cursor.moveToFirst()) {
-				return null;
-			}
-			if (cursor.getCount() > 1) {
-				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
-			}
-			return new CardEntity(cursor);
-		} finally {
-			cursor.close();
-		}
-	}
-
 	@XmlAlias("name")
 	private String name;
 
@@ -56,15 +34,12 @@ public class CardEntity extends ImogBeanImpl {
 	}
 
 	public CardEntity(CardEntityCursor cursor) {
-		init(cursor);
+		super(cursor);
+		name = cursor.getName();
 	}
 
 	public CardEntity(Bundle bundle) {
-	}
-
-	private void init(CardEntityCursor cursor) {
-		super.init(cursor);
-		name = cursor.getName();
+		super(bundle);
 	}
 
 	public final String getName() {

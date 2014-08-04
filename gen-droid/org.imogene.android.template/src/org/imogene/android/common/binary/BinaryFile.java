@@ -6,6 +6,7 @@ import java.util.Date;
 import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.BinaryCursor;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.NTPClock;
@@ -40,8 +41,8 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 	public BinaryFile() {
 	}
 
-	public BinaryFile(BinaryCursor c) {
-		init(c);
+	public BinaryFile(BinaryCursor<BinaryFile> c) {
+		super(c);
 		fileName = c.getFileName();
 		contentType = c.getContentType();
 		length = c.getLength();
@@ -120,9 +121,12 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 		return uri != null && Constants.AUTHORITY.equals(uri.getAuthority());
 	}
 
-	public static Uri toBinary(Context context, Uri data) {
-		if (data == null || isBinary(data)) {
-			return data;
+	public static Binary toBinary(Context context, Uri data) {
+		if (data == null) {
+			return null;
+		}
+		if (isBinary(data)) {
+			return ImogOpenHelper.fromUri(data);
 		}
 
 		Preferences prefs = Preferences.getPreferences(context);
@@ -164,10 +168,12 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 			fd.close();
 
 			binary.setModified(null);
-			return binary.saveOrUpdate(context);
+			binary.saveOrUpdate(context);
+			return binary;
 		} catch (Exception e) {
-			if (uri != null)
+			if (uri != null) {
 				r.delete(uri, null, null);
+			}
 			return null;
 		}
 	}

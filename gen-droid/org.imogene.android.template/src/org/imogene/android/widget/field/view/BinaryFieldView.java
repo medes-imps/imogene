@@ -1,5 +1,6 @@
 package org.imogene.android.widget.field.view;
 
+import org.imogene.android.common.binary.Binary;
 import org.imogene.android.template.R;
 
 import android.content.Context;
@@ -7,8 +8,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
+import fr.medes.android.util.content.ContentUrisUtils;
 
-public class BinaryFieldView extends BaseFieldView<Uri> {
+public class BinaryFieldView extends BaseFieldView<Binary> {
 
 	public BinaryFieldView(Context context) {
 		super(context, R.layout.imog__field_default);
@@ -27,7 +29,8 @@ public class BinaryFieldView extends BaseFieldView<Uri> {
 	@Override
 	protected void dispatchClick(View v) {
 		if (getValue() != null) {
-			Intent intent = new Intent(Intent.ACTION_VIEW, getValue());
+			Uri uri = ContentUrisUtils.withAppendedId(Binary.Columns.CONTENT_URI, getValue().getId());
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
 		}
 	}

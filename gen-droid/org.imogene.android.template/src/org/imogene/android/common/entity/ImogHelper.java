@@ -94,20 +94,16 @@ public abstract class ImogHelper {
 	public static EntityInfo getEntityInfo(Class<? extends ImogBean> clazz) {
 		Class<?> columnsClass = ReflectionUtils.getClass(clazz, "Columns");
 		if (columnsClass != null) {
-			try {
-				Drawable color = (Drawable) ReflectionUtils.getField(columnsClass, "COLOR").get(null);
-				String table = (String) ReflectionUtils.getField(columnsClass, "TABLE_NAME").get(null);
-				String type = (String) ReflectionUtils.getField(columnsClass, "BEAN_TYPE").get(null);
-				Uri uri = (Uri) ReflectionUtils.getField(columnsClass, "CONTENT_URI").get(null);
-				int desc_sg = (Integer) ReflectionUtils.getField(columnsClass, "DESC_SINGULAR").get(null);
-				int desc_pl = (Integer) ReflectionUtils.getField(columnsClass, "DESC_PLURAL").get(null);
-				int drawable = (Integer) ReflectionUtils.getField(columnsClass, "DRAWABLE").get(null);
-				int notifId = (Integer) ReflectionUtils.getField(columnsClass, "NOTIFICATION_ID").get(null);
-				return new EntityInfo(uri, table, type, desc_sg, desc_pl, drawable, color, notifId);
-			} catch (IllegalArgumentException e) {
-			} catch (IllegalAccessException e) {
-			} catch (NoSuchFieldException e) {
-			}
+			Drawable color = (Drawable) ReflectionUtils.getFieldValue(columnsClass, "COLOR", null);
+			String table = (String) ReflectionUtils.getFieldValue(columnsClass, "TABLE_NAME", null);
+			String type = (String) ReflectionUtils.getFieldValue(columnsClass, "BEAN_TYPE", null);
+			Uri uri = (Uri) ReflectionUtils.getFieldValue(columnsClass, "CONTENT_URI", null);
+			Integer desc_sg = (Integer) ReflectionUtils.getFieldValue(columnsClass, "DESC_SINGULAR", null);
+			Integer desc_pl = (Integer) ReflectionUtils.getFieldValue(columnsClass, "DESC_PLURAL", null);
+			Integer drawable = (Integer) ReflectionUtils.getFieldValue(columnsClass, "DRAWABLE", null);
+			Integer notifId = (Integer) ReflectionUtils.getFieldValue(columnsClass, "NOTIFICATION_ID", null);
+			return new EntityInfo(uri, table, type, desc_sg != null ? desc_sg : -1, desc_pl != null ? desc_pl : -1,
+					drawable != null ? drawable : -1, color, notifId != null ? notifId : -1);
 		}
 		// If we arrive here this means that the entity is not representable
 		return null;

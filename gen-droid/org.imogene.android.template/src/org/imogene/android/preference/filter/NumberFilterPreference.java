@@ -52,6 +52,8 @@ public abstract class NumberFilterPreference<U extends Number, T extends NumberF
 			if (s != null)
 				return getContext().getString(R.string.imog__filter_number_lt, s.toString());
 			break;
+		default:
+			break;
 		}
 		return getContext().getString(android.R.string.unknownName);
 	}

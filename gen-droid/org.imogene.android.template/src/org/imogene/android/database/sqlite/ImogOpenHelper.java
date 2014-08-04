@@ -6,6 +6,7 @@ import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
 import org.imogene.android.common.entity.DefaultUser;
 import org.imogene.android.common.entity.GpsLocation;
 import org.imogene.android.common.entity.ImogActor;
+import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.SyncHistory;
 import org.imogene.android.common.filter.ClientFilter;
 import org.imogene.android.common.model.CardEntity;
@@ -13,6 +14,7 @@ import org.imogene.android.common.model.FieldGroup;
 import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
+import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.provider.ImogProvider;
 
 import android.content.ContentValues;
@@ -152,6 +154,33 @@ public abstract class ImogOpenHelper extends AmlOpenHelper {
 			+ PreCache.Columns.PROVIDER + " text, " + PreCache.Columns.NORTH + " real, " + PreCache.Columns.EAST
 			+ " real, " + PreCache.Columns.SOUTH + " real, " + PreCache.Columns.WEST + " real, "
 			+ PreCache.Columns.ZOOM_MIN + " integer, " + PreCache.Columns.ZOOM_MAX + " integer);";
+
+	/**
+	 * Convenient method to retrieve an {@link ImogBean} from an {@link Uri}.
+	 * 
+	 * @param uri The uri representing the bean
+	 * @return The bean if any or {@code null}
+	 */
+	public static <T extends ImogBean> T fromUri(Uri uri) {
+		if (uri == null) {
+			return null;
+		}
+		ImogBeanCursor<T> cursor = ImogOpenHelper.getHelper().query(uri);
+		if (cursor == null) {
+			return null;
+		}
+		try {
+			if (!cursor.moveToFirst()) {
+				return null;
+			}
+			if (cursor.getCount() > 1) {
+				throw new IllegalArgumentException("The uri do not represent a single entity: " + uri);
+			}
+			return cursor.newBean();
+		} finally {
+			cursor.close();
+		}
+	}
 
 	public ImogOpenHelper(Context context, String name, CursorFactory factory, int version) {
 		super(context, name, factory, version);
@@ -309,7 +338,7 @@ public abstract class ImogOpenHelper extends AmlOpenHelper {
 	}
 
 	@Override
-	public Cursor query(Uri uri) {
+	public <T extends Cursor> T query(Uri uri) {
 		return queryBuilder(uri).query();
 	}
 
