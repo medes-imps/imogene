@@ -11,7 +11,6 @@ import org.imogene.model.core.FieldGroup;
 import org.imogene.model.core.GeoField;
 import org.imogene.model.core.Project;
 import org.imogene.model.core.RelationFieldEntity;
-import org.imogene.model.core.ReverseRelationFieldEntity;
 import org.imogene.model.core.TextField;
 import org.imogene.model.core.Thema;
 
@@ -102,15 +101,6 @@ public class MedooAndroidGenHelper {
 			if (!entity.getSecondaryFields().contains(field))
 				main.add(field);
 		return main;
-	}
-
-	public static boolean isForbiddenCase(FieldEntity field) {
-		if (field instanceof ReverseRelationFieldEntity) {
-			ReverseRelationFieldEntity rel = (ReverseRelationFieldEntity) field;
-			return rel.getCardinality() == 1 && rel.getOppositeRelationField() != null
-					&& rel.getOppositeRelationField().getCardinality() == 1;
-		}
-		return false;
 	}
 
 	public static List<RelationFieldEntity> getFilteredFields(CardEntity entity, FieldEntity filter) {

@@ -30,9 +30,6 @@ boolean isInMiscellaneousThema(List[Thema] themas, CardEntity entity) :
 List[FieldEntity] getMainFields(CardEntity entity) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getMainFields(org.imogene.model.core.CardEntity);
   
-boolean isForbiddenCase(FieldEntity field) :
-  JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.isForbiddenCase(org.imogene.model.core.FieldEntity);
-  
 List[RelationFieldEntity] getFilteredFields(CardEntity entity, FieldEntity filter) :
   JAVA org.imogene.android.oaw.generator.MedooAndroidGenHelper.getFilteredFields(org.imogene.model.core.CardEntity, org.imogene.model.core.FieldEntity);
   

@@ -41,7 +41,7 @@ public class CollectionConverter extends AbstractFieldConverter {
 			if (clazz == null) {
 				continue;
 			}
-			EntityInfo info = ImogHelper.getEntityInfo((Class<? extends ImogBean>) clazz);
+			EntityInfo info = ImogHelper.getEntityInfo(clazz.asSubclass(ImogBean.class));
 			if (info == null) {
 				continue;
 			}

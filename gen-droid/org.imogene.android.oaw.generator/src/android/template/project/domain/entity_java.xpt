@@ -743,14 +743,14 @@ if («name.toFirstLower()» != null) {
 «ENDDEFINE»
 
 «DEFINE postCommit FOR ReverseRelationFieldEntity-»
-«IF isForbiddenCase(this)»
+«IF cardinality == 1 && oppositeRelationField != null && oppositeRelationField.cardinality == 1-»
 {
 ContentValues v = new ContentValues();
 v.putNull(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 context.getContentResolver().update(«entity.name.toFirstUpper()-».Columns.CONTENT_URI, v, «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField» + "='" + getId() + "'", null);
 if («name.toFirstLower()» != null) {
-	v.put(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField», getId());
-	context.getContentResolver().update(«name.toFirstLower()», v, null, null);
+	«name.toFirstLower()».set«oppositeRelationField.name.toFirstUpper()»(this);
+	«name.toFirstLower()».saveOrUpdate(context);
 }
 }
 «ELSE»
