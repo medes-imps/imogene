@@ -6,9 +6,7 @@
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -16,20 +14,15 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import fr.medes.android.app.ViewPagerIndicatorActivity;
-import fr.medes.android.util.content.ContentUrisUtils;
 
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
-import org.imogene.android.common.dynamicfields.DynamicFieldManager;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.util.DatabaseUtils;
@@ -57,15 +50,13 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	private ErrorAdapter mAdapter;
 	
 	private FieldManager mManager;
-	«IF hasDynamicFields-»
-	private DynamicFieldManager mDynamicFieldManager;
-	
-	private ViewGroup mDynamicFieldList;
-	«ENDIF-»
 	
 	«FOREACH groups.fields AS f-»
 	private «EXPAND android::template::EditorUtils::classInClass FOR f» «f.name.toFirstLower()»;
 	«ENDFOREACH»
+	«IF hasDynamicFields-»
+	private DynamicFieldsEdit dynamicFields;
+	«ENDIF-»
 	
 	private «name.toFirstUpper()» mEntity;
 	private Uri mUri;
@@ -80,12 +71,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		
 		mPolicy = AccessPolicy.getPolicy(this);
 		
-		«IF hasDynamicFields-»
-		SavedState state = (SavedState) getLastNonConfigurationInstance();
-		mEntity = state != null ? state.first : null;
-		«ELSE-»
 		mEntity = («name.toFirstUpper()») getLastNonConfigurationInstance();
-		«ENDIF-»
 		if (mEntity == null) {
 			if (Intent.ACTION_INSERT.equals(getIntent().getAction())) {
 				if (getIntent().hasExtra(Extras.EXTRA_ENTITY)) {
@@ -103,21 +89,15 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		}
 		
 		mManager = new FieldManager(this, 100);
-		«IF hasDynamicFields-»
-		mDynamicFieldManager = new DynamicFieldManager(this);
-		mDynamicFieldManager.loadTemplates(«name.toFirstUpper()».Columns.BEAN_TYPE);
-		if (state != null) {
-			mDynamicFieldManager.loadInstances(state.second);
-		} else {
-			mDynamicFieldManager.loadInstancesUris(mEntity.getDynamicFieldValues());
-		}
-		«ENDIF-»
 		
 		LayoutInflater.from(this).inflate(R.layout.«name.toLowerCase()»_edit, getViewPager(), true);
 		
 		«FOREACH groups.fields AS f-»
 			«f.name.toFirstLower()» = («EXPAND android::template::EditorUtils::classInClass FOR f») findViewById(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»);
 		«ENDFOREACH-»
+		«IF hasDynamicFields-»
+		dynamicFields = (DynamicFieldsEdit) findViewById(R.id.«name.toLowerCase()»_dynamic_fields);
+		«ENDIF-»
 	
 		«FOREACH groups.fields AS f-»
 			«EXPAND android::template::EditorUtils::specificInit FOR f-»
@@ -125,10 +105,19 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 			«f.name.toFirstLower()».setOnValueChangeListener(this);
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH»
+		«IF hasDynamicFields-»
+		dynamicFields.setOnValueChangeListener(this);
+		dynamicFields.setFormType(«name.toFirstUpper()».Columns.BEAN_TYPE);
+		dynamicFields.buildViews();
+		dynamicFields.onAttachedToHierarchy(mManager);
+		«ENDIF-»
 		
 		«FOREACH groups.fields AS f-»
 			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
 		«ENDFOREACH»
+		«IF hasDynamicFields-»
+		dynamicFields.init(mEntity.getDynamicFieldValues());
+		«ENDIF-»
 		
 		ImogPagerAdapter adapter = new ImogPagerAdapter(this);
 		
@@ -146,10 +135,8 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		«ENDFOREACH»
 		
 		«IF hasDynamicFields-»
-		if (mDynamicFieldManager.hasTemplate()) {
+		if (!dynamicFields.isEmpty()) {
 			adapter.addPage(R.string.«name.toLowerCase()»_dynamic_field_group, R.id.«name.toLowerCase()»_dynamic_field_group);
-			mDynamicFieldList = (ViewGroup) findViewById(R.id.«name.toLowerCase()»_dynamic_field_list);
-			mDynamicFieldManager.attachViewsForEdition(mDynamicFieldList, mManager);
 		}
 		«ENDIF-»
 		
@@ -175,11 +162,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		«IF hasDynamicFields-»
-		return new SavedState(mEntity, mDynamicFieldManager.getInstances());
-		«ELSE-»
 		return mEntity;
-		«ENDIF-»
 	}
 	
 	@Override
@@ -265,6 +248,11 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 			mEntity.set«f.name.toFirstUpper()»(«f.name.toFirstLower()».getValue());
 			break;
 		«ENDFOREACH-»
+		«IF hasDynamicFields-»
+		case R.id.«name.toLowerCase()»_dynamic_fields:
+			mEntity.setDynamicFieldValues(dynamicFields.getValue());
+			break;
+		«ENDIF-»
 		default:
 			break;
 		}
@@ -305,13 +293,8 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		}
 		«ENDFOREACH-»
 		«IF hasDynamicFields-»
-		if (mDynamicFieldList != null) {
-			for (int i = 0; i < mDynamicFieldList.getChildCount(); i++) {
-				BaseFieldEdit<?> field = (BaseFieldEdit<?>) mDynamicFieldList.getChildAt(i);
-				if (!field.isValid()) {
-					mErrors.add(field.getErrorEntry(R.id.«name.toLowerCase()»_dynamic_field_group));
-				}
-			}
+		if (!dynamicFields.isValid()) {
+			dynamicFields.updateErrorEntries(mErrors, R.id.«name.toLowerCase()»_dynamic_field_group);
 		}
 		«ENDIF-»
 		mAdapter.notifyDataSetChanged();
@@ -324,13 +307,8 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		}
 		«ENDFOREACH-»
 		«IF hasDynamicFields-»
-		if (mDynamicFieldList != null) {
-			for (int i = 0; i < mDynamicFieldList.getChildCount(); i++) {
-				BaseFieldEdit<?> field = (BaseFieldEdit<?>) mDynamicFieldList.getChildAt(i);
-				if (!field.isValid()) {
-					return false;
-				}
-			}
+		if (!dynamicFields.isValid()) {
+			return false;
 		}
 		«ENDIF-»
 		return true;
@@ -339,9 +317,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	private void save() {
 		if (validate()) {
 			«EXPAND android::template::EditorUtils::saveNestedForm FOREACH groups.fields-»
-			«IF hasDynamicFields-»
-			mDynamicFieldManager.saveDynamicFields(mEntity);
-			«ENDIF-»
 			mEntity.prepareForSave(this);
 			Uri uri = mEntity.saveOrUpdate(this);
 			if (uri != null) {
@@ -361,16 +336,6 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 	public «name.toFirstUpper()» getParentBean() {
 		return mEntity;
 	}
-	
-	«IF hasDynamicFields-»
-	private static class SavedState extends Pair<«name.toFirstUpper()», Collection<DynamicFieldInstance>> {
-
-		public SavedState(«name.toFirstUpper()» first, Collection<DynamicFieldInstance> second) {
-			super(first, second);
-		}
-		
-	}
-	«ENDIF-»
 	
 }
 «ENDFILE»

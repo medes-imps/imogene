@@ -30,10 +30,6 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 	private DynamicFieldTemplate fieldTemplate;
 	@XmlAlias("fieldValue")
 	private String fieldValue;
-
-	/**
-	 * Be careful the form instance will not be saved !!
-	 */
 	@XmlOmitField
 	private ImogBean formInstance;
 
@@ -86,8 +82,12 @@ public class DynamicFieldInstance extends ImogBeanImpl {
 		} else {
 			values.putNull(Columns.FIELDTEMPLATE);
 		}
-
 		values.put(Columns.FIELDVALUE, fieldValue);
+		if (formInstance != null) {
+			values.put(Columns.FORMINSTANCE, formInstance.getId());
+		} else {
+			values.putNull(Columns.FORMINSTANCE);
+		}
 	}
 
 	@Override

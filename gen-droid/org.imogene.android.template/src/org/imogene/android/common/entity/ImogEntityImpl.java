@@ -23,7 +23,7 @@ public abstract class ImogEntityImpl extends ImogBeanImpl implements ImogEntity 
 	public ImogEntityImpl(Parcel in) {
 		super(in);
 	}
-	
+
 	public ImogEntityImpl(Bundle bundle) {
 		super(bundle);
 	}
@@ -43,6 +43,16 @@ public abstract class ImogEntityImpl extends ImogBeanImpl implements ImogEntity 
 	@Override
 	public List<DynamicFieldInstance> getDynamicFieldValues() {
 		return dynamicFieldValues;
+	}
+
+	@Override
+	protected void prepareForSave(Context context, String beanType) {
+		super.prepareForSave(context, beanType);
+		if (dynamicFieldValues != null) {
+			for (DynamicFieldInstance instance : dynamicFieldValues) {
+				instance.prepareForSave(context);
+			}
+		}
 	}
 
 	@Override

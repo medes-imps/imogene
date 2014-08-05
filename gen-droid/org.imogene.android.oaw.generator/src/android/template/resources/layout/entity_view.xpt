@@ -28,18 +28,15 @@
 	«ENDFOREACH»
 	
 	«IF hasDynamicFields-»
-	<ScrollView 
-		android:id="@+id/«name.toLowerCase()»_dynamic_field_group"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-		
-		<LinearLayout
-			android:id="@+id/«name.toLowerCase()»_dynamic_field_list"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical" />
-	
-	</ScrollView>
+    <ScrollView
+        android:id="@+id/«name.toLowerCase()»_dynamic_field_group"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <org.imogene.android.widget.field.view.DynamicFieldsView
+            android:id="@+id/«name.toLowerCase()»_dynamic_fields"
+            style="@style/BaseField" />
+    </ScrollView>
 	«ENDIF-»
 
 </merge>
