@@ -106,20 +106,6 @@ public class RelationManyFieldEdit<T extends ImogBean> extends RelationFieldEdit
 	}
 
 	@Override
-	public Where onCreateConstraint(String column) {
-		final List<T> value = getValue();
-		if (value != null && value.size() > 0) {
-			Object[] ids = new String[value.size()];
-			for (int i = 0; i < value.size(); i++) {
-				ids[i] = value.get(i).getId();
-			}
-			return new Where().in(column, ids);
-		}
-		showToastUnset();
-		return null;
-	}
-
-	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
 			ArrayList<String> result = data.getStringArrayListExtra(Extras.EXTRA_SELECTED);

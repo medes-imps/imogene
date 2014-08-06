@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.imogene.android.template.R;
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.field.BaseField;
-import org.imogene.android.widget.field.ConstraintBuilder;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -16,9 +15,8 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-import fr.medes.android.database.sqlite.stmt.Where;
 
-public abstract class BaseFieldEdit<T> extends BaseField<T> implements ConstraintBuilder {
+public abstract class BaseFieldEdit<T> extends BaseField<T> {
 
 	public interface OnValueChangeListener {
 		public void onValueChange(BaseFieldEdit<?> field);
@@ -27,7 +25,7 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 	private View mRequiredView;
 	private View mHelpView;
 
-	private ArrayList<BaseField<?>> mConstraintDependents;
+	private ArrayList<BaseFieldEdit<?>> mConstraintDependents;
 
 	private OnValueChangeListener mListener;
 
@@ -184,18 +182,28 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 		}
 	}
 
-	@Override
-	public void registerConstraintDependent(BaseField<?> dependent) {
+	/**
+	 * Register a field which is dependent of this one. When the value of this change the value of dependent fields will
+	 * be reset.
+	 * 
+	 * @param dependent The dependent field
+	 */
+	public void registerConstraintDependent(BaseFieldEdit<?> dependent) {
 		if (mConstraintDependents == null) {
-			mConstraintDependents = new ArrayList<BaseField<?>>();
+			mConstraintDependents = new ArrayList<BaseFieldEdit<?>>();
 		}
 
 		mConstraintDependents.add(dependent);
 	}
 
-	@Override
-	public Where onCreateConstraint(String column) {
-		return new Where().eq(column, getValue());
+	/**
+	 * Register this field as a dependent of an other field. When the parent field value will change the value of this
+	 * field will be reset.
+	 * 
+	 * @param parent The parent field
+	 */
+	public void registerConstraintDependsOn(BaseFieldEdit<?> parent) {
+		parent.registerConstraintDependent(this);
 	}
 
 	private void notifyConstraintDependentsChange() {

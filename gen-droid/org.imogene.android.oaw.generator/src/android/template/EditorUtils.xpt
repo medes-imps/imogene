@@ -102,7 +102,33 @@
 «name.toFirstLower()».setOppositeRelationField(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR oppositeRelationField»);
 «ENDIF-»
 «IF relationHierarchicalFilter.size == 2-»
-«name.toFirstLower()».registerConstraintBuilder(«relationHierarchicalFilter.get(0).name.toFirstLower()», «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR relationHierarchicalFilter.get(1)»);
+«LET relationHierarchicalFilter.get(0) AS parent-»
+«name.toFirstLower()».registerConstraintDependsOn(«parent.name.toFirstLower()»);
+«name.toFirstLower()».registerConstraintBuilder(new ConstraintBuilder() {
+	@Override
+	public Where onCreateConstraint() {
+		«IF parent.cardinality == 1-»
+		«parent.entity.name.toFirstUpper()» bean = «parent.name.toFirstLower()».getValue();
+		if (bean != null) {
+			return new Where().eq(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR relationHierarchicalFilter.get(1)», bean.getId());
+		}
+		«parent.name.toFirstLower()».showToastUnset();
+		return null;
+		«ELSE-»
+		List<«parent.entity.name.toFirstUpper()»> beans = «parent.entity.name.toFirstUpper()».getValue();
+		if (beans != null && beans.size() > 0) {
+			Object[] ids = new String[beans.size()];
+			for (int i = 0; i < beans.size(); i++) {
+				ids[i] = bean.get(i).getId();
+			}
+			return new Where().in(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR relationHierarchicalFilter.get(1)», ids);
+		}
+		«parent.name.toFirstLower()».showToastUnset();
+		return null;
+		«ENDIF-»
+	}
+});
+«ENDLET-»
 «ENDIF-»
 «FOREACH commonFields AS c ITERATOR i-»
 «IF (mod2(i.counter0) == 0)-»

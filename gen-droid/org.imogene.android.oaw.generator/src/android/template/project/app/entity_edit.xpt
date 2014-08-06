@@ -5,7 +5,9 @@
 «FILE "/" + projectName.toLowerCase() + "/app/" + name.toFirstUpper() + "Edit.java"»
 package org.imogene.android.«projectName.toLowerCase()-».app;
 
+
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,6 +23,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import fr.medes.android.app.ViewPagerIndicatorActivity;
+import fr.medes.android.database.sqlite.stmt.Where;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
@@ -33,6 +36,7 @@ import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.ImogPagerAdapter;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.edit.RelationFieldEdit.ConstraintBuilder;
 import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
 import org.imogene.android.«projectName.toLowerCase()».R;

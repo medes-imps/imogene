@@ -83,16 +83,6 @@ public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<
 	}
 
 	@Override
-	public Where onCreateConstraint(String column) {
-		final ImogBean value = getValue();
-		if (value != null) {
-			return new Where().eq(column, value.getId());
-		}
-		showToastUnset();
-		return null;
-	}
-
-	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
 			T value = ImogOpenHelper.fromUri(data.getData());

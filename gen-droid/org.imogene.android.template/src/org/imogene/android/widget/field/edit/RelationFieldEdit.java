@@ -6,7 +6,6 @@ import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.template.R;
 import org.imogene.android.util.IntentUtils;
-import org.imogene.android.widget.field.ConstraintBuilder;
 import org.imogene.android.widget.field.FieldManager;
 import org.imogene.android.widget.field.FieldManager.OnActivityResultListener;
 
@@ -53,7 +52,21 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		public void onCreateExtra(Bundle bundle);
 	}
 
-	private ArrayList<ConstraintEntry> mConstraintsBuilders;
+	/**
+	 * Interface used to manage hierarchical fields. This will allow filtering a list given the previously set value.
+	 */
+	public interface ConstraintBuilder {
+
+		/**
+		 * Create a where clause to filter the list.
+		 * 
+		 * @return The where clause to use.
+		 */
+		public Where onCreateConstraint();
+
+	}
+
+	private ArrayList<ConstraintBuilder> mConstraintsBuilders;
 	private ArrayList<CommonFieldEntry> mCommonFields;
 	private ArrayList<ExtraBuilder> mBuilders;
 
@@ -175,20 +188,16 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	}
 
 	/**
-	 * Convenient method to add a hierarchical filter. The constraint builder will build a where clause to filter data
-	 * upon the given column.
+	 * Convenient method to add a hierarchical filter. The constraint builder will build a where clause to filter data.
 	 * 
 	 * @param builder The constraint builder to build the where clause.
-	 * @param column The column to filter upon.
 	 */
-	public void registerConstraintBuilder(ConstraintBuilder builder, String column) {
+	public void registerConstraintBuilder(ConstraintBuilder builder) {
 		if (mConstraintsBuilders == null) {
-			mConstraintsBuilders = new ArrayList<ConstraintEntry>();
+			mConstraintsBuilders = new ArrayList<ConstraintBuilder>();
 		}
 
-		mConstraintsBuilders.add(new ConstraintEntry(builder, column));
-
-		builder.registerConstraintDependent(this);
+		mConstraintsBuilders.add(builder);
 	}
 
 	@Override
@@ -203,8 +212,8 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		}
 		onPrepareIntent(intent);
 		if (mConstraintsBuilders != null) {
-			for (ConstraintEntry entry : mConstraintsBuilders) {
-				Where constraintWhere = entry.first.onCreateConstraint(entry.second);
+			for (ConstraintBuilder builder : mConstraintsBuilders) {
+				Where constraintWhere = builder.onCreateConstraint();
 				if (constraintWhere != null) {
 					if (and) {
 						where.and();
@@ -253,22 +262,13 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 		return null;
 	}
 
-	protected void showToastUnset() {
+	/**
+	 * Show a simple toast message indicating that this field must be set in order to set other fields values.
+	 */
+	public void showToastUnset() {
 		String message = getResources().getString(R.string.imog__relation_hierarchical_parent_unset, getTitle());
 		Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
-
-	/**
-	 * Container to ease passing around a tuple of constraint builder and a column to filter upon on which the where
-	 * clause will apply.
-	 */
-	private static final class ConstraintEntry extends Pair<ConstraintBuilder, String> {
-
-		public ConstraintEntry(ConstraintBuilder first, String second) {
-			super(first, second);
-		}
-
-	};
 
 	/**
 	 * Container to ease passing around a tuple of the field which value will be passed to the related form and the name
