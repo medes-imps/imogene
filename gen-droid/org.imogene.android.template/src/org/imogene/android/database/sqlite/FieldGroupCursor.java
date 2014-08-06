@@ -26,10 +26,12 @@ public class FieldGroupCursor extends ImogBeanCursorImpl<FieldGroup> {
 
 	@Override
 	public FieldGroup newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		FieldGroup bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new FieldGroup(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

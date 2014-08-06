@@ -30,10 +30,12 @@ public class BinaryCursorImpl extends ImogBeanCursorImpl<BinaryFile> implements 
 
 	@Override
 	public BinaryFile newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		BinaryFile bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new BinaryFile(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

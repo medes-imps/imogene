@@ -25,10 +25,12 @@ public class CardEntityCursor extends ImogBeanCursorImpl<CardEntity> {
 
 	@Override
 	public CardEntity newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		CardEntity bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new CardEntity(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

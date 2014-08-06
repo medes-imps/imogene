@@ -50,10 +50,12 @@ public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(meta
 	
 	@Override
 	public «name.toFirstUpper()» newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		«name.toFirstUpper()» bean = DatabaseCache.getInstance().get(getId());;
 		if (bean == null) {
 			bean = new «name.toFirstUpper()»(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 	

@@ -27,10 +27,12 @@ public class EntityProfileCursor extends ImogBeanCursorImpl<EntityProfile> {
 
 	@Override
 	public EntityProfile newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		EntityProfile bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new EntityProfile(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

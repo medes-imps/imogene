@@ -29,10 +29,12 @@ public class ProfileCursor extends ImogBeanCursorImpl<Profile> {
 
 	@Override
 	public Profile newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		Profile bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new Profile(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

@@ -27,10 +27,12 @@ public class DefaultUserCursor extends ImogActorCursorImpl<DefaultUser> {
 
 	@Override
 	public DefaultUser newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		DefaultUser bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new DefaultUser(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

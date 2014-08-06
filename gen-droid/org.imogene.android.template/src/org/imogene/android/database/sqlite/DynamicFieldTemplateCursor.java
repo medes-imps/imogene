@@ -27,10 +27,12 @@ public class DynamicFieldTemplateCursor extends ImogBeanCursorImpl<DynamicFieldT
 
 	@Override
 	public DynamicFieldTemplate newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		DynamicFieldTemplate bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new DynamicFieldTemplate(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

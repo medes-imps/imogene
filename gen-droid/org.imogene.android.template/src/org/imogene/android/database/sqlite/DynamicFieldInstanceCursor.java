@@ -27,10 +27,12 @@ public class DynamicFieldInstanceCursor extends ImogBeanCursorImpl<DynamicFieldI
 
 	@Override
 	public DynamicFieldInstance newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		DynamicFieldInstance bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new DynamicFieldInstance(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 

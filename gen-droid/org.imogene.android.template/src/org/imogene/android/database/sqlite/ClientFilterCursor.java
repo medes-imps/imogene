@@ -25,10 +25,12 @@ public class ClientFilterCursor extends ImogBeanCursorImpl<ClientFilter> {
 
 	@Override
 	public ClientFilter newBean() {
+		DatabaseCache.getInstance().beginTransaction();
 		ClientFilter bean = DatabaseCache.getInstance().get(getId());
 		if (bean == null) {
 			bean = new ClientFilter(this);
 		}
+		DatabaseCache.getInstance().endTransaction();
 		return bean;
 	}
 
