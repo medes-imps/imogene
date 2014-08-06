@@ -1,6 +1,7 @@
 package org.imogene.android.widget.field.edit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.imogene.android.Constants.Categories;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import fr.medes.android.util.content.ContentUrisUtils;
 
 public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdit<T> {
 
@@ -50,7 +52,7 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 		}
 		for (T bean : value) {
 			ViewGroup entry = (ViewGroup) inflate(mEntries.getContext(), R.layout.imog__entity_row, null);
-			entry.setTag(bean);
+			entry.setTag(bean.getId());
 			mEntries.addView(entry);
 
 			((TextView) entry.findViewById(android.R.id.text1)).setText(bean.getMainDisplay(getContext()));
@@ -88,9 +90,13 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 			if (values == null) {
 				values = new ArrayList<T>();
 			}
-			if (!values.contains(value)) {
-				values.add(value);
+			for (Iterator<T> it = values.iterator(); it.hasNext();) {
+				T bean = it.next();
+				if (bean.getId().equals(value.getId())) {
+					it.remove();
+				}
 			}
+			values.add(value);
 			setValue(values);
 			return true;
 		}
@@ -101,12 +107,16 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 
 		@Override
 		public void onClick(View v) {
-			Uri uri = (Uri) v.getTag();
-			List<T> uris = getValue();
-			if (uri != null) {
-				if (uris.remove(uri)) {
-					setValue(uris);
+			String id = (String) v.getTag();
+			List<T> beans = getValue();
+			if (beans != null) {
+				for (Iterator<T> it = beans.iterator(); it.hasNext();) {
+					T bean = it.next();
+					if (bean.getId().equals(id)) {
+						it.remove();
+					}
 				}
+				setValue(beans);
 			}
 		}
 	};
@@ -115,7 +125,8 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 
 		@Override
 		public void onClick(View v) {
-			startActivityForResult(new Intent(Intent.ACTION_EDIT, (Uri) v.getTag()), mRequestCode);
+			Uri uri = ContentUrisUtils.withAppendedId(mContentUri, (String) v.getTag());
+			startActivityForResult(new Intent(Intent.ACTION_EDIT, uri), mRequestCode);
 		}
 	};
 

@@ -134,12 +134,14 @@ public class ImogXmlConverter {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
 			}
+			// Retrieve the real field name (if using aliases)
 			String fieldName = mapper.realMember(obj.getClass(), parser.getName());
 			if (fieldName == null) {
 				continue;
 			}
 			Field field = null;
 			try {
+				// try to retrieve the field
 				field = ReflectionUtils.getField(obj.getClass(), fieldName);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -147,19 +149,21 @@ public class ImogXmlConverter {
 			if (field == null) {
 				continue;
 			}
-			if (!mapper.isImmutableValueType(field.getType())) {
-				field.setAccessible(true);
-				Object value = null;
-				try {
-					value = field.get(obj);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (value != null) {
-					parse(parser, value);
-				}
-				continue;
-			}
+			// TODO Check this : Now that relations are using real beans the mapper.isImmutableValueType() is returning
+			// false and the parser is expecting to parse an object included in an other
+			// if (!mapper.isImmutableValueType(field.getType())) {
+			// field.setAccessible(true);
+			// Object value = null;
+			// try {
+			// value = field.get(obj);
+			// } catch (Exception e) {
+			// e.printStackTrace();
+			// }
+			// if (value != null) {
+			// parse(parser, value);
+			// }
+			// continue;
+			// }
 
 			Converter fc = null;
 

@@ -149,7 +149,7 @@ public class MedooAndroidGenHelper {
 
 	public static int next() {
 		if (increment == 0) {
-			increment = (int) System.currentTimeMillis() / 1000;
+			increment = (int) (System.currentTimeMillis() / 1000);
 		}
 		return increment++;
 	}
