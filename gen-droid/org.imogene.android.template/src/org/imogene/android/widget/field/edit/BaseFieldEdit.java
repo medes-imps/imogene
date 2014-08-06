@@ -15,6 +15,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Toast;
 
 public abstract class BaseFieldEdit<T> extends BaseField<T> {
 
@@ -204,6 +205,14 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> {
 	 */
 	public void registerConstraintDependsOn(BaseFieldEdit<?> parent) {
 		parent.registerConstraintDependent(this);
+	}
+
+	/**
+	 * Show a simple toast message indicating that this field must be set in order to set other fields values.
+	 */
+	public void showToastUnset() {
+		String message = getResources().getString(R.string.imog__field_unset, getTitle());
+		Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
 
 	private void notifyConstraintDependentsChange() {

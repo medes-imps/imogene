@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Toast;
 import fr.medes.android.database.sqlite.stmt.Where;
 import fr.medes.android.util.Arrays;
 
@@ -260,14 +259,6 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 
 	protected Where onPrepareWhere() {
 		return null;
-	}
-
-	/**
-	 * Show a simple toast message indicating that this field must be set in order to set other fields values.
-	 */
-	public void showToastUnset() {
-		String message = getResources().getString(R.string.imog__relation_hierarchical_parent_unset, getTitle());
-		Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
 	}
 
 	/**

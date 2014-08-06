@@ -48,7 +48,7 @@
     <string name="imog__delete_confirmation_title">Delete</string>
     <string name="imog__delete_confirmation">This element will be deleted</string>
     <string name="imog__relation_unsettable">This side of the relation cannot be set</string>
-    <string name="imog__relation_hierarchical_parent_unset">You have to fill the field %s</string>
+    <string name="imog__field_unset">You have to fill the field %s</string>
     <string name="imog__unsaved_dialog_msg">Save changes before closing ?</string>
     <string name="imog__uncomplete_dialog_msg">You haven\'t finished to fill the form. Quit without saving ?</string>
     <string name="imog__lower_than_decimal">must be lower than %d</string>
