@@ -62,7 +62,7 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 
 			final ImageView deleteIcon = (ImageView) entry.findViewById(android.R.id.icon);
 			deleteIcon.setImageResource(R.drawable.imog__ic_action_remove);
-			deleteIcon.setTag(bean);
+			deleteIcon.setTag(bean.getId());
 			deleteIcon.setOnClickListener(mOnClickDeleteListener);
 
 			entry.setOnClickListener(mOnClickViewListener);
