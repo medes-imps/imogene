@@ -195,7 +195,7 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> implements Constrain
 
 	@Override
 	public Where onCreateConstraint(String column) {
-		return null;
+		return new Where().eq(column, getValue());
 	}
 
 	private void notifyConstraintDependentsChange() {
