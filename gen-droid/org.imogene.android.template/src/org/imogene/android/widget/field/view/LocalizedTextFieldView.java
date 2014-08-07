@@ -28,8 +28,8 @@ public class LocalizedTextFieldView extends BaseFieldView<LocalizedText> {
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
+	protected void updateView() {
+		super.updateView();
 		mViewFlipper.removeAllViews();
 
 		LocalizedText value = getValue();

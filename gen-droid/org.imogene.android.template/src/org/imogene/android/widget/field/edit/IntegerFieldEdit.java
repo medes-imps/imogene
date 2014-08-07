@@ -79,9 +79,9 @@ public class IntegerFieldEdit extends NumberFieldEdit<Integer> {
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		disableUpdateDisplayOnChange();
-		setValue(FormatHelper.toInteger(s.toString()));
-		enableUpdateDisplayOnChange();
+		setShouldUpdateValueView(false);
+		setValueInternal(FormatHelper.toInteger(s.toString()), true);
+		setShouldUpdateValueView(true);
 	}
 
 }

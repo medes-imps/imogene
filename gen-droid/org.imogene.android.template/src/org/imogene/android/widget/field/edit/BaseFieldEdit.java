@@ -19,18 +19,11 @@ import android.widget.Toast;
 
 public abstract class BaseFieldEdit<T> extends BaseField<T> {
 
-	public interface OnValueChangeListener {
-		public void onValueChange(BaseFieldEdit<?> field);
-	}
-
-	private View mRequiredView;
-	private View mHelpView;
+	private final View mRequiredView;
+	private final View mHelpView;
 
 	private ArrayList<BaseFieldEdit<?>> mConstraintDependents;
 
-	private OnValueChangeListener mListener;
-
-	private boolean mNotifyValueChanged = true;
 	private boolean mAutomaticVisibility = true;
 	private boolean mReadOnly;
 	private boolean mRequired;
@@ -40,29 +33,19 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> {
 
 	public BaseFieldEdit(Context context, int layoutId) {
 		super(context, layoutId);
-		init();
+		mHelpView = findViewById(R.id.imog__help);
+		mRequiredView = findViewById(R.id.imog__required);
 	}
 
 	public BaseFieldEdit(Context context, AttributeSet attrs, int layoutId) {
 		super(context, attrs, layoutId);
-		init();
+		mHelpView = findViewById(R.id.imog__help);
+		mRequiredView = findViewById(R.id.imog__required);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BaseFieldEdit, 0, 0);
 		setHelpId(a.getResourceId(R.styleable.BaseFieldEdit_help, 0));
 		setReadOnly(a.getBoolean(R.styleable.BaseFieldEdit_readOnly, false));
 		setRequired(a.getBoolean(R.styleable.BaseFieldEdit_required, false));
 		a.recycle();
-	}
-
-	private void init() {
-		mHelpView = findViewById(R.id.imog__help);
-		mRequiredView = findViewById(R.id.imog__required);
-	}
-
-	@Override
-	public void init(T value) {
-		disableNotifyValueChanged();
-		setValue(value);
-		enableNotifyValueChanged();
 	}
 
 	public void setRequired(boolean required) {
@@ -149,37 +132,23 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> {
 		super.onDependencyChanged();
 	}
 
-	protected void enableNotifyValueChanged() {
-		if (!mNotifyValueChanged) {
-			mNotifyValueChanged = true;
-		}
-	}
-
-	protected void disableNotifyValueChanged() {
-		if (mNotifyValueChanged) {
-			mNotifyValueChanged = false;
+	protected void updateRequiredViewVisibility() {
+		if (mRequired && mRequiredView != null) {
+			mRequiredView.setVisibility(isEmpty() ? View.VISIBLE : View.GONE);
 		}
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		if (mRequired && mRequiredView != null) {
-			mRequiredView.setVisibility(isEmpty() ? View.VISIBLE : View.GONE);
-		}
-		if (mNotifyValueChanged) {
-			notifyValueChange();
+	protected void updateView() {
+		super.updateView();
+		updateRequiredViewVisibility();
+	}
+
+	@Override
+	public void setValueInternal(T value, boolean notifyChange) {
+		super.setValueInternal(value, notifyChange);
+		if (notifyChange) {
 			notifyConstraintDependentsChange();
-		}
-	}
-
-	public void setOnValueChangeListener(OnValueChangeListener listener) {
-		mListener = listener;
-	}
-
-	private void notifyValueChange() {
-		if (mListener != null) {
-			mListener.onValueChange(this);
 		}
 	}
 
@@ -222,7 +191,7 @@ public abstract class BaseFieldEdit<T> extends BaseField<T> {
 
 		final int size = mConstraintDependents.size();
 		for (int i = 0; i < size; i++) {
-			mConstraintDependents.get(i).setValue(null);
+			mConstraintDependents.get(i).setValueInternal(null, true);
 		}
 	}
 

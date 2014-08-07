@@ -86,7 +86,7 @@ public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
 			T value = ImogOpenHelper.fromUri(data.getData());
-			setValue(value);
+			setValueInternal(value, true);
 			return true;
 		}
 		return false;

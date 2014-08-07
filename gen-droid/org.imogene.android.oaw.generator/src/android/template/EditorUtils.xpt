@@ -115,11 +115,11 @@
 		«parent.name.toFirstLower()».showToastUnset();
 		return null;
 		«ELSE-»
-		List<«parent.entity.name.toFirstUpper()»> beans = «parent.entity.name.toFirstUpper()».getValue();
+		List<«parent.entity.name.toFirstUpper()»> beans = «parent.name.toFirstLower()».getValue();
 		if (beans != null && beans.size() > 0) {
 			Object[] ids = new String[beans.size()];
 			for (int i = 0; i < beans.size(); i++) {
-				ids[i] = bean.get(i).getId();
+				ids[i] = beans.get(i).getId();
 			}
 			return new Where().in(«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR relationHierarchicalFilter.get(1)», ids);
 		}

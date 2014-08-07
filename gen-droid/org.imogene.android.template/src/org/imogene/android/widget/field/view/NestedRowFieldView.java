@@ -31,8 +31,8 @@ public class NestedRowFieldView<T extends ImogBean> extends RelationManyFieldVie
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
+	protected void updateView() {
+		super.updateView();
 		List<T> value = getValue();
 		mEntries.removeAllViews();
 		if (value == null) {

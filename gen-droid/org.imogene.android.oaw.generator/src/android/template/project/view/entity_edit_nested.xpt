@@ -18,7 +18,8 @@ import fr.medes.android.util.content.ContentUrisUtils;
 
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.BaseField;
+import org.imogene.android.widget.field.BaseField.OnValueChangeListener;
 import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
 import org.imogene.android.«projectName.toLowerCase()».R;
@@ -44,7 +45,7 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 		«FOREACH fields AS f-»
 		«EXPAND android::template::EditorUtils::specificInit FOR f-»
 		«EXPAND android::template::EditorUtils::dependency FOREACH f.fieldDependentVisibility-»
-		«f.name.toFirstLower()».setOnValueChangeListener(this);
+		«f.name.toFirstLower()».setOnValueChangedListener(this);
 		«ENDFOREACH»
 		
 		setOnClickListener(null);
@@ -73,28 +74,13 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 		«f.name.toFirstLower()».onAttachedToHierarchy(manager);
 		«ENDFOREACH-»
 	}
-	
-	@Override
-	public void init(«name.toFirstUpper()» value) {
-		super.init(value);
-		if (value != null) {
-			«FOREACH fields AS f-»
-			«f.name.toFirstLower()».init(value.get«f.name.toFirstUpper()»());
-			«ENDFOREACH»
-		}
-	}
 
 	@Override
-	public void setValue(«name.toFirstUpper()» value) {
-		if (value == null) {
-			value = new «name.toFirstUpper()»();
-		}
-		super.setValue(value);
-		if (value != null) {
-			«FOREACH fields AS f-»
-			«f.name.toFirstLower()».setValue(value.get«f.name.toFirstUpper()»());
-			«ENDFOREACH»
-		}
+	public void setValueInternal(Organization value, boolean notifyChange) {
+		super.setValueInternal(value, notifyChange);
+		«FOREACH fields AS f-»
+		«f.name.toFirstLower()».setValueInternal(value != null ? value.get«f.name.toFirstUpper()»() : null, notifyChange);
+		«ENDFOREACH»
 	}
 	
 	@Override
@@ -108,7 +94,7 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 	}
 	
 	@Override
-	public void onValueChange(BaseFieldEdit<?> field) {
+	public void onValueChange(BaseField<?> field) {
 		«name.toFirstUpper()» value = getValue();
 		switch (field.getId()) {
 		«FOREACH fields AS f-»
@@ -119,7 +105,6 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 		default:
 			break;
 		}
-		super.onValueChange();
 	}
 	
 	public void updateErrorEntries(List<ErrorEntry> errors, int tag) {

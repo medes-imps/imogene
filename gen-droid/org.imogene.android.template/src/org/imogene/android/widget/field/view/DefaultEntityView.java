@@ -11,15 +11,11 @@ public abstract class DefaultEntityView<T> extends BaseFieldView<T> {
 
 	public DefaultEntityView(Context context) {
 		super(context, R.layout.imog__field_default);
-		init();
+		setOnClickListener(this);
 	}
 
 	public DefaultEntityView(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_default);
-		init();
-	}
-
-	private void init() {
 		setOnClickListener(this);
 	}
 

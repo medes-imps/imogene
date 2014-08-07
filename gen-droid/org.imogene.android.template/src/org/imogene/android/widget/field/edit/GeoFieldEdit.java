@@ -22,21 +22,19 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 
 	public GeoFieldEdit(Context context) {
 		super(context, R.layout.imog__field_edit_buttons);
-		init();
+		findViewById(R.id.imog__acquire).setOnClickListener(this);
+		findViewById(R.id.imog__delete).setOnClickListener(this);
+		findViewById(R.id.imog__view).setOnClickListener(this);
 	}
 
 	public GeoFieldEdit(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.imog__field_edit_buttons);
-		init();
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GeoFieldEdit, 0, 0);
-		mProvider = a.getInt(R.styleable.GeoFieldEdit_geoType, -1);
-		a.recycle();
-	}
-
-	private void init() {
 		findViewById(R.id.imog__acquire).setOnClickListener(this);
 		findViewById(R.id.imog__delete).setOnClickListener(this);
 		findViewById(R.id.imog__view).setOnClickListener(this);
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GeoFieldEdit, 0, 0);
+		mProvider = a.getInt(R.styleable.GeoFieldEdit_geoType, -1);
+		a.recycle();
 	}
 
 	@Override
@@ -65,19 +63,13 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		final Location location = getValue();
+	protected void updateView() {
+		super.updateView();
 		if (!isReadOnly()) {
-			if (location == null) {
-				findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);
-				findViewById(R.id.imog__delete).setVisibility(View.GONE);
-				findViewById(R.id.imog__view).setVisibility(View.GONE);
-			} else {
-				findViewById(R.id.imog__acquire).setVisibility(View.GONE);
-				findViewById(R.id.imog__delete).setVisibility(View.VISIBLE);
-				findViewById(R.id.imog__view).setVisibility(View.VISIBLE);
-			}
+			boolean isNull = getValue() == null;
+			findViewById(R.id.imog__acquire).setVisibility(isNull ? View.VISIBLE : View.GONE);
+			findViewById(R.id.imog__delete).setVisibility(isNull ? View.GONE : View.VISIBLE);
+			findViewById(R.id.imog__view).setVisibility(isNull ? View.GONE : View.VISIBLE);
 		} else {
 			findViewById(R.id.imog__acquire).setVisibility(View.GONE);
 			findViewById(R.id.imog__delete).setVisibility(View.GONE);
@@ -108,7 +100,7 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 			startActivityForResult(acquire, mRequestCode);
 			break;
 		case R.id.imog__delete:
-			setValue(null);
+			setValueInternal(null, true);
 			break;
 		case R.id.imog__view:
 			final Location l = getValue();
@@ -125,7 +117,7 @@ public class GeoFieldEdit extends BaseFieldEdit<Location> implements OnActivityR
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
-			setValue((Location) data.getParcelableExtra(MapsConstants.EXTRA_LOCATION));
+			setValueInternal((Location) data.getParcelableExtra(MapsConstants.EXTRA_LOCATION), true);
 			return true;
 		}
 		return false;

@@ -71,10 +71,9 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		final String value = getValue();
-		if (TextUtils.isEmpty(value)) {
+	protected void updateView() {
+		super.updateView();
+		if (TextUtils.isEmpty(getValue())) {
 			findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);
 			findViewById(R.id.imog__delete).setVisibility(View.GONE);
 			findViewById(R.id.imog__view).setVisibility(View.GONE);
@@ -93,7 +92,7 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 			IntentUtils.startActivityForResult(getFieldManager().getActivity(), intent, mRequestCode);
 			break;
 		case R.id.imog__delete:
-			setValue(null);
+			setValueInternal(null, true);
 			break;
 		case R.id.imog__view:
 			showDialog(null);
@@ -110,7 +109,7 @@ public class BarcodeFieldEdit extends BaseFieldEdit<String> implements OnActivit
 	@Override
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
-			setValue(data.getStringExtra("SCAN_RESULT"));
+			setValueInternal(data.getStringExtra("SCAN_RESULT"), true);
 			return true;
 		}
 		return false;

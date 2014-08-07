@@ -72,7 +72,7 @@ public class DateTimeFieldEdit extends DatesFieldEdit implements OnDateTimeSetLi
 			int hourOfDay, int minute) {
 		final Calendar cal = Calendar.getInstance();
 		cal.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
-		setValue(cal.getTime());
+		setValueInternal(cal.getTime(), true);
 	}
 
 }

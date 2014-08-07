@@ -73,12 +73,9 @@ public class EnumMultipleFieldEdit extends BaseFieldEdit<boolean[]> implements O
 	}
 
 	@Override
-	public void setValue(boolean[] value) {
-		if (value == null) {
-			value = new boolean[mSize];
-		}
-		super.setValue(value);
-		mCheckedItems = value.clone();
+	public void setValueInternal(boolean[] value, boolean notifyChange) {
+		super.setValueInternal(value, notifyChange);
+		mCheckedItems = value != null ? value.clone() : new boolean[mSize];
 	}
 
 	@Override

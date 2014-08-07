@@ -79,9 +79,9 @@ public class FloatFieldEdit extends NumberFieldEdit<Float> {
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		disableUpdateDisplayOnChange();
-		setValue(FormatHelper.toFloat(s.toString()));
-		enableUpdateDisplayOnChange();
+		setShouldUpdateValueView(false);
+		setValueInternal(FormatHelper.toFloat(s.toString()), true);
+		setShouldUpdateValueView(true);
 	}
 
 }

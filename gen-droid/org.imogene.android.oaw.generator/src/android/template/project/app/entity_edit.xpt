@@ -35,7 +35,8 @@ import org.imogene.android.widget.ErrorAdapter;
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.ImogPagerAdapter;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.BaseField;
+import org.imogene.android.widget.field.BaseField.OnValueChangeListener;
 import org.imogene.android.widget.field.edit.RelationFieldEdit.ConstraintBuilder;
 import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
@@ -106,21 +107,21 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		«FOREACH groups.fields AS f-»
 			«EXPAND android::template::EditorUtils::specificInit FOR f-»
 			«EXPAND android::template::EditorUtils::dependency FOREACH f.fieldDependentVisibility-»
-			«f.name.toFirstLower()».setOnValueChangeListener(this);
+			«f.name.toFirstLower()».setOnValueChangedListener(this);
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH»
 		«IF hasDynamicFields-»
-		dynamicFields.setOnValueChangeListener(this);
+		dynamicFields.setOnValueChangedListener(this);
 		dynamicFields.setFormType(«name.toFirstUpper()».Columns.BEAN_TYPE);
 		dynamicFields.buildViews();
 		dynamicFields.onAttachedToHierarchy(mManager);
 		«ENDIF-»
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
+		«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
 		«ENDFOREACH»
 		«IF hasDynamicFields-»
-		dynamicFields.init(mEntity.getDynamicFieldValues());
+		dynamicFields.setValue(mEntity.getDynamicFieldValues());
 		«ENDIF-»
 		
 		ImogPagerAdapter adapter = new ImogPagerAdapter(this);
@@ -245,7 +246,7 @@ public class «name.toFirstUpper()-»Edit extends ViewPagerIndicatorActivity imple
 		}
 	}
 	
-	public void onValueChange(BaseFieldEdit<?> field) {
+	public void onValueChange(BaseField<?> field) {
 		switch (field.getId()) {
 		«FOREACH groups.fields AS f-»
 		case R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»:

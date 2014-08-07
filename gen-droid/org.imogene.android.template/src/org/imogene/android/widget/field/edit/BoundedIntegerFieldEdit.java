@@ -89,10 +89,10 @@ public class BoundedIntegerFieldEdit extends BaseFieldEdit<Integer> implements D
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
 		case Dialog.BUTTON_POSITIVE:
-			setValue(mNumberPicker.getValue());
+			setValueInternal(mNumberPicker.getValue(), true);
 			break;
 		case Dialog.BUTTON_NEUTRAL:
-			setValue(null);
+			setValueInternal(null, true);
 			break;
 		}
 	}

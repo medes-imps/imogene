@@ -43,10 +43,10 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		List<T> value = getValue();
+	protected void updateView() {
+		super.updateView();
 		mEntries.removeAllViews();
+		List<T> value = getValue();
 		if (value == null) {
 			return;
 		}
@@ -97,7 +97,7 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 				}
 			}
 			values.add(value);
-			setValue(values);
+			setValueInternal(values, true);
 			return true;
 		}
 		return false;
@@ -116,7 +116,7 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 						it.remove();
 					}
 				}
-				setValue(beans);
+				setValueInternal(beans, true);
 			}
 		}
 	};

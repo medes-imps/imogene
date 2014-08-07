@@ -90,22 +90,17 @@ public class LocalizedTextFieldEdit extends StringFieldEdit<LocalizedText> {
 		return true;
 	}
 
-	private void notifyUpdate() {
-		super.setValue(getValue());
-	}
-
 	@Override
-	public void setValue(LocalizedText value) {
-		LocalizedText v = value;
-		if (v == null) {
-			v = LocalizedText.newInstance();
+	protected void updateView() {
+		super.updateView();
+		if (!getShouldUpdateValueView()) {
+			return;
 		}
-		super.setValue(v);
 		for (int i = 0; i < isoArray.length; i++) {
 			MyTextWatcher watcher = new MyTextWatcher(isoArray[i]);
 
 			EditText editText = mEditors.get(isoArray[i]);
-			editText.setText(value != null ? value.getValue(isoArray[i]) : null);
+			editText.setText(getValue() != null ? getValue().getValue(isoArray[i]) : null);
 			editText.addTextChangedListener(watcher);
 		}
 	}
@@ -209,8 +204,15 @@ public class LocalizedTextFieldEdit extends StringFieldEdit<LocalizedText> {
 
 		@Override
 		public void afterTextChanged(Editable s) {
-			getValue().setValue(locale, s.toString());
-			notifyUpdate();
+			LocalizedText value = getValue();
+			if (value == null) {
+				value = LocalizedText.newInstance();
+			}
+			value.setValue(locale, s.toString());
+			
+			setShouldUpdateValueView(false);
+			setValueInternal(value, true);
+			setShouldUpdateValueView(true);
 		}
 
 		@Override

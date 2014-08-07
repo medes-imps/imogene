@@ -39,14 +39,6 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 	}
 
 	@Override
-	public void setValue(Integer value) {
-		if (value == null) {
-			value = -1;
-		}
-		super.setValue(value);
-	}
-
-	@Override
 	public boolean isEmpty() {
 		final Integer i = getValue();
 		return i == null || i == -1;
@@ -84,15 +76,6 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 	}
 
 	@Override
-	public Integer getValue() {
-		final Integer superValue = super.getValue();
-		if (superValue == null) {
-			return -1;
-		}
-		return superValue;
-	}
-
-	@Override
 	public boolean matchesDependencyValue(String value) {
 		final Integer i = getValue();
 		if (i == null)
@@ -122,11 +105,11 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
 		case Dialog.BUTTON_NEUTRAL:
-			setValue(-1);
+			setValueInternal(-1, true);
 			break;
 		default:
 			if (which > -1) {
-				setValue(mItemsValues[which]);
+				setValueInternal(mItemsValues[which], true);
 				dialog.dismiss();
 			}
 			break;

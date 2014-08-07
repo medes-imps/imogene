@@ -13,8 +13,8 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 import org.imogene.android.widget.field.BaseField;
+import org.imogene.android.widget.field.BaseField.OnValueChangeListener;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
 
 import android.content.Context;
 import android.location.Location;
@@ -47,12 +47,10 @@ public class DynamicFieldsEdit extends BaseFieldEdit<List<DynamicFieldInstance>>
 	}
 
 	@Override
-	public void setValue(List<DynamicFieldInstance> value) {
-		if (value == null) {
-			value = new ArrayList<DynamicFieldInstance>();
-		}
-		super.setValue(value);
-		if (value.isEmpty() || group.getChildCount() == 0) {
+	protected void updateView() {
+		super.updateView();
+		List<DynamicFieldInstance> value = getValue();
+		if (value == null || value.isEmpty() || group.getChildCount() == 0) {
 			return;
 		}
 		for (DynamicFieldInstance instance : value) {
@@ -60,7 +58,7 @@ public class DynamicFieldsEdit extends BaseFieldEdit<List<DynamicFieldInstance>>
 				BaseFieldEdit<?> view = (BaseFieldEdit<?>) group.getChildAt(i);
 				DynamicFieldTemplate template = (DynamicFieldTemplate) view.getTag(R.id.imog__dynamic_template);
 				if (instance.getFieldTemplate().getId().equals(template.getId())) {
-					initField(template, view, instance.getFieldValue());
+					setValueInternal(template, view, instance.getFieldValue(), false);
 				}
 			}
 		}
@@ -86,11 +84,14 @@ public class DynamicFieldsEdit extends BaseFieldEdit<List<DynamicFieldInstance>>
 	}
 
 	@Override
-	public void onValueChange(BaseFieldEdit<?> field) {
+	public void onValueChange(BaseField<?> field) {
 		DynamicFieldTemplate template = (DynamicFieldTemplate) field.getTag(R.id.imog__dynamic_template);
 		DynamicFieldInstance instance = null;
 
 		List<DynamicFieldInstance> instances = getValue();
+		if (instances == null) {
+			instances = new ArrayList<DynamicFieldInstance>();
+		}
 		for (DynamicFieldInstance i : instances) {
 			if (i.getFieldTemplate().getId().equals(template.getId())) {
 				instance = i;
@@ -153,7 +154,7 @@ public class DynamicFieldsEdit extends BaseFieldEdit<List<DynamicFieldInstance>>
 			instance.setFieldValue(((TextFieldEdit) field).getValue());
 			break;
 		}
-		super.onValueChange();
+		setValueInternal(instances, true);
 	}
 
 	public void updateErrorEntries(List<ErrorEntry> errors, int tag) {
@@ -186,8 +187,8 @@ public class DynamicFieldsEdit extends BaseFieldEdit<List<DynamicFieldInstance>>
 			view.setEmptyText(R.string.imog__select);
 			view.setRequired(template.getRequiredValue());
 			view.setReadOnly(false);
-			view.setOnValueChangeListener(this);
-			initField(template, view, value);
+			view.setOnValueChangedListener(this);
+			setValueInternal(template, view, value, false);
 			group.addView(view);
 		}
 	}
@@ -262,46 +263,47 @@ public class DynamicFieldsEdit extends BaseFieldEdit<List<DynamicFieldInstance>>
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void initField(DynamicFieldTemplate template, BaseField<?> field, String value) {
+	private void setValueInternal(DynamicFieldTemplate template, BaseField<?> field, String value, boolean notifyChange) {
 		switch (template.getFieldType()) {
 		case BCODE:
 		case STRING:
 		case TEXT:
-			((BaseField<String>) field).init(value);
+			((BaseField<String>) field).setValueInternal(value, notifyChange);
+			;
 			break;
 		case BIN:
 		case IMG:
 			if (value != null) {
 				Uri uri = Uri.parse(value);
 				Binary binary = ImogOpenHelper.fromUri(uri);
-				((BaseField<Binary>) field).init(binary);
+				((BaseFieldEdit<Binary>) field).setValueInternal(binary, notifyChange);
 			} else {
-				((BaseField<Binary>) field).init(null);
+				((BaseFieldEdit<Binary>) field).setValueInternal(null, notifyChange);
 			}
 			break;
 		case BOOL:
-			((BaseField<Boolean>) field).init(FormatHelper.toBoolean(value));
+			((BaseFieldEdit<Boolean>) field).setValueInternal(FormatHelper.toBoolean(value), notifyChange);
 			break;
 		case DATE:
-			((BaseField<Date>) field).init(FormatHelper.toDate(value));
+			((BaseFieldEdit<Date>) field).setValueInternal(FormatHelper.toDate(value), notifyChange);
 			break;
 		case ENUM_M:
-			((BaseField<boolean[]>) field).init(EnumHelper.parse(template.getParameters().split(EnumHelper.separator),
-					value));
+			((BaseFieldEdit<boolean[]>) field).setValueInternal(
+					EnumHelper.parse(template.getParameters().split(EnumHelper.separator), value), notifyChange);
 			break;
 		case ENUM_S:
-			((BaseField<Integer>) field).init(Arrays.find(template.getParameters().split(EnumHelper.separator), value));
+			((BaseFieldEdit<Integer>) field).setValueInternal(
+					Arrays.find(template.getParameters().split(EnumHelper.separator), value), notifyChange);
 			break;
 		case FLOAT:
-			((BaseField<Float>) field).init(FormatHelper.toFloat(value));
+			((BaseFieldEdit<Float>) field).setValueInternal(FormatHelper.toFloat(value), notifyChange);
 			break;
 		case GEO:
-			((BaseField<Location>) field).init(FormatHelper.readLocation(value));
+			((BaseFieldEdit<Location>) field).setValueInternal(FormatHelper.readLocation(value), notifyChange);
 			break;
 		case INT:
-			((BaseField<Integer>) field).init(FormatHelper.toInteger(value));
+			((BaseFieldEdit<Integer>) field).setValueInternal(FormatHelper.toInteger(value), notifyChange);
 			break;
 		}
 	}
-
 }

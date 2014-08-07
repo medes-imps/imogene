@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewFlipper;
 
-public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListener {
+public class FieldFlipper extends ViewFlipper {
 
 	public interface Controller {
 
@@ -28,10 +28,11 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 	@Override
 	public void addView(View child, int index, ViewGroup.LayoutParams params) {
 		super.addView(child, index, params);
-		if (child instanceof BaseField<?>) {
-			final BaseField<?> field = (BaseField<?>) child;
-			field.registerDependent(this, null);
-		}
+		// TODO
+		// if (child instanceof BaseField<?>) {
+		// final BaseField<?> field = (BaseField<?>) child;
+		// field.registerDependent(this, null);
+		// }
 	}
 
 	@Override
@@ -100,17 +101,17 @@ public class FieldFlipper extends ViewFlipper implements OnDependencyChangeListe
 		}
 		return false;
 	}
-
-	@Override
-	public void onDependencyChanged() {
-		if (mController != null) {
-			mController.onFieldChanged();
-		}
-	}
-
-	@Override
-	public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
-
-	}
+	// TODO
+	// @Override
+	// public void onDependencyChanged() {
+	// if (mController != null) {
+	// mController.onFieldChanged();
+	// }
+	// }
+	//
+	// @Override
+	// public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
+	//
+	// }
 
 }

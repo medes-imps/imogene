@@ -66,25 +66,11 @@ public class «name.toFirstUpper()»NestedView extends RelationOneFieldView<«name.
 	}
 	
 	@Override
-	public void init(«name.toFirstUpper()» value) {
-		super.init(value);
-		// At this point onValueChange() has already been called and the entity is initialized
-		if (value != null) {
-			«FOREACH fields AS f-»
-			«f.name.toFirstLower()».init(value.get«f.name.toFirstUpper()»());
-			«ENDFOREACH»
-		}
-	}
-
-	@Override
-	public void setValue(«name.toFirstUpper()» value) {
-		super.setValue(value);
-		// At this point onValueChange() has already been called and the entity is initialized
-		if (value != null) {
-			«FOREACH fields AS f-»
-			«f.name.toFirstLower()».setValue(value.get«f.name.toFirstUpper()»());
-			«ENDFOREACH»
-		}
+	public void setValueInternal(Organization value, boolean notifyChange) {
+		super.setValueInternal(value, notifyChange);
+		«FOREACH fields AS f-»
+		«f.name.toFirstLower()».setValueInternal(value != null ? value.get«f.name.toFirstUpper()»() : null, notifyChange);
+		«ENDFOREACH»
 	}
 	
 «ENDLET-»

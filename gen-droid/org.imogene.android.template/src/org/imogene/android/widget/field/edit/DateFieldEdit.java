@@ -70,7 +70,7 @@ public class DateFieldEdit extends DatesFieldEdit implements OnDateSetListener {
 	public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 		final Calendar cal = Calendar.getInstance();
 		cal.set(year, monthOfYear, dayOfMonth);
-		setValue(cal.getTime());
+		setValueInternal(cal.getTime(), true);
 	}
 
 }

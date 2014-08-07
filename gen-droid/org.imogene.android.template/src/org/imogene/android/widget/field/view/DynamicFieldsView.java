@@ -1,16 +1,23 @@
 package org.imogene.android.widget.field.view;
 
+import java.util.Date;
 import java.util.List;
 
+import org.imogene.android.common.binary.Binary;
 import org.imogene.android.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.android.common.dynamicfields.DynamicFieldTemplate;
+import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.template.R;
+import org.imogene.android.widget.field.BaseField;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.edit.DynamicFieldsEdit;
 
 import android.content.Context;
+import android.location.Location;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import fr.medes.android.util.Arrays;
+import fr.medes.android.util.FormatHelper;
 import fr.medes.android.util.field.EnumHelper;
 
 public class DynamicFieldsView extends BaseFieldView<List<DynamicFieldInstance>> {
@@ -41,7 +48,8 @@ public class DynamicFieldsView extends BaseFieldView<List<DynamicFieldInstance>>
 	}
 
 	@Override
-	protected void onValueChange() {
+	protected void updateView() {
+		super.updateView();
 		group.removeAllViews();
 		List<DynamicFieldInstance> instances = getValue();
 		if (instances == null || instances.isEmpty()) {
@@ -51,10 +59,9 @@ public class DynamicFieldsView extends BaseFieldView<List<DynamicFieldInstance>>
 			DynamicFieldTemplate template = instance.getFieldTemplate();
 			BaseFieldView<?> view = obtainBaseView(template);
 			view.setTitle(template.getFieldName());
-			DynamicFieldsEdit.initField(template, view, instance.getFieldValue());
+			initField(template, view, instance.getFieldValue());
 			group.addView(view);
 		}
-		super.onValueChange();
 	}
 
 	private BaseFieldView<?> obtainBaseView(DynamicFieldTemplate template) {
@@ -87,6 +94,50 @@ public class DynamicFieldsView extends BaseFieldView<List<DynamicFieldInstance>>
 			return new IntegerFieldView(getContext());
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void initField(DynamicFieldTemplate template, BaseField<?> field, String value) {
+		switch (template.getFieldType()) {
+		case BCODE:
+		case STRING:
+		case TEXT:
+			((BaseField<String>) field).setValue(value);
+			break;
+		case BIN:
+		case IMG:
+			if (value != null) {
+				Uri uri = Uri.parse(value);
+				Binary binary = ImogOpenHelper.fromUri(uri);
+				((BaseField<Binary>) field).setValue(binary);
+			} else {
+				((BaseField<Binary>) field).setValue(null);
+			}
+			break;
+		case BOOL:
+			((BaseField<Boolean>) field).setValue(FormatHelper.toBoolean(value));
+			break;
+		case DATE:
+			((BaseField<Date>) field).setValue(FormatHelper.toDate(value));
+			break;
+		case ENUM_M:
+			((BaseField<boolean[]>) field).setValue(EnumHelper.parse(
+					template.getParameters().split(EnumHelper.separator), value));
+			break;
+		case ENUM_S:
+			((BaseField<Integer>) field).setValue(Arrays.find(template.getParameters().split(EnumHelper.separator),
+					value));
+			break;
+		case FLOAT:
+			((BaseField<Float>) field).setValue(FormatHelper.toFloat(value));
+			break;
+		case GEO:
+			((BaseField<Location>) field).setValue(FormatHelper.readLocation(value));
+			break;
+		case INT:
+			((BaseField<Integer>) field).setValue(FormatHelper.toInteger(value));
+			break;
+		}
 	}
 
 }

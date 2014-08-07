@@ -67,7 +67,7 @@ public class TimeFieldEdit extends DatesFieldEdit implements OnTimeSetListener {
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		cal.set(Calendar.MINUTE, minute);
-		setValue(cal.getTime());
+		setValueInternal(cal.getTime(), true);
 	}
 
 }

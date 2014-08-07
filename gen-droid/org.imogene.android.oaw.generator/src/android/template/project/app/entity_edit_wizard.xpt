@@ -25,7 +25,8 @@ import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.widget.field.FieldFlipper;
 import org.imogene.android.widget.field.FieldManager;
-import org.imogene.android.widget.field.edit.BaseFieldEdit.OnValueChangeListener;
+import org.imogene.android.widget.field.BaseField;
+import org.imogene.android.widget.field.BaseField.OnValueChangeListener;
 import org.imogene.android.widget.field.edit.RelationFieldEdit.ConstraintBuilder;
 import org.imogene.android.widget.field.edit.RelationFieldEdit.RelationManager;
 import org.imogene.android.widget.field.edit.*;
@@ -89,12 +90,12 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 			«f.name.toFirstLower()».setAutomaticManageVisibility(false);
 			«EXPAND android::template::EditorUtils::specificInit FOR f-»
 			«EXPAND android::template::EditorUtils::dependency FOREACH f.fieldDependentVisibility-»
-			«f.name.toFirstLower()».setOnValueChangeListener(this);
+			«f.name.toFirstLower()».setOnValueChangedListener(this);
 			«f.name.toFirstLower()».onAttachedToHierarchy(mManager);
 		«ENDFOREACH»
 		
 		«FOREACH groups.fields AS f-»
-			«f.name.toFirstLower()».init(mEntity.get«f.name.toFirstUpper()»());
+		«f.name.toFirstLower()».setValue(mEntity.get«f.name.toFirstUpper()»());
 		«ENDFOREACH-»
 		
 		«FOREACH groups.fields AS field-»
@@ -179,7 +180,7 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 		showDialog(DIALOG_UNCOMPLETE_ID);
 	}
 	
-	public void onValueChange(BaseFieldEdit<?> field) {
+	public void onValueChange(BaseField<?> field) {
 		switch (field.getId()) {
 		«FOREACH groups.fields AS f-»
 		case R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»:

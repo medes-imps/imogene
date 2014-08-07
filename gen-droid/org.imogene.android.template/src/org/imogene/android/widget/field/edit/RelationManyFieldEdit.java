@@ -109,8 +109,8 @@ public class RelationManyFieldEdit<T extends ImogBean> extends RelationFieldEdit
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
 			ArrayList<String> result = data.getStringArrayListExtra(Extras.EXTRA_SELECTED);
-			if (result == null) {
-				setValue(null);
+			if (result == null || result.isEmpty()) {
+				setValueInternal(null, true);
 				return true;
 			}
 			ArrayList<T> value = new ArrayList<T>(result.size());
@@ -120,7 +120,7 @@ public class RelationManyFieldEdit<T extends ImogBean> extends RelationFieldEdit
 					value.add(bean);
 				}
 			}
-			setValue(value);
+			setValueInternal(value, true);
 			return true;
 		}
 		return false;

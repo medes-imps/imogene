@@ -59,18 +59,12 @@ public class BinaryFieldEdit extends BaseFieldEdit<Binary> implements OnActivity
 	}
 
 	@Override
-	protected void onValueChange() {
-		super.onValueChange();
-		final Binary binary = getValue();
-		if (binary == null) {
-			findViewById(R.id.imog__acquire).setVisibility(View.VISIBLE);
-			findViewById(R.id.imog__delete).setVisibility(View.GONE);
-			findViewById(R.id.imog__view).setVisibility(View.GONE);
-		} else {
-			findViewById(R.id.imog__acquire).setVisibility(View.GONE);
-			findViewById(R.id.imog__delete).setVisibility(View.VISIBLE);
-			findViewById(R.id.imog__view).setVisibility(View.VISIBLE);
-		}
+	protected void updateView() {
+		super.updateView();
+		boolean isNull = getValue() == null;
+		findViewById(R.id.imog__acquire).setVisibility(isNull ? View.VISIBLE : View.GONE);
+		findViewById(R.id.imog__delete).setVisibility(isNull ? View.GONE : View.VISIBLE);
+		findViewById(R.id.imog__view).setVisibility(isNull ? View.GONE : View.VISIBLE);
 	}
 
 	@Override
@@ -100,7 +94,7 @@ public class BinaryFieldEdit extends BaseFieldEdit<Binary> implements OnActivity
 	}
 
 	protected void delete() {
-		setValue(null);
+		setValueInternal(null, true);
 	}
 
 	protected void view() {
@@ -116,7 +110,7 @@ public class BinaryFieldEdit extends BaseFieldEdit<Binary> implements OnActivity
 	public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == mRequestCode && resultCode != Activity.RESULT_CANCELED) {
 			Binary binary = BinaryFile.toBinary(getContext(), data.getData());
-			setValue(binary);
+			setValueInternal(binary, true);
 			return true;
 		}
 		return false;

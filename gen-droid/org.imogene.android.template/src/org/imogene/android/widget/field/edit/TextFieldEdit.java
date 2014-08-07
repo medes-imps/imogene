@@ -127,9 +127,9 @@ public class TextFieldEdit extends StringFieldEdit<String> implements TextWatche
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		disableUpdateDisplayOnChange();
-		setValue(s.toString());
-		enableUpdateDisplayOnChange();
+		setShouldUpdateValueView(false);
+		setValueInternal(s.toString(), true);
+		setShouldUpdateValueView(true);
 	}
 
 	@Override

@@ -61,15 +61,15 @@ public class BooleanFieldEdit extends BaseFieldEdit<Boolean> implements OnClickL
 	public void onClick(DialogInterface dialog, int which) {
 		switch (which) {
 		case 0:
-			setValue(true);
+			setValueInternal(true, true);
 			dialog.dismiss();
 			break;
 		case 1:
-			setValue(false);
+			setValueInternal(false, true);
 			dialog.dismiss();
 			break;
 		case Dialog.BUTTON_NEUTRAL:
-			setValue(null);
+			setValueInternal(null, true);
 			break;
 		}
 	}

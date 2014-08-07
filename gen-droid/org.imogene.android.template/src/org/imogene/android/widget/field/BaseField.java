@@ -30,25 +30,39 @@ import android.widget.TextView;
  * 
  * @param <T> The field value type.
  */
-public abstract class BaseField<T> extends LinearLayout implements DependencyMatcher, OnDependencyChangeListener,
-		OnClickListener, OnLongClickListener, OnDismissListener, OnActivityDestroyListener {
+public abstract class BaseField<T> extends LinearLayout implements OnClickListener, OnLongClickListener,
+		OnDismissListener, OnActivityDestroyListener {
+
+	/**
+	 * Interface to listen for changes of the current value.
+	 */
+	public interface OnValueChangeListener {
+		/**
+		 * Called upon a change of the current value.
+		 * 
+		 * @param field The {@link BaseField} associated with this listener.
+		 */
+		public void onValueChange(BaseField<?> field);
+	}
 
 	private TextView mValueView;
 	private TextView mTitleView;
 	private View mDependentView;
 
-	private ArrayList<DependsOnEntry> mDependsOn;
 	private FieldManager mManager;
 	private DialogFactory mFactory;
 	private Dialog mDialog;
 
-	private boolean mDependent = false;
 	private boolean mHidden = false;
 	private String mEmptyText;
 
-	private boolean mUpdateDisplayOnChange = true;
+	private OnValueChangeListener mOnValueChangeListener;
 
-	private ArrayList<OnDependencyChangeListener> mDependents;
+	private boolean mDependent = false;
+	private ArrayList<BaseField<?>> mDependents;
+	private ArrayList<Pair<BaseField<?>, String>> mDependencies;
+
+	private boolean shouldUpdateValueView = true;
 
 	private T mValue;
 
@@ -175,6 +189,15 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	}
 
 	/**
+	 * Sets the listener to be notified on change of the current value.
+	 * 
+	 * @param onValueChangedListener The listener.
+	 */
+	public void setOnValueChangedListener(OnValueChangeListener onValueChangedListener) {
+		mOnValueChangeListener = onValueChangedListener;
+	}
+
+	/**
 	 * Set whether the field visibility is dependent of an other field value.
 	 * 
 	 * @param dependent {@code true} if the field visibility depends on an other field value, {@code false} if not.
@@ -196,24 +219,31 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	}
 
 	/**
-	 * Method to call to initialize the view. This method won't dispatch changes if not needed.
-	 * 
-	 * @param value The value to initialize the field with.
-	 */
-	public void init(T value) {
-		setValue(value);
-	}
-
-	/**
 	 * Set the value of this field. This method will update dependent fields and everything that need to be notified.
 	 * 
 	 * @see BaseField#init(Object)
 	 * 
 	 * @param value The value.
 	 */
-	public void setValue(T value) {
+	public final void setValue(T value) {
+		setValueInternal(value, false);
+	}
+
+	/**
+	 * Convenient method to set the field value without notifying anything.
+	 * 
+	 * @param value The value
+	 */
+	public void setValueInternal(T value, boolean notifyChange) {
+		// if (mValue == value) {
+		// return;
+		// }
 		mValue = value;
-		onValueChange();
+		updateView();
+		if (notifyChange) {
+			notifyChange();
+		}
+		notifyDependencyChange();
 	}
 
 	/**
@@ -221,7 +251,7 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	 * 
 	 * @return The current value.
 	 */
-	public T getValue() {
+	public final T getValue() {
 		return mValue;
 	}
 
@@ -264,50 +294,41 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		mManager = manager;
 	}
 
-	@Override
-	public boolean matchesDependencyValue(String dependencyValue) {
-		return mValue != null;
-	}
-
-	@Override
-	public void onDependencyChanged() {
-		final boolean visible = isDependentVisible();
-		setVisibility(visible ? View.VISIBLE : View.GONE);
-	}
-
-	protected void enableUpdateDisplayOnChange() {
-		if (!mUpdateDisplayOnChange) {
-			mUpdateDisplayOnChange = true;
+	protected void notifyChange() {
+		if (mOnValueChangeListener != null) {
+			mOnValueChangeListener.onValueChange(this);
 		}
 	}
 
-	protected void disableUpdateDisplayOnChange() {
-		if (mUpdateDisplayOnChange) {
-			mUpdateDisplayOnChange = false;
-		}
+	/**
+	 * Sets whether this {@link BaseField} value view should be updated when its value changes.
+	 * 
+	 * @param shouldUpdateValueView Set true if this {@link BaseField} value view should update when the value is
+	 *            updated.
+	 */
+	public void setShouldUpdateValueView(boolean shouldUpdateValueView) {
+		this.shouldUpdateValueView = shouldUpdateValueView;
 	}
 
-	protected void onValueChange() {
-		if (mUpdateDisplayOnChange) {
+	/**
+	 * Checks whether this {@link BaseField} value view should be updated when it's value changed.
+	 * 
+	 * @see #setShouldDisableView(boolean)
+	 * @return True if the value view should be updated.
+	 */
+	public boolean getShouldUpdateValueView() {
+		return shouldUpdateValueView;
+	}
+
+	protected void updateView() {
+		if (shouldUpdateValueView) {
 			mValueView.setText(getFieldDisplay());
 		}
-		notifyDependencyChange();
-	}
-
-	@Override
-	public void registerDependsOn(DependencyMatcher matcher, String dependencyValue) {
-		if (mDependsOn == null) {
-			mDependsOn = new ArrayList<DependsOnEntry>();
-			// First time mark the field as dependent
-			setDependent(true);
-		}
-
-		mDependsOn.add(new DependsOnEntry(matcher, dependencyValue));
 	}
 
 	protected boolean isDependentVisible() {
-		if (mDependent && mDependsOn != null) {
-			for (DependsOnEntry entry : mDependsOn) {
+		if (mDependent && mDependencies != null) {
+			for (Pair<BaseField<?>, String> entry : mDependencies) {
 				if (!entry.first.matchesDependencyValue(entry.second)) {
 					return false;
 				}
@@ -317,25 +338,26 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 	}
 
 	/**
-	 * Register an {@link OnDependencyChangeListener} to be run when the value of this field changes.
+	 * Adds a dependent {@link BaseField} on this {@link BaseField} so we can notify it.
 	 * 
-	 * @param dependent The {@link OnDependencyChangeListener} to handle the changes.
+	 * @param dependent The dependent {@link BaseField} which visibility will be updated according to the value of this
+	 *            {@link BaseField}.
 	 * @param dependencyValue The visibility dependency field value.
 	 */
-	public void registerDependent(OnDependencyChangeListener dependent, String dependencyValue) {
+	public void registerDependent(BaseField<?> dependent, String dependencyValue) {
 		if (mDependents == null) {
-			mDependents = new ArrayList<OnDependencyChangeListener>();
+			mDependents = new ArrayList<BaseField<?>>();
 		}
 
 		mDependents.add(dependent);
 
-		dependent.registerDependsOn(this, dependencyValue);
+		dependent.registerDependency(this, dependencyValue);
 
 		dependent.onDependencyChanged();
 	}
 
 	private void notifyDependencyChange() {
-		final ArrayList<OnDependencyChangeListener> dependents = mDependents;
+		final ArrayList<BaseField<?>> dependents = mDependents;
 
 		if (dependents == null) {
 			return;
@@ -343,9 +365,33 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 
 		final int size = dependents.size();
 		for (int i = 0; i < size; i++) {
-			final OnDependencyChangeListener listener = dependents.get(i);
-			listener.onDependencyChanged();
+			dependents.get(i).onDependencyChanged();
 		}
+	}
+
+	/**
+	 * Register the {@link BaseField} that this {@link BaseField} will depend on.
+	 * 
+	 * @param dependency The {@link BaseField} that this depends on.
+	 * @param dependencyValue The dependency value.
+	 */
+	private void registerDependency(BaseField<?> dependency, String dependencyValue) {
+		if (mDependencies == null) {
+			mDependencies = new ArrayList<Pair<BaseField<?>, String>>();
+			// First time mark the field as dependent
+			setDependent(true);
+		}
+
+		mDependencies.add(new Pair<BaseField<?>, String>(dependency, dependencyValue));
+	}
+
+	protected boolean matchesDependencyValue(String dependencyValue) {
+		return mValue != null;
+	}
+
+	public void onDependencyChanged() {
+		final boolean visible = isDependentVisible();
+		setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
@@ -479,16 +525,6 @@ public abstract class BaseField<T> extends LinearLayout implements DependencyMat
 		 * @return The dialog box.
 		 */
 		public Dialog createDialog();
-	}
-
-	/**
-	 * Container to ease passing around a tuple of {@link DependencyMatcher} and a visibility dependency rule.
-	 */
-	private static class DependsOnEntry extends Pair<DependencyMatcher, String> {
-
-		public DependsOnEntry(DependencyMatcher matcher, String dependencyValue) {
-			super(matcher, dependencyValue);
-		}
 	}
 
 }
