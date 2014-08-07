@@ -19,7 +19,6 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 
 	public EnumSingleFieldEdit(Context context) {
 		super(context, R.layout.imog__field_default);
-		setValue(-1);
 	}
 
 	public EnumSingleFieldEdit(Context context, AttributeSet attrs) {
@@ -28,7 +27,6 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 		mItems = getResources().getStringArray(a.getResourceId(R.styleable.EnumField_items, 0));
 		mItemsValues = getResources().getIntArray(a.getResourceId(R.styleable.EnumField_itemsValues, 0));
 		a.recycle();
-		setValue(-1);
 	}
 
 	public void setItems(String[] items) {
@@ -38,6 +36,14 @@ public class EnumSingleFieldEdit extends BaseFieldEdit<Integer> implements Dialo
 
 	public void setItemsValues(int[] itemsValues) {
 		mItemsValues = itemsValues;
+	}
+
+	@Override
+	public void setValue(Integer value) {
+		if (value == null) {
+			value = -1;
+		}
+		super.setValue(value);
 	}
 
 	@Override
