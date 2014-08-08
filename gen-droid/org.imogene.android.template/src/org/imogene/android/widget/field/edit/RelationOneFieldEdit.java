@@ -75,8 +75,14 @@ public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<
 		if (mHasReverse && mOppositeCardinality == 1 && mType == 0) {
 			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(mTableName);
 			builder.selectColumns(mFieldName);
-			builder.where().ne(ImogBean.Columns._ID, mRelationManager.getParentBean()).and().isNotNull(mFieldName)
-					.and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+			String parentId = mRelationManager.getParentBean().getId();
+			if (parentId != null) {
+				builder.where().ne(ImogBean.Columns._ID, parentId).and().isNotNull(mFieldName).and()
+						.ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+			} else {
+				builder.where().isNotNull(mFieldName).and()
+						.ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+			}
 			return new Where().notIn(ImogBean.Columns._ID, builder);
 		}
 		return null;

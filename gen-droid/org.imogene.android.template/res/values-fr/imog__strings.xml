@@ -46,7 +46,7 @@
     <string name="imog__anf_title">Activié non trouvée</string>
     <string name="imog__anf">L\'activité n\'a pas été trouvée. Prière de notifier cet incident au responsable technique.</string>
     <string name="imog__delete_confirmation_title">Supprimer</string>
-    <string name="imog__delete_confirmation">Cet éléement sera supprimé définitivement</string>
+    <string name="imog__delete_confirmation">Cet élément sera supprimé définitivement</string>
     <string name="imog__relation_unsettable">Cette relation ne peut pas être éditée</string>
     <string name="imog__field_unset">Vous devez remplir le champs %s</string>
     <string name="imog__unsaved_dialog_msg">Enregistrer les changements avant de quitter ?</string>

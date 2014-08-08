@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +24,6 @@ import fr.medes.android.app.ViewPagerIndicatorActivity;
 
 import org.imogene.android.Constants.Categories;
 import org.imogene.android.Constants.Extras;
-import org.imogene.android.database.ImogBeanObserver;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
@@ -45,7 +45,7 @@ public class 쳌ame.toFirstUpper()-팚iew extends ViewPagerIndicatorActivity imple
 	private static final int DIALOG_INFO_ID = 2;
 	private static final int DIALOG_IAMLOST_ID = 3;
 	
-	private ImogBeanObserver mContentObserver;
+	private ContentObserver mContentObserver;
 	private Uri mUri;
 	
 	private AccessPolicy mPolicy;
@@ -71,10 +71,15 @@ public class 쳌ame.toFirstUpper()-팚iew extends ViewPagerIndicatorActivity imple
 		
 		mUri = getIntent().getData();
 		
-		mContentObserver = new ImogBeanObserver(new Handler(), this) {
+		mContentObserver = new ContentObserver(new Handler()) {
 			@Override
 			public void onChange(boolean selfChange) {
 				refresh();
+			}
+			
+			@Override
+			public boolean deliverSelfNotifications() {
+				return true;
 			}
 		};
 		
@@ -112,6 +117,7 @@ public class 쳌ame.toFirstUpper()-팚iew extends ViewPagerIndicatorActivity imple
 		getViewPager().setOffscreenPageLimit(쳁roups.size - 1�);
 		
 		refresh();
+		getContentResolver().registerContentObserver(mUri, true, mContentObserver);
 	}
 	
 	@Override
@@ -121,14 +127,12 @@ public class 쳌ame.toFirstUpper()-팚iew extends ViewPagerIndicatorActivity imple
 		if (mEntity != null && !mEntity.getFlagRead()) {
 			DatabaseUtils.markRead(getContentResolver(), mUri, true);
 		}
-		mContentObserver.register(mUri);
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
 		adjustMessageNotification(false);
-		mContentObserver.unregister();
 	}
 	
 	@Override
@@ -140,6 +144,7 @@ public class 쳌ame.toFirstUpper()-팚iew extends ViewPagerIndicatorActivity imple
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		getContentResolver().unregisterContentObserver(mContentObserver);
 		IamLost.getInstance().remove();
 		mManager.dispatchActivityDestroy();
 	}
