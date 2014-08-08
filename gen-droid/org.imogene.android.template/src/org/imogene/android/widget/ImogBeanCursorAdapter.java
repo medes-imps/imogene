@@ -39,6 +39,12 @@ public class ImogBeanCursorAdapter extends CursorAdapter {
 	}
 
 	@Override
+	public long getItemId(int position) {
+		// Good old trick, we need to return something for ListView.CHOICE_MODE_MULTIPLE to work in ListAdapter
+		return position;
+	}
+
+	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		ImogBeanCursor<?> c = (ImogBeanCursor<?>) cursor;
 

@@ -207,12 +207,11 @@ public class LocalizedTextFieldEdit extends StringFieldEdit<LocalizedText> {
 			LocalizedText value = getValue();
 			if (value == null) {
 				value = LocalizedText.newInstance();
+				setShouldUpdateValueView(false);
+				setValueInternal(value, true);
+				setShouldUpdateValueView(true);
 			}
 			value.setValue(locale, s.toString());
-			
-			setShouldUpdateValueView(false);
-			setValueInternal(value, true);
-			setShouldUpdateValueView(true);
 		}
 
 		@Override

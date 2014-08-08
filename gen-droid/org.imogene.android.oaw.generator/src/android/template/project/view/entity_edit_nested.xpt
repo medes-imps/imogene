@@ -76,7 +76,7 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 	}
 
 	@Override
-	public void setValueInternal(Organization value, boolean notifyChange) {
+	public void setValueInternal(«name.toFirstUpper()» value, boolean notifyChange) {
 		super.setValueInternal(value, notifyChange);
 		«FOREACH fields AS f-»
 		«f.name.toFirstLower()».setValueInternal(value != null ? value.get«f.name.toFirstUpper()»() : null, notifyChange);
@@ -96,6 +96,10 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 	@Override
 	public void onValueChange(BaseField<?> field) {
 		«name.toFirstUpper()» value = getValue();
+		if (value == null) {
+			value = new «name.toFirstUpper()»();
+			setValueInternal(value, true);
+		}
 		switch (field.getId()) {
 		«FOREACH fields AS f-»
 		case R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f»:

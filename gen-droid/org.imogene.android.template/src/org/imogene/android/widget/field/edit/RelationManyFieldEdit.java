@@ -99,7 +99,7 @@ public class RelationManyFieldEdit<T extends ImogBean> extends RelationFieldEdit
 	@Override
 	protected Where onPrepareWhere() {
 		if (mHasReverse && mOppositeCardinality == 1) {
-			return new Where().eq(mOppositeRelationField, mRelationManager.getParentBean()).or()
+			return new Where().eq(mOppositeRelationField, mRelationManager.getParentBean().getId()).or()
 					.isNull(mOppositeRelationField);
 		}
 		return null;
