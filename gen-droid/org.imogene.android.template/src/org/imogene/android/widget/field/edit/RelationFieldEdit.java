@@ -52,6 +52,20 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	}
 
 	/**
+	 * Interface to allow modifying the intent to be called when selecting one or more entities. This allows for
+	 * instance to add extras to the intent to be used later.
+	 */
+	public static interface IntentBuilder {
+
+		/**
+		 * Method called when then intent is being created just before being send.
+		 * 
+		 * @param intent The intent to build.
+		 */
+		public void onCreateIntent(Intent intent);
+	}
+
+	/**
 	 * Interface used to manage hierarchical fields. This will allow filtering a list given the previously set value.
 	 */
 	public interface ConstraintBuilder {
@@ -67,7 +81,8 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 
 	private ArrayList<ConstraintBuilder> mConstraintsBuilders;
 	private ArrayList<CommonFieldEntry> mCommonFields;
-	private ArrayList<ExtraBuilder> mBuilders;
+	private ArrayList<ExtraBuilder> mExtraBuilders;
+	private ArrayList<IntentBuilder> mIntentBuilders;
 
 	protected RelationManager<?> mRelationManager;
 	protected boolean mHasReverse = false;
@@ -179,11 +194,24 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	 * @param builder The extra builder to add.
 	 */
 	public void registerExtraBuilder(ExtraBuilder builder) {
-		if (mBuilders == null) {
-			mBuilders = new ArrayList<ExtraBuilder>();
+		if (mExtraBuilders == null) {
+			mExtraBuilders = new ArrayList<ExtraBuilder>();
 		}
 
-		mBuilders.add(builder);
+		mExtraBuilders.add(builder);
+	}
+
+	/**
+	 * Convenient method to add an {@link IntentBuilder}.
+	 * 
+	 * @param builder The intent builder to add.
+	 */
+	public void registerIntentBuilder(IntentBuilder builder) {
+		if (mIntentBuilders == null) {
+			mIntentBuilders = new ArrayList<IntentBuilder>();
+		}
+
+		mIntentBuilders.add(builder);
 	}
 
 	/**
@@ -227,6 +255,11 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 			IntentUtils.putWhereExtras(intent, where);
 		}
 		intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
+		if (mIntentBuilders != null) {
+			for (IntentBuilder builder : mIntentBuilders) {
+				builder.onCreateIntent(intent);
+			}
+		}
 		startActivityForResult(intent, mRequestCode);
 	}
 
@@ -245,8 +278,8 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 				}
 			}
 		}
-		if (mBuilders != null) {
-			for (ExtraBuilder builder : mBuilders) {
+		if (mExtraBuilders != null) {
+			for (ExtraBuilder builder : mExtraBuilders) {
 				builder.onCreateExtra(bundle);
 			}
 		}
