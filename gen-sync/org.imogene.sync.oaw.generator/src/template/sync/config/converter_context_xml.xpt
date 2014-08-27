@@ -88,13 +88,19 @@
 		<property name="className" value="org.imogene.lib.common.profile.FieldGroupProfile"/>
 		<property name="propertyName" value="profile"/>
 		<property name="converter" ref="associationConverter"/>
-	</bean>	  
+	</bean>
+
+	<bean id="fieldGroupFieldGroupProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+		<property name="className" value="org.imogene.lib.common.profile.FieldGroupProfile"/>
+		<property name="propertyName" value="cardEntity"/>
+		<property name="converter" ref="associationConverter"/>
+	</bean>
 
 	<bean id="fieldGroupFieldGroupProfileConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
 		<property name="className" value="org.imogene.lib.common.profile.FieldGroupProfile"/>
 		<property name="propertyName" value="fieldGroup"/>
 		<property name="converter" ref="associationConverter"/>
-	</bean>	  
+	</bean>
 
 	<bean id="entityFieldGroupConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
 		<property name="className" value="org.imogene.lib.common.model.FieldGroup"/>
