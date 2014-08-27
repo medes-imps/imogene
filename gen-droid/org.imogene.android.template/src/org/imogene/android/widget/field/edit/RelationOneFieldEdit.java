@@ -63,6 +63,7 @@ public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<
 				Intent intent = new Intent(Intent.ACTION_INSERT, mContentUri);
 				intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
 				intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
+				onPrepareIntent(intent);
 				startActivityForResult(intent, mRequestCode);
 			}
 			return;

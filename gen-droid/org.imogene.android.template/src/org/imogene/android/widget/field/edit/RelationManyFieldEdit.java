@@ -85,6 +85,7 @@ public class RelationManyFieldEdit<T extends ImogBean> extends RelationFieldEdit
 
 	@Override
 	protected void onPrepareIntent(Intent intent) {
+		super.onPrepareIntent(intent);
 		final List<T> value = getValue();
 		if (value != null && !value.isEmpty()) {
 			ArrayList<String> selected = new ArrayList<String>(value.size());

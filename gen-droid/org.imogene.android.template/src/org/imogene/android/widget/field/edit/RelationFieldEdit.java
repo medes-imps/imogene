@@ -237,7 +237,6 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 			where.clause(preparedWhere);
 			and = true;
 		}
-		onPrepareIntent(intent);
 		if (mConstraintsBuilders != null) {
 			for (ConstraintBuilder builder : mConstraintsBuilders) {
 				Where constraintWhere = builder.onCreateConstraint();
@@ -255,11 +254,7 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 			IntentUtils.putWhereExtras(intent, where);
 		}
 		intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
-		if (mIntentBuilders != null) {
-			for (IntentBuilder builder : mIntentBuilders) {
-				builder.onCreateIntent(intent);
-			}
-		}
+		onPrepareIntent(intent);
 		startActivityForResult(intent, mRequestCode);
 	}
 
@@ -287,7 +282,11 @@ public abstract class RelationFieldEdit<T> extends BaseFieldEdit<T> implements O
 	}
 
 	protected void onPrepareIntent(Intent intent) {
-
+		if (mIntentBuilders != null) {
+			for (IntentBuilder builder : mIntentBuilders) {
+				builder.onCreateIntent(intent);
+			}
+		}
 	}
 
 	protected Where onPrepareWhere() {

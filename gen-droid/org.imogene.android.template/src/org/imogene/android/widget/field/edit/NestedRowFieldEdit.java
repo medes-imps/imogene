@@ -75,6 +75,7 @@ public class NestedRowFieldEdit<T extends ImogBean> extends RelationManyFieldEdi
 		Intent intent = new Intent(Intent.ACTION_INSERT, mContentUri);
 		intent.putExtra(Extras.EXTRA_ENTITY, createBundle());
 		intent.addCategory(wizard ? Categories.CATEGORY_WIZARD : Categories.CATEGORY_CLASSIC);
+		onPrepareIntent(intent);
 		startActivityForResult(intent, mRequestCode);
 	}
 
