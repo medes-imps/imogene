@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -26,6 +30,7 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 	public void onPostGeneration(GenerationManager manager) throws CoreException {
 		deleteUselessStuff(manager);
 		replaceImportResources(manager);
+		replaceQuoteCharacter(manager);
 	}
 
 	private void deleteUselessStuff(GenerationManager manager) throws CoreException {
@@ -44,21 +49,37 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 
 		String replace = "org.imogene.android." + getProjectName(mmn).toLowerCase() + ".R";
 		for (IFolder folder : sourceFolders) {
-			process(folder.getLocation().toFile(), replace);
+			process(folder.getLocation().toFile(), MATCH, replace);
 		}
 	}
 
-	private void process(File file, String replace) {
+	/**
+	 * Replace quote character in resource generated files
+	 * 
+	 * @param manager
+	 * @throws CoreException
+	 */
+	private void replaceQuoteCharacter(GenerationManager manager) throws CoreException {
+		IFolder folder = manager.getGeneratedProject().getFolder("res");
+		ArrayList<IResource> files = new ArrayList<IResource>();
+		findFile(files, folder, "arrays.xml");
+		findFile(files, folder, "strings.xml");
+
+		for (IResource file : files) {
+			process(file.getLocation().toFile(), "\'", "\\\\'");
+		}
+	}
+
+	private void process(File file, String regex, String replace) {
 		if (file.isDirectory()) {
 			for (File f : file.listFiles())
-				process(f, replace);
+				process(f, regex, replace);
 			return;
 		}
 
 		try {
-			replace(file, MATCH, replace);
+			replace(file, regex, replace);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -71,11 +92,32 @@ public class AndroidPostGenerationTask implements PostGenerationTask {
 		}
 		reader.close();
 		// replace a word in a file
+		if (oldtext.contains("'")) {
+			System.out.println("File " + file.getAbsolutePath() + " contains a quote");
+		}
 		String newtext = oldtext.replaceAll(regex, replacement);
 
 		FileWriter writer = new FileWriter(file);
 		writer.write(newtext);
 		writer.close();
+	}
+
+	private void findFile(List<IResource> results, IResource resource, String name) {
+		if (resource == null || !resource.exists() || !(resource instanceof IContainer)) {
+			return;
+		}
+		IResource res = ((IContainer) resource).findMember(name);
+		if (res != null) {
+			results.add(res);
+		}
+		try {
+			IResource[] resources = ((IContainer) resource).members();
+			for (IResource r : resources) {
+				findFile(results, r, name);
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getProjectName(ImogeneModelNature imn) {
