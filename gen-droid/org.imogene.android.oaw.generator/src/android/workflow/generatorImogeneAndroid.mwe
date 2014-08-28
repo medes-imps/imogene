@@ -17,7 +17,7 @@
 	
 	<!-- Entities edition layouts -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -27,7 +27,7 @@
 		
 	<!-- Entities edition wizard layouts -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -37,7 +37,7 @@
 	
 	<!-- Entities view layouts -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -47,7 +47,7 @@
 	
 	<!-- Entities nested edition layout -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -57,7 +57,7 @@
 	
 	<!-- Entities nested view layout -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -69,7 +69,7 @@
 	
 	<!-- Strings -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -79,7 +79,7 @@
 	
 	<!-- Arrays -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -91,7 +91,7 @@
 	
 	<!-- General settings -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -101,7 +101,7 @@
 	
 	<!-- Project Filter Preference screen -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -111,7 +111,7 @@
 	
 	<!-- Entity filter preference screen -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -121,7 +121,7 @@
 	
 	<!-- Hidden settings -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -131,7 +131,7 @@
 	
 	<!-- More menu for view -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -144,7 +144,7 @@
 	<!-- ********************************************* -->
 	<!-- Manifest -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -160,7 +160,7 @@
 	
 	<!-- Main activity -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -172,7 +172,7 @@
 	
 	<!-- Thema listing -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -184,7 +184,7 @@
 	
 	<!-- Entities listing -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -197,7 +197,7 @@
 	<!-- Entities listing and map -->
 	<!--
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -210,7 +210,7 @@
 	
 	<!-- Entities editors -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -222,7 +222,7 @@
 	
 	<!-- Entities wizard editors -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -234,7 +234,7 @@
 
 	<!-- Entities nested editors -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -246,7 +246,7 @@
 	
 	<!-- Entities viewers -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -258,7 +258,7 @@
 
 	<!-- Entities nested viewers -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -270,7 +270,7 @@
 	
 	<!-- User listing -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -282,7 +282,7 @@
 	
 	<!-- project filter preference screen -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -294,7 +294,7 @@
 	
 	<!-- entity filter preference screen -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -307,7 +307,7 @@
 	<!-- ===== Access Policy ===== -->
 	<!-- Access Policy for the project -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -321,7 +321,7 @@
 
 	<!-- Project content provider -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -335,7 +335,7 @@
 	
 	<!-- sqlite: Project cursors for each entities -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -347,7 +347,7 @@
 	
 	<!-- sqlite: OpenHelper -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -361,7 +361,7 @@
 	
 	<!-- Project entities classes -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -373,7 +373,7 @@
 	
 	<!-- Localized text -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
@@ -385,7 +385,7 @@
 	
 	<!-- Entities helper -->
 	<component class="org.eclipse.xpand2.Generator">
-		<fileEncoding value="iso-8859-1"/>
+		<fileEncoding value="UTF-8"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>

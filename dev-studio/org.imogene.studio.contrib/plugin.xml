@@ -254,15 +254,6 @@
       </objectContribution>
    </extension>
    <extension
-         id="org.imogene.studio.contrib.builder.UnicodeBuilder"
-         name="Unicode generator"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.imogene.studio.contrib.builder.UnicodeBuilder">
-         </run></builder>
-   </extension>
-   <extension
          point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/logo_imogene_8.gif"
