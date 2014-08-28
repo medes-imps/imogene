@@ -74,7 +74,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::values::strings_xml::generate FOR project' />
-		<outlet path='${home-gen}/res/' />
+		<outlet path='${home-gen}/res/'>
+			<postprocessor class="org.imogene.xpand2.output.QuoteProcessor"/>
+		</outlet>
 	</component>
 	
 	<!-- Arrays -->
@@ -84,7 +86,9 @@
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
 		<expand value='android::template::resources::values::arrays_xml::generate FOR project' />
-		<outlet path='${home-gen}/res/' />
+		<outlet path='${home-gen}/res/'>
+			<postprocessor class="org.imogene.xpand2.output.QuoteProcessor"/>
+		</outlet>
 	</component>
 	
 	<!-- ===== Xml -->

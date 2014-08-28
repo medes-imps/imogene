@@ -344,7 +344,9 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::i18n::projectTranslation_properties::generate("${modelName}","${applicationType}", "client") FOR project' />
-		<outlet path='${home-gen}/src/main/java/${packagePath}'/>		
+		<outlet path='${home-gen}/src/main/java/${packagePath}'>
+			<postprocessor class="org.imogene.xpand2.output.UnicodeProcessor"/>
+		</outlet>
 	</component>
 	
 	<!-- GWT display value util on client side  -->
@@ -653,7 +655,7 @@
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
 		<expand value='template::web::client::i18n::projectTranslation_properties::generate("${modelName}","${applicationType}", "birt") FOR project' />
-		<outlet path='${home-gen}/src/main/webapp/WEB-INF/birt' />		
+		<outlet path='${home-gen}/src/main/webapp/WEB-INF/birt' />
 	</component>					
 		
 </workflow>
