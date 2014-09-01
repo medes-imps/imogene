@@ -61,7 +61,11 @@ public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.imog__expandable_list_content);
 		fillData();
+
+		TextView empty = (TextView) findViewById(R.id.imog__emptyText);
+		empty.setText(R.string.imog__noPolicyHelpText);
 	}
 	
 	@Override

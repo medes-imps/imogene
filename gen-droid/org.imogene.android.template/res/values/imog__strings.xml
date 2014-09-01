@@ -35,6 +35,7 @@
     <string name="imog__created">Creation date</string>
     <string name="imog__created_by">Created by</string>
     <string name="imog__entity_id">Identifier</string>
+    <string name="imog__noPolicyHelpText">You don\t have any rights to access the forms. Please launch the synchronization and quit the application for the changes to be applied. If the problem persist contact your administrator.</string>
     <string name="imog__noEntityHelpText">You don\'t have any form.\n\n<li>To add a form, press + to create a new form from scratch.</li></string>
     <string name="imog__insert_entity">New entity</string>
     <string name="imog__bin_binary">File attached</string>
@@ -120,7 +121,7 @@
     <string name="imog__filter_string_equal">Equal %s</string>
     <string name="imog__filter_relation_downloading">Downloading</string>
     <string name="imog__filter_relation_download_error">Download error</string>
-    
+
     <!-- Nested fields -->
     <string name="imog__nested_add">Add new</string>
 
