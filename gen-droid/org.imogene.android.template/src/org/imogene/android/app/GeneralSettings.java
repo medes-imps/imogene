@@ -318,8 +318,8 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 	private void executeUpdateApplication() {
 		String server = mUpdateServer.getText();
-		String url = server + (server.endsWith("/") ? "" : "/") + "apk/" + retain.marketApp.getFile();
-		File dir = new File(Environment.getExternalStorageDirectory(), retain.marketApp.getFile());
+		String url = server + (server.endsWith("/") ? "" : "/") + "apk/" + retain.marketApp.getName();
+		File dir = new File(Environment.getExternalStorageDirectory(), retain.marketApp.getName());
 		retain.downloadFileTask = new DownloadFileTask();
 		retain.downloadFileTask.setCallback(mDownloadFileCallback);
 		retain.downloadFileTask.execute(url, dir.getPath());
