@@ -64,7 +64,6 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	private EditTextPreference mUpdateServer;
 
 	private MyProgressDialog mProgressDialog;
-	private MarketApp mMarketApp;
 
 	private RetainObject retain;
 
@@ -259,7 +258,7 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	protected void onPrepareDialog(int id, Dialog dialog) {
 		switch (id) {
 		case DIALOG_DOWNLOAD_ID:
-			mProgressDialog.setMax(mMarketApp.getSize());
+			mProgressDialog.setMax(retain.marketApp.getSize());
 			mProgressDialog.setProgress(0);
 			break;
 		default:
