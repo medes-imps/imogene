@@ -203,7 +203,6 @@
 		<activity 
 			android:name=".app.MultiUserListing"
 			android:label="UserListing" >
-			<category android:name="android.intent.category.DEFAULT"/>
 		</activity>
 		
         <activity
