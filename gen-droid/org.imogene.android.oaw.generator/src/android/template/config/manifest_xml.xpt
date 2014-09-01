@@ -335,7 +335,7 @@
         <service android:name="fr.medes.android.maps.offline.TileLoaderService" />
 		
 		<provider 
-			android:authorities="fr.medes.android.maps;org.imogene.android.«name.toLowerCase()».entity" 
+			android:authorities="org.imogene.android.«name.toLowerCase()».maps;org.imogene.android.«name.toLowerCase()».entity" 
 			android:name=".provider.«name.toFirstUpper()»Provider"
 			android:exported="true" />
 	</application>

@@ -66,6 +66,8 @@ public abstract class ImogProvider extends ContentProvider implements OpenableCo
 	protected static final int LAST_INDEX = PRECACHE_BOUNDS_ID;
 
 	static {
+		//TODO God old trick to set the Maps library authority
+		MapsConstants.AUTHORITY = "org.imogene.android.%realProjectName%.maps";
 		URI_MATCHER.addURI(Constants.AUTHORITY, Profile.Columns.TABLE_NAME, PROFILE);
 		URI_MATCHER.addURI(Constants.AUTHORITY, Profile.Columns.TABLE_NAME + "/*", PROFILE_ID);
 		URI_MATCHER.addURI(Constants.AUTHORITY, EntityProfile.Columns.TABLE_NAME, ENTITYPROFILE);
