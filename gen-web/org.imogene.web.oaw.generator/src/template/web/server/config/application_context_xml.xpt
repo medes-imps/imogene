@@ -9,6 +9,7 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xmlns:aop="http://www.springframework.org/schema/aop"
      xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:task="http://www.springframework.org/schema/task"
      xmlns:context="http://www.springframework.org/schema/context"
      xsi:schemaLocation="
      http://www.springframework.org/schema/beans 
@@ -18,7 +19,9 @@
      http://www.springframework.org/schema/aop 
      http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
      http://www.springframework.org/schema/context
-     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/task
+     http://www.springframework.org/schema/task/spring-task-3.0.xsd">
      
 	<!-- Annotations Scan -->
     <context:annotation-config/>
@@ -180,7 +183,20 @@
 	
 	<!-- Bean filter handler for Birt --> 
 	<bean id="filter" class="org.imogene.«projectName.toLowerCase()».server.security.ImogBeanFilterImpl" />
+
+	<task:scheduler id="scheduler" />
 	
+	<bean id="startupManager" class="org.imogene.web.server.startup.StartupManager">
+		<property name="jobs">
+			<list>
+				«IF embedded == "true"-»
+				<ref bean="synchronizationScheduler" />
+				<ref bean="ntpOffsetScheduler" />
+				«ENDIF-»
+			</list>
+		</property>
+	</bean>
+
 </beans>
 «ENDFILE»
 «ENDDEFINE»

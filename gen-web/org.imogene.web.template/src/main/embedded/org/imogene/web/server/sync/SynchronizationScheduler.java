@@ -1,24 +1,29 @@
-package org.imogene.web.server.scheduling;
+package org.imogene.web.server.sync;
 
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.imogene.encryption.EncryptionManager;
 import org.imogene.lib.sync.client.Synchronizer;
 import org.imogene.lib.sync.client.params.SyncParams;
 import org.imogene.web.server.handler.GenericHandler;
+import org.imogene.web.server.startup.StartupManager.StartupJob;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.transaction.annotation.Transactional;
 
-public class SynchronizationScheduler implements ApplicationListener<ContextRefreshedEvent> {
+public class SynchronizationScheduler implements StartupJob, SynchronizationHelper {
 
 	private static final Logger LOG = Logger.getLogger(SynchronizationScheduler.class);
 
 	@Autowired
 	private TaskScheduler scheduler;
+
+	@Autowired
+	private EncryptionManager encryptionManager;
 
 	@Autowired
 	private Synchronizer synchronizer;
@@ -28,6 +33,32 @@ public class SynchronizationScheduler implements ApplicationListener<ContextRefr
 
 	private ScheduledFuture<?> scheduledFuture;
 
+	@Override
+	@Transactional
+	public void init(String url, String login, String password) {
+		// Try to authenticate
+		if (synchronizer.authenticate(url, login, password) != Synchronizer.AUTH_SUCCESS) {
+			return;
+		}
+		// Run a synchronization just after
+		String terminal = UUID.randomUUID().toString();
+		if (synchronizer.synchronize(url, login, password, terminal, null) != Synchronizer.SYNC_SUCCESS) {
+			return;
+		}
+		// If succeed register sync parameters
+		SyncParams params = handler.find(SyncParams.class, SyncParams.ID);
+		if (params == null) {
+			params = new SyncParams();
+		}
+		params.setLogin(login);
+		params.setUrl(url);
+		params.setPassword(new String(Base64.encodeBase64(encryptionManager.encrypt(password.getBytes()))));
+		params.setTerminal(terminal);
+		handler.save(params);
+		schedule();
+	}
+
+	@Transactional
 	public void schedule() {
 		SyncParams params = handler.find(SyncParams.class, SyncParams.ID);
 		if (params == null || params.getUrl() == null || params.getLogin() == null || params.getPassword() == null
@@ -59,12 +90,8 @@ public class SynchronizationScheduler implements ApplicationListener<ContextRefr
 	}
 
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		ApplicationContext parent = event.getApplicationContext().getParent();
-		if (parent == null) {
-			LOG.info("ContextRefreshEvent: Root Context");
-			return;
-		}
+	@Transactional
+	public void run() {
 		schedule();
 	}
 

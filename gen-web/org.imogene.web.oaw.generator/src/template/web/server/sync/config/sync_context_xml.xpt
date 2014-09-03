@@ -113,14 +113,12 @@
 		<property name="genericDao" ref="genericDao" />
 		<property name="host" value="${ntp.host}" />
 	</bean>
-
-	<bean id="synchronizationScheduler" class="org.imogene.web.server.scheduling.SynchronizationScheduler" />
-
-	<task:scheduler id="scheduler" />
-
-	<task:scheduled-tasks scheduler="scheduler">
-		<task:scheduled ref="ntpoffset" method="update" fixed-delay="${ntp.delay}" />
-	</task:scheduled-tasks>
+	
+	<bean id="ntpOffsetScheduler" class="org.imogene.web.server.sync.NTPOffsetJobScheduler">
+		<property name="delay" value="${ntp.delay}" />
+	</bean>
+	
+	<bean id="synchronizationScheduler" class="org.imogene.web.server.sync.SynchronizationScheduler" />
 
 </beans>
 «ENDFILE»
