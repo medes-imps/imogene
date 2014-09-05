@@ -19,7 +19,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.imogene.studio.contrib.ui.generation.GenerationWizard;
 import org.imogene.web.contrib.SpecificWizardPage;
-import org.imogene.web.contrib.task.AddSuperDevModeLaunchConfigurationTask;
 import org.imogene.web.contrib.task.ClasspathCopyTask;
 import org.imogene.web.contrib.task.WebIconCopyTask;
 
@@ -55,7 +54,7 @@ public class WebGenerationAction implements IObjectActionDelegate {
 			wizard.setWorkflow("workflow/generatorAdmin.mwe");
 			wizard.addPostGenerationTask(new WebIconCopyTask());
 			wizard.addPostGenerationTask(new ClasspathCopyTask());
-			wizard.addPostGenerationTask(new AddSuperDevModeLaunchConfigurationTask());
+			// wizard.addPostGenerationTask(new AddSuperDevModeLaunchConfigurationTask());
 			fillTheList(wizard);
 			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 			dialog.open();
