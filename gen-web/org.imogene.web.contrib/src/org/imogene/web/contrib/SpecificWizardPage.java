@@ -69,7 +69,7 @@ public class SpecificWizardPage extends WizardPage implements GenerationWizardPa
 		ie9Button.addSelectionListener(this);
 
 		ie10Button = new Button(navigatorGroup, SWT.CHECK);
-		ie10Button.setText("Internet Explorer 9");
+		ie10Button.setText("Internet Explorer 10");
 		ie10Button.setSelection(true);
 		ie10Button.addSelectionListener(this);
 
