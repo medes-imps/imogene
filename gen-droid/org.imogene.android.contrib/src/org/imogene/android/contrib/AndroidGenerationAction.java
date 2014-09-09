@@ -46,7 +46,7 @@ public class AndroidGenerationAction implements IObjectActionDelegate {
 			wizard.setWorkflow("android/workflow/generatorImogeneAndroid.mwe");
 			wizard.addPostGenerationTask(new AndroidIconCopyTask());
 			wizard.addPostGenerationTask(new AndroidPostGenerationTask());
-			wizard.addPropertiesPage(new RightsWizard());
+			wizard.addPropertiesPage(new AndroidWizardPage());
 			fillTheList(wizard);
 			WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 			dialog.open();

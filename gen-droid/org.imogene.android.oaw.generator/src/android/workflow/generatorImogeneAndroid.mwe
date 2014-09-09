@@ -152,7 +152,7 @@
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel">
 			<metaModelFile value="${imogeneMetaModel}" />
 		</metaModel>
-		<expand value='android::template::config::manifest_xml::generate("${VERSIONPATH}", "${Android_codeHidden}") FOR project' />
+		<expand value='android::template::config::manifest_xml::generate("${Android_versionCode}", "${Android_versionName}", ${Android_debuggable}, "${Android_codeHidden}") FOR project' />
 		<outlet path='${home-gen}' />
 	</component>
 	

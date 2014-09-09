@@ -1,12 +1,12 @@
 «IMPORT core»
 «EXTENSION android::template::MedooAndroidFieldUtilExt»
-«DEFINE generate(String versionCode, String secretCode) FOR Project »
+«DEFINE generate(String versionCode, String versionName, boolean debuggable, String secretCode) FOR Project »
 «FILE 'AndroidManifest.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.imogene.android.«name.toLowerCase()»"
 	android:versionCode="«versionCode»"
-    android:versionName="«versionCode».0">
+    android:versionName="«versionName»">
     
     <uses-sdk
         android:minSdkVersion="11"
@@ -49,7 +49,7 @@
 		android:name="org.imogene.android.«name.toLowerCase()».app.«name.toFirstUpper()»App"
 		android:icon="@drawable/imog__logo_android_s"
 		android:label="@string/app_name"
-	 	android:debuggable="true"
+	 	android:debuggable="«IF debuggable»true«ELSE»false«ENDIF»"
 	 	android:theme="@style/Theme.Imogene" >
 
 		<activity
