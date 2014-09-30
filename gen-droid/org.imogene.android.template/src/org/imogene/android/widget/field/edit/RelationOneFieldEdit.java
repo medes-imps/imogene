@@ -20,6 +20,8 @@ import fr.medes.android.util.content.ContentUrisUtils;
 
 public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<T> implements OnActivityResultListener {
 
+	private boolean editOnly = false;
+
 	public RelationOneFieldEdit(Context context) {
 		super(context);
 	}
@@ -30,6 +32,10 @@ public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<
 
 	public RelationOneFieldEdit(Context context, AttributeSet attrs, int layoutId) {
 		super(context, attrs, layoutId);
+	}
+
+	public void setEditOnly(boolean editOnly) {
+		this.editOnly = editOnly;
 	}
 
 	@Override
@@ -54,7 +60,7 @@ public class RelationOneFieldEdit<T extends ImogBean> extends RelationFieldEdit<
 			startActivity(new Intent(Intent.ACTION_VIEW, ContentUrisUtils.withAppendedId(mContentUri, value.getId())));
 			return;
 		}
-		if (mOppositeCardinality == 1 && !mHasReverse) {
+		if (editOnly || (mOppositeCardinality == 1 && !mHasReverse)) {
 			if (value != null) {
 				startActivity(new Intent(Intent.ACTION_EDIT,
 						ContentUrisUtils.withAppendedId(mContentUri, value.getId())));
