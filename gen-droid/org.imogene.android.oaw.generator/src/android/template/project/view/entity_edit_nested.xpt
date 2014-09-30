@@ -117,7 +117,7 @@ public class «name.toFirstUpper()»NestedEdit extends RelationOneFieldEdit<«name.
 			«IF RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity) f).nestedForm && ((RelationFieldEntity) f).cardinality == 1-»
 			«f.name.toFirstLower()».updateErrorEntries(errors, tag);
 			«ELSE-»
-			errors.add(«f.name.toFirstLower()».getErrorEntry(R.id.«EXPAND android::template::MedooAndroidFieldUtil::resourceName FOR f.parentGroup»));
+			errors.add(«f.name.toFirstLower()».getErrorEntry(tag));
 			«ENDIF-»
 		}
 		«ENDFOREACH-»
