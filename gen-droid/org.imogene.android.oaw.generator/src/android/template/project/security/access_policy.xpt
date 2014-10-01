@@ -102,18 +102,21 @@ public class AccessPolicy {
 	
 	public ImogActor getSyncActor(Context context) {
 		String login = Preferences.getPreferences(context).getSyncLogin();
+		if (login == null) {
+			return null;
+		}
 		«FOREACH entities AS e-»
 		«IF Actor.isAssignableFrom(e.metaType)-»
 		{
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(«e.name.toFirstUpper()».Columns.CONTENT_URI);
 		builder.where().eq(«e.name.toFirstUpper()».Columns.LOGIN, login);
 		«e.name.toFirstUpper()»Cursor cursor = («e.name.toFirstUpper()»Cursor) builder.query();
-		if (cursor.moveToFirst()) {
-			try {
+		try {
+			if (cursor.moveToFirst()) {
 				return cursor.newBean();
-			} finally {
-				cursor.close();
 			}
+		} finally {
+			cursor.close();
 		}
 		}
 		«ENDIF-»

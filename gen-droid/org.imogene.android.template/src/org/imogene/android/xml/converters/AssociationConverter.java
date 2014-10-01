@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
-import org.imogene.android.common.entity.ImogHelper.EntityInfo;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -42,19 +41,19 @@ public class AssociationConverter extends AbstractFieldConverter {
 		if (clazz == null) {
 			return null;
 		}
-		EntityInfo info = ImogHelper.getEntityInfo(clazz.asSubclass(ImogBean.class));
-		if (info == null) {
+		Uri uri = ImogHelper.getInstance().getUriFromClass(clazz.asSubclass(ImogBean.class));
+		if (uri == null) {
 			return null;
 		}
 
 		String id = parser.getAttributeValue(null, "id");
 
-		ImogBean bean = ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(info.contentUri, id));
+		ImogBean bean = ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(uri, id));
 		if (bean == null) {
 			ContentValues values = new ContentValues();
 			values.put(ImogBean.Columns._ID, id);
 			values.put(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
-			Uri insertUri = context.getContentResolver().insert(info.contentUri, values);
+			Uri insertUri = context.getContentResolver().insert(uri, values);
 			bean = ImogOpenHelper.fromUri(insertUri);
 		}
 		return bean;

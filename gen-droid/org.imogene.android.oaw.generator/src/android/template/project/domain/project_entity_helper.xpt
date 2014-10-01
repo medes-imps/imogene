@@ -3,8 +3,8 @@
 «FILE "/" + name.toLowerCase() + "/domain/" + name.toFirstUpper() + "Helper.java"-»
 package org.imogene.android.«name.toLowerCase()».domain;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.imogene.android.common.binary.Binary;
 import org.imogene.android.common.binary.BinaryFile;
@@ -14,11 +14,15 @@ import org.imogene.android.common.entity.DefaultUser;
 import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.common.filter.ClientFilter;
 import org.imogene.android.common.model.CardEntity;
+import org.imogene.android.common.model.EntityInfo;
+import org.imogene.android.common.model.EntityInfo.Policy;
 import org.imogene.android.common.model.FieldGroup;
 import org.imogene.android.common.profile.EntityProfile;
 import org.imogene.android.common.profile.FieldGroupProfile;
 import org.imogene.android.common.profile.Profile;
+import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».app.«name.toFirstUpper()»Listing;
+import org.imogene.android.«name.toLowerCase()».security.AccessPolicy;
 
 import android.content.Context;
 import android.net.Uri;
@@ -30,6 +34,113 @@ public class «name.toFirstUpper()»Helper extends ImogHelper {
 			sInstance = new «name.toFirstUpper()»Helper();
 		}
 	}
+	
+	public static final EntityInfo EI_PROFILE = new EntityInfo(
+		Profile.class,
+		Profile.Columns.CONTENT_URI,
+		Profile.Columns.TABLE_NAME,
+		Profile.Columns.BEAN_TYPE
+	);
+
+	public static final EntityInfo EI_ENTITYPROFILE = new EntityInfo(
+		EntityProfile.class,
+		EntityProfile.Columns.CONTENT_URI,
+		EntityProfile.Columns.TABLE_NAME,
+		EntityProfile.Columns.BEAN_TYPE
+	);
+	
+	public static final EntityInfo EI_FIELDGROUPPROFILE = new EntityInfo(
+		FieldGroupProfile.class,
+		FieldGroupProfile.Columns.CONTENT_URI,
+		FieldGroupProfile.Columns.TABLE_NAME,
+		FieldGroupProfile.Columns.BEAN_TYPE
+	);
+
+	public static final EntityInfo EI_CARDENTITY = new EntityInfo(
+		CardEntity.class,
+		CardEntity.Columns.CONTENT_URI,
+		CardEntity.Columns.TABLE_NAME,
+		CardEntity.Columns.BEAN_TYPE
+	);
+
+	public static final EntityInfo EI_FIELDGROUP = new EntityInfo(
+		FieldGroup.class,
+		FieldGroup.Columns.CONTENT_URI,
+		FieldGroup.Columns.TABLE_NAME,
+		FieldGroup.Columns.BEAN_TYPE
+	);
+	
+	public static final EntityInfo EI_BINARY = new EntityInfo(
+		BinaryFile.class,
+		Binary.Columns.CONTENT_URI,
+		Binary.Columns.TABLE_NAME,
+		Binary.Columns.BEAN_TYPE
+	);
+
+	public static final EntityInfo EI_CLIENTFILTER = new EntityInfo(
+		ClientFilter.class,
+		ClientFilter.Columns.CONTENT_URI,
+		ClientFilter.Columns.TABLE_NAME,
+		ClientFilter.Columns.BEAN_TYPE
+	);
+	
+	public static final EntityInfo EI_DEFAULTUSER = new EntityInfo(
+		DefaultUser.class,
+		DefaultUser.Columns.CONTENT_URI,
+		DefaultUser.Columns.TABLE_NAME,
+		DefaultUser.Columns.BEAN_TYPE
+	);
+	
+	public static final EntityInfo EI_DYNAMICFIELDINSTANCE = new EntityInfo(
+		DynamicFieldInstance.class,
+		DynamicFieldInstance.Columns.CONTENT_URI,
+		DynamicFieldInstance.Columns.TABLE_NAME,
+		DynamicFieldInstance.Columns.BEAN_TYPE
+	);
+	
+	public static final EntityInfo EI_DYNAMICFIELDTEMPLATE = new EntityInfo(
+		DynamicFieldTemplate.class,
+		DynamicFieldTemplate.Columns.CONTENT_URI,
+		DynamicFieldTemplate.Columns.TABLE_NAME,
+		DynamicFieldTemplate.Columns.BEAN_TYPE
+	);
+
+	«FOREACH entities AS e-»
+	public static final EntityInfo EI_«e.name.toUpperCase()» = new EntityInfo(
+		«e.name.toFirstUpper()».class,
+		«e.name.toFirstUpper()».Columns.CONTENT_URI,
+		«e.name.toFirstUpper()».Columns.TABLE_NAME,
+		«e.name.toFirstUpper()».Columns.BEAN_TYPE,
+		R.string.«e.name.toLowerCase()»_des_pl,
+		«IF e.icon.length > 0»R.drawable.«e.icon.split("\\.").get(0).toLowerCase()»«ELSE»R.drawable.imog__logo_android_s«ENDIF»,
+		«e.name.toFirstUpper()».Columns.COLOR,
+		«e.name.toFirstUpper()».Columns.NOTIFICATION_ID,
+		new Policy() {
+			@Override
+			public boolean canDirectAccess(Context context) {
+				return AccessPolicy.getPolicy(context).canDirectAccess«e.name.toFirstUpper()»();
+			}
+		}
+	);
+	«ENDFOREACH-»
+	
+	private static final ArrayList<EntityInfo> entityInfos = new ArrayList<EntityInfo>();
+	
+	static {
+		entityInfos.add(EI_PROFILE);
+		entityInfos.add(EI_ENTITYPROFILE);
+		entityInfos.add(EI_FIELDGROUPPROFILE);
+		entityInfos.add(EI_CARDENTITY);
+		entityInfos.add(EI_FIELDGROUP);
+		entityInfos.add(EI_BINARY);
+		entityInfos.add(EI_CLIENTFILTER);
+		entityInfos.add(EI_DEFAULTUSER);
+		entityInfos.add(EI_DYNAMICFIELDINSTANCE);
+		entityInfos.add(EI_DYNAMICFIELDTEMPLATE);
+		«FOREACH entities AS e-»
+		entityInfos.add(EI_«e.name.toUpperCase()»);
+		«ENDFOREACH-»
+	}
 
 	@Override
 	public Class<?> getHomeActivityClass() {
@@ -37,74 +148,8 @@ public class «name.toFirstUpper()»Helper extends ImogHelper {
 	}
 
 	@Override
-	public List<Uri> getAllUris() {
-		List<Uri> result = new Vector<Uri>();
-		result.add(Profile.Columns.CONTENT_URI);
-		result.add(EntityProfile.Columns.CONTENT_URI);
-		result.add(FieldGroupProfile.Columns.CONTENT_URI);
-		result.add(CardEntity.Columns.CONTENT_URI);
-		result.add(FieldGroup.Columns.CONTENT_URI);
-		result.add(Binary.Columns.CONTENT_URI);
-		result.add(ClientFilter.Columns.CONTENT_URI);
-		result.add(DefaultUser.Columns.CONTENT_URI);
-		result.add(DynamicFieldInstance.Columns.CONTENT_URI);
-		result.add(DynamicFieldTemplate.Columns.CONTENT_URI);
-		«FOREACH entities AS e -»
-		result.add(«e.name.toFirstUpper()».Columns.CONTENT_URI);
-		«ENDFOREACH-»
-		return result;
-	}
-	
-	@Override
-	public List<Uri> getHiddenUris(Context context) {
-		List<Uri> result = new Vector<Uri>();
-		«FOREACH entities AS e-»
-		«REM»
-		«IF !e.topLevel || e.directAccess.size > 0-»
-			«IF e.directAccess.size > 0-»
-			if (!«e.name.toFirstUpper()»Roles.directAccess(context))
-			«ENDIF-»
-			result.add(«e.name.toFirstUpper()».Columns.CONTENT_URI);
-		«ENDIF-»
-		«ENDREM»
-		«ENDFOREACH-»
-		return result;
-	}
-
-	@Override
-	public List<String> getAllTables() {
-		List<String> result = new Vector<String>();
-		result.add(Profile.Columns.TABLE_NAME);
-		result.add(EntityProfile.Columns.TABLE_NAME);
-		result.add(FieldGroupProfile.Columns.TABLE_NAME);
-		result.add(CardEntity.Columns.TABLE_NAME);
-		result.add(FieldGroup.Columns.TABLE_NAME);
-		result.add(Binary.Columns.TABLE_NAME);
-		result.add(ClientFilter.Columns.TABLE_NAME);
-		result.add(DefaultUser.Columns.TABLE_NAME);
-		result.add(DynamicFieldInstance.Columns.TABLE_NAME);
-		result.add(DynamicFieldTemplate.Columns.TABLE_NAME);
-		«FOREACH entities AS e -»
-		result.add(«e.name.toFirstUpper()».Columns.TABLE_NAME);
-		«ENDFOREACH-»
-		return result;
-	}
-	
-	@Override
-	public void doWithImogBeans(ImogBeanCallback callback) {
-		callback.doWith(Profile.class, Profile.Columns.CONTENT_URI);
-		callback.doWith(EntityProfile.class, EntityProfile.Columns.CONTENT_URI);
-		callback.doWith(FieldGroupProfile.class, FieldGroupProfile.Columns.CONTENT_URI);
-		callback.doWith(CardEntity.class, CardEntity.Columns.CONTENT_URI);
-		callback.doWith(FieldGroup.class, FieldGroup.Columns.CONTENT_URI);
-		callback.doWith(BinaryFile.class, Binary.Columns.CONTENT_URI);
-		callback.doWith(ClientFilter.class, ClientFilter.Columns.CONTENT_URI);
-		callback.doWith(DefaultUser.class, DefaultUser.Columns.CONTENT_URI);
-		callback.doWith(DynamicFieldInstance.class, DynamicFieldInstance.Columns.CONTENT_URI);
-		callback.doWith(DynamicFieldTemplate.class, DynamicFieldTemplate.Columns.CONTENT_URI);
-		«FOREACH entities AS e-»
-		callback.doWith(«e.name.toFirstUpper()».class, «e.name.toFirstUpper()».Columns.CONTENT_URI);
-		«ENDFOREACH-»
+	public List<EntityInfo> getEntityInfos() {
+		return entityInfos;
 	}
 
 }

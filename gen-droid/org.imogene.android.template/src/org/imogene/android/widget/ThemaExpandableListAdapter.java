@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
-import org.imogene.android.common.entity.ImogHelper.EntityInfo;
+import org.imogene.android.common.model.EntityInfo;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.template.R;
 
@@ -29,7 +29,7 @@ public class ThemaExpandableListAdapter extends ArrayExpandableListAdapter<Integ
 	@Override
 	public void bindChildView(View view, EntityInfo child) {
 		TextView main = (TextView) view.findViewById(android.R.id.text1);
-		main.setText(child.description_pl);
+		main.setText(child.description);
 
 		TextView secondary = (TextView) view.findViewById(android.R.id.text2);
 

@@ -16,6 +16,7 @@ import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.common.entity.SyncHistory;
 import org.imogene.android.common.filter.ClientFilter;
+import org.imogene.android.common.model.EntityInfo;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
@@ -30,7 +31,6 @@ import org.xmlpull.v1.XmlSerializer;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.util.Xml;
@@ -426,8 +426,8 @@ public class SynchronizationController implements Runnable {
 		serializer.startDocument(null, Boolean.valueOf(true));
 		serializer.startTag(null, "entities");
 
-		for (Uri uri : ImogHelper.getInstance().getAllUris()) {
-			QueryBuilder b = ImogOpenHelper.getHelper().queryBuilder(uri);
+		for (EntityInfo info : ImogHelper.getInstance().getEntityInfos()) {
+			QueryBuilder b = ImogOpenHelper.getHelper().queryBuilder(info.contentUri);
 			b.where().gt(ImogBean.Columns.MODIFIED, date).and().eq(ImogBean.Columns.MODIFIEDFROM, hardwareId);
 			b.orderBy(ImogBean.Columns.MODIFIED, true);
 			ImogBeanCursor<?> cursor = (ImogBeanCursor<?>) b.query();
@@ -452,8 +452,8 @@ public class SynchronizationController implements Runnable {
 
 		ContentResolver res = mContext.getContentResolver();
 		DatabaseUtils.markSent(res, ClientFilter.Columns.CONTENT_URI, time, true);
-		for (Uri uri : ImogHelper.getInstance().getAllUris()) {
-			DatabaseUtils.markSent(res, uri, time, true);
+		for (EntityInfo info : ImogHelper.getInstance().getEntityInfos()) {
+			DatabaseUtils.markSent(res, info.contentUri, time, true);
 		}
 	}
 
@@ -461,8 +461,10 @@ public class SynchronizationController implements Runnable {
 		if (Constants.DEBUG) {
 			Logger.i(TAG, "mark hidden received entities as read");
 		}
-		for (Uri uri : ImogHelper.getInstance().getHiddenUris(mContext)) {
-			DatabaseUtils.markRead(mContext.getContentResolver(), uri, true);
+		for (EntityInfo info : ImogHelper.getInstance().getEntityInfos()) {
+			if (!info.canDirectAccess(mContext)) {
+				DatabaseUtils.markRead(mContext.getContentResolver(), info.contentUri, true);
+			}
 		}
 	}
 

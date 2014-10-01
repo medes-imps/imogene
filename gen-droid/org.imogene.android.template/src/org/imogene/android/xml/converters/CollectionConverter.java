@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
-import org.imogene.android.common.entity.ImogHelper.EntityInfo;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.content.Context;
+import android.net.Uri;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.xml.converters.AbstractFieldConverter;
 import fr.medes.android.xml.mapper.Mapper;
@@ -41,13 +41,13 @@ public class CollectionConverter extends AbstractFieldConverter {
 			if (clazz == null) {
 				continue;
 			}
-			EntityInfo info = ImogHelper.getEntityInfo(clazz.asSubclass(ImogBean.class));
-			if (info == null) {
+			Uri uri = ImogHelper.getInstance().getUriFromClass(clazz.asSubclass(ImogBean.class));
+			if (uri == null) {
 				continue;
 			}
 			String id = parser.getAttributeValue(null, "id");
 
-			ImogBean bean = ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(info.contentUri, id));
+			ImogBean bean = ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(uri, id));
 			if (bean == null) {
 				try {
 					bean = (ImogBean) clazz.newInstance();

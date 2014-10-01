@@ -18,7 +18,7 @@ public class ClientFilter extends ImogBeanImpl {
 
 	public static interface Columns extends ImogBean.Columns {
 		public static final String TABLE_NAME = "clientfilter";
-		public static final String TYPE = "CLTFIL";
+		public static final String BEAN_TYPE = "CLTFIL";
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 
 		public static final String USERID = "userId";
@@ -242,7 +242,7 @@ public class ClientFilter extends ImogBeanImpl {
 
 	@Override
 	public void prepareForSave(Context context) {
-		prepareForSave(context, Columns.TYPE);
+		prepareForSave(context, Columns.BEAN_TYPE);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.imogene.android.Constants;
 import org.imogene.android.common.entity.GpsLocation;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
+import org.imogene.android.common.model.EntityInfo;
 import org.imogene.android.database.ImogBeanCursor;
 
 import android.content.Context;
@@ -85,14 +86,14 @@ public abstract class ImogBeanCursorImpl<T extends ImogBean> extends BaseCursor 
 
 	protected final ImogBean getEntity(String id) {
 		ImogOpenHelper helper = ImogOpenHelper.getHelper();
-		for (String table : ImogHelper.getInstance().getAllTables()) {
-			QueryBuilder builder = helper.queryBuilder(table);
+		for (EntityInfo info : ImogHelper.getInstance().getEntityInfos()) {
+			QueryBuilder builder = helper.queryBuilder(info.table);
 			builder.setCountOf(true);
 			builder.where().idEq(id).and().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
 			long count = builder.queryForLong();
 			if (count == 1) {
 				return ImogOpenHelper.fromUri(ContentUrisUtils.withAppendedId(
-						ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, table), id));
+						ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, info.table), id));
 			}
 		}
 		return null;

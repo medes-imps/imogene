@@ -91,7 +91,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 
 	@Override
 	public void prepareForSave(Context context) {
-		prepareForSave(context, Binary.Columns.TYPE);
+		prepareForSave(context, Binary.Columns.BEAN_TYPE);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 
 		String login = prefs.getCurrentLogin();
 
-		String id = BeanKeyGenerator.getNewId(Binary.Columns.TYPE);
+		String id = BeanKeyGenerator.getNewId(Binary.Columns.BEAN_TYPE);
 
 		ContentResolver r = context.getContentResolver();
 

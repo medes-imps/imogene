@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
-import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
+import org.imogene.android.common.model.EntityInfo;
 import org.imogene.android.xml.converters.AssociationConverter;
 import org.imogene.android.xml.converters.BinaryConverter;
 import org.imogene.android.xml.converters.CollectionConverter;
@@ -17,7 +17,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.content.Context;
-import android.net.Uri;
 import fr.medes.android.util.annotation.ReflectionUtils;
 import fr.medes.android.util.annotation.ReflectionUtils.FieldCallback;
 import fr.medes.android.xml.DefaultConverterLookup;
@@ -66,13 +65,9 @@ public class ImogXmlConverter {
 		classLookup = new DefaultConverterLookup();
 		classLookup.addConverter(new BinaryConverter(fieldLookup));
 
-		ImogHelper.getInstance().doWithImogBeans(new ImogBeanCallback() {
-
-			@Override
-			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
-				processAnnotations(clazz);
-			}
-		});
+		for (EntityInfo info : ImogHelper.getInstance().getEntityInfos()) {
+			processAnnotations(info.clazz);
+		}
 	}
 
 	public void processAnnotations(Class<?> type) {

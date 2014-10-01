@@ -10,7 +10,7 @@ public interface Binary extends ImogBean {
 
 	public static interface Columns extends ImogBean.Columns {
 		public static final String TABLE_NAME = "binaries";
-		public static final String TYPE = "BIN";
+		public static final String BEAN_TYPE = "BIN";
 
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 

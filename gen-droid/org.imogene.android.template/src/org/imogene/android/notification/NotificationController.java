@@ -1,14 +1,12 @@
 package org.imogene.android.notification;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
-import org.imogene.android.common.entity.ImogHelper.EntityInfo;
-import org.imogene.android.common.entity.ImogHelper.ImogBeanCallback;
+import org.imogene.android.common.model.EntityInfo;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.sync.SynchronizationController;
@@ -26,7 +24,6 @@ import android.content.Intent;
 import android.database.ContentObserver;
 import android.graphics.Typeface;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
@@ -129,35 +126,30 @@ public class NotificationController {
 	 */
 	private void registerMessageNotification() {
 		final ContentResolver resolver = mContext.getContentResolver();
-		final List<Uri> hidden = ImogHelper.getInstance().getHiddenUris(mContext);
-		ImogHelper.getInstance().doWithImogBeans(new ImogBeanCallback() {
 
-			@Override
-			public void doWith(Class<? extends ImogBean> clazz, Uri uri) {
-				EntityInfo info = ImogHelper.getEntityInfo(clazz);
-				if (info == null || info.notificationId < 0) {
-					// Not an observable entity
-					return;
-				}
-				ContentObserver obs = mNotificationMap.get(info.notificationId);
-				if (hidden.contains(uri)) {
-					if (obs != null) {
-						resolver.unregisterContentObserver(obs);
-						mNotificationMap.delete(info.notificationId);
-					}
-				} else {
-					if (obs != null) {
-						// we're already observing; nothing to do
-						return;
-					}
-					EntityContentObserver observer = new EntityContentObserver(sNotificationHandler, info);
-					resolver.registerContentObserver(uri, true, observer);
-					mNotificationMap.put(info.notificationId, observer);
-					observer.onChange(true);
-				}
-
+		for (EntityInfo info : ImogHelper.getInstance().getEntityInfos()) {
+			if (info == null || info.notificationId < 0) {
+				// Not an observable entity
+				continue;
 			}
-		});
+			ContentObserver obs = mNotificationMap.get(info.notificationId);
+			if (!info.canDirectAccess(mContext)) {
+				if (obs != null) {
+					resolver.unregisterContentObserver(obs);
+					mNotificationMap.delete(info.notificationId);
+				}
+			} else {
+				if (obs != null) {
+					// we're already observing; nothing to do
+					continue;
+				}
+				EntityContentObserver observer = new EntityContentObserver(sNotificationHandler, info);
+				resolver.registerContentObserver(info.contentUri, true, observer);
+				mNotificationMap.put(info.notificationId, observer);
+				observer.onChange(true);
+			}
+
+		}
 
 		if (mSynchronizationListener == null) {
 			mSynchronizationListener = new MySynchronizationListener(sNotificationHandler);
@@ -173,10 +165,10 @@ public class NotificationController {
 	 * automatically be re-activated.
 	 * 
 	 * @param suspend If {@code true}, suspend notifications for the given entity notification identifier. Otherwise,
-	 *        re-activate notifications for the previously suspended entity notifications.
+	 *            re-activate notifications for the previously suspended entity notifications.
 	 * @param notificationId The ID of the notification. If this is the special notification ID
-	 *        {@link NotificationController#NO_NOTIFICATION}, notifications for are re-activated. If {@code suspend} is
-	 *        {@code false}, the notification ID is ignored.
+	 *            {@link NotificationController#NO_NOTIFICATION}, notifications for are re-activated. If {@code suspend}
+	 *            is {@code false}, the notification ID is ignored.
 	 */
 	public void suspendMessageNotification(boolean suspend, int notificationId) {
 		if (mSuspendNotificationId != NO_NOTIFICATION) {
@@ -292,19 +284,19 @@ public class NotificationController {
 	 */
 	private static class EntityContentObserver extends ContentObserver {
 
-		private final EntityInfo mInfo;
+		private final EntityInfo info;
 
 		public EntityContentObserver(Handler handler, EntityInfo info) {
 			super(handler);
-			mInfo = info;
+			this.info = info;
 		}
 
 		@Override
 		public void onChange(boolean selfChange) {
-			if (mInfo.notificationId == sInstance.mSuspendNotificationId) {
+			if (info.notificationId == sInstance.mSuspendNotificationId) {
 				return;
 			}
-			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(mInfo.contentUri);
+			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(info.contentUri);
 			builder.where().eq(ImogBean.Columns.FLAG_READ, 0);
 			builder.orderBy(ImogBean.Columns.MODIFIED, false);
 			ImogBeanCursor<?> c = (ImogBeanCursor<?>) builder.query();
@@ -313,7 +305,7 @@ public class NotificationController {
 			}
 			try {
 				if (!c.moveToFirst()) {
-					sInstance.mNotificationManager.cancel(mInfo.notificationId);
+					sInstance.mNotificationManager.cancel(info.notificationId);
 					return;
 				}
 
@@ -321,22 +313,22 @@ public class NotificationController {
 
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				if (count > 1) {
-					intent.setData(mInfo.contentUri);
+					intent.setData(info.contentUri);
 					intent.putExtra(Extras.EXTRA_SORT_KEY, ImogBean.Columns.FLAG_READ);
 					intent.putExtra(Extras.EXTRA_ASCENDING, true);
 				} else {
-					intent.setData(ContentUrisUtils.withAppendedId(mInfo.contentUri, c.getId()));
+					intent.setData(ContentUrisUtils.withAppendedId(info.contentUri, c.getId()));
 				}
 
-				String title = sInstance.mContext.getString(mInfo.description_sg);
+				String title = sInstance.mContext.getString(info.description);
 				String fmt = sInstance.mContext.getResources().getString(R.string.imog__numberOfEntities);
 				String description = MessageFormat.format(fmt, count);
 				CharSequence ticker = buildTickerMessage(title, description);
 
-				Notification n = sInstance.createNotification(title, description, ticker, intent, mInfo.drawable, true);
+				Notification n = sInstance.createNotification(title, description, ticker, intent, info.drawable, true);
 
 				if (n != null) {
-					sInstance.mNotificationManager.notify(mInfo.notificationId, n);
+					sInstance.mNotificationManager.notify(info.notificationId, n);
 				}
 			} finally {
 				c.close();
