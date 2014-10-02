@@ -1,4 +1,4 @@
-package org.imogene.web.client.ui.field.relation.single;
+package org.imogene.web.client.ui.field.relation.single.listdataprovider;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.imogene.web.client.event.FieldValueChangeEvent;
 import org.imogene.web.client.ui.field.ImogField;
 import org.imogene.web.client.ui.field.ImogFieldAbstract;
 import org.imogene.web.client.ui.field.error.ImogErrorLabel;
-import org.imogene.web.client.ui.table.ImogBeanDataProvider;
 import org.imogene.web.client.util.ImogBeanRenderer;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 
@@ -29,13 +28,13 @@ import com.google.web.bindery.event.shared.EventBus;
  * Field Editor for Relation fields with cardinality = 1
  * @author MEDES-IMPS
  */
-public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite implements ImogField<T>,
+public class ImogSingleRelationBoxForList<T extends ImogBeanProxy> extends Composite implements ImogField<T>,
 		LeafValueEditor<T>, HasEditorErrors<T> {
 
 	private static final Binder uiBinder = GWT.create(Binder.class);
 
 	@SuppressWarnings("rawtypes")
-	interface Binder extends UiBinder<Widget, ImogSingleRelationBox> {
+	interface Binder extends UiBinder<Widget, ImogSingleRelationBoxForList> {
 	}
 
 	/* widgets */
@@ -46,23 +45,27 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 	ImogFieldAbstract fieldBox;
 	@UiField (provided=true)
 	@Ignore
-	ImogSingleRelation<T> singleRelationBox;	
+	ImogSingleRelationForList<T> singleRelationBox;	
 	
 	
 
-	public ImogSingleRelationBox(ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer, boolean hideButtons) {
-		singleRelationBox = new ImogSingleRelation<T>(provider, beanRenderer, hideButtons);
+	public ImogSingleRelationBoxForList(ImogBeanRenderer beanRenderer, boolean hideButtons) {
+		singleRelationBox = new ImogSingleRelationForList<T>(beanRenderer, hideButtons);
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	public ImogSingleRelationBox(ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer) {
-		this(true, provider, beanRenderer);
+	public ImogSingleRelationBoxForList(ImogBeanRenderer beanRenderer) {
+		this(true, beanRenderer);
 	}
 	
 	
-	public ImogSingleRelationBox(boolean canCreateEntity, ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer) {
-		singleRelationBox = new ImogSingleRelation<T>(canCreateEntity, provider, beanRenderer);
+	public ImogSingleRelationBoxForList(boolean canCreateEntity, ImogBeanRenderer beanRenderer) {
+		singleRelationBox = new ImogSingleRelationForList<T>(canCreateEntity, beanRenderer);
 		initWidget(uiBinder.createAndBindUi(this));
+	}
+	
+	public void addValuesToList(List<T> values) {		
+		singleRelationBox.addValuesToList(values);
 	}
 
 	@Override
@@ -85,10 +88,6 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 	
 	public void setViewClickHandler(ClickHandler handler){
 		singleRelationBox.setViewClickHandler(handler);
-	}
-	
-	public void setAddClickHandler(ClickHandler handler){
-		singleRelationBox.setAddClickHandler(handler);
 	}
 
 	/**
@@ -147,14 +146,6 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 		singleRelationBox.setHideClearButton(hideClearButton);
 	}
 	
-	public void setHideCreateButton(boolean hideCreateButton) {
-		singleRelationBox.setHideCreateButton(hideCreateButton);
-	}
-	
-	public void hideCreateButton() {
-		singleRelationBox.hideCreateButton();
-	}
-	
 	public void hideButtonPanel(boolean hide) {
 		singleRelationBox.hideButtonPanel(hide);
 	}
@@ -168,7 +159,7 @@ public class ImogSingleRelationBox<T extends ImogBeanProxy> extends Composite im
 			singleRelationBox.addValueChangeHandler(new ValueChangeHandler<String>() {			
 				@Override
 				public void onValueChange(ValueChangeEvent<String> arg0) {
-					eventBus.fireEvent(new FieldValueChangeEvent(ImogSingleRelationBox.this));
+					eventBus.fireEvent(new FieldValueChangeEvent(ImogSingleRelationBoxForList.this));
 				}
 			});		
 		}

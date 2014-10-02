@@ -116,8 +116,8 @@ public class ImogPasswordBox extends Composite implements ImogField<String>,
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		textBox.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		textBox.getElement().getStyle().setProperty("width", width + "px");
 	}
 
 }

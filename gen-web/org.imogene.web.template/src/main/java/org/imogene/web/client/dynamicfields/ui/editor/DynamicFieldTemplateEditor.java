@@ -181,7 +181,7 @@ public class DynamicFieldTemplateEditor extends Composite
 		fieldType.notifyChanges(requestFactory.getEventBus());
 		parameters.setLabel(DynFieldsNLS.constants()
 				.dynamicField_Template_field_parameters());
-		parameters.setBoxWidth("180px");
+		parameters.setBoxWidth(180);
 		// the visibility of parameters depends on the value of other fields
 		parameters.addStyleName("dependentVisibility");
 		
@@ -207,20 +207,20 @@ public class DynamicFieldTemplateEditor extends Composite
 		requiredValue.isStrict(true);
 		fieldPosition.setLabel(DynFieldsNLS.constants()
 				.dynamicField_Template_field_fieldPosition());
-		fieldPosition.setBoxWidth("100px");
+		fieldPosition.setBoxWidth(100);
 		minimumValue.setLabel(DynFieldsNLS.constants()
 				.dynamicField_Template_field_minimumValue());
-		minimumValue.setBoxWidth("80px");
+		minimumValue.setBoxWidth(80);
 		// the visibility of minimumValue depends on the value of other fields
 		minimumValue.addStyleName("dependentVisibility");
 		maximumValue.setLabel(DynFieldsNLS.constants()
 				.dynamicField_Template_field_maximumValue());
-		maximumValue.setBoxWidth("80px");
+		maximumValue.setBoxWidth(80);
 		// the visibility of maximumValue depends on the value of other fields
 		maximumValue.addStyleName("dependentVisibility");
 		defaultValue.setLabel(DynFieldsNLS.constants()
 				.dynamicField_Template_field_defaultValue());
-		defaultValue.setBoxWidth("80px");
+		defaultValue.setBoxWidth(80);
 		// the visibility of defaultValue depends on the value of other fields
 		defaultValue.addStyleName("dependentVisibility");
 

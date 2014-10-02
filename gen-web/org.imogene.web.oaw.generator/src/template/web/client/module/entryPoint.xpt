@@ -198,7 +198,10 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 			
 		// construct layout
 		topPanel = new TopBannerPanel(eventBus, actor);
-		RootLayoutPanel.get().add(GWT.<Binder> create(Binder.class).createAndBindUi(this));
+		
+		// get parent panel
+		RootPanel root = RootPanel.get("root");
+		root.add(GWT.<Binder> create(Binder.class).createAndBindUi(this));
 
 		// add first level panel		
 		setContentPanel(getHomePanel());

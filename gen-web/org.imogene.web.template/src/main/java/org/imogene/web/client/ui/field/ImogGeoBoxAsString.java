@@ -234,9 +234,9 @@ public class ImogGeoBoxAsString extends Composite implements ImogField<String>,
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		textBoxLong.getElement().getStyle().setProperty("width", width);
-		textBoxLat.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		textBoxLong.getElement().getStyle().setProperty("width", width + "px");
+		textBoxLat.getElement().getStyle().setProperty("width", width + "px");
 	}
 
 	/* INTERNAL CLASSES/INTERFACES */

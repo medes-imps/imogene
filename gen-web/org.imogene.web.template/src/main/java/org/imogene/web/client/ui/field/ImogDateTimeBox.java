@@ -149,8 +149,8 @@ public class ImogDateTimeBox extends Composite implements ImogField<Date>,
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		dateBox.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		dateBox.getElement().getStyle().setProperty("width", width + "px");
 	}
 	
 	/**

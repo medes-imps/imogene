@@ -203,7 +203,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		
 		/* get the «name.toFirstUpper()» instance from database */
 		Request<«name.toFirstUpper()»Proxy> fetchRequest = request.findById(entityId);
-		«EXPAND fetchRelatedEntities(null) FOREACH groups.fields»
+		«EXPAND fetchRelatedEntities(null) FOREACH groups.fields-»
 		«IF hasDynamicFields-»
 		fetchRequest.with("dynamicFieldValues.fieldTemplate.templateCreator.roles");
 		«ENDIF -»
@@ -428,7 +428,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 «ENDDEFINE»
 
 «REM» Fetch the related entities «ENDREM»
-«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR FieldEntity-»«ENDDEFINE-»
 «DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR TextField-»
 «IF translatable-»
 	«IF parents == null-»
@@ -437,7 +437,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 	fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 	«ENDIF-»
 «ENDIF-»
-«ENDDEFINE»
+«ENDDEFINE-»
 
 «DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR BinaryField-»
 «IF parents == null-»
@@ -445,7 +445,7 @@ fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ELSE-»
 fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ENDIF-»
-«ENDDEFINE»
+«ENDDEFINE-»
 
 «DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR GeoField-»
 «IF parents == null-»
@@ -453,10 +453,10 @@ fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ELSE-»
 fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ENDIF-»
-«ENDDEFINE»
+«ENDDEFINE-»
 
 «DEFINE fetchRelatedEntities(Collection[RelationFieldEntity] parents) FOR RelationFieldEntity-»
-«LET (List[RelationFieldEntity]) {} AS mylist»
+«LET (List[RelationFieldEntity]) {} AS mylist-»
 	«IF parents == null-»
 		fetchRequest.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 		«mylist.add(this) -> ""-»
@@ -464,7 +464,6 @@ fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonF
 		fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonFieldUtil::propertyName FOR p»«ENDFOREACH».«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 		«mylist.addAll(parents).add(this) -> ""-»
 	«ENDIF-»
-
 	«IF nestedForm-»
 		«IF entity.nestedFields != null && entity.nestedFields.size > 0 -»
 			«EXPAND fetchRelatedEntities(mylist) FOREACH entity.nestedFields-»
@@ -473,14 +472,13 @@ fetchRequest.with("«FOREACH parents AS p SEPARATOR '.'»«EXPAND template::CommonF
 		«ENDIF-»
 	«ELSE-»
 		«EXPAND fetchRelatedEntities(mylist) FOREACH entity.mainFields-»
-	«ENDIF-»
-	
+	«ENDIF-»	
 	«IF relationHierarchicalFilter.size == 2 && relationHierarchicalFilter.get(0).cardinality != 1-»
 		// Field «name.toFirstLower()» depends on the value of field «relationHierarchicalFilter.get(0).name.toFirstLower()»
 		«EXPAND fetchRelatedEntities(mylist) FOR relationHierarchicalFilter.get(1)-»
 	«ENDIF-»
-«ENDLET»
-«ENDDEFINE»
+«ENDLET-»
+«ENDDEFINE-»
 
 
 «REM» setters for relation with cardinality 1 «ENDREM»

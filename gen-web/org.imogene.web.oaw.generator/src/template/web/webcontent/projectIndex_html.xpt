@@ -66,6 +66,7 @@
 			</div>
 		</div>
 	</div>
+	<div id="root"></div>
 	<script type="text/javascript" language="javascript" src="imog«projectName.toLowerCase()»/imog«projectName.toLowerCase()».nocache.js"></script>
   </body>
   

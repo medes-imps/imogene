@@ -146,8 +146,8 @@ public class ImogRadioBox extends Composite implements ImogField<String>,
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		layout.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		layout.getElement().getStyle().setProperty("width", width + "px");
 	}
 
 

@@ -133,9 +133,9 @@ public class ImogSingleEnumBox extends Composite implements ImogField<String>, L
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		listBox.getElement().getStyle().setProperty("width", width);
-		textBox.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		listBox.getElement().getStyle().setProperty("width", width + "px");
+		textBox.getElement().getStyle().setProperty("width", width + "px");
 	}
 
 	/**
