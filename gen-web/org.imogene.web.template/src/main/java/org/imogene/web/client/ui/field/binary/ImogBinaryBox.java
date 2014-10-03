@@ -181,4 +181,7 @@ public class ImogBinaryBox extends Composite implements ImogUploader,
 	public void setLabelWidth(String width) {
 		fieldBox.setLabelWidth(width);
 	}
+	
+	public void setBoxWidth(int width) {
+	}
 }

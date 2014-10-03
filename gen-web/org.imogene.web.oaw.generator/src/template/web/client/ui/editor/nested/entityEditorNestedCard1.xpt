@@ -300,6 +300,12 @@ public class «name.toFirstUpper()»EditorNestedForm extends Composite implements 
 			«EXPAND template::web::client::ui::editor::entityEditor::validationAnnotation FOR f -»		
 		«ENDFOREACH-»
 	}
+	
+	/**
+	 */	
+	public void update«name.toFirstLower()»SectionLabel(String label) {
+		«name.toFirstLower()»Section.setGroupTitle(label);
+	}			
 
 	@Override
 	public void setDelegate(EditorDelegate<«name.toFirstUpper()»Proxy> delegate) {

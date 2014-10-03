@@ -100,8 +100,8 @@ public class ImogCheckBox extends Composite implements ImogField<Boolean>, LeafV
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		checkBox.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		checkBox.getElement().getStyle().setProperty("width", width + "px");
 	}
 
 }

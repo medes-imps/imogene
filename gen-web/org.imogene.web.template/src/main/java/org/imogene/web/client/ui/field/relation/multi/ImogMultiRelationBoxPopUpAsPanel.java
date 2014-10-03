@@ -102,7 +102,7 @@ public class ImogMultiRelationBoxPopUpAsPanel<T extends ImogBeanProxy> {
 
 	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 
-	private static final int itemByPage = 15;
+	private int itemByPage = 15;
 	private final MultiSelectionModel<T> selectionModel;
 	private ImogMultiRelationBox<T> parentBox;
 	private ImogBeanDataProvider<T> beanDataProvider;
@@ -143,11 +143,13 @@ public class ImogMultiRelationBoxPopUpAsPanel<T extends ImogBeanProxy> {
 	public ImogMultiRelationBoxPopUpAsPanel(
 			ImogMultiRelationBox<T> parentBoxValue,
 			ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer,
-			String color) {
+			String color, int _itemsPerPage) {
 
 		this.parentBox = parentBoxValue;
 		this.beanDataProvider = provider;
 		this.beanRenderer = beanRenderer;
+		if(_itemsPerPage!=0)
+			itemByPage = _itemsPerPage;
 
 		if (beanDataProvider != null
 				&& beanDataProvider.getSearchCriterions() != null)

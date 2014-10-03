@@ -182,8 +182,8 @@ public class ImogDoubleBox extends Composite implements ImogField<Double>,
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		textBox.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		textBox.getElement().getStyle().setProperty("width", width + "px");
 	}
 	
 	public void setUnit(String unit) {

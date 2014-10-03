@@ -65,6 +65,7 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	private boolean hideClearButton = false;
 	private boolean hideCreateButton = false;
 	private boolean notifyChanges = false;
+	private int itemsPerPageInPopup = 15;
 	
 	/* listbox selected values */
 	private Map<String,T> values = new HashMap<String, T>();
@@ -101,6 +102,12 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	public ImogMultiRelationBox(ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer, boolean hideButtons) {
 		this(false, provider, beanRenderer, null);
 		this.hideButtons = hideButtons;
+	}
+	
+	public ImogMultiRelationBox(ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer, boolean hideButtons, int itemsPerPage) {
+		this(false, provider, beanRenderer, null);
+		this.hideButtons = hideButtons;
+		this.itemsPerPageInPopup = itemsPerPage;
 	}
 
 	public ImogMultiRelationBox(ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer, String color) {
@@ -149,7 +156,7 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	}
 	
 	private void showPopUpListBox() {
-		ImogMultiRelationBoxPopUpAsPanel<T> popupListBox = new ImogMultiRelationBoxPopUpAsPanel<T>(this, provider, beanRenderer, color);
+		ImogMultiRelationBoxPopUpAsPanel<T> popupListBox = new ImogMultiRelationBoxPopUpAsPanel<T>(this, provider, beanRenderer, color, itemsPerPageInPopup);
 		popupListBox.setTitle(popupTitle);
 		if(filterPanel!=null)
 			popupListBox.setFilterPanel(filterPanel);
@@ -446,7 +453,7 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 		fieldBox.setLabelWidth(width);
 	}
 	
-	public void setBoxWidth(String width) {
+	public void setBoxWidth(int width) {
 	}
 	
 	@Override

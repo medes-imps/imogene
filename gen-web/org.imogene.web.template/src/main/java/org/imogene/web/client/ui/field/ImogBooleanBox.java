@@ -100,8 +100,8 @@ public class ImogBooleanBox extends Composite implements ImogField<Boolean>,
 	/**
 	 * Sets the widget's width
 	 */
-	public void setBoxWidth(String width) {
-		booleanBox.getElement().getStyle().setProperty("width", width);
+	public void setBoxWidth(int width) {
+		booleanBox.getElement().getStyle().setProperty("width", width + "px");
 	}
 
 	/**
