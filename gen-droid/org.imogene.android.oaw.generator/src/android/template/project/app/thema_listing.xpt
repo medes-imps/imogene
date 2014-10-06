@@ -13,7 +13,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import org.imogene.android.app.GeneralSettings;
 import org.imogene.android.common.model.EntityInfo;
-import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.sync.SyncManager;
 import org.imogene.android.widget.ThemaExpandableListAdapter;
 import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».domain.*;
@@ -88,7 +88,7 @@ public class «name.toFirstUpper()»Listing extends SherlockExpandableListActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.imog__menu_sync :
-			SynchronizationService.actionCheck(this);
+			SyncManager.startManualSync(this);
 			return true;
 		default :
 			return super.onOptionsItemSelected(item);

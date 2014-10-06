@@ -19,7 +19,7 @@ import org.acra.sender.HttpSender.Type;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
-import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.sync.SyncManager;
 import org.imogene.android.util.NTPClock;
 import org.imogene.android.«name.toLowerCase()».R;
 import org.imogene.android.«name.toLowerCase()».database.sqlite.«name.toFirstUpper()»OpenHelper;
@@ -80,7 +80,7 @@ public class «name.toFirstUpper()»App extends AmlApplication {
 			prefs.setAdminRoles("«FOREACH roles AS r SEPARATOR ';'»«r.name»«ENDFOREACH»");
 			«ENDREM»
         }
-        SynchronizationService.actionReschedule(this);
+        SyncManager.startIfNeeded(this);
         NotificationController.getInstance(this).watchForMessages(true);
         NTPClock.getInstance(this).updateOffsetAsync();
 	}

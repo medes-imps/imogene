@@ -6,7 +6,7 @@ import java.text.MessageFormat;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.push.PushService;
-import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.sync.SyncManager;
 import org.imogene.android.template.R;
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 
@@ -199,7 +199,7 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		if (preference == mSyncCheck) {
-			SynchronizationService.actionCheck(this);
+			SyncManager.startManualSync(this);
 			return true;
 		} else if (preference == mMapAutomaticCache) {
 			executeAutomaticCache();
@@ -269,9 +269,9 @@ public class GeneralSettings extends SherlockPreferenceActivity implements OnPre
 
 	private void setSyncEnabled(boolean enabled) {
 		if (enabled) {
-			SynchronizationService.actionReschedule(this);
+			SyncManager.start(this);
 		} else {
-			SynchronizationService.actionCancel(this);
+			SyncManager.stop(this);
 		}
 	}
 

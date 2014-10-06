@@ -18,7 +18,7 @@ import android.os.Parcelable;
 
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.util.FormatHelper;
-import fr.medes.android.util.Tools;
+import fr.medes.android.util.Utility;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.util.field.EnumHelper;
 import fr.medes.android.xml.annotation.XmlAlias;
@@ -63,7 +63,7 @@ public class «name.toFirstUpper()» extends
  {
 
 	public static class Columns implements «IF Actor.isAssignableFrom(metaType)»ImogActor.Columns«ELSE»«IF hasDynamicFields»ImogEntity.Columns«ELSE»ImogBean.Columns«ENDIF»«ENDIF» {
-		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor(«IF color.length > 0»"#«color»"«ELSE»"black"«ENDIF»));
+		public static final Drawable COLOR = Utility.getColorChip(Color.parseColor(«IF color.length > 0»"#«color»"«ELSE»"black"«ENDIF»));
 		public static final String TABLE_NAME = "«name.toLowerCase()»";
 		public static final String BEAN_TYPE = "«shortName»";
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);

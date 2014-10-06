@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import org.imogene.android.Constants;
 import org.imogene.android.preference.Preferences;
-import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.sync.SyncManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -583,7 +583,7 @@ public class PushService extends Service {
 		@Override
 		public boolean handleMessage(Message msg) {
 			if (msg.what == MESSAGE_SYNC) {
-				SynchronizationService.actionCheck(PushService.this);
+				SyncManager.startManualSync(PushService.this);
 			}
 			return false;
 		}

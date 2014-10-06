@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Paths;
@@ -31,13 +29,11 @@ import org.xmlpull.v1.XmlSerializer;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Process;
 import android.util.Xml;
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.util.Logger;
 
-public class SynchronizationController implements Runnable {
+public class SynchronizationController {
 
 	private static final String TAG = SynchronizationController.class.getName();
 
@@ -53,10 +49,6 @@ public class SynchronizationController implements Runnable {
 	public enum Status {
 		START, INITIALIZATION, SEND, SENT, RECEIVE, RECEIVED, CLOSE, RESUME, FINISH, FAILURE, CHECK_FINISHED
 	}
-
-	private final BlockingQueue<Command> mCommands = new LinkedBlockingQueue<Command>();
-	private final Thread mThread;
-	private boolean mBusy;
 
 	/**
 	 * All access to mListeners *must* be synchronized
@@ -77,37 +69,6 @@ public class SynchronizationController implements Runnable {
 	private SynchronizationController(Context context) {
 		mContext = context.getApplicationContext();
 		mPreferences = Preferences.getPreferences(context);
-		mThread = new Thread(this);
-		mThread.start();
-	}
-
-	// TODO: seems that this reading of mBusy isn't thread-safe
-	public boolean isBusy() {
-		return mBusy;
-	}
-
-	@Override
-	public void run() {
-		Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-		// TODO: add an end test to this infinite loop
-		while (true) {
-			Command command;
-			try {
-				command = mCommands.take();
-			} catch (InterruptedException e) {
-				continue; // re-test the condition on the eclosing while
-			}
-			mBusy = true;
-			command.runnable.run();
-			mBusy = false;
-		}
-	}
-
-	private void put(String description, Runnable runnable) {
-		Command command = new Command();
-		command.runnable = runnable;
-		command.description = description;
-		mCommands.offer(command);
 	}
 
 	/**
@@ -132,27 +93,7 @@ public class SynchronizationController implements Runnable {
 		mListeners.removeListener(listener);
 	}
 
-	private void synchronize(final int tag) {
-		put("Sync", new Runnable() {
-
-			@Override
-			public void run() {
-				synchronizeSynchronous(tag);
-			}
-		});
-	}
-
-	public void serviceSynchronize(final int tag) {
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... params) {
-				synchronize(tag);
-				return null;
-			}
-		}.execute();
-	}
-
-	private void synchronizeSynchronous(final int tag) {
+	public synchronized void synchronize() {
 		mTerminal = mPreferences.getSyncTerminal();
 		mLogin = mPreferences.getSyncLogin();
 		mPassword = mPreferences.getSyncPassword();
@@ -245,7 +186,7 @@ public class SynchronizationController implements Runnable {
 			Logger.e(TAG, "error during synchronization", e);
 		} finally {
 			markHiddenAsRead();
-			notifyFinish(tag);
+			notifyFinish();
 		}
 	}
 
@@ -517,11 +458,11 @@ public class SynchronizationController implements Runnable {
 		mListeners.dispatchChange(Status.CLOSE, null);
 	}
 
-	private void notifyFinish(int tag) {
+	private void notifyFinish() {
 		if (Constants.DEBUG) {
 			Logger.i(TAG, "Synchronization process finished");
 		}
-		mListeners.dispatchChange(Status.FINISH, tag);
+		mListeners.dispatchChange(Status.FINISH, null);
 	}
 
 	private void notifyFailure(int code) {
@@ -529,16 +470,6 @@ public class SynchronizationController implements Runnable {
 			Logger.i(TAG, "Synchronization failure. code: " + code);
 		}
 		mListeners.dispatchChange(Status.FAILURE, code);
-	}
-
-	private static class Command {
-		public Runnable runnable;
-		public String description;
-
-		@Override
-		public String toString() {
-			return description;
-		}
 	}
 
 }

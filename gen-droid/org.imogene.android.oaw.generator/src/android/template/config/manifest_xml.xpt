@@ -305,7 +305,11 @@
  		</receiver>
  		
         <service
-            android:name="org.imogene.android.sync.SynchronizationService"
+            android:name="org.imogene.android.sync.SyncManager"
+            android:exported="false" />
+
+        <receiver
+            android:name="org.imogene.android.sync.SyncAlarmReceiver"
             android:exported="false" />
 		
 		<service

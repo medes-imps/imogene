@@ -10,11 +10,8 @@ import org.imogene.android.xml.converters.CollectionConverter;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import fr.medes.android.util.Tools;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.xml.annotation.XmlAlias;
 import fr.medes.android.xml.annotation.XmlConverter;
@@ -23,7 +20,6 @@ import fr.medes.android.xml.annotation.XmlConverter;
 public class Profile extends ImogBeanImpl {
 
 	public static interface Columns extends ImogBean.Columns {
-		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor("black"));
 		public static final String TABLE_NAME = "profile";
 		public static final String BEAN_TYPE = "PRO";
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);

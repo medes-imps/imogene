@@ -6,7 +6,7 @@ import org.imogene.android.database.DatabaseCache;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
-import org.imogene.android.sync.SynchronizationService;
+import org.imogene.android.sync.SyncManager;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.NTPClock;
 
@@ -60,7 +60,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 		flagSynchronized = cursor.getFlagSynchronized();
 		DatabaseCache.getInstance().put(this);
 	}
-	
+
 	public ImogBeanImpl(Bundle bundle) {
 	}
 
@@ -242,18 +242,18 @@ public abstract class ImogBeanImpl implements ImogBean {
 
 		Preferences prefs = Preferences.getPreferences(context);
 		if (prefs.isSyncOnSaveEnabled() && prefs.getSyncTerminal().equals(modifiedFrom)) {
-			SynchronizationService.actionCheck(context);
+			SyncManager.startManualSync(context);
 		}
 
 		return uri;
 	}
-	
+
 	@Override
 	public String getMainDisplay(Context context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String getSecondaryDisplay(Context context) {
 		// TODO Auto-generated method stub

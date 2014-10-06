@@ -7,11 +7,8 @@ import org.imogene.android.database.sqlite.CardEntityCursor;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import fr.medes.android.util.Tools;
 import fr.medes.android.util.content.ContentUrisUtils;
 import fr.medes.android.xml.annotation.XmlAlias;
 
@@ -19,7 +16,6 @@ import fr.medes.android.xml.annotation.XmlAlias;
 public class CardEntity extends ImogBeanImpl {
 
 	public static interface Columns extends ImogBean.Columns {
-		public static final Drawable COLOR = Tools.getColorChip(Color.parseColor("black"));
 		public static final String TABLE_NAME = "cardentity";
 		public static final String BEAN_TYPE = "SYNC_ENT";
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
