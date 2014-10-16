@@ -8,16 +8,14 @@
         android:id="@+id/imog__locale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="bidule"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#bebebe"
-        android:textSize="12dip" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/imog__localized"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="machin"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="?android:attr/textColorPrimaryDisableOnly" />
 

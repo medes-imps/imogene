@@ -90,8 +90,8 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 		switch (id) {
 		case DIALOG_PASSWORD_ID:
 			dialog.setTitle(getDisplay());
-			((TextView) dialog.findViewById(R.id.imog__username_edit)).setText(login);
-			((TextView) dialog.findViewById(R.id.imog__password_edit)).setText(null);
+			((TextView) dialog.findViewById(R.id.imog__login)).setText(login);
+			((TextView) dialog.findViewById(R.id.imog__password)).setText(null);
 			break;
 		default:
 			super.onPrepareDialog(id, dialog);
@@ -101,14 +101,15 @@ public abstract class AbstractImogActorListing extends ListActivity implements O
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
-		final String pwd = ((TextView) ((Dialog) dialog).findViewById(R.id.imog__password_edit)).getText().toString();
+		final String pwd = ((TextView) ((Dialog) dialog).findViewById(R.id.imog__password)).getText().toString();
 		if (validate(pwd)) {
 			Preferences prefs = Preferences.getPreferences(this);
 			prefs.setCurrentLogin(login);
 			setResult(RESULT_OK);
+			Toast.makeText(this, R.string.imog__auth_success, Toast.LENGTH_SHORT).show();
 			finish();
 		} else {
-			Toast.makeText(this, R.string.imog__alert_dialog_wrong_password, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, R.string.imog__auth_failed, Toast.LENGTH_SHORT).show();
 		}
 	}
 

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+
+    <string name="update_available_message">Uma atualização do aplicativo está disponível. Gostaria instalá-lo agora? </string>
+    <string name="update_available_title">Atualização</string>
+
+    <!-- Menu strings -->
+    <string name="imog__menu_actions">Acções</string>
+    <string name="imog__menu_add">Novo</string>
+    <string name="imog__menu_autozoom">Autozoom</string>
+    <string name="imog__menu_change_user">Alterar utilizador</string>
+    <string name="imog__menu_delete">Apagar</string>
+    <string name="imog__menu_discard">Descartar</string>
+    <string name="imog__menu_edit">Editar</string>
+    <string name="imog__menu_home">Início</string>
+    <string name="imog__menu_iamlost">Estou perdido!</string>
+    <string name="imog__menu_info">Informação</string>
+    <string name="imog__menu_logo">Imogene Android</string>
+    <string name="imog__menu_map">Mapa</string>
+    <string name="imog__menu_mark_as_read">Marcar como lido</string>
+    <string name="imog__menu_mark_as_unread">Marcar como não lido</string>
+    <string name="imog__menu_markall">Marcar tudo como lido</string>
+    <string name="imog__menu_resume_sync">Continuar sincronização</string>
+    <string name="imog__menu_save">Guardar</string>
+    <string name="imog__menu_settings">Preferências</string>
+    <string name="imog__menu_sort_by_modified">Data da modificação</string>
+    <string name="imog__menu_sync">Sincronização</string>
+    <string name="imog__menu_view">Abrir</string>
+
+    <!-- Other -->
+    <string name="imog__anf">A atividade não foi encontrado por favor relate este erro com o seu gerente de IT</string>
+    <string name="imog__anf_title">Atividade não encontrada</string>
+    <string name="imog__bin_audio">Som en anexo</string>
+    <string name="imog__bin_binary">Arquivo anexado</string>
+    <string name="imog__bin_photo">Imagem anexada</string>
+    <string name="imog__bin_video">Vídeo em anexo</string>
+    <string name="imog__camcorder">Camcorder</string>
+    <string name="imog__camera">Câmara</string>
+    <string name="imog__created">Data de criação</string>
+    <string name="imog__created_by">Criado por</string>
+    <string name="imog__delete_confirmation">Este elemento será eliminado</string>
+    <string name="imog__delete_confirmation_title">Apagar</string>
+    <string name="imog__entity_id">Identificador</string>
+    <string name="imog__field_unset">Você tem que preencher o campo %s</string>
+    <string name="imog__greater_than_decimal">deve ser maior do que %d</string>
+    <string name="imog__greater_than_float">Deve ser maior do que %2f</string>
+    <string name="imog__iamlost_title">Estou perdido!</string>
+    <string name="imog__insert_entity">Novo formulário</string>
+    <string name="imog__list_availables_entities">Formulários disponíveis</string>
+    <string name="imog__lower_than_decimal">Deve ser inferior a %d</string>
+    <string name="imog__lower_than_float">deve ser inferior a %.2f</string>
+    <string name="imog__modified">Última data da modificação</string>
+    <string name="imog__modified_by">Modificado por</string>
+    <string name="imog__modified_from">Modificado desde</string>
+    <string name="imog__no">Não</string>
+    <string name="imog__noEntityHelpText">Você não tem nenhuma forma.\n\n</string>
+    <string name="imog__noPolicyHelpText">Sem acesso a os formulários. Inicie a sincronização e reiniciar o aplicativo para aplicar as alterações. Se o problema persistir, entre em contato com o administrador.</string>
+    <string name="imog__numberOfEntities">{0,choice,0#Sem formulário|1#Um formulário|1&lt;{0} formulários}</string>
+    <string name="imog__relation_unsettable">Esta relação não pode ser editado</string>
+    <string name="imog__required">Requerido</string>
+    <string name="imog__select">Seleccionar</string>
+    <string name="imog__select_dialog">Faça uma escolha</string>
+    <string name="imog__uncomplete_dialog_msg">Você não terminou de preencher o fromulário. Sair sem salvar?</string>
+    <string name="imog__unsaved_dialog_msg">Gostaria de gravar as alterações antes de o fechar?</string>
+
+    <!-- Short messages -->
+    <string name="imog__msg_push_again_to_exit">Pressione novamente para sair</string>
+
+    <!-- Synchronization messages -->
+    <string name="imog__notification_sync_ticker">Sincronizando dados</string>
+    <string name="imog__notification_sync_title">Sincronização</string>
+
+    <!-- Account creation -->
+    <string name="imog__account_change_user">Alterar utilizador</string>
+    <string name="imog__account_check_password_title">Verifique palavra passe</string>
+    <string name="imog__account_creation_introduction_title">Sua conta</string>
+    <string name="imog__account_introduction">Bem-vindo à configuração de Imogene !\n\n Use sua conta de Imogene para usar este aplicativo</string>
+    <string name="imog__account_next_action">Próximo</string>
+    <string name="imog__account_setup_basics_server_hint">Servidor URL</string>
+    <string name="imog__account_setup_basics_title">Configurar conta</string>
+    <string name="imog__account_setup_shortpw_confirm_hint">Confirme código PIN</string>
+    <string name="imog__account_setup_shortpw_failed">Erro ao inserir o código PIN!</string>
+    <string name="imog__account_setup_shortpw_hint">Código PIN</string>
+    <string name="imog__account_setup_shortpw_instructions">Configuração do código PIN</string>
+    <string name="imog__account_setup_shortpw_title">Configuração do código PIN</string>
+    <string name="imog__account_setup_shortpw_success">Código PIN registrado</string>
+    <string name="imog__account_start">Iniciar</string>
+    <string name="imog__account_welcome">Criação da conta</string>
+    <string name="imog__account_welcome_message">Bem-vindo</string>
+    <string name="imog__auth_failed">Identificação falhou!</string>
+    <string name="imog__auth_failed_msg">Verifique login e palavra passe</string>
+    <string name="imog__auth_success">Authentification réussie</string>
+    <string name="imog__authing">Conectando-se ao servidor distante&#8230;</string>
+    <string name="imog__login">Login</string>
+    <string name="imog__obtaining_time_offset">Sincronização NTP do relógio</string>
+    <string name="imog__obtaining_time_offset_failed">Sincronização do relógios falhou. Você deseja tentar novamente?</string>
+    <string name="imog__password">Palavra passe</string>
+
+    <!-- Wizard -->
+    <string name="imog__wizard_acquire">Adquirir</string>
+    <string name="imog__wizard_delete">Apagar</string>
+    <string name="imog__wizard_finish">Concluir</string>
+    <string name="imog__wizard_next">Próximo</string>
+    <string name="imog__wizard_previous">Anterior</string>
+    <string name="imog__wizard_view">Abrir</string>
+
+    <!-- Client filters -->
+    <string name="imog__after">Depois</string>
+    <string name="imog__before">Antes</string>
+    <string name="imog__infimum">Mínimo</string>
+    <string name="imog__supremum">Maximo</string>
+    <string name="imog__filter_date_after">Depois %s</string>
+    <string name="imog__filter_date_before">Antes %s</string>
+    <string name="imog__filter_date_between">Entre %1$s e %2$s</string>
+    <string name="imog__filter_date_equal">Igual %s</string>
+    <string name="imog__filter_number_between">Entre %1$s e %2$s</string>
+    <string name="imog__filter_number_equal">Igual %s</string>
+    <string name="imog__filter_number_gt">Maior do que</string>
+    <string name="imog__filter_number_lt">Inferior a %s</string>
+    <string name="imog__filter_relation_download_error">Erro na transferência</string>
+    <string name="imog__filter_relation_downloading">Descarregando</string>
+    <string name="imog__filter_string_contains">Contém</string>
+    <string name="imog__filter_string_equal">Igual %s</string>
+    <string name="imog__filter_string_startwith">Iniciar com %s</string>
+
+    <!-- Nested fields -->
+    <string name="imog__nested_add">Adicionar uma nova</string>
+
+    <!-- Dynamic Fields -->
+    <string name="imog__dynamic_field_group">Campos dinâmicos</string>
+
+    <!-- Crash report messages -->
+    <string name="imog__crash_dialog_comment_prompt">Você pode adicionar os seus comentários sobre o problema encontrado</string>
+    <string name="imog__crash_dialog_ok_toast">Obrigado !</string>
+    <string name="imog__crash_dialog_text">Ocorreu um erro inesperado forçando o pedido para parar. Por favor ajude-nos a corrigir isso, enviando-nos os dados de erro, tudo que tem a fazer é cliclar em OK</string>
+    <string name="imog__crash_dialog_title">O aplicativo encontrou um problema</string>
+    <string name="imog__crash_toast_text">Oooops! Eu bati, mas um relatório foi enviado para o meu desenvolvedor para ajudar a resolver o problema</string>
+
+</resources>

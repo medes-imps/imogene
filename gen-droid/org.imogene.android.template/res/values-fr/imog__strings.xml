@@ -1,129 +1,124 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
 
     <!-- Menu strings -->
-    <string name="imog__menu_save">Enregistrer</string>
-    <string name="imog__menu_discard">Annuler</string>
-    <string name="imog__menu_delete">Supprimer</string>
-    <string name="imog__menu_view">Ouvrir</string>
-    <string name="imog__menu_mark_as_read">Marquer comme lu</string>
-    <string name="imog__menu_mark_as_unread">Marquer comme non lu</string>
-    <string name="imog__menu_resume_sync">Résumé de synchronisation</string>
+    <string name="imog__menu_add">Nouveau</string>
     <string name="imog__menu_actions">Actions</string>
-    <string name="imog__menu_sort_by_modified">Date de modification</string>
-    <string name="imog__menu_markall">Marquer tout comme lu</string>
-    <string name="imog__menu_iamlost">Je suis perdu</string>
-    <string name="imog__menu_change_user">Changer d\'utilisateur</string>
     <string name="imog__menu_autozoom">Zoom automatique</string>
-    <string name="imog__menu_map">Carte</string>
+    <string name="imog__menu_change_user">Changer d\'utilisateur</string>
+    <string name="imog__menu_delete">Supprimer</string>
+    <string name="imog__menu_discard">Annuler</string>
+    <string name="imog__menu_edit">Modifier</string>
+    <string name="imog__menu_home">Accueil</string>
+    <string name="imog__menu_iamlost">Je suis perdu</string>
     <string name="imog__menu_info">Informations</string>
     <string name="imog__menu_logo">Imogene Android</string>
-    <string name="imog__menu_home">Accueil</string>
-    <string name="imog__menu_sync">Synchroniser</string>
-    <string name="imog__menu_add">Nouveau</string>
-    <string name="imog__menu_edit">Modifier</string>
+    <string name="imog__menu_map">Carte</string>
+    <string name="imog__menu_mark_as_read">Marquer comme lu</string>
+    <string name="imog__menu_mark_as_unread">Marquer comme non lu</string>
+    <string name="imog__menu_markall">Marquer tout comme lu</string>
+    <string name="imog__menu_resume_sync">Résumé de synchronisation</string>
+    <string name="imog__menu_save">Enregistrer</string>
     <string name="imog__menu_settings">Préférences</string>
+    <string name="imog__menu_sort_by_modified">Date de modification</string>
+    <string name="imog__menu_sync">Synchroniser</string>
+    <string name="imog__menu_view">Ouvrir</string>
 
     <!-- Other -->
-    <string name="imog__no">Non</string>
-    <string name="imog__camera">Appareil photo</string>
+    <string name="imog__anf">L\'activité n\'a pas été trouvée. Prière de notifier cet incident au responsable technique.</string>
+    <string name="imog__anf_title">Activié non trouvée</string>
+    <string name="imog__bin_audio">Son attaché</string>
+    <string name="imog__bin_binary">Fichier attaché</string>
+    <string name="imog__bin_photo">Image attachée</string>
+    <string name="imog__bin_video">Vidéo attachée</string>
     <string name="imog__camcorder">Caméscope</string>
+    <string name="imog__camera">Appareil photo</string>
+    <string name="imog__created_by">Créé par</string>
+    <string name="imog__created">Date de création</string>
+    <string name="imog__delete_confirmation">Cet élément sera supprimé définitivement</string>
+    <string name="imog__delete_confirmation_title">Supprimer</string>
+    <string name="imog__entity_id">Identifiant</string>
+    <string name="imog__field_unset">Vous devez remplir le champs %s</string>
+    <string name="imog__greater_than_decimal">doit être supérieur à %d</string>
+    <string name="imog__greater_than_float">doit être supérieur à %.2f</string>
+    <string name="imog__iamlost_title">Je suis perdu !</string>
+    <string name="imog__insert_entity">Nouveau formulaire</string>
     <string name="imog__list_availables_entities">Formulaires disponibles</string>
+    <string name="imog__lower_than_decimal">doit être inférieur à %d</string>
+    <string name="imog__lower_than_float">doit être inférieur à %.2f</string>
     <string name="imog__modified">Date de dernière modification</string>
     <string name="imog__modified_by">Modifié par</string>
-    <string name="imog__modified_from">Modifié de</string>
-    <string name="imog__created">Date de création</string>
-    <string name="imog__created_by">Créé par</string>
-    <string name="imog__entity_id">Identifiant</string>
+    <string name="imog__modified_from">Modifié deuis</string>
+    <string name="imog__no">Non</string>
+    <string name="imog__noEntityHelpText">Aucun formulaire.\n\n</string>
     <string name="imog__noPolicyHelpText">Pas d\'accès aux formulaires. Lancer la synchronisation et redémarrez l\'application pour appliquer les changements. Si le problème persiste contacter l\'administrateur.</string>
-    <string name="imog__noEntityHelpText">Aucun formulaire.\n\n<li>Pour ajouter un formulaire, appuyer sur +</li></string>
-    <string name="imog__insert_entity">Nouveau formulaire</string>
-    <string name="imog__bin_binary">Fichier attaché</string>
-    <string name="imog__bin_video">Vidéo attachée</string>
-    <string name="imog__bin_audio">Son attaché</string>
-    <string name="imog__bin_photo">Image attachée</string>
+    <string name="imog__numberOfEntities">{0,choice,0#Aucun formulaire|1#Un formulaire|1&lt;{0} formulaires}</string>
+    <string name="imog__relation_unsettable">Cette relation ne peut pas être éditée</string>
+    <string name="imog__required">Requis</string>
     <string name="imog__select">Sélectionner</string>
     <string name="imog__select_dialog">Faire un choix</string>
-    <string name="imog__anf_title">Activié non trouvée</string>
-    <string name="imog__anf">L\'activité n\'a pas été trouvée. Prière de notifier cet incident au responsable technique.</string>
-    <string name="imog__delete_confirmation_title">Supprimer</string>
-    <string name="imog__delete_confirmation">Cet élément sera supprimé définitivement</string>
-    <string name="imog__relation_unsettable">Cette relation ne peut pas être éditée</string>
-    <string name="imog__field_unset">Vous devez remplir le champs %s</string>
-    <string name="imog__unsaved_dialog_msg">Enregistrer les changements avant de quitter ?</string>
     <string name="imog__uncomplete_dialog_msg">Le formulaire n\'est pas rempli en totalité. Quitter sans sauvegarder ?</string>
-    <string name="imog__lower_than_decimal">doit être inférieur à %d</string>
-    <string name="imog__greater_than_decimal">doit être supérieur à %d</string>
-    <string name="imog__lower_than_float">doit être inférieur à %.2f</string>
-    <string name="imog__greater_than_float">doit être supérieur à %.2f</string>
-    <string name="imog__required">Requis</string>
-    <string name="imog__iamlost_title">Je suis perdu !</string>
-    <string name="imog__numberOfEntities">{0,choice,0#Aucun formulaire|1#Un formulaire|1&lt;{0} formulaires}</string>
+    <string name="imog__unsaved_dialog_msg">Enregistrer les changements avant de quitter ?</string>
 
     <!-- Short messages -->
     <string name="imog__msg_push_again_to_exit">Appuyer encore pour sortir</string>
 
     <!-- Synchronization messages -->
-    <string name="imog__notification_sync_title">Synchronisation</string>
     <string name="imog__notification_sync_ticker">Synchronisation des données</string>
+    <string name="imog__notification_sync_title">Synchronisation</string>
 
     <!-- Account creation -->
-    <string name="imog__obtaining_time_offset">Mise à l\'heure de l\'horloge</string>
-    <string name="imog__obtaining_time_offset_failed">La mise à jour des horloges a échoué. Voulez-vous réessayer ?</string>
-    <string name="imog__authing">Connection au serveur distant&#8230;</string>
-    <string name="imog__auth_failed">Authentication failed</string>
-    <string name="imog__auth_failed_msg">Vérifier le login et le mot de passe</string>
-    <string name="imog__auth_success">Authentication success</string>
-    <string name="imog__login">Login</string>
-    <string name="imog__password">Password</string>
-    <string name="imog__account_welcome">Création du compte</string>
+    <string name="imog__account_change_user">Changer d\'utilisateur</string>
     <string name="imog__account_check_password_title">Vérification du mot de passe</string>
+    <string name="imog__account_creation_introduction_title">Votre compte</string>
     <string name="imog__account_introduction">Bienvenue !\n\nUtilisez votre compte pour accéder à cette application.</string>
     <string name="imog__account_next_action">Suivant</string>
     <string name="imog__account_setup_basics_server_hint">Adresse du serveur</string>
-    <string name="imog__account_setup_basics_title">Connexion au compte</string>
-    <string name="imog__account_setup_shortpw_instructions">Définir un mot de passe court</string>
-    <string name="imog__account_setup_shortpw_title">Mot de passe court</string>
-    <string name="imog__account_setup_shortpw_hint">Mot de passe</string>
-    <string name="imog__account_setup_shortpw_confirm_hint">Corfimer le mot de passe court</string>
-    <string name="imog__account_setup_shortpw_failed">Erreur de saisie du mot de passe court</string>
-    <string name="imog__account_setup_shortpw_success">Mot de passe enregistré</string>
-    <string name="imog__account_welcome_message">Bienvenu</string>
+    <string name="imog__account_setup_basics_title">Configuration du compte</string>
+    <string name="imog__account_setup_shortpw_instructions">Définir code PIN</string>
+    <string name="imog__account_setup_shortpw_title">Définir code PIN</string>
+    <string name="imog__account_setup_shortpw_hint">Code PIN</string>
+    <string name="imog__account_setup_shortpw_confirm_hint">Confimer code PIN</string>
+    <string name="imog__account_setup_shortpw_failed">Erreur de saisie du code PIN</string>
+    <string name="imog__account_setup_shortpw_success">Code PIN enregistré</string>
     <string name="imog__account_start">Démarrer</string>
-    <string name="imog__account_change_user">Changer d\'utilisateur</string>
-    <string name="imog__account_creation_introduction_title">Votre compte</string>
+    <string name="imog__account_welcome">Création du compte</string>
+    <string name="imog__account_welcome_message">Bienvenu</string>
+    <string name="imog__auth_failed">L\'authentification a échoué</string>
+    <string name="imog__auth_failed_msg">Vérifier le login et le mot de passe</string>
+    <string name="imog__auth_success">Authentification réussie</string>
+    <string name="imog__authing">Connection au serveur distant&#8230;</string>
+    <string name="imog__login">Nom d\'utilisateur</string>
+    <string name="imog__obtaining_time_offset">Mise à l\'heure de l\'horloge</string>
+    <string name="imog__obtaining_time_offset_failed">La mise à jour des horloges a échoué. Voulez-vous réessayer ?</string>
+    <string name="imog__password">Mot de passe</string>
 
     <!-- Wizard -->
-    <string name="imog__wizard_next">Suivant</string>
-    <string name="imog__wizard_previous">Précédent</string>
-    <string name="imog__wizard_finish">Terminer</string>
     <string name="imog__wizard_acquire">Lancer l\'acquisition</string>
     <string name="imog__wizard_delete">Supprimer</string>
+    <string name="imog__wizard_finish">Terminer</string>
+    <string name="imog__wizard_next">Suivant</string>
+    <string name="imog__wizard_previous">Précédent</string>
     <string name="imog__wizard_view">Ouvrir</string>
-
-    <!-- Authentication -->
-    <string name="imog__alert_dialog_username">Nom d\'utilisateur</string>
-    <string name="imog__alert_dialog_password">Mot de passe</string>
-    <string name="imog__alert_dialog_wrong_password">Mot de passe incorrect</string>
 
     <!-- Client filters -->
     <string name="imog__after">Après</string>
     <string name="imog__before">Avant</string>
     <string name="imog__infimum">Minimum</string>
     <string name="imog__supremum">Maximum</string>
-    <string name="imog__filter_date_equal">Egal à %s</string>
     <string name="imog__filter_date_after">Après %s</string>
     <string name="imog__filter_date_before">Avant %s</string>
     <string name="imog__filter_date_between">Entre %1$s et %2$s</string>
+    <string name="imog__filter_date_equal">Egal à %s</string>
+    <string name="imog__filter_number_between">Entre %1$s et %2$s</string>
     <string name="imog__filter_number_equal">Egal à %s</string>
     <string name="imog__filter_number_gt">Supérieur à %s</string>
     <string name="imog__filter_number_lt">Inférieur à %s</string>
-    <string name="imog__filter_number_between">Entre %1$s et %2$s</string>
     <string name="imog__filter_string_contains">Contient %s</string>
-    <string name="imog__filter_string_startwith">Commence avec %s</string>
     <string name="imog__filter_string_equal">Egal %s</string>
-    <string name="imog__filter_relation_downloading">Chargement</string>
+    <string name="imog__filter_string_startwith">Commence avec %s</string>
     <string name="imog__filter_relation_download_error">Erreur de chargement</string>
+    <string name="imog__filter_relation_downloading">Chargement</string>
 
     <!-- Nested fields -->
     <string name="imog__nested_add">Ajouter</string>
