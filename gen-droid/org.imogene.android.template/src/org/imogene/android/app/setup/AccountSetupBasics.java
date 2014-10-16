@@ -2,7 +2,6 @@ package org.imogene.android.app.setup;
 
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.OptimizedSyncClient;
-import org.imogene.android.sync.SynchronizationException;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.template.R;
 import org.imogene.android.util.NTPClock;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
@@ -33,7 +33,6 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 	private static final int DIALOG_SNTPING_ID = 1;
 	private static final int DIALOG_SNTP_FAILED_ID = 2;
 	private static final int DIALOG_AUTHING_ID = 3;
-	private static final int DIALOG_AUTH_FAILED_ID = 4;
 
 	private static final String EXTRA_CHANGE_ACCOUNT = "change-account";
 
@@ -65,8 +64,8 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 
 		mPreferences = Preferences.getPreferences(this);
 
-		mLoginView = (EditText) findViewById(R.id.imog__account_login);
-		mPasswordView = (EditText) findViewById(R.id.imog__account_password);
+		mLoginView = (EditText) findViewById(R.id.imog__login);
+		mPasswordView = (EditText) findViewById(R.id.imog__password);
 		mServerView = (EditText) findViewById(R.id.imog__account_server);
 		mNextButton = (Button) findViewById(R.id.imog__next);
 
@@ -161,31 +160,10 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		}
 		case DIALOG_AUTHING_ID: {
 			ProgressDialog dialog = new ProgressDialog(this);
-			dialog.setMessage(getString(R.string.imog__obtaining_roles));
+			dialog.setMessage(getString(R.string.imog__authing));
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			return dialog;
-		}
-		case DIALOG_AUTH_FAILED_ID: {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(android.R.string.dialog_alert_title);
-			builder.setMessage(R.string.imog__obtaining_roles_failed);
-			builder.setCancelable(false);
-			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					launchAuthenticationTask();
-				}
-			});
-			builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dismissDialog(DIALOG_AUTH_FAILED_ID);
-				}
-			});
-			return builder.create();
 		}
 		default:
 			return super.onCreateDialog(id);
@@ -272,9 +250,10 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			mPreferences.setSyncLogin(login);
 			mPreferences.setSyncPassword(password);
 			mPreferences.setSyncServer(server);
+			Toast.makeText(this, R.string.imog__auth_success, Toast.LENGTH_SHORT).show();
 			launchSntpOffsetTask();
 		} else {
-			showDialog(DIALOG_AUTH_FAILED_ID);
+			Toast.makeText(this, R.string.imog__auth_failed, Toast.LENGTH_SHORT).show();
 		}
 
 	}
@@ -388,7 +367,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 					String roles = auth.replaceFirst(id + ";", "");
 					return roles;
 				}
-			} catch (SynchronizationException e) {
+			} catch (Exception e) {
 			}
 			return null;
 		}

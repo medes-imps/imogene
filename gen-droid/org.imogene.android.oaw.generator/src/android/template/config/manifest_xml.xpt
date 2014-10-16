@@ -76,7 +76,12 @@
 		<activity
 			android:name="org.imogene.android.app.setup.AccountSetupShortPassword"
 			android:label="@string/imog__account_setup_shortpw_title" />
-		
+
+        <activity
+            android:name="org.imogene.android.app.setup.AccountPasswordChanged"
+            android:label="@string/imog__account_setup_basics_title"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" />
+
 		<activity
 			android:name="org.imogene.android.app.ImageCapture"
 			android:label="@string/imog__camera"

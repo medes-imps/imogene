@@ -8,8 +8,10 @@ import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
+import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -55,14 +57,15 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public String authentication(String login, String password, String terminalId) throws SynchronizationException {
-		HttpClient client = new SSLHttpClient();
-
-		if (mUrl == null) {
-			return null;
-		}
-
+	public String authentication(String login, String password, String terminalId) throws SynchronizationException,
+			AuthenticationException {
 		try {
+			HttpClient client = new SSLHttpClient();
+
+			if (mUrl == null) {
+				return null;
+			}
+
 			/* request construction */
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_AUTH)
 					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8"))
@@ -74,9 +77,9 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			/* request execution */
 			HttpResponse response = client.execute(get);
 			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					InputStream is = response.getEntity().getContent();
 					StringBuffer sb = new StringBuffer();
 					int i;
@@ -85,45 +88,65 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					}
 					return sb.toString();
 				} else {
-					throw new SynchronizationException("HTTP error code return : " + code,
-							SynchronizationException.ERROR_AUTH);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_AUTH);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_AUTH);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Session auth -> ", e, SynchronizationException.ERROR_AUTH);
 		}
 	}
 
 	@Override
-	public boolean closeSession(UUID sessionId, boolean debug) throws SynchronizationException {
-		HttpClient client = new SSLHttpClient();
-
-		/* request construction */
-		StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_CLOSE)
-				.append("&" + SESSION_PARAM + "=" + sessionId)
-				.append("&" + DEBUG_PARAM + "=" + Boolean.toString(debug));
-
-		HttpGet method = createHttpGetMethod(builder.toString());
-
+	public boolean closeSession(UUID sessionId, boolean debug) throws SynchronizationException, AuthenticationException {
 		try {
+			HttpClient client = new SSLHttpClient();
+
+			/* request construction */
+			StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_CLOSE)
+					.append("&" + SESSION_PARAM + "=" + sessionId)
+					.append("&" + DEBUG_PARAM + "=" + Boolean.toString(debug));
+
+			HttpGet method = createHttpGetMethod(builder.toString());
+
 			/* request execution */
 			HttpResponse response = client.execute(method);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				InputStream is = response.getEntity().getContent();
-				StringBuffer sb = new StringBuffer();
-				int i;
-				while ((i = is.read()) != -1) {
-					sb.append((char) i);
-				}
-				if (sb.toString().startsWith("ACK")) {
-					return true;
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
+					InputStream is = response.getEntity().getContent();
+					StringBuffer sb = new StringBuffer();
+					int i;
+					while ((i = is.read()) != -1) {
+						sb.append((char) i);
+					}
+					if (sb.toString().startsWith("ACK")) {
+						return true;
+					}
+				} else {
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_CLOSING);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_CLOSING);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Closing session -> ", e, SynchronizationException.ERROR_CLOSING);
 		}
@@ -132,14 +155,14 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 	@Override
 	public String initSession(String login, String password, String terminalId, String type)
-			throws SynchronizationException {
-		HttpClient client = new SSLHttpClient();
-
-		if (mUrl == null) {
-			return null;
-		}
-
+			throws AuthenticationException, SynchronizationException {
 		try {
+			HttpClient client = new SSLHttpClient();
+
+			if (mUrl == null) {
+				return null;
+			}
+
 			/* request construction */
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_INIT)
 					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8"))
@@ -151,9 +174,9 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			/* request execution */
 			HttpResponse response = client.execute(get);
 			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					InputStream is = response.getEntity().getContent();
 					StringBuffer sb = new StringBuffer();
 					int i;
@@ -162,12 +185,19 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					}
 					return sb.toString();
 				} else {
-					throw new SynchronizationException("HTTP error code return : " + code,
-							SynchronizationException.ERROR_INIT);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_INIT);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_INIT);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Session init -> ", e, SynchronizationException.ERROR_INIT);
 		}
@@ -181,8 +211,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	 * @param fis the data to send
 	 * @return 0 if done with success, -1 otherwise
 	 * @throws SynchronizationException
+	 * @throws AuthenticationException
 	 */
-	private int sendData(UUID sessionId, String cmd, FileInputStream fis) throws SynchronizationException {
+	private int sendData(UUID sessionId, String cmd, FileInputStream fis) throws SynchronizationException,
+			AuthenticationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
@@ -198,10 +230,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			method.setEntity(entity);
 
 			HttpResponse response = client.execute(method);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					InputStream is = response.getEntity().getContent();
 					StringBuffer sb = new StringBuffer();
 					int i;
@@ -215,11 +247,19 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 						throw new SynchronizationException("Command 'send' : Server error code returned.");
 					}
 				} else {
-					throw new Exception("HTTP error code returned : " + code);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_SEND);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_SEND);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Command 'send' -> ", e, SynchronizationException.ERROR_SEND);
 		}
@@ -227,11 +267,11 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 	@Override
 	public String resumeReceive(String login, String password, String terminalId, String type, UUID sessionId,
-			long bytesReceived) throws SynchronizationException {
-
-		HttpClient client = new SSLHttpClient();
-
+			long bytesReceived) throws SynchronizationException, AuthenticationException {
 		try {
+
+			HttpClient client = new SSLHttpClient();
+
 			/* request construction */
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_RESUME_RECEIVE_INIT)
 					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8"))
@@ -244,10 +284,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			/* request execution */
 			HttpResponse response = client.execute(get);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					InputStream is = response.getEntity().getContent();
 					StringBuffer sb = new StringBuffer();
 					int i;
@@ -256,12 +296,19 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					}
 					return sb.toString();
 				} else {
-					throw new SynchronizationException("HTTP error code returned." + code,
-							SynchronizationException.ERROR_RECEIVE);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_RECEIVE);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_RECEIVE);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Resume 'receive' session init -> ", e,
 					SynchronizationException.ERROR_RECEIVE);
@@ -270,35 +317,42 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 	@Override
 	public int resumeRequestModification(UUID sessionId, OutputStream out, long bytesReceived)
-			throws SynchronizationException {
-
-		HttpClient client = new SSLHttpClient();
-
-		/* request construction */
-		StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId)
-				.append("&" + CMD_PARAM + "=" + CMD_RESUME_RECEIVE)
-				.append("&" + LENGTH_PARAM + "=" + String.valueOf(bytesReceived));
-
-		HttpGet method = createHttpGetMethod(builder.toString());
-
+			throws SynchronizationException, AuthenticationException {
 		try {
+
+			HttpClient client = new SSLHttpClient();
+
+			/* request construction */
+			StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId)
+					.append("&" + CMD_PARAM + "=" + CMD_RESUME_RECEIVE)
+					.append("&" + LENGTH_PARAM + "=" + String.valueOf(bytesReceived));
+
+			HttpGet method = createHttpGetMethod(builder.toString());
+
 			/* request execution */
 			HttpResponse response = client.execute(method);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					long expectedLength = response.getEntity().getContentLength();
 					InputStream is = response.getEntity().getContent();
 					FileUtils.writeInFile(is, out, expectedLength);
 					return 0;
 				} else {
-					throw new SynchronizationException("Resume 'request' command ->HTTP code returned. " + code,
-							SynchronizationException.ERROR_RECEIVE);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_RECEIVE);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_RECEIVE);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Resume 'request' command ->HTTP code returned.", e,
 					SynchronizationException.ERROR_RECEIVE);
@@ -307,10 +361,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 	@Override
 	public String resumeSend(String login, String password, String terminalId, String type, UUID sessionId)
-			throws SynchronizationException {
-		HttpClient client = new SSLHttpClient();
-
+			throws SynchronizationException, AuthenticationException {
 		try {
+			HttpClient client = new SSLHttpClient();
+
 			/* request construction */
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_RESUME_SEND_INIT)
 					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8"))
@@ -322,10 +376,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			/* request execution */
 			HttpResponse response = client.execute(method);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					InputStream is = response.getEntity().getContent();
 					StringBuffer sb = new StringBuffer();
 					int i;
@@ -334,71 +388,88 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 					}
 					return sb.toString();
 				} else {
-					throw new SynchronizationException("HTTP error code returned :" + code,
-							SynchronizationException.ERROR_SEND);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_SEND);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_SEND);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Resume 'send' session init -> ", e, SynchronizationException.ERROR_SEND);
 		}
 	}
 
 	@Override
-	public int resumeSendModification(UUID sessionId, FileInputStream fis) throws SynchronizationException {
+	public int resumeSendModification(UUID sessionId, FileInputStream fis) throws SynchronizationException,
+			AuthenticationException {
 		return sendData(sessionId, CMD_RESUME_SEND, fis);
 	}
 
 	@Override
-	public int sendClientModification(UUID sessionId, FileInputStream fis) throws SynchronizationException {
+	public int sendClientModification(UUID sessionId, FileInputStream fis) throws SynchronizationException,
+			AuthenticationException {
 		return sendData(sessionId, CMD_SENDMODIF, fis);
 	}
 
 	@Override
-	public boolean requestServerModifications(UUID sessionId, OutputStream out) throws SynchronizationException {
-		HttpClient client = new SSLHttpClient();
-
-		/* request construction */
-		StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId).append(
-				"&" + CMD_PARAM + "=" + CMD_SERVERMODIF);
-
-		HttpGet method = createHttpGetMethod(builder.toString());
-
+	public boolean requestServerModifications(UUID sessionId, OutputStream out) throws SynchronizationException,
+			AuthenticationException {
 		try {
+			HttpClient client = new SSLHttpClient();
+
+			/* request construction */
+			StringBuilder builder = new StringBuilder(mUrl).append("?" + SESSION_PARAM + "=" + sessionId).append(
+					"&" + CMD_PARAM + "=" + CMD_SERVERMODIF);
+
+			HttpGet method = createHttpGetMethod(builder.toString());
+
 			/* request execution */
 			HttpResponse response = client.execute(method);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(header.getValue())) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(header.getValue())) {
 					long expectedLength = response.getEntity().getContentLength();
 					InputStream is = response.getEntity().getContent();
 					FileUtils.writeInFile(is, out, expectedLength);
 					return true;
 				} else {
-					throw new SynchronizationException("Command 'receive' : HTTP error code returned." + code,
-							SynchronizationException.ERROR_RECEIVE);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_RECEIVE);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_RECEIVE);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Command 'receive' -> ", e, SynchronizationException.ERROR_RECEIVE);
 		}
 	}
 
 	@Override
-	public int directSend(UUID sessionId, FileInputStream fis) throws SynchronizationException {
+	public int directSend(UUID sessionId, FileInputStream fis) throws SynchronizationException, AuthenticationException {
 		return sendData(sessionId, CMD_DIRECTSEND, fis);
 	}
 
 	@Override
 	public boolean searchEntity(String login, String password, String searcheId, OutputStream os)
-			throws SynchronizationException {
-		HttpClient client = new SSLHttpClient();
-
+			throws SynchronizationException, AuthenticationException {
 		try {
+			HttpClient client = new SSLHttpClient();
+
 			/* request construction */
 			StringBuilder builder = new StringBuilder(mUrl).append("?" + CMD_PARAM + "=" + CMD_SEARCH)
 					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8"))
@@ -409,21 +480,28 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			/* request execution */
 			HttpResponse response = client.execute(method);
-			Header header = response.getFirstHeader(HEADER_NAME);
-			if (header != null && HEADER_VALUE.equals(HEADER_VALUE)) {
-				int code = response.getStatusLine().getStatusCode();
-				if (code == HttpStatus.SC_OK) {
+			int code = response.getStatusLine().getStatusCode();
+			if (code == HttpStatus.SC_OK) {
+				Header header = response.getFirstHeader(HEADER_NAME);
+				if (header != null && HEADER_VALUE.equals(HEADER_VALUE)) {
 					long expectedLength = response.getEntity().getContentLength();
 					InputStream is = response.getEntity().getContent();
 					FileUtils.writeInFile(is, os, expectedLength);
 					return true;
 				} else {
-					throw new SynchronizationException("Command 'search' : HTTP error code returned." + code,
-							SynchronizationException.ERROR_SEARCH);
+					throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_SEARCH);
 				}
 			} else {
-				throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_SEARCH);
+				if (code == HttpStatus.SC_UNAUTHORIZED) {
+					throw new AuthenticationException("401 Unauthorized");
+				} else {
+					throw new HttpException("HTTP error code return " + code);
+				}
 			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new SynchronizationException("Command 'search' -> ", e, SynchronizationException.ERROR_SEARCH);
 		}

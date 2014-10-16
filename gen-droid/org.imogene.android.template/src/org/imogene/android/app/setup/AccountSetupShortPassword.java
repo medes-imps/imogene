@@ -5,8 +5,6 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,12 +14,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
 public class AccountSetupShortPassword extends SherlockActivity implements OnClickListener, TextWatcher {
-
-	private static final int ERROR_DIALOG_ID = 1;
 
 	private EditText mShortpwView;
 	private EditText mShortpwConfirmView;
@@ -54,20 +51,6 @@ public class AccountSetupShortPassword extends SherlockActivity implements OnCli
 	protected void onResume() {
 		super.onResume();
 		validateFields();
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		if (id == ERROR_DIALOG_ID) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(android.R.string.dialog_alert_title);
-			builder.setMessage(R.string.imog__account_setup_shortpw_error);
-			builder.setCancelable(false);
-			builder.setPositiveButton(android.R.string.ok, null);
-			return builder.create();
-		} else {
-			return super.onCreateDialog(id);
-		}
 	}
 
 	@Override
@@ -106,11 +89,12 @@ public class AccountSetupShortPassword extends SherlockActivity implements OnCli
 		String shortpwConfirm = mShortpwConfirmView.getText().toString();
 		if (shortpw != null && shortpw.equals(shortpwConfirm)) {
 			Preferences.getPreferences(this).setShortPassword(shortpw);
+			Toast.makeText(this, R.string.imog__account_setup_shortpw_success, Toast.LENGTH_SHORT).show();
 			Intent intent = new Intent(this, ImogHelper.getInstance().getHomeActivityClass());
 			startActivity(intent);
 			finish();
 		} else {
-			showDialog(ERROR_DIALOG_ID);
+			Toast.makeText(this, R.string.imog__account_setup_shortpw_failed, Toast.LENGTH_SHORT).show();
 		}
 	}
 

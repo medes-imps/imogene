@@ -5,8 +5,6 @@ import org.imogene.android.preference.Preferences;
 import org.imogene.android.template.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,12 +14,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
 public class AccountCheckPassword extends SherlockActivity implements OnClickListener, TextWatcher {
-
-	private static final int ERROR_DIALOG_ID = 1;
 
 	public static final void accountCheckShortPassword(Activity fromActivity) {
 		Intent intent = new Intent(fromActivity, AccountCheckPassword.class);
@@ -52,20 +49,6 @@ public class AccountCheckPassword extends SherlockActivity implements OnClickLis
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		if (id == ERROR_DIALOG_ID) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(android.R.string.dialog_alert_title);
-			builder.setMessage(R.string.imog__account_setup_shortpw_error);
-			builder.setCancelable(false);
-			builder.setPositiveButton(android.R.string.ok, null);
-			return builder.create();
-		} else {
-			return super.onCreateDialog(id);
-		}
 	}
 
 	@Override
@@ -102,7 +85,7 @@ public class AccountCheckPassword extends SherlockActivity implements OnClickLis
 				startActivity(intent);
 				finish();
 			} else {
-				showDialog(ERROR_DIALOG_ID);
+				Toast.makeText(this, R.string.imog__auth_failed, Toast.LENGTH_SHORT).show();
 			}
 			break;
 		case R.id.imog__change_user:

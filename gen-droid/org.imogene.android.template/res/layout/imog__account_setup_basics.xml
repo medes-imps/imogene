@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <TextView
@@ -23,17 +23,17 @@
             android:layout_weight="1" />
 
         <EditText
-            android:id="@+id/imog__account_login"
+            android:id="@+id/imog__login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/imog__account_setup_basics_login_hint"
+            android:hint="@string/imog__login"
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/imog__account_password"
+            android:id="@+id/imog__password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/imog__account_setup_basics_password_hint"
+            android:hint="@string/imog__password"
             android:inputType="textPassword" />
 
         <EditText

@@ -57,10 +57,6 @@
     <string name="imog__lower_than_float">doit être inférieur à %.2f</string>
     <string name="imog__greater_than_float">doit être supérieur à %.2f</string>
     <string name="imog__required">Requis</string>
-    <string name="imog__obtaining_time_offset">Mise à l\'heure de l\'horloge</string>
-    <string name="imog__obtaining_time_offset_failed">La mise à jour des horloges a échoué. Voulez-vous réessayer ?</string>
-    <string name="imog__obtaining_roles">Connection au serveur distant&#8230;</string>
-    <string name="imog__obtaining_roles_failed">L\'authentification a échoué ! Vérifier vos paramètres de connection. Voulez-vous réessayer ?</string>
     <string name="imog__iamlost_title">Je suis perdu !</string>
     <string name="imog__numberOfEntities">{0,choice,0#Aucun formulaire|1#Un formulaire|1&lt;{0} formulaires}</string>
 
@@ -72,19 +68,26 @@
     <string name="imog__notification_sync_ticker">Synchronisation des données</string>
 
     <!-- Account creation -->
+    <string name="imog__obtaining_time_offset">Mise à l\'heure de l\'horloge</string>
+    <string name="imog__obtaining_time_offset_failed">La mise à jour des horloges a échoué. Voulez-vous réessayer ?</string>
+    <string name="imog__authing">Connection au serveur distant&#8230;</string>
+    <string name="imog__auth_failed">Authentication failed</string>
+    <string name="imog__auth_failed_msg">Vérifier le login et le mot de passe</string>
+    <string name="imog__auth_success">Authentication success</string>
+    <string name="imog__login">Login</string>
+    <string name="imog__password">Password</string>
     <string name="imog__account_welcome">Création du compte</string>
     <string name="imog__account_check_password_title">Vérification du mot de passe</string>
     <string name="imog__account_introduction">Bienvenue !\n\nUtilisez votre compte pour accéder à cette application.</string>
     <string name="imog__account_next_action">Suivant</string>
-    <string name="imog__account_setup_basics_login_hint">Nom d\'utilisateur</string>
-    <string name="imog__account_setup_basics_password_hint">Mot de passe</string>
     <string name="imog__account_setup_basics_server_hint">Adresse du serveur</string>
     <string name="imog__account_setup_basics_title">Connexion au compte</string>
     <string name="imog__account_setup_shortpw_instructions">Définir un mot de passe court</string>
     <string name="imog__account_setup_shortpw_title">Mot de passe court</string>
     <string name="imog__account_setup_shortpw_hint">Mot de passe</string>
     <string name="imog__account_setup_shortpw_confirm_hint">Corfimer le mot de passe court</string>
-    <string name="imog__account_setup_shortpw_error">Erreur de saisie du mot de passe court</string>
+    <string name="imog__account_setup_shortpw_failed">Erreur de saisie du mot de passe court</string>
+    <string name="imog__account_setup_shortpw_success">Mot de passe enregistré</string>
     <string name="imog__account_welcome_message">Bienvenu</string>
     <string name="imog__account_start">Démarrer</string>
     <string name="imog__account_change_user">Changer d\'utilisateur</string>

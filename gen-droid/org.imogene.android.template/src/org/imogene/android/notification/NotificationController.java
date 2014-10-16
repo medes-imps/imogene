@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Extras;
+import org.imogene.android.app.setup.AccountPasswordChanged;
 import org.imogene.android.common.entity.ImogBean;
 import org.imogene.android.common.entity.ImogHelper;
 import org.imogene.android.common.model.EntityInfo;
@@ -45,6 +46,12 @@ public class NotificationController {
 	 * known or when we want to specifically select "no" account.
 	 */
 	public static final int NO_NOTIFICATION = -1;
+
+	public static final int NOTIFICATION_STATUS_ID = 1111;
+	public static final int NOTIFICATION_AUTHFAILED_ID = 1112;
+
+	public static final int FAILURE_UNKNOWN_ID = -1;
+	public static final int FAILURE_AUTH_ID = 1;
 
 	/**
 	 * Minimum interval between notification sounds. Since a long sync (after a long period of being offline) can cause
@@ -237,6 +244,12 @@ public class NotificationController {
 		return notification;
 	}
 
+	public static void cancelNotification(int id) {
+		if (sInstance != null) {
+			sInstance.mNotificationManager.cancel(id);
+		}
+	}
+
 	/**
 	 * Sets up the notification's sound and vibration.
 	 * 
@@ -339,25 +352,43 @@ public class NotificationController {
 
 	private static class MySynchronizationListener extends SynchronizationListener {
 
-		private static final int NOTIFICATION_STATUS_ID = 1111;
-
 		public MySynchronizationListener(Handler handler) {
 			super(handler);
 		}
 
 		@Override
 		public void onChange(Status status, Object object) {
-			if (status == Status.START) {
-				String ticker = sInstance.mContext.getString(R.string.imog__notification_sync_ticker);
+			switch (status) {
+			case START: {
 				String title = sInstance.mContext.getString(R.string.imog__notification_sync_title);
+				String ticker = sInstance.mContext.getString(R.string.imog__notification_sync_ticker);
 				Notification n = sInstance.createNotification(title, ticker, ticker, new Intent(),
 						R.drawable.imog__logo_android_s, false);
 				n.flags |= Notification.FLAG_NO_CLEAR;
 				n.defaults &= ~Notification.DEFAULT_VIBRATE;
 
 				sInstance.mNotificationManager.notify(NOTIFICATION_STATUS_ID, n);
-			} else if (status == Status.FINISH) {
+				break;
+			}
+			case FINISH:
 				sInstance.mNotificationManager.cancel(NOTIFICATION_STATUS_ID);
+				break;
+			case FAILURE:
+				Integer code = (Integer) object;
+				if (code != null && code == FAILURE_AUTH_ID) {
+					String title = sInstance.mContext.getString(R.string.imog__auth_failed);
+					String ticker = sInstance.mContext.getString(R.string.imog__auth_failed_msg);
+
+					Intent intent = new Intent(sInstance.mContext, AccountPasswordChanged.class);
+					Notification n = sInstance.createNotification(title, ticker, ticker, intent,
+							android.R.drawable.stat_notify_error, false);
+					n.flags |= Notification.FLAG_NO_CLEAR;
+
+					sInstance.mNotificationManager.notify(NOTIFICATION_AUTHFAILED_ID, n);
+				}
+				break;
+			default:
+				break;
 			}
 		}
 	}

@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.UUID;
 
+import org.apache.http.auth.AuthenticationException;
+
 public interface OptimizedSyncClient {
 
 	/* headers */
@@ -61,7 +63,8 @@ public interface OptimizedSyncClient {
 
 	public static final String CMD_SEARCH = "searchEntity";
 
-	public String authentication(String login, String passwd, String terminalId) throws SynchronizationException;
+	public String authentication(String login, String passwd, String terminalId) throws SynchronizationException,
+			AuthenticationException;
 
 	/**
 	 * Initialize the session
@@ -71,13 +74,14 @@ public interface OptimizedSyncClient {
 	 * @param terminalId the terminal id
 	 * @param type the synchronization type
 	 * @return the session id
+	 * @throws AuthenticationException
 	 * @throws UnrecoverableKeyException
 	 * @throws KeyStoreException
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
 	public String initSession(String login, String passwd, String terminalId, String type)
-			throws SynchronizationException;
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Resume a session that terminated with anomaly
@@ -88,9 +92,10 @@ public interface OptimizedSyncClient {
 	 * @param type the synchronization type
 	 * @param sessionId the session id
 	 * @return nb of bytes already received or Error
+	 * @throws AuthenticationException
 	 */
 	public String resumeSend(String login, String passwd, String terminalId, String type, UUID sessionId)
-			throws SynchronizationException;
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Resume a session that terminated with anomaly
@@ -102,9 +107,10 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the session id
 	 * @param bytesReceived number of bytes already received
 	 * @return Acknowledge or Error
+	 * @throws AuthenticationException
 	 */
 	public String resumeReceive(String login, String passwd, String terminalId, String type, UUID sessionId,
-			long bytesReceived) throws SynchronizationException;
+			long bytesReceived) throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Resume the sent of the client modifications to the server
@@ -112,9 +118,10 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the session id;
 	 * @param data the modified entity, serialized
 	 * @return the number of entity processed by the server
+	 * @throws AuthenticationException
 	 */
 	public int resumeRequestModification(UUID sessionId, OutputStream out, long bytesReceived)
-			throws SynchronizationException;
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Send the client modifications to the server
@@ -122,8 +129,10 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the session id;
 	 * @param fis the modified entity, serialized
 	 * @return the number of entity processed by the server
+	 * @throws AuthenticationException
 	 */
-	public int sendClientModification(UUID sessionId, FileInputStream fis) throws SynchronizationException;
+	public int sendClientModification(UUID sessionId, FileInputStream fis) throws SynchronizationException,
+			AuthenticationException;
 
 	/**
 	 * Resume the sent of the client modifications to the server
@@ -131,8 +140,10 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the session id;
 	 * @param fis the modified entity, serialized
 	 * @return the number of entity processed by the server
+	 * @throws AuthenticationException
 	 */
-	public int resumeSendModification(UUID sessionId, FileInputStream fis) throws SynchronizationException;
+	public int resumeSendModification(UUID sessionId, FileInputStream fis) throws SynchronizationException,
+			AuthenticationException;
 
 	/**
 	 * Get server modifications
@@ -140,8 +151,10 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the session id
 	 * @param out the stream received from from the server
 	 * @return true if the command succeed.
+	 * @throws AuthenticationException
 	 */
-	public boolean requestServerModifications(UUID sessionId, OutputStream out) throws SynchronizationException;
+	public boolean requestServerModifications(UUID sessionId, OutputStream out) throws SynchronizationException,
+			AuthenticationException;
 
 	/**
 	 * Close an opened session
@@ -149,12 +162,13 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the session id
 	 * @param debug if the debug mode is activated or not
 	 * @return true if the command success
+	 * @throws AuthenticationException
 	 * @throws UnrecoverableKeyException
 	 * @throws KeyStoreException
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public boolean closeSession(UUID sessionId, boolean debug) throws SynchronizationException;
+	public boolean closeSession(UUID sessionId, boolean debug) throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Method that permits to send data outside a global synchronization process.
@@ -162,8 +176,9 @@ public interface OptimizedSyncClient {
 	 * @param sessionId the sessionId;
 	 * @param fis the data to send
 	 * @return number of modifications applied
+	 * @throws AuthenticationException
 	 */
-	public int directSend(UUID sessionId, FileInputStream fis) throws SynchronizationException;
+	public int directSend(UUID sessionId, FileInputStream fis) throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Method that permit to search an entity into a distant database
@@ -174,7 +189,8 @@ public interface OptimizedSyncClient {
 	 * @param os the stream received from from the server
 	 * @return true if the command succeed.
 	 * @throws SynchronizationException
+	 * @throws AuthenticationException
 	 */
 	public boolean searchEntity(String login, String password, String searcheId, OutputStream os)
-			throws SynchronizationException;
+			throws SynchronizationException, AuthenticationException;
 }

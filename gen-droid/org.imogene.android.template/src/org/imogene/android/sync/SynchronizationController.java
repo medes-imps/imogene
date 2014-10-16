@@ -2,12 +2,12 @@ package org.imogene.android.sync;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import org.apache.http.auth.AuthenticationException;
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Paths;
 import org.imogene.android.common.entity.ImogBean;
@@ -17,6 +17,7 @@ import org.imogene.android.common.filter.ClientFilter;
 import org.imogene.android.common.model.EntityInfo;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
 import org.imogene.android.util.DatabaseUtils;
@@ -94,23 +95,23 @@ public class SynchronizationController {
 	}
 
 	public synchronized void synchronize() {
-		mTerminal = mPreferences.getSyncTerminal();
-		mLogin = mPreferences.getSyncLogin();
-		mPassword = mPreferences.getSyncPassword();
-		mDebug = mPreferences.isDebugEnabled();
-
-		mServer = mPreferences.getSyncServer();
-		mBidirectional = mPreferences.isSyncBirdirectionnalEnabled();
-
-		if (mPreferences.isHttpAuthenticationEnabled()) {
-			mSyncClient = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
-		} else {
-			mSyncClient = new OptimizedSyncClientHttp(mServer);
-		}
-
-		mConverter = new ImogXmlConverter(mContext);
-		int received = 0;
 		try {
+			mTerminal = mPreferences.getSyncTerminal();
+			mLogin = mPreferences.getSyncLogin();
+			mPassword = mPreferences.getSyncPassword();
+			mDebug = mPreferences.isDebugEnabled();
+
+			mServer = mPreferences.getSyncServer();
+			mBidirectional = mPreferences.isSyncBirdirectionnalEnabled();
+
+			if (mPreferences.isHttpAuthenticationEnabled()) {
+				mSyncClient = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
+			} else {
+				mSyncClient = new OptimizedSyncClientHttp(mServer);
+			}
+
+			mConverter = new ImogXmlConverter(mContext);
+			int received = 0;
 			notifyStart();
 
 			Paths.PATH_SYNCHRO.mkdirs();
@@ -175,13 +176,11 @@ public class SynchronizationController {
 			// 4 - close the session
 			notifyClose();
 			mSyncClient.closeSession(sessionId, mDebug);
-		} catch (FileNotFoundException e) {
-			Logger.e(TAG, "error during synchronization", e);
-		} catch (IOException e) {
-			Logger.e(TAG, "error during synchronization", e);
+		} catch (AuthenticationException e) {
+			notifyFailure(NotificationController.FAILURE_AUTH_ID);
 		} catch (SynchronizationException e) {
 			Logger.e(TAG, "error during synchronization", e);
-			notifyFailure(e.getCode());
+			notifyFailure(NotificationController.FAILURE_UNKNOWN_ID);
 		} catch (Exception e) {
 			Logger.e(TAG, "error during synchronization", e);
 		} finally {
@@ -190,7 +189,8 @@ public class SynchronizationController {
 		}
 	}
 
-	private int resumeOnError(SyncHistory his) throws SynchronizationException {
+	private int resumeOnError(SyncHistory his) throws AuthenticationException, SynchronizationException, IOException,
+			XmlPullParserException {
 		if (Constants.DEBUG) {
 			Logger.i(TAG, "resume on error : " + his.id + ", level : " + his.level + ", date : " + his.date);
 		}
@@ -202,61 +202,53 @@ public class SynchronizationController {
 			if (Constants.DEBUG) {
 				Logger.i(TAG, "Resuming the sent for the session " + his.id);
 			}
-			try {
-				/* 1 - initialize the resumed session */
-				notifyInit();
-				String result = mSyncClient.resumeSend(mLogin, mPassword, mTerminal, "xml", his.id);
-				/* 2 - sending local modifications */
-				notifySend();
-				if (result.equals("error")) {
-					throw new SynchronizationException("Error resuming the session, the server return an error code",
-							SynchronizationException.ERROR_SEND);
-				} else {
-					long bytesReceived = Long.parseLong(result);
-					File outFile = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
-					FileInputStream fis = new FileInputStream(outFile);
-					long skipped = fis.skip(bytesReceived);
-					if (skipped != bytesReceived) {
-						fis.close();
-						// TODO somehow monitor this error to see if it happens once in a while
-						throw new SynchronizationException("Error skipping bytes: " + bytesReceived + " bytes to skip,"
-								+ skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
-					}
-					if (Constants.DEBUG) {
-						Logger.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
-								+ bytesReceived + " bytes");
-					}
-					int res = mSyncClient.resumeSendModification(his.id, fis);
+			/* 1 - initialize the resumed session */
+			notifyInit();
+			String result = mSyncClient.resumeSend(mLogin, mPassword, mTerminal, "xml", his.id);
+			/* 2 - sending local modifications */
+			notifySend();
+			if (result.equals("error")) {
+				throw new SynchronizationException("Error resuming the session, the server return an error code",
+						SynchronizationException.ERROR_SEND);
+			} else {
+				long bytesReceived = Long.parseLong(result);
+				File outFile = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
+				FileInputStream fis = new FileInputStream(outFile);
+				long skipped = fis.skip(bytesReceived);
+				if (skipped != bytesReceived) {
 					fis.close();
-					if (!mDebug) {
-						outFile.delete();
-					}
-
-					markAsSentForSession(his.date);
-					notifySent(res);
+					// TODO somehow monitor this error to see if it happens once in a while
+					throw new SynchronizationException("Error skipping bytes: " + bytesReceived + " bytes to skip,"
+							+ skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
 				}
-				his.level = SyncHistory.Columns.LEVEL_RECEIVE;
-				his.saveOrUpdate(mContext);
+				if (Constants.DEBUG) {
+					Logger.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
+							+ bytesReceived + " bytes");
+				}
+				int res = mSyncClient.resumeSendModification(his.id, fis);
+				fis.close();
+				if (!mDebug) {
+					outFile.delete();
+				}
 
-				/* 3 - receiving the server modifications */
-				notifyReceive();
-				received = requestServerModification(his.id);
-
-				his.status = SyncHistory.Columns.STATUS_OK;
-				his.saveOrUpdate(mContext);
-
-				notifyReceived(received);
-
-				/* 4 - closing the session */
-				notifyClose();
-				mSyncClient.closeSession(his.id, mDebug);
-			} catch (Exception ex) {
-				SynchronizationException syx = new SynchronizationException("Error resuming a sent", ex,
-						SynchronizationException.DEFAULT_ERROR);
-				if (ex instanceof SynchronizationException)
-					syx.setCode(((SynchronizationException) ex).getCode());
-				throw syx;
+				markAsSentForSession(his.date);
+				notifySent(res);
 			}
+			his.level = SyncHistory.Columns.LEVEL_RECEIVE;
+			his.saveOrUpdate(mContext);
+
+			/* 3 - receiving the server modifications */
+			notifyReceive();
+			received = requestServerModification(his.id);
+
+			his.status = SyncHistory.Columns.STATUS_OK;
+			his.saveOrUpdate(mContext);
+
+			notifyReceived(received);
+
+			/* 4 - closing the session */
+			notifyClose();
+			mSyncClient.closeSession(his.id, mDebug);
 		}
 		/*
 		 * we resume a reception, by re-receiving the server data
@@ -265,37 +257,29 @@ public class SynchronizationController {
 			if (Constants.DEBUG) {
 				Logger.i(TAG, "Resuming the receive operation for the session " + his.id);
 			}
-			try {
-				/* clear the sent file */
-				if (!mDebug) {
-					File tmp = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
-					if (tmp.exists())
-						tmp.delete();
-				}
-				/* 1 - initialize the resumed session */
-				notifyInit();
-				File inFile = new File(Paths.PATH_SYNCHRO, his.id + ".smodif");
-				String result = mSyncClient.resumeReceive(mLogin, mPassword, mTerminal, "xml", his.id, inFile.length());
-				/* 2 - receiving data */
-				notifyReceive();
-				if (!result.equals("error")) {
-					received = resumeRequestModification(his.id);
-					his.status = SyncHistory.Columns.STATUS_OK;
-					his.saveOrUpdate(mContext);
+			/* clear the sent file */
+			if (!mDebug) {
+				File tmp = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
+				if (tmp.exists())
+					tmp.delete();
+			}
+			/* 1 - initialize the resumed session */
+			notifyInit();
+			File inFile = new File(Paths.PATH_SYNCHRO, his.id + ".smodif");
+			String result = mSyncClient.resumeReceive(mLogin, mPassword, mTerminal, "xml", his.id, inFile.length());
+			/* 2 - receiving data */
+			notifyReceive();
+			if (!result.equals("error")) {
+				received = resumeRequestModification(his.id);
+				his.status = SyncHistory.Columns.STATUS_OK;
+				his.saveOrUpdate(mContext);
 
-					/* 3 - closing the session */
-					notifyClose();
-					mSyncClient.closeSession(his.id, mDebug);
-				} else {
-					throw new SynchronizationException("The server return an error code",
-							SynchronizationException.ERROR_RECEIVE);
-				}
-			} catch (Exception ex) {
-				SynchronizationException syx = new SynchronizationException("Error resuming a receive operation", ex,
+				/* 3 - closing the session */
+				notifyClose();
+				mSyncClient.closeSession(his.id, mDebug);
+			} else {
+				throw new SynchronizationException("The server return an error code",
 						SynchronizationException.ERROR_RECEIVE);
-				if (ex instanceof SynchronizationException)
-					syx.setCode(((SynchronizationException) ex).getCode());
-				throw syx;
 			}
 		}
 		return received;
@@ -308,9 +292,10 @@ public class SynchronizationController {
 	 * @throws SynchronizationException
 	 * @throws IOException
 	 * @throws XmlPullParserException
+	 * @throws AuthenticationException
 	 */
-	private int requestServerModification(UUID sessionId) throws SynchronizationException, IOException,
-			XmlPullParserException {
+	private int requestServerModification(UUID sessionId) throws XmlPullParserException, IOException,
+			AuthenticationException, SynchronizationException {
 		if (!mBidirectional)
 			return 0;
 		File inFile = new File(Paths.PATH_SYNCHRO, sessionId + ".smodif");
@@ -327,8 +312,8 @@ public class SynchronizationController {
 		return result;
 	}
 
-	private int resumeRequestModification(UUID errorId) throws SynchronizationException, IOException,
-			XmlPullParserException {
+	private int resumeRequestModification(UUID errorId) throws AuthenticationException, SynchronizationException,
+			XmlPullParserException, IOException {
 		if (!mBidirectional)
 			return 0;
 		File inputFile = new File(Paths.PATH_SYNCHRO, errorId + ".smodif");

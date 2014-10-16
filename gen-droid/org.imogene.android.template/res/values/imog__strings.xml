@@ -57,10 +57,6 @@
     <string name="imog__lower_than_float">must be lower than %.2f</string>
     <string name="imog__greater_than_float">must be greater than %.2f</string>
     <string name="imog__required">Required</string>
-    <string name="imog__obtaining_time_offset">Obtaining time offset from NTP server</string>
-    <string name="imog__obtaining_time_offset_failed">Obtaining time offset failed. Do you wish to try again ?</string>
-    <string name="imog__obtaining_roles">Connecting to the distant server&#8230;</string>
-    <string name="imog__obtaining_roles_failed">Identification failed ! Check login, password and server settings. Do you wish to try again ?</string>
     <string name="imog__iamlost_title">I am lost !</string>
     <string name="imog__numberOfEntities">{0,choice,0#No entity|1#One entity|1&lt;{0} entities}</string>
 
@@ -72,19 +68,26 @@
     <string name="imog__notification_sync_ticker">Synchronizing data</string>
 
     <!-- Account creation -->
+    <string name="imog__obtaining_time_offset">Obtaining time offset from NTP server</string>
+    <string name="imog__obtaining_time_offset_failed">Obtaining time offset failed. Do you wish to try again ?</string>
+    <string name="imog__authing">Connecting to the distant server&#8230;</string>
+    <string name="imog__auth_failed">Authentication failed</string>
+    <string name="imog__auth_failed_msg">Check login and password</string>
+    <string name="imog__auth_success">Authentication success</string>
+    <string name="imog__login">Login</string>
+    <string name="imog__password">Password</string>
     <string name="imog__account_welcome">Account creation</string>
     <string name="imog__account_check_password_title">Check password</string>
     <string name="imog__account_introduction">Welcome to Imogene setup !\n\nUse your Imogene account to use this application.</string>
     <string name="imog__account_next_action">Next</string>
-    <string name="imog__account_setup_basics_login_hint">Login</string>
-    <string name="imog__account_setup_basics_password_hint">Password</string>
     <string name="imog__account_setup_basics_server_hint">Server URL</string>
     <string name="imog__account_setup_basics_title">Set up account</string>
     <string name="imog__account_setup_shortpw_instructions">Set up a short password</string>
     <string name="imog__account_setup_shortpw_title">Set up short password</string>
     <string name="imog__account_setup_shortpw_hint">Short password</string>
     <string name="imog__account_setup_shortpw_confirm_hint">Confirm short password</string>
-    <string name="imog__account_setup_shortpw_error">Error typing the short password</string>
+    <string name="imog__account_setup_shortpw_failed">Error typing the short password</string>
+    <string name="imog__account_setup_shortpw_success">Short password registred</string>
     <string name="imog__account_welcome_message">Welcome</string>
     <string name="imog__account_start">Start</string>
     <string name="imog__account_change_user">Change user</string>
