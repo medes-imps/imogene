@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -151,8 +152,9 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	
 	private void refresh() {
 		mEntity = ImogOpenHelper.fromUri(mUri);
-		if (mEntity == null) {
+		if (mEntity == null || mEntity.getDeleted() != null) {
 			// Entity deleted.
+			Toast.makeText(this, R.string.imog__deleted, Toast.LENGTH_SHORT).show();
 			onBackPressed();
 			return;
 		}
@@ -268,7 +270,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 		switch (id) {
 		case DIALOG_DELETE_ID:
 			return new AlertDialog.Builder(this)
-			.setTitle(R.string.imog__delete_confirmation_title)
+			.setTitle(R.string.imog__menu_delete)
 			.setMessage(R.string.imog__delete_confirmation)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(android.R.string.ok, this)
@@ -290,7 +292,7 @@ public class «name.toFirstUpper()-»View extends ViewPagerIndicatorActivity imple
 	
 	public void onClick(DialogInterface dialog, int which) {
 		if (which == Dialog.BUTTON_POSITIVE) {
-			getContentResolver().delete(mUri, null, null);
+			DatabaseUtils.delete(this, mUri);
 		}
 	}
 	

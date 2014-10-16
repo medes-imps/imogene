@@ -66,7 +66,9 @@ public class «name.toFirstUpper()»Provider extends ImogProvider {
 		default:
 			return super.delete(uri, selection, selectionArgs);
 		}
-		getContext().getContentResolver().notifyChange(uri, null);
+		if (result > 0) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
 		return result;
 	}
 
@@ -92,7 +94,7 @@ public class «name.toFirstUpper()»Provider extends ImogProvider {
 		«FOREACH entities AS entity-»
 		case «entity.name.toUpperCase()»:
 			return insertInTable(«entity.name.toFirstUpper()-».Columns.TABLE_NAME, «entity.name.toFirstUpper()-».Columns.CONTENT_URI, values);
-		«ENDFOREACH»
+		«ENDFOREACH-»
 		default:
 			return super.insert(uri, values);
 		}
@@ -103,7 +105,7 @@ public class «name.toFirstUpper()»Provider extends ImogProvider {
 		SQLiteDatabase sqlDB = ImogOpenHelper.getHelper().getReadableDatabase();
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		switch (URI_MATCHER.match(uri)) {
-		«FOREACH entities AS entity»
+		«FOREACH entities AS entity-»
 		case «entity.name.toUpperCase()»:
 			qb.setTables(«entity.name.toFirstUpper()».Columns.TABLE_NAME);
 			break;
@@ -111,7 +113,7 @@ public class «name.toFirstUpper()»Provider extends ImogProvider {
 			qb.setTables(«entity.name.toFirstUpper()».Columns.TABLE_NAME);
 			qb.appendWhere("_id='" + uri.getLastPathSegment() + "'");
 			break;
-		«ENDFOREACH»
+		«ENDFOREACH-»
 		default:
 			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 		}
@@ -137,7 +139,9 @@ public class «name.toFirstUpper()»Provider extends ImogProvider {
 		default:
 			return super.update(uri, values, selection, selectionArgs);
 		}
-		getContext().getContentResolver().notifyChange(uri, null);
+		if (result > 0) {
+			getContext().getContentResolver().notifyChange(uri, null);
+		}
 		return result;
 	}
 }

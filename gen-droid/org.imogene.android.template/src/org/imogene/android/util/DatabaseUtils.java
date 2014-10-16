@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
 
 import org.imogene.android.Constants;
 import org.imogene.android.Constants.Databases;
 import org.imogene.android.Constants.Paths;
 import org.imogene.android.common.entity.ImogBean;
+import org.imogene.android.common.entity.ImogEntity;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
 
@@ -140,5 +142,18 @@ public class DatabaseUtils {
 		}
 		c.close();
 		return false;
+	}
+
+	/**
+	 * Delete an {@link ImogEntity}. This do not really delete the entity from the database.
+	 * 
+	 * @param context the application context
+	 * @param uri the uri of the bean to delete
+	 */
+	public static void delete(Context context, Uri uri) {
+		ImogBean bean = ImogOpenHelper.fromUri(uri);
+		bean.setDeleted(new Date());
+		bean.prepareForSave(context);
+		bean.saveOrUpdate(context);
 	}
 }

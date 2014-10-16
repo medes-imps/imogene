@@ -345,13 +345,13 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 		switch (id) {
 		case DIALOG_DELETE_ID:
 			return new AlertDialog.Builder(this)
-			.setTitle(R.string.imog__delete_confirmation_title)
+			.setTitle(R.string.imog__menu_delete)
 			.setMessage(R.string.imog__delete_confirmation)
 			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					getContentResolver().delete(mCurrentUri, null, null);
+					DatabaseUtils.delete(«name.toFirstUpper()»List.this, mCurrentUri);
 				}
 			})
 			.setCancelable(false)
@@ -455,6 +455,7 @@ public class «name.toFirstUpper()»List extends SherlockListActivity implements
 	
 	private static void buildWhereClause(Where where, CharSequence constraint, boolean allFields) {
 		where.ne(«name.toFirstUpper()».Columns.MODIFIEDFROM, «name.toFirstUpper()».Columns.SYNC_SYSTEM);
+		where.and().isNull(«name.toFirstUpper()».Columns.DELETED);
 		if (constraint != null) {
 			int numClauses = 0;
 			Where subWhere = new Where();

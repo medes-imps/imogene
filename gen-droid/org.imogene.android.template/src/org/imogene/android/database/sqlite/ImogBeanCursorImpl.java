@@ -75,6 +75,11 @@ public abstract class ImogBeanCursorImpl<T extends ImogBean> extends BaseCursor 
 	}
 
 	@Override
+	public final Date getDeleted() {
+		return getDate(ImogBean.Columns.DELETED);
+	}
+
+	@Override
 	public final boolean getFlagRead() {
 		return getBoolean(ImogBean.Columns.FLAG_READ);
 	}

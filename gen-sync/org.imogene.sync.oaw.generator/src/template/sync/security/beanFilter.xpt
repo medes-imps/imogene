@@ -114,6 +114,7 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 		transformedBean.setUploadDate(bean.getUploadDate());
 		transformedBean.setCreatedBy(bean.getCreatedBy());
 		transformedBean.setCreated(bean.getCreated());
+		transformedBean.setDeleted(bean.getDeleted());
 		transformedBean.setDynamicFieldValues(bean.getDynamicFieldValues());
 		«IF Actor.isAssignableFrom(e.metaType)-»
 		transformedBean.setLogin(bean.getLogin());
@@ -158,6 +159,7 @@ public class ImogBeanFilterImpl implements ImogBeanFilter {
 		transformedBean.setUploadDate(bean.getUploadDate());
 		transformedBean.setCreatedBy(bean.getCreatedBy());
 		transformedBean.setCreated(bean.getCreated());
+		transformedBean.setDeleted(bean.getDeleted());
 		transformedBean.setDynamicFieldValues(bean.getDynamicFieldValues());
 		
 		«FOREACH e.groups AS g-»

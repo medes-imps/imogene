@@ -16,6 +16,7 @@ public interface ImogBean extends Parcelable {
 		public static final String MODIFIEDFROM = "modifiedFrom";
 		public static final String CREATED = "created";
 		public static final String CREATEDBY = "createdBy";
+		public static final String DELETED = "deleted";
 		public static final String FLAG_READ = "flagRead";
 		public static final String FLAG_SYNCHRONIZED = "flagSynchronized";
 
@@ -45,6 +46,10 @@ public interface ImogBean extends Parcelable {
 	public Date getCreated();
 
 	public void setCreated(Date created);
+
+	public Date getDeleted();
+
+	public void setDeleted(Date deleted);
 
 	public String getCreatedBy();
 

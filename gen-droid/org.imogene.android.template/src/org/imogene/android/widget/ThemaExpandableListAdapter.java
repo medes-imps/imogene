@@ -35,7 +35,8 @@ public class ThemaExpandableListAdapter extends ArrayExpandableListAdapter<Integ
 
 		QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(child.table);
 		builder.setCountOf(true);
-		builder.where().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM);
+		builder.where().ne(ImogBean.Columns.MODIFIEDFROM, ImogBean.Columns.SYNC_SYSTEM).and()
+		.isNull(ImogBean.Columns.DELETED);
 		int count = (int) builder.queryForLong();
 
 		String fmt = view.getContext().getString(R.string.imog__numberOfEntities);

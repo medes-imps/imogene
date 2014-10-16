@@ -36,7 +36,7 @@
     <string name="imog__created">Data de criação</string>
     <string name="imog__created_by">Criado por</string>
     <string name="imog__delete_confirmation">Este elemento será eliminado</string>
-    <string name="imog__delete_confirmation_title">Apagar</string>
+    <string name="imog__deleted">Eliminado</string>
     <string name="imog__entity_id">Identificador</string>
     <string name="imog__field_unset">Você tem que preencher o campo %s</string>
     <string name="imog__greater_than_decimal">deve ser maior do que %d</string>

@@ -42,6 +42,9 @@ public abstract class ImogBeanImpl implements ImogBean {
 	@XmlAlias("createdBy")
 	private String createdBy;
 
+	@XmlAlias("deleted")
+	private Date deleted;
+
 	@XmlOmitField
 	private boolean flagRead;
 
@@ -56,6 +59,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 		uploadDate = cursor.getUploadDate();
 		created = cursor.getCreated();
 		createdBy = cursor.getCreatedBy();
+		deleted = cursor.getDeleted();
 		flagRead = cursor.getFlagRead();
 		flagSynchronized = cursor.getFlagSynchronized();
 		DatabaseCache.getInstance().put(this);
@@ -71,10 +75,12 @@ public abstract class ImogBeanImpl implements ImogBean {
 		modifiedBy = in.readString();
 		modifiedFrom = in.readString();
 		Long uploadDateValue = (Long) in.readValue(null);
-		uploadDate = uploadDate != null ? new Date(uploadDateValue) : null;
+		uploadDate = uploadDateValue != null ? new Date(uploadDateValue) : null;
 		Long createdValue = (Long) in.readValue(null);
 		created = createdValue != null ? new Date(createdValue) : null;
 		createdBy = in.readString();
+		Long deletedValue = (Long) in.readValue(null);
+		deleted = deletedValue != null ? new Date(deletedValue) : null;
 		flagRead = in.readInt() == 1;
 		flagSynchronized = in.readInt() == 1;
 	}
@@ -153,6 +159,16 @@ public abstract class ImogBeanImpl implements ImogBean {
 	}
 
 	@Override
+	public final Date getDeleted() {
+		return deleted;
+	}
+
+	@Override
+	public final void setDeleted(Date deleted) {
+		this.deleted = deleted;
+	}
+
+	@Override
 	public final boolean getFlagRead() {
 		return flagRead;
 	}
@@ -220,6 +236,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 		values.put(Columns.UPLOADDATE, uploadDate != null ? uploadDate.getTime() : null);
 		values.put(Columns.CREATED, created != null ? created.getTime() : null);
 		values.put(Columns.CREATEDBY, createdBy);
+		values.put(Columns.DELETED, deleted != null ? deleted.getTime() : null);
 		values.put(Columns.FLAG_READ, flagRead ? 1 : 0);
 		values.put(Columns.FLAG_SYNCHRONIZED, flagSynchronized ? 1 : 0);
 
@@ -274,6 +291,7 @@ public abstract class ImogBeanImpl implements ImogBean {
 		dest.writeValue(uploadDate != null ? uploadDate.getTime() : null);
 		dest.writeValue(created != null ? created.getTime() : null);
 		dest.writeString(createdBy);
+		dest.writeValue(deleted != null ? deleted.getTime() : null);
 		dest.writeInt(flagRead ? 1 : 0);
 		dest.writeInt(flagSynchronized ? 1 : 0);
 	}

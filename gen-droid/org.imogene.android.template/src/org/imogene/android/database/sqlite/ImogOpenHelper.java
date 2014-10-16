@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 import fr.medes.android.database.sqlite.AmlOpenHelper;
 import fr.medes.android.database.sqlite.stmt.QueryBuilder;
 import fr.medes.android.maps.database.PreCache;
@@ -45,115 +46,223 @@ public abstract class ImogOpenHelper extends AmlOpenHelper {
 		return sInstance;
 	}
 
-	private static final String DATABASE_CREATE_PROFILE = "create table if not exists " + Profile.Columns.TABLE_NAME
-			+ " (" + Profile.Columns._ID + " text primary key, " + Profile.Columns.MODIFIED + " integer, "
-			+ Profile.Columns.MODIFIEDBY + " text, " + Profile.Columns.MODIFIEDFROM + " text, "
-			+ Profile.Columns.UPLOADDATE + " integer, " + Profile.Columns.CREATED + " integer, "
-			+ Profile.Columns.CREATEDBY + " text, " + Profile.Columns.FLAG_READ + " integer, " + Profile.Columns.NAME
-			+ " text, " + Profile.Columns.FLAG_SYNCHRONIZED + " integer);";
-	private static final String DATABASE_CREATE_ENTITYPROFILE = "create table if not exists "
-			+ EntityProfile.Columns.TABLE_NAME + " (" + EntityProfile.Columns._ID + " text primary key, "
-			+ EntityProfile.Columns.MODIFIED + " integer, " + EntityProfile.Columns.MODIFIEDBY + " text, "
-			+ EntityProfile.Columns.MODIFIEDFROM + " text, " + EntityProfile.Columns.UPLOADDATE + " integer, "
-			+ EntityProfile.Columns.CREATED + " integer, " + EntityProfile.Columns.CREATEDBY + " text, "
-			+ EntityProfile.Columns.FLAG_READ + " integer, " + EntityProfile.Columns.PROFILE + " text, "
-			+ EntityProfile.Columns.ENTITY + " text, " + EntityProfile.Columns.CREATE + " text, "
-			+ EntityProfile.Columns.DIRECTACCESS + " text, " + EntityProfile.Columns.DELETE + " text, "
-			+ EntityProfile.Columns.EXPORT + " text, " + EntityProfile.Columns.FLAG_SYNCHRONIZED + " integer);";
-	private static final String DATABASE_CREATE_FIELDGROUPPROFILE = "create table if not exists "
-			+ FieldGroupProfile.Columns.TABLE_NAME + " (" + FieldGroupProfile.Columns._ID + " text primary key, "
-			+ FieldGroupProfile.Columns.MODIFIED + " integer, " + FieldGroupProfile.Columns.MODIFIEDBY + " text, "
-			+ FieldGroupProfile.Columns.MODIFIEDFROM + " text, " + FieldGroupProfile.Columns.UPLOADDATE + " integer, "
-			+ FieldGroupProfile.Columns.CREATED + " integer, " + FieldGroupProfile.Columns.CREATEDBY + " text, "
-			+ FieldGroupProfile.Columns.FLAG_READ + " integer, " + FieldGroupProfile.Columns.PROFILE + " text, "
-			+ FieldGroupProfile.Columns.FIELDGROUP + " text, " + FieldGroupProfile.Columns.READ + " text, "
-			+ FieldGroupProfile.Columns.WRITE + " text, " + FieldGroupProfile.Columns.EXPORT + " text, "
-			+ FieldGroupProfile.Columns.FLAG_SYNCHRONIZED + " integer);";
-	private static final String DATABASE_CREATE_CARDENTITY = "create table if not exists "
-			+ CardEntity.Columns.TABLE_NAME + " (" + CardEntity.Columns._ID + " text primary key, "
-			+ CardEntity.Columns.MODIFIED + " integer, " + CardEntity.Columns.MODIFIEDBY + " text, "
-			+ CardEntity.Columns.MODIFIEDFROM + " text, " + CardEntity.Columns.UPLOADDATE + " integer, "
-			+ CardEntity.Columns.CREATED + " integer, " + CardEntity.Columns.CREATEDBY + " text, "
-			+ CardEntity.Columns.FLAG_READ + " integer, " + CardEntity.Columns.NAME + " text, "
-			+ CardEntity.Columns.FLAG_SYNCHRONIZED + " integer);";
-	private static final String DATABASE_CREATE_FIELDGROUP = "create table if not exists "
-			+ FieldGroup.Columns.TABLE_NAME + " (" + FieldGroup.Columns._ID + " text primary key, "
-			+ FieldGroup.Columns.MODIFIED + " integer, " + FieldGroup.Columns.MODIFIEDBY + " text, "
-			+ FieldGroup.Columns.MODIFIEDFROM + " text, " + FieldGroup.Columns.UPLOADDATE + " integer, "
-			+ FieldGroup.Columns.CREATED + " integer, " + FieldGroup.Columns.CREATEDBY + " text, "
-			+ FieldGroup.Columns.FLAG_READ + " integer, " + FieldGroup.Columns.NAME + " text, "
-			+ FieldGroup.Columns.ENTITY + " text, " + FieldGroup.Columns.FLAG_SYNCHRONIZED + " integer);";
-	private static final String DATABASE_CREATE_ACTOR_PROFILES = "create table if not exists "
-			+ ImogActor.Columns.TABLE_ACTOR_PROFILES + " (" + BaseColumns._ID + " integer primary key autoincrement, "
-			+ ImogActor.Columns.TABLE_NAME + " text not null, " + Profile.Columns.TABLE_NAME + " text not null);";
-	private static final String DATABASE_CREATE_DEFAULTUSER = "create table if not exists "
-			+ DefaultUser.Columns.TABLE_NAME + " (" + DefaultUser.Columns._ID + " text primary key, "
-			+ DefaultUser.Columns.MODIFIED + " integer, " + DefaultUser.Columns.MODIFIEDBY + " text, "
-			+ DefaultUser.Columns.MODIFIEDFROM + " text, " + DefaultUser.Columns.UPLOADDATE + " integer, "
-			+ DefaultUser.Columns.CREATED + " integer, " + DefaultUser.Columns.CREATEDBY + " text, "
-			+ DefaultUser.Columns.FLAG_READ + " integer, " + DefaultUser.Columns.LOGIN + " text, "
-			+ DefaultUser.Columns.PASSWORD + " blob, " + DefaultUser.Columns.FLAG_SYNCHRONIZED + " integer);";
-	private static final String DATABASE_CREATE_CLIENTFILTER = "create table if not exists "
-			+ ClientFilter.Columns.TABLE_NAME + " (" + ClientFilter.Columns._ID + " text primary key, "
-			+ ClientFilter.Columns.MODIFIED + " integer, " + ClientFilter.Columns.MODIFIEDBY + " text, "
-			+ ClientFilter.Columns.MODIFIEDFROM + " text, " + ClientFilter.Columns.UPLOADDATE + " integer, "
-			+ ClientFilter.Columns.CREATED + " integer, " + ClientFilter.Columns.CREATEDBY + " text, "
-			+ ClientFilter.Columns.FLAG_READ + " integer, " + ClientFilter.Columns.FLAG_SYNCHRONIZED + " integer, "
-			+ ClientFilter.Columns.USERID + " text, " + ClientFilter.Columns.TERMINALID + " text, "
-			+ ClientFilter.Columns.CARDENTITY + " text, " + ClientFilter.Columns.ENTITYFIELD + " text, "
-			+ ClientFilter.Columns.OPERATOR + " text, " + ClientFilter.Columns.FIELDVALUE + " text, "
-			+ ClientFilter.Columns.DISPLAY + " text, " + ClientFilter.Columns.ISNEW + " text);";
-	private static final String DATABASE_CREATE_BINARIES = "create table if not exists " + Binary.Columns.TABLE_NAME
-			+ " (" + Binary.Columns._ID + " text primary key, " + Binary.Columns.MODIFIED + " integer, "
-			+ Binary.Columns.MODIFIEDBY + " text, " + Binary.Columns.MODIFIEDFROM + " text, "
-			+ Binary.Columns.UPLOADDATE + " integer, " + Binary.Columns.CREATED + " integer, "
-			+ Binary.Columns.CREATEDBY + " text, " + Binary.Columns.FLAG_READ + " integer, "
-			+ Binary.Columns.FLAG_SYNCHRONIZED + " integer, " + Binary.Columns.LENGTH + " text, " + Binary.Columns.DATA
-			+ " text, " + Binary.Columns.CONTENT_TYPE + " text, " + Binary.Columns.FILE_NAME + " text);";
-	private static final String DATABASE_CREATE_DYNAMICFIELD_TEMPLATE = "create table if not exists "
-			+ DynamicFieldTemplate.Columns.TABLE_NAME + " (" + DynamicFieldTemplate.Columns._ID + " text primary key, "
-			+ DynamicFieldTemplate.Columns.MODIFIED + " integer, " + DynamicFieldTemplate.Columns.MODIFIEDBY
-			+ " text, " + DynamicFieldTemplate.Columns.MODIFIEDFROM + " text, "
-			+ DynamicFieldTemplate.Columns.UPLOADDATE + " integer, " + DynamicFieldTemplate.Columns.CREATED
-			+ " integer, " + DynamicFieldTemplate.Columns.CREATEDBY + " text, "
-			+ DynamicFieldTemplate.Columns.FLAG_READ + " integer, " + DynamicFieldTemplate.Columns.FIELDNAME
-			+ " text, " + DynamicFieldTemplate.Columns.FIELDTYPE + " text, " + DynamicFieldTemplate.Columns.PARAMETERS
-			+ " text, " + DynamicFieldTemplate.Columns.FORMTYPE + " text, "
-			+ DynamicFieldTemplate.Columns.TEMPLATECREATOR + " text, " + DynamicFieldTemplate.Columns.DESCRIPTION
-			+ " text, " + DynamicFieldTemplate.Columns.REASON + " text, " + DynamicFieldTemplate.Columns.ISDEFAULT
-			+ " text, " + DynamicFieldTemplate.Columns.REQUIREDVALUE + " text, "
-			+ DynamicFieldTemplate.Columns.FIELDPOSITION + " integer, " + DynamicFieldTemplate.Columns.MINIMUMVALUE
-			+ " text, " + DynamicFieldTemplate.Columns.MAXIMUMVALUE + " text, "
-			+ DynamicFieldTemplate.Columns.DEFAULTVALUE + " text, " + DynamicFieldTemplate.Columns.ALLUSERS + " text, "
-			+ DynamicFieldTemplate.Columns.ISACTIVATED + " text, " + DynamicFieldTemplate.Columns.FLAG_SYNCHRONIZED
-			+ " integer);";
-	private static final String DATABASE_CREATE_DYNAMICFIELD_INSTANCE = "create table if not exists "
-			+ DynamicFieldInstance.Columns.TABLE_NAME + " (" + DynamicFieldInstance.Columns._ID + " text primary key, "
-			+ DynamicFieldInstance.Columns.MODIFIED + " integer, " + DynamicFieldInstance.Columns.MODIFIEDBY
-			+ " text, " + DynamicFieldInstance.Columns.MODIFIEDFROM + " text, "
-			+ DynamicFieldInstance.Columns.UPLOADDATE + " integer, " + DynamicFieldInstance.Columns.CREATED
-			+ " integer, " + DynamicFieldInstance.Columns.CREATEDBY + " text, "
-			+ DynamicFieldInstance.Columns.FLAG_READ + " integer, " + DynamicFieldInstance.Columns.FIELDTEMPLATE
-			+ " text, " + DynamicFieldInstance.Columns.FIELDVALUE + " text, "
-			+ DynamicFieldInstance.Columns.FORMINSTANCE + " text, " + DynamicFieldInstance.Columns.FLAG_SYNCHRONIZED
-			+ " integer);";
-	private static final String DATABASE_CREATE_SYNCHISTORY = "create table if not exists "
-			+ SyncHistory.Columns.TABLE_NAME + " (" + SyncHistory.Columns._ID + " integer primary key autoincrement, "
-			+ SyncHistory.Columns.ID + " text not null, " + SyncHistory.Columns.DATE + " integer not null, "
-			+ SyncHistory.Columns.STATUS + " integer, " + SyncHistory.Columns.LEVEL + " integer);";
-	private static final String DATABASE_CREATE_GPSLOCATION = "create table if not exists "
-			+ GpsLocation.Columns.TABLE_NAME + " (" + GpsLocation.Columns._ID + " integer primary key autoincrement, "
-			+ GpsLocation.Columns.ACCURACY + " real, " + GpsLocation.Columns.ALTITUDE + " real, "
-			+ GpsLocation.Columns.BEARING + " real, " + GpsLocation.Columns.LATITUDE + " real, "
-			+ GpsLocation.Columns.LONGITUDE + " real, " + GpsLocation.Columns.PROVIDER + " text, "
-			+ GpsLocation.Columns.SPEED + " real, " + GpsLocation.Columns.TIME + " integer, "
-			+ GpsLocation.Columns.HASACCURACY + " integer, " + GpsLocation.Columns.HASALTITUDE + " integer, "
-			+ GpsLocation.Columns.HASBEARING + " integer, " + GpsLocation.Columns.HASSPEED + " integer);";
-	private static final String DATABASE_CREATE_PRECACHEBOUNDS = "create table if not exists "
-			+ PreCache.Columns.TABLE_NAME + " (" + PreCache.Columns._ID + " integer primary key autoincrement, "
-			+ PreCache.Columns.PROVIDER + " text, " + PreCache.Columns.NORTH + " real, " + PreCache.Columns.EAST
-			+ " real, " + PreCache.Columns.SOUTH + " real, " + PreCache.Columns.WEST + " real, "
-			+ PreCache.Columns.ZOOM_MIN + " integer, " + PreCache.Columns.ZOOM_MAX + " integer);";
+	private static final String DATABASE_CREATE_PROFILE = "create table if not exists " + //
+			Profile.Columns.TABLE_NAME + " (" + //
+			Profile.Columns._ID + " text primary key, " + //
+			Profile.Columns.MODIFIED + " integer, " + //
+			Profile.Columns.MODIFIEDBY + " text, " + //
+			Profile.Columns.MODIFIEDFROM + " text, " + //
+			Profile.Columns.UPLOADDATE + " integer, " + //
+			Profile.Columns.CREATED + " integer, " + //
+			Profile.Columns.CREATEDBY + " text, " + //
+			Profile.Columns.DELETED + " integer, " + //
+			Profile.Columns.FLAG_READ + " integer, " + //
+			Profile.Columns.NAME + " text, " + //
+			Profile.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_ENTITYPROFILE = "create table if not exists " + //
+			EntityProfile.Columns.TABLE_NAME + " (" + //
+			EntityProfile.Columns._ID + " text primary key, " + //
+			EntityProfile.Columns.MODIFIED + " integer, " + //
+			EntityProfile.Columns.MODIFIEDBY + " text, " + //
+			EntityProfile.Columns.MODIFIEDFROM + " text, " + //
+			EntityProfile.Columns.UPLOADDATE + " integer, " + //
+			EntityProfile.Columns.CREATED + " integer, " + //
+			EntityProfile.Columns.CREATEDBY + " text, " + //
+			EntityProfile.Columns.DELETED + " integer, " + //
+			EntityProfile.Columns.FLAG_READ + " integer, " + //
+			EntityProfile.Columns.PROFILE + " text, " + //
+			EntityProfile.Columns.ENTITY + " text, " + //
+			EntityProfile.Columns.CREATE + " text, " + //
+			EntityProfile.Columns.DIRECTACCESS + " text, " + //
+			EntityProfile.Columns.DELETE + " text, " + //
+			EntityProfile.Columns.EXPORT + " text, " + //
+			EntityProfile.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_FIELDGROUPPROFILE = "create table if not exists " + //
+			FieldGroupProfile.Columns.TABLE_NAME + " (" + //
+			FieldGroupProfile.Columns._ID + " text primary key, " + //
+			FieldGroupProfile.Columns.MODIFIED + " integer, " + //
+			FieldGroupProfile.Columns.MODIFIEDBY + " text, " + //
+			FieldGroupProfile.Columns.MODIFIEDFROM + " text, " + //
+			FieldGroupProfile.Columns.UPLOADDATE + " integer, " + //
+			FieldGroupProfile.Columns.CREATED + " integer, " + //
+			FieldGroupProfile.Columns.CREATEDBY + " text, " + //
+			FieldGroupProfile.Columns.DELETED + " integer, " + //
+			FieldGroupProfile.Columns.FLAG_READ + " integer, " + //
+			FieldGroupProfile.Columns.PROFILE + " text, " + //
+			FieldGroupProfile.Columns.FIELDGROUP + " text, " + //
+			FieldGroupProfile.Columns.READ + " text, " + //
+			FieldGroupProfile.Columns.WRITE + " text, " + //
+			FieldGroupProfile.Columns.EXPORT + " text, " + //
+			FieldGroupProfile.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_CARDENTITY = "create table if not exists " + //
+			CardEntity.Columns.TABLE_NAME + " (" + //
+			CardEntity.Columns._ID + " text primary key, " + //
+			CardEntity.Columns.MODIFIED + " integer, " + //
+			CardEntity.Columns.MODIFIEDBY + " text, " + //
+			CardEntity.Columns.MODIFIEDFROM + " text, " + //
+			CardEntity.Columns.UPLOADDATE + " integer, " + //
+			CardEntity.Columns.CREATED + " integer, " + //
+			CardEntity.Columns.CREATEDBY + " text, " + //
+			CardEntity.Columns.DELETED + " integer, " + //
+			CardEntity.Columns.FLAG_READ + " integer, " + //
+			CardEntity.Columns.NAME + " text, " + //
+			CardEntity.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_FIELDGROUP = "create table if not exists " + //
+			FieldGroup.Columns.TABLE_NAME + " (" + //
+			FieldGroup.Columns._ID + " text primary key, " + //
+			FieldGroup.Columns.MODIFIED + " integer, " + //
+			FieldGroup.Columns.MODIFIEDBY + " text, " + //
+			FieldGroup.Columns.MODIFIEDFROM + " text, " + //
+			FieldGroup.Columns.UPLOADDATE + " integer, " + //
+			FieldGroup.Columns.CREATED + " integer, " + //
+			FieldGroup.Columns.CREATEDBY + " text, " + //
+			FieldGroup.Columns.DELETED + " integer, " + //
+			FieldGroup.Columns.FLAG_READ + " integer, " + //
+			FieldGroup.Columns.NAME + " text, " + //
+			FieldGroup.Columns.ENTITY + " text, " + //
+			FieldGroup.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_ACTOR_PROFILES = "create table if not exists " + //
+			ImogActor.Columns.TABLE_ACTOR_PROFILES + " (" + //
+			BaseColumns._ID + " integer primary key autoincrement, " + //
+			ImogActor.Columns.TABLE_NAME + " text not null, " + //
+			Profile.Columns.TABLE_NAME + " text not null);";
+
+	private static final String DATABASE_CREATE_DEFAULTUSER = "create table if not exists " + //
+			DefaultUser.Columns.TABLE_NAME + " (" + //
+			DefaultUser.Columns._ID + " text primary key, " + //
+			DefaultUser.Columns.MODIFIED + " integer, " + //
+			DefaultUser.Columns.MODIFIEDBY + " text, " + //
+			DefaultUser.Columns.MODIFIEDFROM + " text, " + //
+			DefaultUser.Columns.UPLOADDATE + " integer, " + //
+			DefaultUser.Columns.CREATED + " integer, " + //
+			DefaultUser.Columns.CREATEDBY + " text, " + //
+			DefaultUser.Columns.DELETED + " integer, " + //
+			DefaultUser.Columns.FLAG_READ + " integer, " + //
+			DefaultUser.Columns.LOGIN + " text, " + //
+			DefaultUser.Columns.PASSWORD + " blob, " + //
+			DefaultUser.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_CLIENTFILTER = "create table if not exists " + //
+			ClientFilter.Columns.TABLE_NAME + " (" + //
+			ClientFilter.Columns._ID + " text primary key, " + //
+			ClientFilter.Columns.MODIFIED + " integer, " + //
+			ClientFilter.Columns.MODIFIEDBY + " text, " + //
+			ClientFilter.Columns.MODIFIEDFROM + " text, " + //
+			ClientFilter.Columns.UPLOADDATE + " integer, " + //
+			ClientFilter.Columns.CREATED + " integer, " + //
+			ClientFilter.Columns.CREATEDBY + " text, " + //
+			ClientFilter.Columns.DELETED + " integer, " + //
+			ClientFilter.Columns.FLAG_READ + " integer, " + //
+			ClientFilter.Columns.FLAG_SYNCHRONIZED + " integer, " + //
+			ClientFilter.Columns.USERID + " text, " + //
+			ClientFilter.Columns.TERMINALID + " text, " + //
+			ClientFilter.Columns.CARDENTITY + " text, " + //
+			ClientFilter.Columns.ENTITYFIELD + " text, " + //
+			ClientFilter.Columns.OPERATOR + " text, " + //
+			ClientFilter.Columns.FIELDVALUE + " text, " + //
+			ClientFilter.Columns.DISPLAY + " text, " + //
+			ClientFilter.Columns.ISNEW + " text);";
+
+	private static final String DATABASE_CREATE_BINARIES = "create table if not exists " + //
+			Binary.Columns.TABLE_NAME + " (" + //
+			Binary.Columns._ID + " text primary key, " + //
+			Binary.Columns.MODIFIED + " integer, " + //
+			Binary.Columns.MODIFIEDBY + " text, " + //
+			Binary.Columns.MODIFIEDFROM + " text, " + //
+			Binary.Columns.UPLOADDATE + " integer, " + //
+			Binary.Columns.CREATED + " integer, " + //
+			Binary.Columns.CREATEDBY + " text, " + //
+			Binary.Columns.DELETED + " integer, " + //
+			Binary.Columns.FLAG_READ + " integer, " + //
+			Binary.Columns.FLAG_SYNCHRONIZED + " integer, " + //
+			Binary.Columns.LENGTH + " text, " + //
+			Binary.Columns.DATA + " text, " + //
+			Binary.Columns.CONTENT_TYPE + " text, " + //
+			Binary.Columns.FILE_NAME + " text);";
+
+	private static final String DATABASE_CREATE_DYNAMICFIELD_TEMPLATE = "create table if not exists " + //
+			DynamicFieldTemplate.Columns.TABLE_NAME + " (" + //
+			DynamicFieldTemplate.Columns._ID + " text primary key, " + //
+			DynamicFieldTemplate.Columns.MODIFIED + " integer, " + //
+			DynamicFieldTemplate.Columns.MODIFIEDBY + " text, " + //
+			DynamicFieldTemplate.Columns.MODIFIEDFROM + " text, " + //
+			DynamicFieldTemplate.Columns.UPLOADDATE + " integer, " + //
+			DynamicFieldTemplate.Columns.CREATED + " integer, " + //
+			DynamicFieldTemplate.Columns.CREATEDBY + " text, " + //
+			DynamicFieldTemplate.Columns.DELETED + " integer, " + //
+			DynamicFieldTemplate.Columns.FLAG_READ + " integer, " + //
+			DynamicFieldTemplate.Columns.FIELDNAME + " text, " + //
+			DynamicFieldTemplate.Columns.FIELDTYPE + " text, " + //
+			DynamicFieldTemplate.Columns.PARAMETERS + " text, " + //
+			DynamicFieldTemplate.Columns.FORMTYPE + " text, " + //
+			DynamicFieldTemplate.Columns.TEMPLATECREATOR + " text, " + //
+			DynamicFieldTemplate.Columns.DESCRIPTION + " text, " + //
+			DynamicFieldTemplate.Columns.REASON + " text, " + //
+			DynamicFieldTemplate.Columns.ISDEFAULT + " text, " + //
+			DynamicFieldTemplate.Columns.REQUIREDVALUE + " text, " + //
+			DynamicFieldTemplate.Columns.FIELDPOSITION + " integer, " + //
+			DynamicFieldTemplate.Columns.MINIMUMVALUE + " text, " + //
+			DynamicFieldTemplate.Columns.MAXIMUMVALUE + " text, " + //
+			DynamicFieldTemplate.Columns.DEFAULTVALUE + " text, " + //
+			DynamicFieldTemplate.Columns.ALLUSERS + " text, " + //
+			DynamicFieldTemplate.Columns.ISACTIVATED + " text, " + //
+			DynamicFieldTemplate.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_DYNAMICFIELD_INSTANCE = "create table if not exists " + //
+			DynamicFieldInstance.Columns.TABLE_NAME + " (" + //
+			DynamicFieldInstance.Columns._ID + " text primary key, " + //
+			DynamicFieldInstance.Columns.MODIFIED + " integer, " + //
+			DynamicFieldInstance.Columns.MODIFIEDBY + " text, " + //
+			DynamicFieldInstance.Columns.MODIFIEDFROM + " text, " + //
+			DynamicFieldInstance.Columns.UPLOADDATE + " integer, " + //
+			DynamicFieldInstance.Columns.CREATED + " integer, " + //
+			DynamicFieldInstance.Columns.CREATEDBY + " text, " + //
+			DynamicFieldInstance.Columns.DELETED + " integer, " + //
+			DynamicFieldInstance.Columns.FLAG_READ + " integer, " + //
+			DynamicFieldInstance.Columns.FIELDTEMPLATE + " text, " + //
+			DynamicFieldInstance.Columns.FIELDVALUE + " text, " + //
+			DynamicFieldInstance.Columns.FORMINSTANCE + " text, " + //
+			DynamicFieldInstance.Columns.FLAG_SYNCHRONIZED + " integer);";
+
+	private static final String DATABASE_CREATE_SYNCHISTORY = "create table if not exists " + //
+			SyncHistory.Columns.TABLE_NAME + " (" + //
+			SyncHistory.Columns._ID + " integer primary key autoincrement, " + //
+			SyncHistory.Columns.ID + " text not null, " + //
+			SyncHistory.Columns.DATE + " integer not null, " + //
+			SyncHistory.Columns.STATUS + " integer, " + //
+			SyncHistory.Columns.LEVEL + " integer);";
+
+	private static final String DATABASE_CREATE_GPSLOCATION = "create table if not exists " + //
+			GpsLocation.Columns.TABLE_NAME + " (" + //
+			GpsLocation.Columns._ID + " integer primary key autoincrement, " + //
+			GpsLocation.Columns.ACCURACY + " real, " + //
+			GpsLocation.Columns.ALTITUDE + " real, " + //
+			GpsLocation.Columns.BEARING + " real, " + //
+			GpsLocation.Columns.LATITUDE + " real, " + //
+			GpsLocation.Columns.LONGITUDE + " real, " + //
+			GpsLocation.Columns.PROVIDER + " text, " + //
+			GpsLocation.Columns.SPEED + " real, " + //
+			GpsLocation.Columns.TIME + " integer, " + //
+			GpsLocation.Columns.HASACCURACY + " integer, " + //
+			GpsLocation.Columns.HASALTITUDE + " integer, " + //
+			GpsLocation.Columns.HASBEARING + " integer, " + //
+			GpsLocation.Columns.HASSPEED + " integer);";
+
+	private static final String DATABASE_CREATE_PRECACHEBOUNDS = "create table if not exists " + //
+			PreCache.Columns.TABLE_NAME + " (" + //
+			PreCache.Columns._ID + " integer primary key autoincrement, " + //
+			PreCache.Columns.PROVIDER + " text, " + //
+			PreCache.Columns.NORTH + " real, " + //
+			PreCache.Columns.EAST + " real, " + //
+			PreCache.Columns.SOUTH + " real, " + //
+			PreCache.Columns.WEST + " real, " + //
+			PreCache.Columns.ZOOM_MIN + " integer, " + //
+			PreCache.Columns.ZOOM_MAX + " integer);";
 
 	/**
 	 * Convenient method to retrieve an {@link ImogBean} from an {@link Uri}.
@@ -202,6 +311,20 @@ public abstract class ImogOpenHelper extends AmlOpenHelper {
 		db.execSQL(DATABASE_CREATE_DYNAMICFIELD_TEMPLATE);
 		db.execSQL(DATABASE_CREATE_GPSLOCATION);
 		db.execSQL(DATABASE_CREATE_PRECACHEBOUNDS);
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		upgrade(db, Profile.Columns.TABLE_NAME, Profile.Columns.DELETED, "integer");
+		upgrade(db, EntityProfile.Columns.TABLE_NAME, EntityProfile.Columns.DELETED, "integer");
+		upgrade(db, FieldGroupProfile.Columns.TABLE_NAME, FieldGroupProfile.Columns.DELETED, "integer");
+		upgrade(db, CardEntity.Columns.TABLE_NAME, CardEntity.Columns.DELETED, "integer");
+		upgrade(db, FieldGroup.Columns.TABLE_NAME, FieldGroup.Columns.DELETED, "integer");
+		upgrade(db, Binary.Columns.TABLE_NAME, Binary.Columns.DELETED, "integer");
+		upgrade(db, ClientFilter.Columns.TABLE_NAME, ClientFilter.Columns.DELETED, "integer");
+		upgrade(db, DefaultUser.Columns.TABLE_NAME, DefaultUser.Columns.DELETED, "integer");
+		upgrade(db, DynamicFieldInstance.Columns.TABLE_NAME, DynamicFieldInstance.Columns.DELETED, "integer");
+		upgrade(db, DynamicFieldTemplate.Columns.TABLE_NAME, DynamicFieldTemplate.Columns.DELETED, "integer");
 	}
 
 	public QueryBuilder queryBuilder(String tableName) {
@@ -365,6 +488,7 @@ public abstract class ImogOpenHelper extends AmlOpenHelper {
 		try {
 			db.compileStatement("select " + column + " from " + table + " limit 1").close();
 		} catch (Exception e) {
+			Log.i(ImogOpenHelper.class.getName(), "alter table " + table + " with column " + column + " of type " + type);
 			db.execSQL("alter table " + table + " add column " + column + " " + type + ";");
 		}
 	}

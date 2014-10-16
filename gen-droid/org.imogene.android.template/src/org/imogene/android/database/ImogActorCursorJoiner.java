@@ -71,6 +71,11 @@ public class ImogActorCursorJoiner implements ImogActorCursor<ImogActor> {
 	}
 
 	@Override
+	public Date getDeleted() {
+		return mCursors.get(current).cursor.getDeleted();
+	}
+
+	@Override
 	public String getId() {
 		return mCursors.get(current).cursor.getId();
 	}

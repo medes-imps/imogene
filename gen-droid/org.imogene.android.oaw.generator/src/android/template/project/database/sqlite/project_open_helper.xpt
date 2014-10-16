@@ -34,21 +34,22 @@ public class «name.toFirstUpper()»OpenHelper extends ImogOpenHelper {
 
 	«FOREACH entities AS entity-»
 	private static final String DATABASE_CREATE_«entity.name.toUpperCase()» = 
-		"create table if not exists " + «entity.name.toFirstUpper()».Columns.TABLE_NAME + " ("
-			+ «entity.name.toFirstUpper()».Columns._ID + " text primary key, "
-			+ «entity.name.toFirstUpper()».Columns.MODIFIED + " integer, "
-			+ «entity.name.toFirstUpper()».Columns.MODIFIEDBY + " text, "
-			+ «entity.name.toFirstUpper()».Columns.MODIFIEDFROM + " text, "
-			+ «entity.name.toFirstUpper()».Columns.UPLOADDATE + " integer, "
-			+ «entity.name.toFirstUpper()».Columns.CREATED + " integer, "
-			+ «entity.name.toFirstUpper()».Columns.CREATEDBY + " text, "
-			+ «entity.name.toFirstUpper()».Columns.FLAG_READ + " integer, "
+		"create table if not exists " + «entity.name.toFirstUpper()».Columns.TABLE_NAME + " (" + //
+			«entity.name.toFirstUpper()».Columns._ID + " text primary key, " + //
+			«entity.name.toFirstUpper()».Columns.MODIFIED + " integer, " + //
+			«entity.name.toFirstUpper()».Columns.MODIFIEDBY + " text, " + //
+			«entity.name.toFirstUpper()».Columns.MODIFIEDFROM + " text, " + //
+			«entity.name.toFirstUpper()».Columns.UPLOADDATE + " integer, " + //
+			«entity.name.toFirstUpper()».Columns.CREATED + " integer, " + //
+			«entity.name.toFirstUpper()».Columns.CREATEDBY + " text, " + //
+			«entity.name.toFirstUpper()».Columns.DELETED + " integer, " + //
+			«entity.name.toFirstUpper()».Columns.FLAG_READ + " integer, " + //
 			«IF Actor.isAssignableFrom(entity.metaType) -»
-			+ «entity.name.toFirstUpper()».Columns.LOGIN + " text, "
-			+ «entity.name.toFirstUpper()».Columns.PASSWORD + " blob, "
+			«entity.name.toFirstUpper()».Columns.LOGIN + " text, " + //
+			«entity.name.toFirstUpper()».Columns.PASSWORD + " blob, " + //
 			«ENDIF-»
 			«EXPAND getKey FOREACH entity.groups.fields-»
-			+ «entity.name.toFirstUpper()».Columns.FLAG_SYNCHRONIZED + " integer);";
+			«entity.name.toFirstUpper()».Columns.FLAG_SYNCHRONIZED + " integer);";
 	«ENDFOREACH-»
 	
 	«EXPAND buildTableManyToMany FOREACH entities.groups.fields-»
@@ -69,12 +70,14 @@ public class «name.toFirstUpper()»OpenHelper extends ImogOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-			+ newVersion + ", which will destroy all old data");
-		onCreate(db);
+		Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
+		super.onUpgrade(db, oldVersion, newVersion);
+		«FOREACH entities AS e-»
+		upgrade(db, «e.name.toFirstUpper()».Columns.TABLE_NAME, «e.name.toFirstUpper()».Columns.DELETED, "integer");
+		«ENDFOREACH-»
 		«EXPAND upgradeField FOREACH entities.groups.fields-»
 	}
-	
+
 	public final Uri findInDatabase(String scanned) {
 		«REM»
     	long id;
@@ -116,40 +119,40 @@ public class «name.toFirstUpper()»OpenHelper extends ImogOpenHelper {
 
 
 «DEFINE getKey FOR FieldEntity-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, " + //
 «ENDDEFINE»
 
 «DEFINE getKey FOR TextField-»
 «IF translatable-»
 «FOREACH ((Project) eRootContainer).languages AS l-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»_«l.isoCode.toUpperCase()» + " text, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this»_«l.isoCode.toUpperCase()» + " text, " + //
 «ENDFOREACH-»
 «ELSE-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, " + //
 «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getKey FOR DatesField-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " integer, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " integer, " + //
 «ENDDEFINE»
 
 «DEFINE getKey FOR IntegerField-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " integer, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " integer, " + //
 «ENDDEFINE»
 
 «DEFINE getKey FOR FloatField-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " float, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " float, " + //
 «ENDDEFINE»
 
 «DEFINE getKey FOR MainRelationFieldEntity-»
 «IF (cardinality == 1)-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, " + //
 «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getKey FOR ReverseRelationFieldEntity-»
 «IF (cardinality ==1 && getOppositeCardinality(this) != 1)-»
-+ «EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, "
+«EXPAND android::template::MedooAndroidFieldUtil::columnName FOR this» + " text, " + //
 «ENDIF-»
 «ENDDEFINE»
 
@@ -162,10 +165,10 @@ public class «name.toFirstUpper()»OpenHelper extends ImogOpenHelper {
 «DEFINE buildTableManyToMany FOR MainRelationFieldEntity-»
 «IF (cardinality != 1 && getOppositeCardinality(this) != 1)-»
 private static final String DATABASE_CREATE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()» = "create table if not exists " +
-	«parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()» + " ("
-	+ BaseColumns._ID + " integer primary key autoincrement, "
-	+ «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME + " text not null, "
-	+ «entity.name.toFirstUpper()».Columns.TABLE_NAME + " text not null);";
+	«parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()» + " (" + //
+	BaseColumns._ID + " integer primary key autoincrement, " + //
+	«parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME + " text not null, " + //
+	«entity.name.toFirstUpper()».Columns.TABLE_NAME + " text not null);";
 «ENDIF-»
 «ENDDEFINE»
 
@@ -185,23 +188,23 @@ private static final String DATABASE_CREATE_«parentGroup.parentCard.name.toUpper
 
 
 «DEFINE upgradeField FOR FieldEntity-»
-upgrade(db, "«parentGroup.parentCard.name.toLowerCase()»", "«name.toFirstLower()»", "text");
+upgrade(db, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», "text");
 «ENDDEFINE»
 
 «DEFINE upgradeField FOR DatesField-»
-upgrade(db, "«parentGroup.parentCard.name.toLowerCase()»", "«name.toFirstLower()»", "integer");
+upgrade(db, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», "integer");
 «ENDDEFINE»
 
 «DEFINE upgradeField FOR IntegerField-»
-upgrade(db, "«parentGroup.parentCard.name.toLowerCase()»", "«name.toFirstLower()»", "integer");
+upgrade(db, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», "integer");
 «ENDDEFINE»
 
 «DEFINE upgradeField FOR FloatField-»
-upgrade(db, "«parentGroup.parentCard.name.toLowerCase()»", "«name.toFirstLower()»", "float");
+upgrade(db, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», "float");
 «ENDDEFINE»
 
 «DEFINE upgradeField FOR RelationFieldEntity-»
 «IF (cardinality == 1)-»
-upgrade(db, "«parentGroup.parentCard.name.toLowerCase()»", "«name.toFirstLower()»", "text");
+upgrade(db, «parentGroup.parentCard.name.toFirstUpper()».Columns.TABLE_NAME, «parentGroup.parentCard.name.toFirstUpper()».Columns.«name.toUpperCase()», "text");
 «ENDIF-»
 «ENDDEFINE»

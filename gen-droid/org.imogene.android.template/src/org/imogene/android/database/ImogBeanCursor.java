@@ -25,6 +25,8 @@ public interface ImogBeanCursor<T extends ImogBean> extends Cursor /* CrossProce
 
 	public String getCreatedBy();
 
+	public Date getDeleted();
+
 	public boolean getFlagRead();
 
 	public boolean getFlagSynchronized();

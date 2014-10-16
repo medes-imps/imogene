@@ -63,6 +63,10 @@ public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(meta
 	
 	@Override
 	public String getMainDisplay(Context context) {
+		if (getDeleted() != null) {
+			return context.getString(R.string.imog__deleted);
+		}
+
 		StringBuilder str = new StringBuilder();
 		«EXPAND getDisplay FOREACH getMainFields(this)-»
 		return str.toString();
@@ -70,6 +74,10 @@ public class «name.toFirstUpper()»Cursor extends «IF Actor.isAssignableFrom(meta
 
 	@Override
 	public String getSecondaryDisplay(Context context) {
+		if (getDeleted() != null) {
+			return null;
+		}
+
 		StringBuilder str = new StringBuilder();
 		«EXPAND getDisplay FOREACH secondaryFields-»
 		return str.toString();
