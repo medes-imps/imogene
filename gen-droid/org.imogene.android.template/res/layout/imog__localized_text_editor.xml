@@ -10,12 +10,13 @@
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:inputType="text"
         android:saveEnabled="false" />
 
     <TextView
         android:id="@+id/imog__locale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12dip" />
+        android:textSize="12sp" />
 
 </LinearLayout>

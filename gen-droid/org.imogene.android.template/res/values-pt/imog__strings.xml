@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
 
-    <string name="update_available_message">Uma atualização do aplicativo está disponível. Gostaria instalá-lo agora? </string>
-    <string name="update_available_title">Atualização</string>
-
     <!-- Menu strings -->
     <string name="imog__menu_actions">Acções</string>
     <string name="imog__menu_add">Novo</string>
