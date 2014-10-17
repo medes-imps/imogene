@@ -17,14 +17,11 @@ public interface OptimizedSyncServer {
 	/**
 	 * Search a specific entity and serialized it and its child from first level
 	 * 
-	 * @param currentUser the user
 	 * @param entityId the entityId
-	 * @param entityType the type of entity (shortname)
-	 * @param out
+	 * @param out destination stream
 	 * @throws ImogSerializationException
 	 */
-	public void searchEntity(ImogActor currentUser, String entityId, OutputStream out)
-			throws ImogSerializationException;
+	public void searchEntity(String entityId, OutputStream out) throws ImogSerializationException;
 
 	/**
 	 * Initialize the session between the client and the server
@@ -32,7 +29,7 @@ public interface OptimizedSyncServer {
 	 * @param termId the terminal id
 	 * @return the session id
 	 */
-	public String initSession(String termId, ImogActor user);
+	public String initSession(String termId);
 
 	/**
 	 * Resume a 'send' task of a previous session.

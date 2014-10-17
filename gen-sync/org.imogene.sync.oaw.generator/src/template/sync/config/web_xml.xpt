@@ -19,6 +19,11 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
+	<!-- support the scoping of beans at the request, session, and global session levels (web-scoped beans) -->
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	
 	<!-- Servlet declaration -->
 	<servlet>
 		<servlet-name>«projectName»</servlet-name>

@@ -12,16 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.sync.security.UserAccessControl;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.server.OptimizedSyncServer;
-import org.imogene.lib.sync.server.http.command.AuthenticationCommand;
 import org.imogene.lib.sync.server.http.command.ClientUploadCommand;
 import org.imogene.lib.sync.server.http.command.InitializeCommand;
 import org.imogene.lib.sync.server.http.command.SearchCommand;
 import org.imogene.lib.sync.server.http.command.SessionCommand;
-import org.imogene.lib.sync.server.http.command.StatusCommand;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
@@ -33,47 +29,40 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
  */
 public class OptimizedSyncController extends MultiActionController {
 
-	private static final String MEDOO_HEADER = "medoo-sync";
+	/* headers */
+	public static final String HEADER_NAME = "medoo-sync";
+	public static final String HEADER_VALUE = "synchro";
 
-	private static final String MEDOO_HEADER_SYNC = "synchro";
+	/* response messages */
+	public static final String RESPONSE_OK = "OK";
 
 	private Logger logger = Logger.getLogger("org.imogene.sync.server.http");
 
 	private OptimizedSyncServer syncServer;
 
-	private UserAccessControl userAccessControl;
-
 	private File workDirectory;
 
 	/**
-	 * Get the status of the actove sessions
+	 * Get the status of the active sessions
 	 * 
 	 * @param req http request
 	 * @param resp http response
-	 * @param command status command
 	 */
-	public void status(HttpServletRequest req, HttpServletResponse resp, StatusCommand command) {
+	public void status(HttpServletRequest req, HttpServletResponse resp) {
 		setHeader(resp);
 
-		// Validate the user
-		String login = command.getLogin();
-		String password = command.getPasswd();
-		ImogActor currentUser = userAccessControl.authenticate(login, password);
-
 		// Get the session status
-		if (currentUser != null) {
-			try {
-				ServletOutputStream out = resp.getOutputStream();
-				logger.debug("SeSt: - list of active sessions - ");
-				/*
-				 * for (SyncSession session : SyncSessionManager.getInstance().getAllSessions()) {
-				 * logger.debug("Session " + session.getId().toString() + " : termiId=" + session.getTerminalId() +
-				 * " userId=" + session.getUserId() + " type=" + session.getType()); }
-				 */
-				out.close();
-			} catch (IOException ioe) {
-				logger.error("SeSt: " + ioe.getMessage(), ioe);
-			}
+		try {
+			ServletOutputStream out = resp.getOutputStream();
+			logger.debug("SeSt: - list of active sessions - ");
+			/*
+			 * for (SyncSession session : SyncSessionManager.getInstance().getAllSessions()) { logger.debug("Session " +
+			 * session.getId().toString() + " : termiId=" + session.getTerminalId() + " userId=" + session.getUserId() +
+			 * " type=" + session.getType()); }
+			 */
+			out.close();
+		} catch (IOException e) {
+			logger.error("Status error", e);
 		}
 	}
 
@@ -82,41 +71,20 @@ public class OptimizedSyncController extends MultiActionController {
 	 * 
 	 * @param req the servlet request
 	 * @param resp the servlet response
-	 * @param command the command to handle
 	 */
-	public void auth(HttpServletRequest req, HttpServletResponse resp, AuthenticationCommand command) {
+	public void auth(HttpServletRequest req, HttpServletResponse resp) {
 		setHeader(resp);
-		String login = command.getLogin();
-		String password = command.getPassword();
-		ImogActor currentUser = userAccessControl.authenticate(login, password);
-		if (currentUser != null) {
 
-			StringBuffer currentUserString = new StringBuffer();
-
-			currentUserString.append(currentUser.getId());
-
-			try {
-				resp.setStatus(HttpServletResponse.SC_OK);
-				resp.setContentLength(currentUserString.toString().getBytes().length);
-				OutputStream out = resp.getOutputStream();
-				out.write(currentUserString.toString().getBytes());
-				out.flush();
-				out.close();
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-			logger.debug("Auth: Authentication successed for the user " + login);
-		} else {
-			try {
-				resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-				OutputStream out = resp.getOutputStream();
-				out.write("-ERROR-".getBytes()); // TODO set as constant
-				out.flush();
-				out.close();
-				logger.debug("Auth: Authentication failed for the user " + login);
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
+		try {
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.setContentLength(RESPONSE_OK.getBytes().length);
+			OutputStream out = resp.getOutputStream();
+			out.write(RESPONSE_OK.getBytes());
+			out.flush();
+			out.close();
+			logger.debug("Auth: Authentication successed user ");
+		} catch (IOException e) {
+			logger.error("Authentication error", e);
 		}
 	}
 
@@ -129,34 +97,16 @@ public class OptimizedSyncController extends MultiActionController {
 	 */
 	public void init(HttpServletRequest req, HttpServletResponse resp, InitializeCommand command) {
 		setHeader(resp);
-		/* Validate the user */
-		String login = command.getLogin();
-		String password = command.getPassword();
-		ImogActor currentUser = userAccessControl.authenticate(login, password);
-
-		/* Initialize the session */
-		if (currentUser != null) {
-			String sessionId = syncServer.initSession(command.getTerminal(), currentUser);
-			try {
-				resp.setContentLength(sessionId.getBytes().length);
-				OutputStream out = resp.getOutputStream();
-				out.write(sessionId.getBytes());
-				out.flush();
-				out.close();
-				logger.debug("Init: Session initialized for user " + login + " with id " + sessionId);
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-		} else {
-			try {
-				OutputStream out = resp.getOutputStream();
-				out.write("-ERROR-".getBytes()); // TODO set as constant
-				out.flush();
-				out.close();
-				logger.debug("Init: Session initialization failed for user " + login);
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
+		String sessionId = syncServer.initSession(command.getTerminal());
+		try {
+			resp.setContentLength(sessionId.getBytes().length);
+			OutputStream out = resp.getOutputStream();
+			out.write(sessionId.getBytes());
+			out.flush();
+			out.close();
+			logger.debug("Init: Session initialized with id " + sessionId);
+		} catch (IOException e) {
+			logger.error("Init session error", e);
 		}
 	}
 
@@ -169,14 +119,14 @@ public class OptimizedSyncController extends MultiActionController {
 	public void initresumereceive(HttpServletRequest req, HttpServletResponse resp) {
 		setHeader(resp);
 		try {
-			resp.setContentLength("OK".getBytes().length);
+			resp.setContentLength(RESPONSE_OK.getBytes().length);
 			OutputStream out = resp.getOutputStream();
-			out.write(String.valueOf("OK").getBytes());
+			out.write(RESPONSE_OK.getBytes());
 			out.flush();
 			out.close();
 			logger.debug("ResRec: Initialization of a resumed session ");
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Init resume session receive error", e);
 		}
 	}
 
@@ -202,8 +152,8 @@ public class OptimizedSyncController extends MultiActionController {
 			out.write(String.valueOf(bytesReceived).getBytes());
 			out.flush();
 			out.close();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Init resume session send error", e);
 		}
 
 	}
@@ -213,45 +163,23 @@ public class OptimizedSyncController extends MultiActionController {
 
 		logger.debug("Search: Looking for the entity with the id:" + command.getSearchedid());
 
-		/* Validate the user */
-		String login = command.getLogin();
-		String password = command.getPassword();
-		ImogActor currentUser = userAccessControl.authenticate(login, password);
+		try {
+			File tempFile = File.createTempFile("medoo", "search");
+			OutputStream fos = new FileOutputStream(tempFile);
+			syncServer.searchEntity(command.getSearchedid(), fos);
 
-		if (currentUser != null) {
-
-			try {
-				File tempFile = File.createTempFile("medoo", "search");
-				OutputStream fos = new FileOutputStream(tempFile);
-				syncServer.searchEntity(currentUser, command.getSearchedid(), fos);
-
-				/* sending the result */
-				InputStream fis = new FileInputStream(tempFile);
-				resp.setContentLength(fis.available());
-				while (fis.available() > 0) {
-					resp.getOutputStream().write(fis.read());
-				}
-				resp.getOutputStream().flush();
-				resp.flushBuffer();
-				fis.close();
-			} catch (IOException ioe) {
-				logger.error(ioe.getMessage(), ioe);
-			} catch (ImogSerializationException ex) {
-				logger.error(ex.getMessage(), ex);
+			/* sending the result */
+			InputStream fis = new FileInputStream(tempFile);
+			resp.setContentLength(fis.available());
+			while (fis.available() > 0) {
+				resp.getOutputStream().write(fis.read());
 			}
-
-		} else {
-			try {
-				OutputStream out = resp.getOutputStream();
-				out.write("-ERROR-".getBytes()); // TODO set as constant
-				out.flush();
-				out.close();
-				logger.debug("Search: user " + login + " has not been authenticated");
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
+			resp.getOutputStream().flush();
+			resp.flushBuffer();
+			fis.close();
+		} catch (Exception e) {
+			logger.error("Search entity error", e);
 		}
-
 	}
 
 	/**
@@ -279,7 +207,7 @@ public class OptimizedSyncController extends MultiActionController {
 			resp.flushBuffer();
 			fis.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Request server modifications error", e);
 		}
 	}
 
@@ -317,8 +245,8 @@ public class OptimizedSyncController extends MultiActionController {
 					OutputStream fos = new FileOutputStream(tempFile);
 					syncServer.getServerModifications(command.getSession(), fos);
 					fos.close();
-				} catch (ImogSerializationException mse) {
-					logger.error(mse.getMessage(), mse);
+				} catch (ImogSerializationException e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 			/* read the file and wrote the result as response */
@@ -338,8 +266,8 @@ public class OptimizedSyncController extends MultiActionController {
 			resp.getOutputStream().flush();
 			resp.flushBuffer();
 			fis.close();
-		} catch (IOException ioe) {
-			logger.error(ioe.getMessage());
+		} catch (IOException e) {
+			logger.error("Error resuming a receive", e);
 		}
 	}
 
@@ -356,6 +284,7 @@ public class OptimizedSyncController extends MultiActionController {
 		File cmodif = new File(getSyncWorkDirectory(req), command.getSession() + ".cmodif");
 		File smodif = new File(getSyncWorkDirectory(req), command.getSession() + ".smodif");
 		if (!command.getDebug()) {
+			logger.debug("SeMo: Server modification ACK received, so i delete the temp files.");
 			if (cmodif.exists())
 				cmodif.delete();
 			if (smodif.exists())
@@ -363,7 +292,16 @@ public class OptimizedSyncController extends MultiActionController {
 		} else {
 			logger.debug("SeMo: Debug mod activated, we don't delete the created files.");
 		}
-		logger.debug("SeMo: Server modification ACK received, so i delete the temp files.");
+		try {
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.setContentLength(RESPONSE_OK.getBytes().length);
+			OutputStream out = resp.getOutputStream();
+			out.write(RESPONSE_OK.getBytes());
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			logger.error("Error closing session", e);
+		}
 	}
 
 	/**
@@ -382,14 +320,13 @@ public class OptimizedSyncController extends MultiActionController {
 		try {
 			logger.debug("ClMo: Sarting to parse the received file");
 			int code = syncServer.applyClientModifications(sessionId, command.getData().getInputStream());
-			if (code != -1)
+			if (code != -1) {
 				resp.getOutputStream().print("ACK_" + code);
-			else
-				resp.getOutputStream().print("ERROR");
-		} catch (IOException ioe) {
-			logger.error(ioe.getMessage());
-		} catch (ImogSerializationException ex) {
-			logger.error(ex.getMessage());
+			} else {
+				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			logger.error("Error receiving client modification", e);
 		}
 	}
 
@@ -435,15 +372,6 @@ public class OptimizedSyncController extends MultiActionController {
 		this.syncServer = syncServer;
 	}
 
-	/**
-	 * Set the user access control implementation
-	 * 
-	 * @param userAccessControl the user access control
-	 */
-	public void setUserAccessControl(UserAccessControl userAccessControl) {
-		this.userAccessControl = userAccessControl;
-	}
-
 	@Override
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
@@ -466,7 +394,7 @@ public class OptimizedSyncController extends MultiActionController {
 	}
 
 	private void setHeader(HttpServletResponse response) {
-		response.setHeader(MEDOO_HEADER, MEDOO_HEADER_SYNC);
+		response.setHeader(HEADER_NAME, HEADER_VALUE);
 	}
 
 }

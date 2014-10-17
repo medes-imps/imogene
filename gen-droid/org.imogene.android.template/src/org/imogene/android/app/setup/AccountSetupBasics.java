@@ -359,7 +359,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 				sync = new OptimizedSyncClientHttp(server);
 			}
 			try {
-				return sync.authentication(login, password);
+				return sync.authentication();
 			} catch (Exception e) {
 				Log.e(TAG, "Authentication error", e);
 			}

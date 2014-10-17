@@ -87,7 +87,6 @@
 		<property name="historyDao" ref="syncHistoryDao"/>
 		<property name="sessionDao" ref="syncSessionDao"/>
 		<property name="entityHelper" ref="entityHelper"/>
-		<property name="accessPolicyFactory" ref="accessPolicyFactory"/>
 	</bean>
 	
 	<!--  the synchronization controller -->
@@ -98,7 +97,6 @@
 			</bean>
 		</property>
 		<property name="syncServer" ref="syncServer"/>	
-		<property name="userAccessControl" ref="userAccessControl"/>	
 	</bean>
 	
   	<!-- Binary post operations catcher -->

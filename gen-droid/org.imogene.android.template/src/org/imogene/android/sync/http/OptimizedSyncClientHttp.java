@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
@@ -58,8 +57,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public boolean authentication(String login, String password) throws SynchronizationException,
-			AuthenticationException {
+	public boolean authentication() throws SynchronizationException, AuthenticationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
@@ -69,9 +67,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + CMD_PARAM + "=" + CMD_AUTH) //
-					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8")) //
-					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8"));
+					.append("?" + PARAM_CMD + "=" + CMD_AUTH);
 
 			HttpGet get = createHttpGetMethod(builder.toString());
 
@@ -82,8 +78,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			validateResponse(response);
 
 			// Read authentication response
-			return true;
-
+			String result = readString(response.getEntity().getContent());
+			return RESPONSE_OK.equals(result);
 		} catch (AuthenticationException e) {
 			return false;
 		} catch (SynchronizationException e) {
@@ -94,15 +90,15 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public boolean closeSession(UUID sessionId, boolean debug) throws SynchronizationException, AuthenticationException {
+	public void closeSession(UUID sessionId, boolean debug) throws SynchronizationException, AuthenticationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + CMD_PARAM + "=" + CMD_CLOSE) //
-					.append("&" + SESSION_PARAM + "=" + sessionId) //
-					.append("&" + DEBUG_PARAM + "=" + Boolean.toString(debug));
+					.append("?" + PARAM_CMD + "=" + CMD_CLOSE) //
+					.append("&" + PARAM_SESSION + "=" + sessionId) //
+					.append("&" + PARAM_DEBUG + "=" + Boolean.toString(debug));
 
 			HttpGet method = createHttpGetMethod(builder.toString());
 
@@ -112,11 +108,12 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			// Validate response
 			validateResponse(response);
 
+			// TODO We should probably check the result, on the other hand it is not so important
 			// Read acknowledgment
-			String ack = readString(response.getEntity().getContent());
-			if (ack.startsWith("ACK")) {
-				return true;
-			}
+			// String result = readString(response.getEntity().getContent());
+			// if (!RESPONSE_OK.equals(result)) {
+			//
+			// }
 		} catch (AuthenticationException e) {
 			throw e;
 		} catch (SynchronizationException e) {
@@ -124,12 +121,10 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 		} catch (Exception e) {
 			throw new SynchronizationException("Closing session -> ", e, SynchronizationException.ERROR_CLOSING);
 		}
-		return false;
 	}
 
 	@Override
-	public String initSession(String login, String password, String terminalId, String type)
-			throws AuthenticationException, SynchronizationException {
+	public String initSession(String terminalId) throws AuthenticationException, SynchronizationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
@@ -139,11 +134,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + CMD_PARAM + "=" + CMD_INIT) //
-					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8")) //
-					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8")) //
-					.append("&" + TERMINALID_PARAM + "=" + terminalId) //
-					.append("&" + TYPE_PARAM + "=" + type);
+					.append("?" + PARAM_CMD + "=" + CMD_INIT) //
+					.append("&" + PARAM_TERMINAL + "=" + terminalId);
 
 			HttpGet get = createHttpGetMethod(builder.toString());
 
@@ -182,8 +174,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + SESSION_PARAM + "=" + sessionId) //
-					.append("&" + CMD_PARAM + "=" + cmd);
+					.append("?" + PARAM_SESSION + "=" + sessionId) //
+					.append("&" + PARAM_CMD + "=" + cmd);
 
 			HttpPost method = createHttpPostMethod(builder.toString());
 
@@ -219,20 +211,17 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public String resumeReceive(String login, String password, String terminalId, String type, UUID sessionId,
-			long bytesReceived) throws SynchronizationException, AuthenticationException {
+	public void resumeReceive(String terminalId, UUID sessionId, long bytesReceived) throws SynchronizationException,
+			AuthenticationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + CMD_PARAM + "=" + CMD_RESUME_RECEIVE_INIT) //
-					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8")) //
-					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8")) //
-					.append("&" + TERMINALID_PARAM + "=" + terminalId) //
-					.append("&" + TYPE_PARAM + "=" + type) //
-					.append("&" + SESSION_PARAM + "=" + sessionId) //
-					.append("&" + LENGTH_PARAM + "=" + String.valueOf(bytesReceived));
+					.append("?" + PARAM_CMD + "=" + CMD_RESUME_RECEIVE_INIT) //
+					.append("&" + PARAM_TERMINAL + "=" + terminalId) //
+					.append("&" + PARAM_SESSION + "=" + sessionId) //
+					.append("&" + PARAM_LENGTH + "=" + String.valueOf(bytesReceived));
 
 			HttpGet get = createHttpGetMethod(builder.toString());
 
@@ -243,8 +232,11 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			validateResponse(response);
 
 			// Read session id
-			return readString(response.getEntity().getContent());
-
+			String result = readString(response.getEntity().getContent());
+			if (!RESPONSE_OK.equals(result)) {
+				throw new SynchronizationException("The server return an error code",
+						SynchronizationException.ERROR_RECEIVE);
+			}
 		} catch (AuthenticationException e) {
 			throw e;
 		} catch (SynchronizationException e) {
@@ -256,17 +248,16 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public int resumeRequestModification(UUID sessionId, OutputStream out, long bytesReceived)
+	public void resumeRequestModification(UUID sessionId, OutputStream out, long bytesReceived)
 			throws SynchronizationException, AuthenticationException {
 		try {
-
 			HttpClient client = new SSLHttpClient();
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + SESSION_PARAM + "=" + sessionId) //
-					.append("&" + CMD_PARAM + "=" + CMD_RESUME_RECEIVE) //
-					.append("&" + LENGTH_PARAM + "=" + String.valueOf(bytesReceived));
+					.append("?" + PARAM_SESSION + "=" + sessionId) //
+					.append("&" + PARAM_CMD + "=" + CMD_RESUME_RECEIVE) //
+					.append("&" + PARAM_LENGTH + "=" + String.valueOf(bytesReceived));
 
 			HttpGet method = createHttpGetMethod(builder.toString());
 
@@ -280,8 +271,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			long expectedLength = response.getEntity().getContentLength();
 			InputStream is = response.getEntity().getContent();
 			FileUtils.writeInFile(is, out, expectedLength);
-			return 0;
-
 		} catch (AuthenticationException e) {
 			throw e;
 		} catch (SynchronizationException e) {
@@ -293,19 +282,15 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public String resumeSend(String login, String password, String terminalId, String type, UUID sessionId)
-			throws SynchronizationException, AuthenticationException {
+	public long resumeSend(String terminalId, UUID sessionId) throws SynchronizationException, AuthenticationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + CMD_PARAM + "=" + CMD_RESUME_SEND_INIT) //
-					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8")) //
-					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8")) //
-					.append("&" + TERMINALID_PARAM + "=" + terminalId) //
-					.append("&" + TYPE_PARAM + "=" + type) //
-					.append("&" + SESSION_PARAM + "=" + sessionId);
+					.append("?" + PARAM_CMD + "=" + CMD_RESUME_SEND_INIT) //
+					.append("&" + PARAM_TERMINAL + "=" + terminalId) //
+					.append("&" + PARAM_SESSION + "=" + sessionId);
 
 			HttpGet method = createHttpGetMethod(builder.toString());
 
@@ -315,9 +300,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			// Validate response
 			validateResponse(response);
 
-			// read resume session id
-			return readString(response.getEntity().getContent());
-
+			// read result
+			return Long.parseLong(readString(response.getEntity().getContent()));
 		} catch (AuthenticationException e) {
 			throw e;
 		} catch (SynchronizationException e) {
@@ -347,8 +331,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + SESSION_PARAM + "=" + sessionId) //
-					.append("&" + CMD_PARAM + "=" + CMD_SERVERMODIF);
+					.append("?" + PARAM_SESSION + "=" + sessionId) //
+					.append("&" + PARAM_CMD + "=" + CMD_SERVERMODIF);
 
 			HttpGet method = createHttpGetMethod(builder.toString());
 
@@ -379,17 +363,15 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public boolean searchEntity(String login, String password, String searcheId, OutputStream os)
-			throws SynchronizationException, AuthenticationException {
+	public void searchEntity(String searcheId, OutputStream os) throws SynchronizationException,
+			AuthenticationException {
 		try {
 			HttpClient client = new SSLHttpClient();
 
 			// request construction
 			StringBuilder builder = new StringBuilder(mUrl) //
-					.append("?" + CMD_PARAM + "=" + CMD_SEARCH) //
-					.append("&" + LOGIN_PARAM + "=" + URLEncoder.encode(login, "UTF-8")) //
-					.append("&" + PASSWD_PARAM + "=" + URLEncoder.encode(password, "UTF-8")) //
-					.append("&" + SEARCH_PARAM + "=" + searcheId);
+					.append("?" + PARAM_CMD + "=" + CMD_SEARCH) //
+					.append("&" + PARAM_SEARCH + "=" + searcheId);
 
 			HttpGet method = createHttpGetMethod(builder.toString());
 
@@ -403,8 +385,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			long expectedLength = response.getEntity().getContentLength();
 			InputStream is = response.getEntity().getContent();
 			FileUtils.writeInFile(is, os, expectedLength);
-			return true;
-
 		} catch (AuthenticationException e) {
 			throw e;
 		} catch (SynchronizationException e) {

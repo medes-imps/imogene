@@ -21,9 +21,9 @@ public class ImogUserDetails implements UserDetails {
 
 	public Collection<GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> ga = new ArrayList<GrantedAuthority>();
-//		for (Profile role : actor.getProfiles()) {
-//			ga.add(new SimpleGrantedAuthority(role.getId()));
-//		}
+		for (Profile profile : actor.getProfiles()) {
+			ga.add(new SimpleGrantedAuthority(profile.getId()));
+		}
 		return ga;
 	}
 

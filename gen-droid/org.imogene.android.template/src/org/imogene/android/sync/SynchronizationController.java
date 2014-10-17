@@ -127,7 +127,7 @@ public class SynchronizationController {
 
 			// 1 - initialize the session
 			notifyInit();
-			UUID sessionId = UUID.fromString(mSyncClient.initSession(mLogin, mPassword, mTerminal, "xml"));
+			UUID sessionId = UUID.fromString(mSyncClient.initSession(mTerminal));
 			// 2 - send client modification
 			notifySend();
 
@@ -206,15 +206,10 @@ public class SynchronizationController {
 			}
 			/* 1 - initialize the resumed session */
 			notifyInit();
-			String result = mSyncClient.resumeSend(mLogin, mPassword, mTerminal, "xml", his.id);
+			long bytesReceived = mSyncClient.resumeSend(mTerminal, his.id);
 
 			/* 2 - sending local modifications */
 			notifySend();
-			if (result.equals("error")) {
-				throw new SynchronizationException("Error resuming the session, the server return an error code",
-						SynchronizationException.ERROR_SEND);
-			}
-			long bytesReceived = Long.parseLong(result);
 			File outFile = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
 			FileInputStream fis = new FileInputStream(outFile);
 			long skipped = fis.skip(bytesReceived);
@@ -271,14 +266,10 @@ public class SynchronizationController {
 			/* 1 - initialize the resumed session */
 			notifyInit();
 			File inFile = new File(Paths.PATH_SYNCHRO, his.id + ".smodif");
-			String result = mSyncClient.resumeReceive(mLogin, mPassword, mTerminal, "xml", his.id, inFile.length());
+			mSyncClient.resumeReceive(mTerminal, his.id, inFile.length());
 
 			/* 2 - receiving data */
 			notifyReceive();
-			if (result.equals("error")) {
-				throw new SynchronizationException("The server return an error code",
-						SynchronizationException.ERROR_RECEIVE);
-			}
 
 			received = resumeRequestModification(his.id);
 			his.status = SyncHistory.Columns.STATUS_OK;

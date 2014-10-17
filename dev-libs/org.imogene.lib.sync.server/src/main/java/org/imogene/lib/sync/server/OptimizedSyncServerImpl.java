@@ -19,7 +19,6 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.entity.ImogEntity;
 import org.imogene.lib.common.model.CardEntity;
-import org.imogene.lib.common.security.AccessPolicyFactory;
 import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.BeanKeyGenerator;
@@ -54,15 +53,11 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 
 	private EntityHelper entityHelper;
 
-	private AccessPolicyFactory factory;
-
 	@Override
 	public int applyClientModifications(String sessionId, InputStream data) throws ImogSerializationException {
 		if (checkSession(sessionId)) {
 			SyncSession session = sessionDao.load(sessionId);
 			ImogActor currentUser = genericDao.load(ImogActorImpl.class, session.getUserId());
-			HttpSessionUtil.setCurrentUser(currentUser);
-			HttpSessionUtil.setAccessPolicy(factory, currentUser);
 			return serializer.processMulti(data, currentUser);
 		}
 		return -1;
@@ -93,8 +88,7 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	}
 
 	@Override
-	public void searchEntity(ImogActor currentUser, String entityId, OutputStream out)
-			throws ImogSerializationException {
+	public void searchEntity(String entityId, OutputStream out) throws ImogSerializationException {
 		ImogBean bean = genericDao.load(ImogBeanImpl.class, entityId);
 		if (bean != null) {
 			List<ImogBean> entities = entityHelper.getAssociatedEntitiesIds(bean);
@@ -108,8 +102,6 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 		if (checkSession(sessionId)) {
 			SyncSession session = sessionDao.load(sessionId);
 			ImogActor currentUser = genericDao.load(ImogActorImpl.class, session.getUserId());
-			HttpSessionUtil.setCurrentUser(currentUser);
-			HttpSessionUtil.setAccessPolicy(factory, currentUser);
 
 			List<ImogBean> allEntities = new Vector<ImogBean>();
 			List<CardEntity> synchronizables = currentUser.getSynchronizables();
@@ -206,11 +198,15 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	}
 
 	@Override
-	public String initSession(String termId, ImogActor user) {
+	public String initSession(String termId) {
+		ImogActor actor = HttpSessionUtil.getCurrentUser();
+		if (actor == null) {
+			return null;
+		}
 		SyncSession session = new SyncSession();
 		session.setId(UUID.randomUUID().toString());
 		session.setTerminalId(termId);
-		session.setUserId(user.getId());
+		session.setUserId(actor.getId());
 		session.setInitDate(new Date(System.currentTimeMillis()));
 		session.setSendDate(new Date(System.currentTimeMillis()));
 		sessionDao.saveOrUpdate(session);
@@ -255,7 +251,6 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 			return last.getTime();
 		}
 		return null;
-
 	}
 
 	/**
@@ -310,15 +305,6 @@ public class OptimizedSyncServerImpl implements OptimizedSyncServer {
 	 */
 	public void setEntityHelper(EntityHelper helper) {
 		this.entityHelper = helper;
-	}
-
-	/**
-	 * Setter for bean injection
-	 * 
-	 * @param factory
-	 */
-	public void setAccessPolicyFactory(AccessPolicyFactory factory) {
-		this.factory = factory;
 	}
 
 }
