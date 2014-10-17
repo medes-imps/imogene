@@ -1,5 +1,6 @@
 package org.imogene.android.app.setup;
 
+import org.imogene.android.notification.NotificationController;
 import org.imogene.android.preference.Preferences;
 import org.imogene.android.sync.OptimizedSyncClient;
 import org.imogene.android.sync.http.OptimizedSyncClientHttp;
@@ -17,6 +18,7 @@ import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -29,6 +31,8 @@ import fr.medes.android.os.BaseAsyncTask;
 import fr.medes.android.os.BaseAsyncTask.Callback;
 
 public class AccountSetupBasics extends SherlockActivity implements OnClickListener, TextWatcher {
+
+	private static final String TAG = AccountSetupBasics.class.getName();
 
 	private static final int DIALOG_SNTPING_ID = 1;
 	private static final int DIALOG_SNTP_FAILED_ID = 2;
@@ -205,9 +209,8 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		String login = mLoginView.getText().toString();
 		String password = mPasswordView.getText().toString();
 		String serverUrl = mServerView.getText().toString();
-		String terminal = mPreferences.getSyncTerminal();
 		boolean httpAuthentication = mPreferences.isHttpAuthenticationEnabled();
-		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password, terminal, httpAuthentication);
+		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password, httpAuthentication);
 		retain.authenticationTask.setCallback(mAuthenticationCallback);
 		retain.authenticationTask.execute();
 	}
@@ -235,7 +238,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 
 	}
 
-	private void onRolesReceived(String roles) {
+	private void onAuthenticationResult(boolean authenticated) {
 		dismissDialog(DIALOG_AUTHING_ID);
 
 		if (retain.authenticationTask != null) {
@@ -243,19 +246,17 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 			retain.authenticationTask = null;
 		}
 
-		if (roles != null) {
+		if (authenticated) {
 			String login = mLoginView.getText().toString();
 			String password = mPasswordView.getText().toString();
-			String server = mServerView.getText().toString();
 			mPreferences.setSyncLogin(login);
 			mPreferences.setSyncPassword(password);
-			mPreferences.setSyncServer(server);
+			NotificationController.cancelNotification(NotificationController.NOTIFICATION_AUTHFAILED_ID);
 			Toast.makeText(this, R.string.imog__auth_success, Toast.LENGTH_SHORT).show();
-			launchSntpOffsetTask();
+			finish();
 		} else {
 			Toast.makeText(this, R.string.imog__auth_failed, Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
 	private static final boolean required(EditText editText) {
@@ -291,12 +292,12 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 
 	};
 
-	private final Callback<Void, Void, String> mAuthenticationCallback = new Callback<Void, Void, String>() {
+	private final Callback<Void, Void, Boolean> mAuthenticationCallback = new Callback<Void, Void, Boolean>() {
 
 		@Override
-		public void onAttachedToTask(Status status, String result) {
+		public void onAttachedToTask(Status status, Boolean result) {
 			if (status == Status.FINISHED) {
-				onRolesReceived(result);
+				onAuthenticationResult(result);
 			}
 		}
 
@@ -305,8 +306,8 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		}
 
 		@Override
-		public void onPostExecute(String result) {
-			onRolesReceived(result);
+		public void onPostExecute(Boolean result) {
+			onAuthenticationResult(result);
 		}
 
 		@Override
@@ -335,25 +336,22 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 
 	}
 
-	private static class AuthenticationTask extends BaseAsyncTask<Void, Void, String> {
+	private static class AuthenticationTask extends BaseAsyncTask<Void, Void, Boolean> {
 
 		private String server;
 		private String login;
 		private String password;
-		private String terminal;
 		private boolean httpAuthentication;
 
-		public AuthenticationTask(String server, String login, String password, String terminal,
-				boolean httpAuthentication) {
+		public AuthenticationTask(String server, String login, String password, boolean httpAuthentication) {
 			this.server = server;
 			this.login = login;
 			this.password = password;
-			this.terminal = terminal;
 			this.httpAuthentication = httpAuthentication;
 		}
 
 		@Override
-		protected String doInBackground(Void... params) {
+		protected Boolean doInBackground(Void... params) {
 			OptimizedSyncClient sync;
 			if (httpAuthentication) {
 				sync = new OptimizedSyncClientHttp(server, login, password);
@@ -361,15 +359,11 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 				sync = new OptimizedSyncClientHttp(server);
 			}
 			try {
-				String auth = sync.authentication(login, password, terminal);
-				if (auth != null) {
-					String id = auth.split(";")[0];
-					String roles = auth.replaceFirst(id + ";", "");
-					return roles;
-				}
+				return sync.authentication(login, password);
 			} catch (Exception e) {
+				Log.e(TAG, "Authentication error", e);
 			}
-			return null;
+			return false;
 		}
 
 	}

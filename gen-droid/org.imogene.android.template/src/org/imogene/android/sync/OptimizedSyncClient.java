@@ -63,8 +63,16 @@ public interface OptimizedSyncClient {
 
 	public static final String CMD_SEARCH = "searchEntity";
 
-	public String authentication(String login, String passwd, String terminalId) throws SynchronizationException,
-			AuthenticationException;
+	/**
+	 * Check authentication for the given login and password
+	 * 
+	 * @param login
+	 * @param passwd
+	 * @return {@code true} if authentication succeeded {@code false} otherwise
+	 * @throws SynchronizationException
+	 * @throws AuthenticationException
+	 */
+	public boolean authentication(String login, String passwd) throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Initialize the session

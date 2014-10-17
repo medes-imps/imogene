@@ -207,6 +207,7 @@ public class SynchronizationController {
 			/* 1 - initialize the resumed session */
 			notifyInit();
 			String result = mSyncClient.resumeSend(mLogin, mPassword, mTerminal, "xml", his.id);
+
 			/* 2 - sending local modifications */
 			notifySend();
 			if (result.equals("error")) {
@@ -271,6 +272,7 @@ public class SynchronizationController {
 			notifyInit();
 			File inFile = new File(Paths.PATH_SYNCHRO, his.id + ".smodif");
 			String result = mSyncClient.resumeReceive(mLogin, mPassword, mTerminal, "xml", his.id, inFile.length());
+
 			/* 2 - receiving data */
 			notifyReceive();
 			if (result.equals("error")) {
