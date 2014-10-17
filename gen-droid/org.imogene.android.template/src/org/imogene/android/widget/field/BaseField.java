@@ -230,9 +230,10 @@ public abstract class BaseField<T> extends LinearLayout implements OnClickListen
 	}
 
 	/**
-	 * Convenient method to set the field value without notifying anything.
+	 * Convenient method to set the field value specifying the notification behavior.
 	 * 
 	 * @param value The value
+	 * @param notifyChange whether listeners should be notified or not
 	 */
 	public void setValueInternal(T value, boolean notifyChange) {
 		// if (mValue == value) {
