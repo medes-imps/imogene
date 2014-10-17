@@ -148,9 +148,6 @@ public class SynchronizationController {
 			FileInputStream fis = new FileInputStream(outFile);
 			int res = mSyncClient.sendClientModification(sessionId, fis);
 			fis.close();
-			if (!mDebug) {
-				outFile.delete();
-			}
 
 			markAsSentForSession(syncTime);
 			notifySent(res);
@@ -176,6 +173,11 @@ public class SynchronizationController {
 			// 4 - close the session
 			notifyClose();
 			mSyncClient.closeSession(sessionId, mDebug);
+
+			// now we are sure that we never need this temp file
+			if (!mDebug) {
+				outFile.delete();
+			}
 		} catch (AuthenticationException e) {
 			notifyFailure(NotificationController.FAILURE_AUTH_ID);
 		} catch (SynchronizationException e) {
@@ -210,30 +212,27 @@ public class SynchronizationController {
 			if (result.equals("error")) {
 				throw new SynchronizationException("Error resuming the session, the server return an error code",
 						SynchronizationException.ERROR_SEND);
-			} else {
-				long bytesReceived = Long.parseLong(result);
-				File outFile = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
-				FileInputStream fis = new FileInputStream(outFile);
-				long skipped = fis.skip(bytesReceived);
-				if (skipped != bytesReceived) {
-					fis.close();
-					// TODO somehow monitor this error to see if it happens once in a while
-					throw new SynchronizationException("Error skipping bytes: " + bytesReceived + " bytes to skip,"
-							+ skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
-				}
-				if (Constants.DEBUG) {
-					Logger.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
-							+ bytesReceived + " bytes");
-				}
-				int res = mSyncClient.resumeSendModification(his.id, fis);
-				fis.close();
-				if (!mDebug) {
-					outFile.delete();
-				}
-
-				markAsSentForSession(his.date);
-				notifySent(res);
 			}
+			long bytesReceived = Long.parseLong(result);
+			File outFile = new File(Paths.PATH_SYNCHRO, his.id + ".lmodif");
+			FileInputStream fis = new FileInputStream(outFile);
+			long skipped = fis.skip(bytesReceived);
+			if (skipped != bytesReceived) {
+				fis.close();
+				// TODO somehow monitor this error to see if it happens once in a while
+				throw new SynchronizationException("Error skipping bytes: " + bytesReceived + " bytes to skip,"
+						+ skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
+			}
+			if (Constants.DEBUG) {
+				Logger.i(TAG, "Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
+						+ bytesReceived + " bytes");
+			}
+			int res = mSyncClient.resumeSendModification(his.id, fis);
+			fis.close();
+
+			markAsSentForSession(his.date);
+			notifySent(res);
+
 			his.level = SyncHistory.Columns.LEVEL_RECEIVE;
 			his.saveOrUpdate(mContext);
 
@@ -249,6 +248,11 @@ public class SynchronizationController {
 			/* 4 - closing the session */
 			notifyClose();
 			mSyncClient.closeSession(his.id, mDebug);
+
+			// now we are sure that we never need this temp file
+			if (!mDebug) {
+				outFile.delete();
+			}
 		}
 		/*
 		 * we resume a reception, by re-receiving the server data
@@ -269,18 +273,18 @@ public class SynchronizationController {
 			String result = mSyncClient.resumeReceive(mLogin, mPassword, mTerminal, "xml", his.id, inFile.length());
 			/* 2 - receiving data */
 			notifyReceive();
-			if (!result.equals("error")) {
-				received = resumeRequestModification(his.id);
-				his.status = SyncHistory.Columns.STATUS_OK;
-				his.saveOrUpdate(mContext);
-
-				/* 3 - closing the session */
-				notifyClose();
-				mSyncClient.closeSession(his.id, mDebug);
-			} else {
+			if (result.equals("error")) {
 				throw new SynchronizationException("The server return an error code",
 						SynchronizationException.ERROR_RECEIVE);
 			}
+
+			received = resumeRequestModification(his.id);
+			his.status = SyncHistory.Columns.STATUS_OK;
+			his.saveOrUpdate(mContext);
+
+			/* 3 - closing the session */
+			notifyClose();
+			mSyncClient.closeSession(his.id, mDebug);
 		}
 		return received;
 	}

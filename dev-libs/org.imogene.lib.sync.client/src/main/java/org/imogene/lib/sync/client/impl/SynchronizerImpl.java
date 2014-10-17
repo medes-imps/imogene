@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SynchronizerImpl implements Synchronizer {
 
 	private static final Logger logger = Logger.getLogger(SynchronizerImpl.class.getName());
-	
+
 	// Injected by Spring
 	private SyncHistoryDao historyDao;
 	private GenericDao genericDao;
@@ -260,7 +260,6 @@ public class SynchronizerImpl implements Synchronizer {
 						+ bytesReceived + " bytes");
 				syncClient.resumeSendModification(error.getId(), fis);
 				fis.close();
-				outFile.delete();
 				error.setLevel(SyncHistory.LEVEL_RECEIVE);
 				historyDao.saveOrUpdate(error);
 
@@ -271,6 +270,9 @@ public class SynchronizerImpl implements Synchronizer {
 
 				/* 4 - closing the session */
 				syncClient.closeSession(error.getId());
+
+				// now we are sure that we never need this temp file
+				outFile.delete();
 			} catch (Exception ex) {
 				SynchronizationException syx = new SynchronizationException("Error resuming a sent: "
 						+ ex.getLocalizedMessage(), ex, SynchronizationException.DEFAULT_ERROR);
