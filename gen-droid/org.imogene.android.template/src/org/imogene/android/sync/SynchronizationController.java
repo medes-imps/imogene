@@ -104,11 +104,7 @@ public class SynchronizationController {
 			mServer = mPreferences.getSyncServer();
 			mBidirectional = mPreferences.isSyncBirdirectionnalEnabled();
 
-			if (mPreferences.isHttpAuthenticationEnabled()) {
-				mSyncClient = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
-			} else {
-				mSyncClient = new OptimizedSyncClientHttp(mServer);
-			}
+			mSyncClient = new OptimizedSyncClientHttp(mServer, mLogin, mPassword);
 
 			mConverter = new ImogXmlConverter(mContext);
 			int received = 0;

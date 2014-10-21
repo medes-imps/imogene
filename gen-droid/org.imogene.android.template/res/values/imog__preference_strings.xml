@@ -47,10 +47,6 @@
     <string name="imog__push_ssl_enabled_summaryoff">Enable push over SSL</string>
     <string name="imog__push_ssl_enabled_summaryon">Disable push over SSL</string>
     <string name="imog__push_ssl_enabled_title">Push over SSL</string>
-    <string name="imog__security_category">Security parameters</string>
-    <string name="imog__security_httpauth_enabled_summaryoff">Authentication disabled</string>
-    <string name="imog__security_httpauth_enabled_summaryon">Authentication enabled</string>
-    <string name="imog__security_httpauth_enabled_title">HTTP basic authentication</string>
     <string name="imog__sync_bidirectional_enabled_summaryoff">Eanble bidirectional synchronization</string>
     <string name="imog__sync_bidirectional_enabled_summaryon">Disable bidirectional synchronization</string>
     <string name="imog__sync_bidirectional_enabled_title">Bidirectional</string>

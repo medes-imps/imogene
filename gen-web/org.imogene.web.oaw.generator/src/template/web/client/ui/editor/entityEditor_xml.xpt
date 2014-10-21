@@ -115,7 +115,7 @@
 		<imo3:FieldGroupPanel ui:field="filterFieldsSection">
 		«FOREACH ((Actor)this).filters AS fil-»
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
-				<imo2:ImogMultiRelationBox ui:field="«EXPAND template::CommonFieldUtil::propertyName FOR fil»List" />
+				<imo2:ImogMultiRelationBox ui:field="«EXPAND template::CommonFieldUtil::propertyName FOR fil»" />
 			</g:SimplePanel>			
 		«ENDFOREACH-»
 		</imo3:FieldGroupPanel>	

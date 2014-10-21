@@ -40,7 +40,6 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 	private boolean hideButtons = false;
 	private boolean hideOpenButton = false;
 	private boolean hideClearButton = false;
-	private boolean hideViewButton = false;
 	private boolean withoutProvider = false;
 	private int boxwidth = -1;
 
@@ -188,12 +187,12 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 			edited = true;
 		}
 		setButtonVisibility();
-		
-		if(boxwidth>-1) {
-			if(enabled)
+
+		if (boxwidth > -1) {
+			if (enabled)
 				updateBoxWith(boxwidth);
 			else
-				updateBoxWith(boxwidth+12);
+				updateBoxWith(boxwidth + 12);
 		}
 	}
 
@@ -251,7 +250,7 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 		this.hideButtons = hideButtons;
 		setButtonVisibility();
 	}
-	
+
 	/**
 	 * Sets the box width in pixel
 	 * @param width
@@ -259,7 +258,7 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 	public void setBoxWidth(int width) {
 		this.boxwidth = width;
 	}
-	
+
 	private void updateBoxWith(int width) {
 		textBox.getElement().getStyle().setProperty("width", width + "px");
 		listBoxPanel.getElement().getStyle().setProperty("width", width + "px");
@@ -281,7 +280,7 @@ public class ImogSingleRelation<T extends ImogBeanProxy> extends ImogWidget<T> {
 	public void setHideCreateButton(boolean hideCreateButton) {
 		this.canCreateEntity = !hideCreateButton;
 	}
-	
+
 	public void hideCreateButton() {
 		addImage.setVisible(false);
 	}

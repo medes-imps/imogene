@@ -25,10 +25,10 @@ import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
 import org.imogene.web.server.handler.HandlerHelper;
-«IF isBinaryFieldPresent(this.groups.fields) -»
+«REM»«IF isBinaryFieldPresent(this.groups.fields) -»
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.BinaryDao;
-«ENDIF-»
+«ENDIF-»«ENDREM»
 «IF hasDynamicFields -»
 import org.imogene.lib.common.dynamicfields.DynamicFieldInstance;
 import org.imogene.lib.common.dynamicfields.DynamicFieldTemplate;
@@ -49,11 +49,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class «name.toFirstUpper()»Handler {
 	
 	private «name.toFirstUpper()»Dao dao;
-	«IF isBinaryFieldPresent(this.groups.fields) -»
+	«REM»«IF isBinaryFieldPresent(this.groups.fields) -»
 	/* BinaryDao for Binary Deletion */
 	private BinaryDao<Binary> binaryDao;
-	«ENDIF-»
-	«EXPAND declareDaoForForeignKey(this) FOREACH ((Project) eContainer).entities.groups.fields-»		
+	«ENDIF-»«ENDREM»
+	«REM»«EXPAND declareDaoForForeignKey(this) FOREACH ((Project) eContainer).entities.groups.fields-»«ENDREM»		
 	«IF hasDynamicFields -»
 	/* Handlers for dynamic field management */
 	private DynamicFieldInstanceHandler dynamicFieldValuesHandler;
@@ -430,13 +430,12 @@ public class «name.toFirstUpper()»Handler {
 	@Transactional
 	public void delete(«name.toFirstUpper()» entity) {
 	
-	   	«IF isBinaryFieldPresent(this.groups.fields) -»
+	   	«REM»«IF isBinaryFieldPresent(this.groups.fields) -»
 			«EXPAND deleteAttachedBinaries FOREACH groups.fields-»
-		«ENDIF-»
-	   
-	   «EXPAND deleteRelationFieldCard1Reference(this) FOREACH ((Project) eContainer).entities.groups.fields-»   
-	
-		dao.delete(entity);
+		«ENDIF-»«ENDREM»	   
+	   «REM»«EXPAND deleteRelationFieldCard1Reference(this) FOREACH ((Project) eContainer).entities.groups.fields-»«ENDREM» 
+		handlerHelper.prepareForDelete(entity);
+		dao.saveOrUpdate(entity, false);	
 	}
 	
 	/**
@@ -487,6 +486,7 @@ public class «name.toFirstUpper()»Handler {
 	 */
 	private ImogJunction createFilterJuntion(ImogActor actor){
 		ImogConjunction filterConjunction = new ImogConjunction();
+		filterConjunction.add(handlerHelper.getNotDeletedFilterCriteria());
 		«EXPAND handleFilterField(this.name) FOREACH this.actorFilterFields -»
 		return filterConjunction;
 	} 
@@ -530,7 +530,6 @@ public class «name.toFirstUpper()»Handler {
 	
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param imogBeanFilter
 	 */
 	public void setFilter(ImogBeanFilter filter) {
@@ -539,14 +538,13 @@ public class «name.toFirstUpper()»Handler {
 	
 	/**
 	 * Setter for bean injection.
-	 * 
 	 * @param helper
 	 */
 	public void setHandlerHelper(HandlerHelper helper) {
 		this.handlerHelper = helper;
 	}
 	
-	«IF isBinaryFieldPresent(this.groups.fields) -»
+	«REM»«IF isBinaryFieldPresent(this.groups.fields) -»
 	/**
 	 * Setter for bean injection
 	 * @param binaryDao the Binary Dao
@@ -554,7 +552,7 @@ public class «name.toFirstUpper()»Handler {
 	public void setBinaryDao(BinaryDao<Binary> binaryDao) {
 		this.binaryDao = binaryDao;
 	}
-	«ENDIF-»
+	«ENDIF-»«ENDREM»
 	
 	«IF hasDynamicFields -»
 	/**
@@ -589,7 +587,7 @@ public class «name.toFirstUpper()»Handler {
     «ENDIF-»
     «ENDFOREACH»
 	
-	«EXPAND setDaoForForeignKey(this) FOREACH ((Project) eContainer).entities.groups.fields-»
+	«REM»«EXPAND setDaoForForeignKey(this) FOREACH ((Project) eContainer).entities.groups.fields-»«ENDREM»
 	
 }
 «ENDFILE»

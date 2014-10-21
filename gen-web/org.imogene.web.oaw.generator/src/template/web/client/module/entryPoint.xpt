@@ -744,8 +744,12 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 					
 					/* list for «name.toFirstUpper()» */
 					if (entityToken.getAction().equals(TokenHelper.TK_LIST)) {
-						if (AccessManager.canDirectAccess«name.toFirstUpper()»())			
-							eventBus.fireEvent(new List«name.toFirstUpper()»Event());
+						if (AccessManager.canDirectAccess«name.toFirstUpper()»()) {
+							if (entityToken.getId() == null && !entityToken.getId().isEmpty())
+								eventBus.fireEvent(new List«name.toFirstUpper()»Event());
+							else
+								eventBus.fireEvent(new List«name.toFirstUpper()»Event(entityToken.getId()));
+						}					
 					}	
 				}							
 				if (AccessManager.canEdit«name.toFirstUpper()»()) {

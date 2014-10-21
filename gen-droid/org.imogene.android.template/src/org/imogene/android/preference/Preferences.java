@@ -31,7 +31,6 @@ public class Preferences {
 	public static final String NTP_OFFSET = "ntpOffset";
 	public static final String NTP_LASTUPDATE = "ntpLastUpdate";
 	public static final String WS_SERVER = "webServiceServer";
-	public static final String HTTP_AUTHENTICATION_ENABLED = "httpAuthenticationEnabled";
 	public static final String UPDATE_SERVER = "updateServer";
 	public static final String UPDATE_AVAILABLE = "updateAvailable";
 	public static final String PUSH_HOST = "pushHost";
@@ -201,10 +200,6 @@ public class Preferences {
 
 	public void setAdminPassword(String value) {
 		setEncryptedString(ADMIN_PASSWORD, value);
-	}
-
-	public boolean isHttpAuthenticationEnabled() {
-		return mSharedPreferences.getBoolean(HTTP_AUTHENTICATION_ENABLED, true);
 	}
 
 	public String getUpdateServer() {

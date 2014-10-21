@@ -3,14 +3,6 @@
 «FILE 'xml/hidden_settings.xml'-»
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/imog__security_category">
-		<CheckBoxPreference
-			android:key="httpAuthenticationEnabled"
-			android:title="@string/imog__security_httpauth_enabled_title"
-			android:summaryOn="@string/imog__security_httpauth_enabled_summaryon"
-			android:summaryOff="@string/imog__security_httpauth_enabled_summaryoff" 
-			android:defaultValue="true"/>
-	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/imog__sync_category">
 		<fr.medes.android.preference.BaseDialogPreference
 			android:key="syncTerminal"

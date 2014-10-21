@@ -33,13 +33,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	private static final int SO_TIMEOUT = 60 * 1000;
 
 	private String mUrl = null;
-	private boolean mHttpAuthentication = false;
 	private String mHttpLogin;
 	private String mHttpPassword;
-
-	public OptimizedSyncClientHttp(String url) {
-		mUrl = url + (url.endsWith("/") ? "" : "/") + "sync.html";
-	}
 
 	/**
 	 * By using this constructor, you specify that you want to use the HTTP authentication based on the specified login
@@ -50,8 +45,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	 * @param httpPassword the user password
 	 */
 	public OptimizedSyncClientHttp(String url, String httpLogin, String httpPassword) {
-		this(url);
-		this.mHttpAuthentication = true;
+		this.mUrl = url + (url.endsWith("/") ? "" : "/") + "sync.html";
 		this.mHttpLogin = httpLogin;
 		this.mHttpPassword = httpPassword;
 	}
@@ -397,18 +391,14 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	private HttpPost createHttpPostMethod(String url) {
 		HttpPost post = new HttpPost(url);
 		prepareRequest(post);
-		if (mHttpAuthentication) {
-			setBasicAuthentication(post);
-		}
+		setBasicAuthentication(post);
 		return post;
 	}
 
 	private HttpGet createHttpGetMethod(String url) {
 		HttpGet get = new HttpGet(url);
 		prepareRequest(get);
-		if (mHttpAuthentication) {
-			setBasicAuthentication(get);
-		}
+		setBasicAuthentication(get);
 		return get;
 	}
 

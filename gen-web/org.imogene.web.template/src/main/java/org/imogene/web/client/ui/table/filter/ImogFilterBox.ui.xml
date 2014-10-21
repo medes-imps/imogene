@@ -13,7 +13,7 @@
 		}
 		
 		.imogene-filterWidget {
-			border: 1px solid #777777;
+			/*border: 1px solid #777777;*/
 			color: #444444;
 			font-size: 12px;
 			width: 100%;

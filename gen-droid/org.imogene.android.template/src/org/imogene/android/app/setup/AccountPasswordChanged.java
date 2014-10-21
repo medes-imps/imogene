@@ -85,8 +85,7 @@ public class AccountPasswordChanged extends Activity implements OnClickListener 
 		String login = mLoginView.getText().toString();
 		String password = mPasswordView.getText().toString();
 		String serverUrl = mPreferences.getSyncServer();
-		boolean httpAuthentication = mPreferences.isHttpAuthenticationEnabled();
-		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password, httpAuthentication);
+		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password);
 		retain.authenticationTask.setCallback(mAuthenticationCallback);
 		retain.authenticationTask.execute();
 	}
@@ -156,23 +155,16 @@ public class AccountPasswordChanged extends Activity implements OnClickListener 
 		private String server;
 		private String login;
 		private String password;
-		private boolean httpAuthentication;
 
-		public AuthenticationTask(String server, String login, String password, boolean httpAuthentication) {
+		public AuthenticationTask(String server, String login, String password) {
 			this.server = server;
 			this.login = login;
 			this.password = password;
-			this.httpAuthentication = httpAuthentication;
 		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			OptimizedSyncClient sync;
-			if (httpAuthentication) {
-				sync = new OptimizedSyncClientHttp(server, login, password);
-			} else {
-				sync = new OptimizedSyncClientHttp(server);
-			}
+			OptimizedSyncClient sync = new OptimizedSyncClientHttp(server, login, password);
 			try {
 				return sync.authentication();
 			} catch (Exception e) {

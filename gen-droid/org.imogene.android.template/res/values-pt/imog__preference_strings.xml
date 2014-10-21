@@ -47,10 +47,6 @@
     <string name="imog__push_ssl_enabled_summaryoff">Activar push o SSL</string>
     <string name="imog__push_ssl_enabled_summaryon">Desactivar push o SSL</string>
     <string name="imog__push_ssl_enabled_title">Push o SSL</string>
-    <string name="imog__security_category">Parâmetros de segurança</string>
-    <string name="imog__security_httpauth_enabled_summaryoff">Autenticação desactivada</string>
-    <string name="imog__security_httpauth_enabled_summaryon">Autenticação activada</string>
-    <string name="imog__security_httpauth_enabled_title">Autenticação básica HTTP</string>
     <string name="imog__sync_bidirectional_enabled_summaryoff">Activar sincronização bidireccional</string>
     <string name="imog__sync_bidirectional_enabled_summaryon">Desactivar sincronização bidireccional</string>
     <string name="imog__sync_bidirectional_enabled_title">Bidireccional</string>

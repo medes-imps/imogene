@@ -159,7 +159,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		FieldGroupPanel filterFieldsSection;
 		«FOREACH ((Actor)this).filters AS fil-»
 		@UiField(provided = true)
-		ImogMultiRelationBox<«fil.entity.name.toFirstUpper()»Proxy> «EXPAND template::CommonFieldUtil::propertyName FOR fil»List;	
+		ImogMultiRelationBox<«fil.entity.name.toFirstUpper()»Proxy> «EXPAND template::CommonFieldUtil::propertyName FOR fil»;	
 		«ENDFOREACH-»
 	«ENDIF-»
 	«ENDIF-»	
@@ -244,7 +244,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 			/* FilterFields section widgets */
 			filterFieldsSection.setGroupTitle(AdminNLS.constants().imogActor_group_filterFields());
 			«FOREACH ((Actor)this).filters AS fil-»
-			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setLabel(NLS.constants().«name.toFirstLower()»_field_«EXPAND template::CommonFieldUtil::propertyName FOR fil»());
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil».setLabel(NLS.constants().«name.toFirstLower()»_field_«EXPAND template::CommonFieldUtil::propertyName FOR fil»());
 			«ENDFOREACH-»
 		«ENDIF-»
 		
@@ -290,9 +290,9 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 			/* field  «EXPAND template::CommonFieldUtil::propertyName FOR fil» */
 			«fil.entity.name.toFirstUpper()»DataProvider «EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider;
 			«EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider = new «fil.entity.name.toFirstUpper()»DataProvider(requestFactory);	
-			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List = new ImogMultiRelationBox<«fil.entity.name.toFirstUpper()»Proxy>(«EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);
-			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setPopUpTitle(NLS.constants().«fil.entity.name.toFirstLower()»_select_title());
-			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setFilterPanel(new «fil.entity.name.toFirstUpper()»FilterPanel());		
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil» = new ImogMultiRelationBox<«fil.entity.name.toFirstUpper()»Proxy>(«EXPAND template::CommonFieldUtil::propertyName FOR fil»DataProvider, «projectName.toFirstUpper()»Renderer.get(), true);
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil».setPopUpTitle(NLS.constants().«fil.entity.name.toFirstLower()»_select_title());
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil».setFilterPanel(new «fil.entity.name.toFirstUpper()»FilterPanel());		
 			«ENDFOREACH-»
 		«ENDIF-»
 		«ENDIF-»		
@@ -334,7 +334,7 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«IF ((Actor)this).filters!=null && ((Actor)this).filters.size>0-»
 			/* FilterFields section widgets */
 			«FOREACH ((Actor)this).filters AS fil-»
-			«EXPAND template::CommonFieldUtil::propertyName FOR fil»List.setEdited(isEdited);
+			«EXPAND template::CommonFieldUtil::propertyName FOR fil».setEdited(isEdited);
 			«ENDFOREACH-»
 		«ENDIF-»
 		«ENDIF-»	

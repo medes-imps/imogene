@@ -109,7 +109,7 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 
 		pager = new ImogSimplePager();
 		pager.setDisplay(table);
-		pager.setRangeLimited(true);
+		pager.setRangeLimited(false);
 		// addMouseWheelHandler();
 
 		if (checkBoxesVisible) {

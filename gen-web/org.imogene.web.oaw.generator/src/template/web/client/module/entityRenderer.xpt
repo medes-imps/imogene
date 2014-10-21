@@ -42,6 +42,9 @@ public class «projectName.toFirstUpper()»Renderer extends ImogBeanRenderer {
      * @return string representation for IHM display
      */
 	public String getDisplayValue(ImogBeanProxy bean){
+	
+		if (bean.getDeleted() != null)
+			return BaseNLS.constants().entity_deleted();	
 			
 		«FOREACH entities AS e -»
 		if(bean instanceof «e.name.toFirstUpper()»Proxy){

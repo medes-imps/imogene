@@ -209,8 +209,7 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		String login = mLoginView.getText().toString();
 		String password = mPasswordView.getText().toString();
 		String serverUrl = mServerView.getText().toString();
-		boolean httpAuthentication = mPreferences.isHttpAuthenticationEnabled();
-		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password, httpAuthentication);
+		retain.authenticationTask = new AuthenticationTask(serverUrl, login, password);
 		retain.authenticationTask.setCallback(mAuthenticationCallback);
 		retain.authenticationTask.execute();
 	}
@@ -249,11 +248,13 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		if (authenticated) {
 			String login = mLoginView.getText().toString();
 			String password = mPasswordView.getText().toString();
+			String server = mServerView.getText().toString();
 			mPreferences.setSyncLogin(login);
 			mPreferences.setSyncPassword(password);
+			mPreferences.setSyncServer(server);
 			NotificationController.cancelNotification(NotificationController.NOTIFICATION_AUTHFAILED_ID);
 			Toast.makeText(this, R.string.imog__auth_success, Toast.LENGTH_SHORT).show();
-			finish();
+			launchSntpOffsetTask();
 		} else {
 			Toast.makeText(this, R.string.imog__auth_failed, Toast.LENGTH_SHORT).show();
 		}
@@ -341,23 +342,16 @@ public class AccountSetupBasics extends SherlockActivity implements OnClickListe
 		private String server;
 		private String login;
 		private String password;
-		private boolean httpAuthentication;
 
-		public AuthenticationTask(String server, String login, String password, boolean httpAuthentication) {
+		public AuthenticationTask(String server, String login, String password) {
 			this.server = server;
 			this.login = login;
 			this.password = password;
-			this.httpAuthentication = httpAuthentication;
 		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			OptimizedSyncClient sync;
-			if (httpAuthentication) {
-				sync = new OptimizedSyncClientHttp(server, login, password);
-			} else {
-				sync = new OptimizedSyncClientHttp(server);
-			}
+			OptimizedSyncClient sync = new OptimizedSyncClientHttp(server, login, password);
 			try {
 				return sync.authentication();
 			} catch (Exception e) {

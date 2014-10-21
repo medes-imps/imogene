@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.imogene.lib.common.constants.CriteriaConstants;
+import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.CardEntity;
@@ -93,6 +95,11 @@ public class BasicHandlerHelper implements HandlerHelper {
 		genericHandler.detach(actor);
 	}
 
+	public void prepareForDelete(ImogBean bean) {
+		bean.setDeleted(new Date(systemUtil.getCurrentTimeMillis()));
+		prepare(bean);
+	}
+
 	/**
 	 * Setter for bean injection
 	 * 
@@ -155,4 +162,19 @@ public class BasicHandlerHelper implements HandlerHelper {
 	public void setSystemUtil(SystemUtil systemUtil) {
 		this.systemUtil = systemUtil;
 	}
+
+	@Override
+	public Date getCurrentTimeMillis() {
+		return new Date(systemUtil.getCurrentTimeMillis());
+	}
+
+	@Override
+	public BasicCriteria getNotDeletedFilterCriteria() {
+		BasicCriteria criteria = new BasicCriteria();
+		criteria.setOperation(CriteriaConstants.OPERATOR_ISNULL);
+		criteria.setField("deleted");
+		criteria.setValue(null);
+		return criteria;
+	}
+
 }
