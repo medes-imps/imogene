@@ -25,6 +25,8 @@ import org.imogene.web.shared.proxy.criteria.ImogCriterionProxy;
 import org.imogene.web.shared.proxy.criteria.ImogDisjunctionProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 import org.imogene.web.client.util.DateUtil;
+import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.client.util.ProfileUtil;
 
 import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.RequestContext;
@@ -52,6 +54,7 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 	 */	
 	public «name.toFirstUpper()»DataProvider(«projectName.toFirstUpper()»RequestFactory requestFactory) {
 		this.requestFactory = requestFactory;
+		setSearchCriterions(null);
 	}
 	
 	
@@ -64,6 +67,7 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 		this.requestFactory = requestFactory;
 		nonAffected = true;
 		property = pProperty;
+		setSearchCriterions(null);
 	}
 	
 	
@@ -78,7 +82,23 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 		nonAffected = true;
 		property = pProperty;
 		this.searchInReverse = searchInReverse;
+		setSearchCriterions(null);
 	}	
+	
+	/**
+	 * Sets criterions for which values have to be temporally searched
+	 * @param criterions ImogJunctionProxy including the criterions for which the values have to be searched
+	 */
+	public void setSearchCriterions(ImogJunctionProxy criterions) {
+		if (criterions == null) {
+			if (ProfileUtil.isAdmin()) {
+				filter(getDeletedEntityFilterCriteria(false));
+				LocalSession.get().setSearchCriterions(getSearchCriterions(), null);
+			} else
+				searchCriterions = criterions;
+		} else
+			searchCriterions = criterions;
+	}
 		
 
 	/**
@@ -263,6 +283,9 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 			«name.toFirstUpper()»Request request = («name.toFirstUpper()»Request) getContext();
 			newRequest = false;
 			
+			ImogJunctionProxy junction = request.create(ImogConjunctionProxy.class);
+			List<ImogCriterionProxy> criterias = new ArrayList<ImogCriterionProxy>();
+			
 			ImogJunctionProxy disJunction = request.create(ImogDisjunctionProxy.class);
 			List<ImogCriterionProxy> criterionList = new ArrayList<ImogCriterionProxy>();
 			
@@ -281,13 +304,23 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 			«ENDIF-»				
 
 			disJunction.setCriterions(criterionList);
+			criterias.add(disJunction);
 			fullTextSearch = true;
 			
-			//add FilterCriteria if exists
-			if (isFiltered && filterCriteria != null) 
-				setSearchCriterions(mergeFilterCriteriaAndFullTextSearchCriterion(request, disJunction));
+			if (ProfileUtil.isAdmin()) {
+				BasicCriteriaProxy isDeletedCrit = request.create(BasicCriteriaProxy.class);
+				isDeletedCrit.setField("deleted");
+				isDeletedCrit.setOperation(CriteriaConstants.OPERATOR_ISNULL);
+				isDeletedCrit.setValue(text);
+				criterias.add(isDeletedCrit);
+			}
+			junction.setCriterions(criterias);			
+			
+			// add FilterCriteria if exists
+			if (isFiltered && filterCriteria != null)
+				setSearchCriterions(mergeFilterCriteriaAndFullTextSearchCriterion(request, junction));
 			else
-				setSearchCriterions(disJunction);
+				setSearchCriterions(junction);
 			
 		}
 		if (fullTextSearch) {

@@ -24,6 +24,7 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.security.ImogBeanFilter;
 import org.imogene.web.server.util.FilterFieldsHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
+import org.imogene.web.server.util.ProfileUtil;
 import org.imogene.web.server.handler.HandlerHelper;
 «REM»«IF isBinaryFieldPresent(this.groups.fields) -»
 import org.imogene.lib.common.binary.Binary;
@@ -126,6 +127,8 @@ public class «name.toFirstUpper()»Handler {
 			«ENDIF-»
 			
 			handlerHelper.prepare(entity);
+			if (entity.getDeleted() != null)
+				entity.setDeleted(null);
 			
 			«IF hasDynamicFields -»
 			// manage dynamic fields
@@ -486,7 +489,8 @@ public class «name.toFirstUpper()»Handler {
 	 */
 	private ImogJunction createFilterJuntion(ImogActor actor){
 		ImogConjunction filterConjunction = new ImogConjunction();
-		filterConjunction.add(handlerHelper.getNotDeletedFilterCriteria());
+		if (!ProfileUtil.isAdmin(actor))
+			filterConjunction.add(handlerHelper.getNotDeletedFilterCriteria());
 		«EXPAND handleFilterField(this.name) FOREACH this.actorFilterFields -»
 		return filterConjunction;
 	} 

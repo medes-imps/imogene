@@ -13,8 +13,6 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Ignore;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -34,47 +32,43 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.google.web.bindery.requestfactory.shared.Request;
 
-
 /**
- * Popup panel that contains the list of entries that can be selected
- * in a Relation Field with cardinality = 1
+ * Popup panel that contains the list of entries that can be selected in a Relation Field with cardinality = 1
  * @author MEDES-IMPS
  */
 public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
-	
-	
+
 	@SuppressWarnings("rawtypes")
 	interface Binder extends UiBinder<PopupPanel, ImogSingleRelationBoxPopUp> {
 		Binder BINDER = GWT.create(Binder.class);
 	}
-	
-	interface ImogSingleSelectionBoxGridStyle extends DataGrid.Style {	
-	    String IMOG_CSS = "ImogSingleSelectionBoxGrid.css";
+
+	interface ImogSingleSelectionBoxGridStyle extends DataGrid.Style {
+		String IMOG_CSS = "ImogSingleSelectionBoxGrid.css";
 	}
-	
+
 	interface TableResources extends DataGrid.Resources {
 		@Override
-		@Source(value = {ImogSingleSelectionBoxGridStyle.IMOG_CSS })
+		@Source(value = { ImogSingleSelectionBoxGridStyle.IMOG_CSS })
 		ImogSingleSelectionBoxGridStyle dataGridStyle();
 	}
-	
+
 	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
-	
-	private static final int itemByPage=10;
+
+	private static final int itemByPage = 10;
 	private final SingleSelectionModel<T> selectionModel = new SingleSelectionModel<T>();
 	private ImogSingleRelation<T> parentBox;
 	private ImogBeanDataProvider<T> beanDataProvider;
 	private ImogBeanRenderer beanRenderer;
 
-
 	/* widgets */
 	@UiField(provided = true)
-	@Ignore 
+	@Ignore
 	PopupPanel popup;
 	@UiField(provided = true)
 	@Ignore
 	DataGrid<T> table;
-	@UiField (provided = true)
+	@UiField(provided = true)
 	@Ignore
 	ImogSimplePager pager;
 	@UiField
@@ -86,34 +80,35 @@ public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
 	@UiField
 	@Ignore
 	PushButton filterButton;
-	
 
 	public ImogSingleRelationBoxPopUp(ImogSingleRelation<T> parentBoxValue, ImogBeanDataProvider<T> provider, ImogBeanRenderer beanRenderer) {
-		
+
 		this.parentBox = parentBoxValue;
 		this.beanDataProvider = provider;
 		this.beanRenderer = beanRenderer;
-		
-		if(beanDataProvider!=null && beanDataProvider.getSearchCriterions()!=null)
+
+		if (beanDataProvider != null && beanDataProvider.getSearchCriterions() != null)
 			beanDataProvider.setSearchCriterions(null);
-		
+
 		popup = new PopupPanel(true);
 		table = new DataGrid<T>(itemByPage, GWT.<TableResources> create(TableResources.class)) {
 			@Override
 			protected void onUnload() {
-				for(HandlerRegistration r : registrations)
+				for (HandlerRegistration r : registrations)
 					r.removeHandler();
 				registrations.clear();
 				super.onUnload();
 			}
 		};
-		
-		pager = new ImogSimplePager();			
-		Binder.BINDER.createAndBindUi(this);		
-	
+
+		pager = new ImogSimplePager();
+		pager.setDisplay(table);
+		pager.setRangeLimited(false);
+		Binder.BINDER.createAndBindUi(this);
+
 		Column<T, String> listColumn = new ListColumn();
 		table.addColumn(listColumn);
-		
+
 		table.setSelectionModel(selectionModel);
 		registrations.add(selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
@@ -127,61 +122,55 @@ public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
 				selectionModel.setSelected(value, false);
 			}
 		}));
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);		
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 
 		// addMouseWheelHandler();
-		
+
 		searchLabel.setText(BaseNLS.constants().button_search());
-		
+
 		ImogAsyncDataProvider dataProvider = new ImogAsyncDataProvider();
 		dataProvider.addDataDisplay(table);
 
 	}
-	
-	
+
 	@UiHandler("filterButton")
 	void onFilter(ClickEvent e) {
 		beanDataProvider.fullTextSearch(valueFilter.getText());
-		//pager.firstPage();
-		table.setVisibleRangeAndClearData(new Range(0,itemByPage), true);
-	}	
-	
-	public void show() {
-		popup.show();	
+		// pager.firstPage();
+		table.setVisibleRangeAndClearData(new Range(0, itemByPage), true);
 	}
-	
+
+	public void show() {
+		popup.show();
+	}
+
 	public void hide() {
 		popup.hide();
 	}
-	
-	
-	private void addMouseWheelHandler() {
 
-		MouseWheelHandler mouseWheel = new MouseWheelHandler() {
-			@Override
-			public void onMouseWheel(MouseWheelEvent e) {
-				if(e.isNorth()) {	
-					if(pager.hasPreviousPage())
-						pager.previousPage();
-				}
-				else {
-					if(pager.hasNextPage())
-						pager.nextPage();	
-				}
-			}
-		};
-		registrations.add(table.addDomHandler(mouseWheel, MouseWheelEvent.getType()));
-	}
-	
+	// private void addMouseWheelHandler() {
+	//
+	// MouseWheelHandler mouseWheel = new MouseWheelHandler() {
+	// @Override
+	// public void onMouseWheel(MouseWheelEvent e) {
+	// if(e.isNorth()) {
+	// if(pager.hasPreviousPage())
+	// pager.previousPage();
+	// }
+	// else {
+	// if(pager.hasNextPage())
+	// pager.nextPage();
+	// }
+	// }
+	// };
+	// registrations.add(table.addDomHandler(mouseWheel, MouseWheelEvent.getType()));
+	// }
 
-	
 	/**
-	 * 
 	 * @author MEDES-IMPS
-	 *
 	 */
 	private class ListColumn extends Column<T, String> {
-		
+
 		public ListColumn() {
 			super(new TextCell());
 		}
@@ -191,9 +180,7 @@ public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
 			return beanRenderer.getDisplayValue(object);
 		}
 	}
-	
-	
-	
+
 	/**
 	 * @author MEDES-IMPS
 	 */
@@ -217,13 +204,12 @@ public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
 				}
 			});
 		}
-		
+
 		/**
-		 * 
 		 * @param display
 		 */
 		private void updateTable(final HasData<T> display) {
-			
+
 			final Range range = display.getVisibleRange();
 			final int start = range.getStart();
 
@@ -237,5 +223,5 @@ public class ImogSingleRelationBoxPopUp<T extends ImogBeanProxy> {
 		}
 
 	}
-	
+
 }

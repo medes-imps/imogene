@@ -14,6 +14,8 @@ public interface ImogConstants extends Constants {
 
 	String entity_deleted();
 
+	String entity_field_deleted();
+
 	/* Bottom links */
 	String bottom_link_legal();
 
