@@ -2,6 +2,8 @@ package org.imogene.web.server.handler;
 
 import java.util.Date;
 
+import org.imogene.lib.common.constants.CriteriaConstants;
+import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.CardEntity;
@@ -66,9 +68,14 @@ public class BasicHandlerHelper implements HandlerHelper {
 		}
 	}
 
+	@Override
+	public void prepareForDelete(ImogBean bean) {
+		bean.setDeleted(new Date(systemUtil.getCurrentTimeMillis()));
+		prepare(bean);
+	}
+
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param handler the Profile Handler
 	 */
 	public void setProfileHandler(ProfileHandler handler) {
@@ -77,7 +84,6 @@ public class BasicHandlerHelper implements HandlerHelper {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param handler the EntityProfile Handler
 	 */
 	public void setEntityProfileHandler(EntityProfileHandler handler) {
@@ -86,7 +92,6 @@ public class BasicHandlerHelper implements HandlerHelper {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param handler the FieldGroupProfile Handler
 	 */
 	public void setFieldGroupProfileHandler(FieldGroupProfileHandler handler) {
@@ -95,7 +100,6 @@ public class BasicHandlerHelper implements HandlerHelper {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param handler the CardEntity Handler
 	 */
 	public void setCardEntityHandler(CardEntityHandler handler) {
@@ -104,7 +108,6 @@ public class BasicHandlerHelper implements HandlerHelper {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param handler the FieldGroup Handler
 	 */
 	public void setFieldGroupHandler(FieldGroupHandler handler) {
@@ -113,10 +116,24 @@ public class BasicHandlerHelper implements HandlerHelper {
 
 	/**
 	 * Setter for bean injection.
-	 * 
 	 * @param systemUtil
 	 */
 	public void setSystemUtil(SystemUtil systemUtil) {
 		this.systemUtil = systemUtil;
 	}
+
+	@Override
+	public Date getCurrentTimeMillis() {
+		return new Date(systemUtil.getCurrentTimeMillis());
+	}
+
+	@Override
+	public BasicCriteria getNotDeletedFilterCriteria() {
+		BasicCriteria criteria = new BasicCriteria();
+		criteria.setOperation(CriteriaConstants.OPERATOR_ISNULL);
+		criteria.setField("deleted");
+		criteria.setValue(null);
+		return criteria;
+	}
+
 }

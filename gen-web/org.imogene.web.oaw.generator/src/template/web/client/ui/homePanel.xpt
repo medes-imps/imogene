@@ -506,7 +506,7 @@ public class HomePanel extends Composite {
 				public void onClick(ClickEvent event) {
 					String searchValue = «name.toFirstLower()».getSearchValue();
 					if(searchValue!=null && !searchValue.isEmpty())
-						History.newItem(TokenHelper.TK_LIST + "/«name.toLowerCase()»/searchValue", true);
+						History.newItem(TokenHelper.TK_LIST + "/«name.toLowerCase()»/" + searchValue, true);
 				}
 			});	
 		}

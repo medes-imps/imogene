@@ -149,14 +149,14 @@
 	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».server.handler.«e.name.toFirstUpper()»Handler">
 		<property name="dao" ref="«e.name.toFirstLower()»Dao" />
 		<property name="filter" ref="filter" />
-		«IF isBinaryFieldPresent(e.groups.fields) -»
+		«REM»«IF isBinaryFieldPresent(e.groups.fields) -»
 		<property name="binaryDao" ref="binaryDao" />
-		«ENDIF-»
+		«ENDIF-»«ENDREM»
 		«IF e.hasDynamicFields -»
 		<property name="dynamicFieldValuesHandler" ref="dynamicFieldInstanceHandler" />
 		<property name="dynamicFieldTemplateHandler" ref="dynamicFieldTemplateHandler" />
 		«ENDIF-»
-		«EXPAND declareDaoForForeignKey(e) FOREACH entities.groups.fields-»
+		«REM»«EXPAND declareDaoForForeignKey(e) FOREACH entities.groups.fields-»«ENDREM»
 		<property name="handlerHelper" ref="handlerHelper" />
 	</bean>		
 	«ENDFOREACH -»
