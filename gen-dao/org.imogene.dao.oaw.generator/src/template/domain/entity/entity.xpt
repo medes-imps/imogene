@@ -290,7 +290,7 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 	/** 
 	 * filter fields for the «this.entity.name.toFirstUpper()» entity 	
 	 */
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	@JoinTable(
 		name = "«EXPAND template::CommonFieldUtil::propertyName FOR this-»",
 		joinColumns = @JoinColumn(
@@ -299,43 +299,23 @@ public class «name.toFirstUpper()» extends «IF Actor.isAssignableFrom(metaType)»
 		inverseJoinColumns = @JoinColumn(
 			name = "«entity.name.toLowerCase()»_filter_id",
 			referencedColumnName = "id"))
-	private Set<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::propertyName FOR this»;
+	private List<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::propertyName FOR this»;
 	
 	/**
-	 * Set the set of allowed «this.entity.name.toFirstUpper()» for card access.	
+	 * Set the list of allowed «this.entity.name.toFirstUpper()» for card access.	
 	 */
-	public void «EXPAND template::CommonFieldUtil::setterName FOR this»(Set<«entity.name.toFirstUpper()»> filterFields){
+	public void «EXPAND template::CommonFieldUtil::setterName FOR this»(List<«entity.name.toFirstUpper()»> filterFields){
 		«EXPAND template::CommonFieldUtil::propertyName FOR this» = filterFields;
 	}
 
 	/**
-	 * Set the list of allowed «this.entity.name.toFirstUpper()» for card access.	
-	 */	
-	public void «EXPAND template::CommonFieldUtil::setterName FOR this»List(List<«entity.name.toFirstUpper()»> filterFields) {
-		if(filterFields!=null)
-			«EXPAND template::CommonFieldUtil::propertyName FOR this» = new HashSet<«entity.name.toFirstUpper()»>(filterFields);
-		else
-			«EXPAND template::CommonFieldUtil::propertyName FOR this» = null;
-	}
-	
-	/**
-	 * Get the set of allowed «this.entity.name.toFirstUpper()» for card access.
+	 * Get the list of allowed «this.entity.name.toFirstUpper()» for card access.
 	 * @return a list of «this.entity.name.toFirstUpper()». 	
 	 */
-	public Set<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::getterName FOR this»(){
+	public List<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::getterName FOR this»(){
 		return «EXPAND template::CommonFieldUtil::propertyName FOR this»;
 	} 
 
-	/**
-	 * Get the list of allowed «this.entity.name.toFirstUpper()» for card access.
-	 * @return a list of «this.entity.name.toFirstUpper()». 	
-	 */	
-	public List<«entity.name.toFirstUpper()»> «EXPAND template::CommonFieldUtil::getterName FOR this»List() {
-		if(«EXPAND template::CommonFieldUtil::propertyName FOR this»!=null)
-			return new ArrayList<«entity.name.toFirstUpper()»>(«EXPAND template::CommonFieldUtil::propertyName FOR this»);
-		else
-			return null;
-	}
 «ENDDEFINE»
 
 «DEFINE specificMethodForRelation FOR FieldEntity-»«ENDDEFINE»

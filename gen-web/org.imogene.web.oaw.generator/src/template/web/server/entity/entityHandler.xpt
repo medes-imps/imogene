@@ -652,7 +652,7 @@ public class «name.toFirstUpper()»Handler {
 	/* add filter field for actor «actorField.parentActor.name.toFirstUpper()» */
 	if(actor instanceof «actorField.parentActor.name.toFirstUpper()»){	
 		ImogJunction «actorField.name.toFirstLower()»«entityField.name.toFirstUpper()» = new ImogDisjunction();
-		Set<«entityField.entity.name.toFirstUpper()»> filters = ((«actorField.parentActor.name.toFirstUpper()»)actor).«EXPAND template::CommonFieldUtil::getterName FOR actorField»();
+		List<«entityField.entity.name.toFirstUpper()»> filters = ((«actorField.parentActor.name.toFirstUpper()»)actor).«EXPAND template::CommonFieldUtil::getterName FOR actorField»();
 		if(filters!=null && !filters.isEmpty()){
 			for(Object «entityField.entity.name.toFirstLower()»:filters){
 				BasicCriteria criteria = new BasicCriteria();

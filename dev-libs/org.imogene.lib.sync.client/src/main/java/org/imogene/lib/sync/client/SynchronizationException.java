@@ -5,12 +5,10 @@ public class SynchronizationException extends Exception {
 	public final static int DEFAULT_ERROR = 0;
 
 	public final static int ERROR_INIT = 1;
-
 	public final static int ERROR_SEND = 2;
-
 	public final static int ERROR_RECEIVE = 3;
-
 	public final static int ERROR_CLOSING = 4;
+	public final static int ERROR_AUTH = 5;
 
 	private int errorCode = DEFAULT_ERROR;
 

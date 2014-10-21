@@ -110,6 +110,7 @@
 	
 	<!-- Initialize the Entity Converters -->
 	«EXPAND getConverter(projectName) FOREACH entities.groups.fields-»
+	«EXPAND getFilterFieldConverter(projectName) FOREACH entities-»
 	
 	<!-- Initialize the omitted fields -->
 	<bean id="omitUploadDate" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
@@ -140,7 +141,6 @@
 		<property name="className" value="org.imogene.lib.common.entity.ImogActorImpl" />
 		<property name="propertyName" value="lastLoginDate" />
 	</bean>
-	«EXPAND omitFields(projectName) FOREACH entities-»
 	
 	<!-- Initialize the XML serializer -->
 	<bean id="xmlSerializer" class="org.imogene.lib.sync.serializer.xml.ImogXmlSerializer">
@@ -161,6 +161,7 @@
 				<ref bean="fieldGroupFieldGroupProfileConverter"/>
 				<ref bean="entityFieldGroupConverter"/>
 				«EXPAND getConverter FOREACH entities.groups.fields-»
+				«EXPAND getFilterFieldConverter FOREACH entities-»
 			</set>
 		</property>
 		<property name="converters">
@@ -178,7 +179,6 @@
 				<ref bean="omitBeNotified" />
 				<ref bean="omitNotificationData" />
 				<ref bean="omitLastLoginDate" />
-				«EXPAND omitField FOREACH entities-»
 			</set>
 		</property>
 	</bean>
@@ -190,37 +190,40 @@
 
 «REM» ------------------------------------------------«ENDREM»
 «DEFINE getConverter(String projectName) FOR FieldEntity-»«ENDDEFINE»
+
 «DEFINE getConverter(String projectName) FOR BinaryField-»
-	<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
-		<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«parentGroup.parentCard.name»"/>
-		<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this»"/>
-		<property name="converter" ref="associationConverter"/>
-	</bean>
-«ENDDEFINE»
-«DEFINE getConverter(String projectName) FOR RelationFieldEntity»
-	<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
-		<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«this.parentGroup.parentCard.name»"/>
-		<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this»"/>
-	«IF this.cardinality == 1 -»
-		<property name="converter" ref="associationConverter"/>
-	«ELSE -»
-		<property name="converter" ref="collectionConverter"/>
-	«ENDIF -»
-	</bean>	  
-«ENDDEFINE»
-«REM» ------------------------------------------------«ENDREM»
-
-«DEFINE omitFields(String projectName) FOR CardEntity-»«ENDDEFINE»
-«DEFINE omitFields(String projectName) FOR Actor-»
-«EXPAND omitFilterField(projectName) FOREACH filters-»
-«ENDDEFINE»
-
-«DEFINE omitFilterField(String projectName) FOR FilterField-»
-<bean id="omit«parentActor.name.toFirstUpper()»«name.toFirstUpper()»" class="org.imogene.lib.sync.serializer.xml.OmittedProperty">
-	<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«parentActor.name.toFirstUpper()»" />
-	<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this-»" />
+<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+	<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«parentGroup.parentCard.name.toFirstUpper()»"/>
+	<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this»"/>
+	<property name="converter" ref="associationConverter"/>
 </bean>
 «ENDDEFINE»
+
+«DEFINE getConverter(String projectName) FOR RelationFieldEntity-»
+<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+	<property name="className" value="org.imogene.«projectName.toLowerCase()».domain.entity.«parentGroup.parentCard.name.toFirstUpper()»"/>
+	<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR this»"/>
+	«IF cardinality == 1 -»
+	<property name="converter" ref="associationConverter"/>
+	«ELSE -»
+	<property name="converter" ref="collectionConverter"/>
+	«ENDIF -»
+</bean>	  
+«ENDDEFINE»
+
+«DEFINE getFilterFieldConverter(String projectName) FOR CardEntity-»
+«ENDDEFINE-»
+
+«DEFINE getFilterFieldConverter(String projectName) FOR Actor-»
+«FOREACH filters AS f-»
+<bean id="«EXPAND template::CommonFieldUtil::propertyName FOR f»«name.toFirstUpper()»FilterConverter" class="org.imogene.lib.sync.serializer.xml.PropertyConverter">
+	<property name="className"  value="org.imogene.«projectName.toLowerCase()».domain.entity.«name.toFirstUpper()»" />
+	<property name="propertyName" value="«EXPAND template::CommonFieldUtil::propertyName FOR f»"/>
+	<property name="converter" ref="collectionConverter"/>
+</bean>
+«ENDFOREACH-»
+«ENDDEFINE-»
+«REM» ------------------------------------------------«ENDREM»
 
 
 
@@ -230,22 +233,23 @@
 
 «REM» ------------------------------------------------«ENDREM»
 «DEFINE getConverter FOR FieldEntity-»«ENDDEFINE»
+
 «DEFINE getConverter FOR BinaryField-»
 <ref bean="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter"/>
 «ENDDEFINE»
+
 «DEFINE getConverter FOR RelationFieldEntity-»
 <ref bean="«EXPAND template::CommonFieldUtil::propertyName FOR this»«parentGroup.parentCard.name.toFirstUpper()»Converter"/>
 «ENDDEFINE»
+
+«DEFINE getFilterFieldConverter FOR CardEntity-»
+«ENDDEFINE-»
+
+«DEFINE getFilterFieldConverter FOR Actor-»
+«FOREACH filters AS f»
+<ref bean="«EXPAND template::CommonFieldUtil::propertyName FOR f»«name.toFirstUpper()»FilterConverter"/>
+«ENDFOREACH»
+«ENDDEFINE-»
 «REM» ------------------------------------------------«ENDREM»
 
 
-«REM» ------------------------------------------------«ENDREM»
-«DEFINE omitField FOR CardEntity-»«ENDDEFINE»
-«DEFINE omitField FOR Actor-»
-«EXPAND omitFilterField FOREACH filters-»
-«ENDDEFINE»
-
-«DEFINE omitFilterField FOR FilterField»
-<ref bean="omit«parentActor.name.toFirstUpper()»«name.toFirstUpper()-»"/>
-«ENDDEFINE»
-«REM» ------------------------------------------------«ENDREM»

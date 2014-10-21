@@ -39,6 +39,7 @@
 	<!-- Spring-security users details provider -->
 	<bean id="imogSecurityDetailService" class="org.imogene.web.server.security.SecurityDetailService" >
 		<property name="genericHandler" ref="genericHandler"/>
+		<property name="handlerHelper" ref="handlerHelper"/>
 		<property name="accessPolicyFactory" ref="accessPolicyFactory" />
   	</bean>
   	
@@ -167,6 +168,7 @@
 	    <property name="fieldGroupProfileHandler" ref="fieldGroupProfileHandler" />
 	    <property name="cardEntityHandler" ref="cardEntityHandler" />
 	    <property name="fieldGroupHandler" ref="fieldGroupHandler" />
+	    <property name="genericHandler" ref="genericHandler" />
 	    <property name="systemUtil" ref="systemUtil" />
 		«FOREACH entities AS e-»
 		<property name="«e.name.toFirstLower()»Handler" ref="«e.name.toFirstLower()»Handler" />

@@ -152,19 +152,18 @@ public class SynchronizationController {
 			markAsSentForSession(syncTime);
 			notifySent(res);
 
-			if (res > -1) {
-				his.level = SyncHistory.Columns.LEVEL_RECEIVE;
-				his.saveOrUpdate(mContext);
-			} else {
+			if (res < 0) {
 				throw new SynchronizationException("Error sending data to the server.",
 						SynchronizationException.ERROR_SEND);
 			}
+
+			his.level = SyncHistory.Columns.LEVEL_RECEIVE;
+			his.saveOrUpdate(mContext);
 
 			// 3 - get server modifications
 			notifyReceive();
 			received += requestServerModification(sessionId);
 
-			his.level = SyncHistory.Columns.LEVEL_RECEIVE;
 			his.status = SyncHistory.Columns.STATUS_OK;
 			his.saveOrUpdate(mContext);
 
@@ -253,7 +252,7 @@ public class SynchronizationController {
 		/*
 		 * we resume a reception, by re-receiving the server data
 		 */
-		if (his.level == SyncHistory.Columns.LEVEL_RECEIVE) {
+		else if (his.level == SyncHistory.Columns.LEVEL_RECEIVE) {
 			if (Constants.DEBUG) {
 				Logger.i(TAG, "Resuming the receive operation for the session " + his.id);
 			}

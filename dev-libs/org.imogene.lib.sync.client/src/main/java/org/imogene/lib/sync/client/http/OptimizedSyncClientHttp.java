@@ -5,10 +5,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -24,8 +28,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	private static final Logger logger = Logger.getLogger("org.imogene.sync.client.http.SyncClientHttp");
 
 	private static final int maxAttempts = 100;
-
-	private boolean httpAuthentication = false;
 
 	private String url = "http://localhost:8080/ImogSynchro/";
 	private String login;
@@ -43,7 +45,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	 */
 	public OptimizedSyncClientHttp(String url, String login, String password, String terminalId) {
 		setUrl(url);
-		this.httpAuthentication = true;
 		this.login = login;
 		this.password = password;
 		this.terminalId = terminalId;
@@ -57,208 +58,315 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	@Override
 	public boolean authenticate() throws SynchronizationException {
 		try {
-			/* request construction */
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_AUTH);
-			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
-			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam };
+			// request construction
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_AUTH);
+			NameValuePair[] params = new NameValuePair[] { cmdParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
 			HttpClient client = new HttpClient();
 			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				return true;
-			} else {
-				return false;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new SynchronizationException("Session init : " + ex.getLocalizedMessage(), ex,
+
+			checkResponseCode(code);
+			checkHeader(method);
+
+			return true;
+		} catch (AuthenticationException e) {
+			return false;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Session init : " + e.getLocalizedMessage(), e,
 					SynchronizationException.ERROR_INIT);
 		}
 	}
 
 	@Override
-	public boolean closeSession(String sessionId) throws SynchronizationException {
+	public void closeSession(String sessionId) throws SynchronizationException, AuthenticationException {
 		try {
-			/* request construction */
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_CLOSE);
-			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
+			// request construction
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_CLOSE);
+			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
 			NameValuePair debugParam = new NameValuePair("debug", "true");
 			NameValuePair[] params = new NameValuePair[] { cmdParam, sessionParam, debugParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
-			/* request execution */
+			// request execution
 			HttpClient client = new HttpClient();
-			client.executeMethod(method);
-			if (method.getResponseBodyAsString().startsWith("ACK"))
-				return true;
-		} catch (Exception ex) {
-			throw new SynchronizationException("Closing session -> ", ex, SynchronizationException.ERROR_CLOSING);
+			int code = client.executeMethod(method);
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			// TODO We should probably check the result, on the other hand it is not so important
+			// Read acknowledgment
+			// if (method.getResponseBodyAsString().startsWith("ACK"))
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Closing session -> ", e, SynchronizationException.ERROR_CLOSING);
 		}
-		return false;
 	}
 
 	@Override
-	public String initSession() throws SynchronizationException {
+	public String initSession() throws SynchronizationException, AuthenticationException {
 		try {
 			/* request construction */
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_INIT);
-			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
-			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
-			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam };
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_INIT);
+			NameValuePair terminalParam = new NameValuePair(PARAM_TERMINALID, terminalId);
+			NameValuePair[] params = new NameValuePair[] { cmdParam, terminalParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
 			HttpClient client = new HttpClient();
 			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				String sessionId = method.getResponseBodyAsString();
-				return sessionId;
-			} else {
-				throw new SynchronizationException("HTTP error code return : " + code,
-						SynchronizationException.ERROR_INIT);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new SynchronizationException("Session init : " + ex.getLocalizedMessage(), ex,
-					SynchronizationException.ERROR_INIT);
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			String sessionId = method.getResponseBodyAsString();
+			return sessionId;
+
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Closing session -> ", e, SynchronizationException.ERROR_CLOSING);
 		}
 	}
 
 	@Override
-	public String resumeReceive(String sessionId, long bytesReceived) throws SynchronizationException {
+	public void resumeReceive(String sessionId, long bytesReceived) throws SynchronizationException,
+			AuthenticationException {
 		try {
-			/* request construction */
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_RESUME_RECEIVE_INIT);
-			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
-			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
-			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
-			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
-			NameValuePair lengthParam = new NameValuePair(LENGTH_PARAM, String.valueOf(bytesReceived));
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
-					sessionParam, lengthParam };
+			// request construction
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_RESUME_RECEIVE_INIT);
+			NameValuePair terminalParam = new NameValuePair(PARAM_TERMINALID, terminalId);
+			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
+			NameValuePair lengthParam = new NameValuePair(PARAM_LENGTH, String.valueOf(bytesReceived));
+			NameValuePair[] params = new NameValuePair[] { cmdParam, terminalParam, sessionParam, lengthParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
 			HttpClient client = new HttpClient();
 			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				return method.getResponseBodyAsString();
-			} else {
-				throw new SynchronizationException("HTTP error code returned." + code,
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			if (!RESPONSE_OK.equals(method.getResponseBodyAsString())) {
+				throw new SynchronizationException("The server return an error code",
 						SynchronizationException.ERROR_RECEIVE);
 			}
-		} catch (Exception ex) {
-			throw new SynchronizationException("Resume 'receive' session init : " + ex.getLocalizedMessage(), ex,
-					SynchronizationException.ERROR_RECEIVE);
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Closing session -> ", e, SynchronizationException.ERROR_CLOSING);
 		}
 	}
 
 	@Override
 	public int resumeRequestModification(String sessionId, OutputStream out, long bytesReceived)
-			throws SynchronizationException {
+			throws SynchronizationException, AuthenticationException {
 		try {
-			/* request construction */
-			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_RESUME_RECEIVE);
-			NameValuePair lengthParam = new NameValuePair(LENGTH_PARAM, String.valueOf(bytesReceived));
+			// request construction
+			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_RESUME_RECEIVE);
+			NameValuePair lengthParam = new NameValuePair(PARAM_LENGTH, String.valueOf(bytesReceived));
 			NameValuePair[] params = new NameValuePair[] { sessionParam, cmdParam, lengthParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 			HttpClient client = new HttpClient();
 
-			/* request execution */
+			// request execution
 			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				/* read data sent by the server */
-				long expectedLength = method.getResponseContentLength();
-				InputStream is = method.getResponseBodyAsStream();
-				writeInFile(is, out, expectedLength);
-				return 0;
-			} else {
-				throw new SynchronizationException("Resume 'request' command -> HTTP code returned.",
-						SynchronizationException.ERROR_RECEIVE);
-			}
-		} catch (Exception ex) {
-			throw new SynchronizationException("Resume 'request' command : " + ex.getLocalizedMessage(), ex,
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			// read data sent by the server
+			long expectedLength = method.getResponseContentLength();
+			InputStream is = method.getResponseBodyAsStream();
+			writeInFile(is, out, expectedLength);
+			return 0;
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Resume 'request' command : " + e.getLocalizedMessage(), e,
 					SynchronizationException.ERROR_RECEIVE);
 		}
 	}
 
 	@Override
-	public String resumeSend(String sessionId) throws SynchronizationException {
+	public long resumeSend(String sessionId) throws SynchronizationException, AuthenticationException {
 		try {
 			/* request construction */
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_RESUME_SEND_INIT);
-			NameValuePair loginParam = new NameValuePair(LOGIN_PARAM, login);
-			NameValuePair passwordParam = new NameValuePair(PASSWD_PARAM, password);
-			NameValuePair terminalParam = new NameValuePair(TERMINALID_PARAM, terminalId);
-			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
-			NameValuePair[] params = new NameValuePair[] { cmdParam, loginParam, passwordParam, terminalParam,
-					sessionParam };
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_RESUME_SEND_INIT);
+			NameValuePair terminalParam = new NameValuePair(PARAM_TERMINALID, terminalId);
+			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
+			NameValuePair[] params = new NameValuePair[] { cmdParam, terminalParam, sessionParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 
 			HttpClient client = new HttpClient();
 			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				return method.getResponseBodyAsString();
-			} else {
-				throw new SynchronizationException("HTTP error code returned :" + code,
-						SynchronizationException.ERROR_SEND);
-			}
-		} catch (Exception ex) {
-			throw new SynchronizationException("Resume 'send' session init: " + ex.getLocalizedMessage(), ex,
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			return Long.parseLong(method.getResponseBodyAsString());
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Resume 'send' session init: " + e.getLocalizedMessage(), e,
 					SynchronizationException.ERROR_SEND);
 		}
 	}
 
 	@Override
-	public int resumeSendModification(String sessionId, InputStream in) throws SynchronizationException {
+	public int resumeSendModification(String sessionId, InputStream in) throws SynchronizationException,
+			AuthenticationException {
 		return sendData(sessionId, CMD_RESUME_SEND, in);
 	}
 
 	@Override
-	public void requestServerModifications(String sessionId, OutputStream out) throws SynchronizationException {
+	public void requestServerModifications(String sessionId, OutputStream out) throws SynchronizationException,
+			AuthenticationException {
 		try {
-			/* request construction */
-			NameValuePair sessionParam = new NameValuePair(SESSION_PARAM, sessionId);
-			NameValuePair cmdParam = new NameValuePair(CMD_PARAM, CMD_SERVERMODIF);
+			// request construction
+			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
+			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_SERVERMODIF);
 			NameValuePair[] params = new NameValuePair[] { sessionParam, cmdParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
 			HttpClient client = new HttpClient();
 
-			/* request execution */
+			// request execution
 			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				/* read data sent by the server */
-				long expectedLength = method.getResponseContentLength();
-				// System.out.println("Lenght of the result :"+expectedLength);
-				InputStream is = method.getResponseBodyAsStream();
-				writeInFile(is, out, expectedLength);
-			} else {
-				throw new SynchronizationException("Command 'receive' : HTTP error code returned.");
-			}
-		} catch (Exception ex) {
-			throw new SynchronizationException("Command 'receive': " + ex.getLocalizedMessage(), ex,
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			// read data sent by the server
+			long expectedLength = method.getResponseContentLength();
+			// System.out.println("Lenght of the result :"+expectedLength);
+			InputStream is = method.getResponseBodyAsStream();
+			writeInFile(is, out, expectedLength);
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Command 'receive': " + e.getLocalizedMessage(), e,
 					SynchronizationException.ERROR_RECEIVE);
 		}
 	}
 
 	@Override
-	public int sendClientModification(String sessionId, InputStream data) throws SynchronizationException {
-
+	public int sendClientModification(String sessionId, InputStream data) throws SynchronizationException,
+			AuthenticationException {
 		return sendData(sessionId, CMD_SENDMODIF, data);
 	}
 
 	@Override
-	public int directSend(String sessionId, InputStream data) throws Exception {
+	public int directSend(String sessionId, InputStream data) throws AuthenticationException, SynchronizationException {
 		return sendData(sessionId, CDM_DIRECTSEND, data);
+	}
+
+	/**
+	 * Send data to the server
+	 * 
+	 * @param sessionId the synchronization session id
+	 * @param cmd the command
+	 * @param data the data to send
+	 * @return 0 if done with success, -1 otherwise
+	 * @throws AuthenticationException
+	 */
+	private int sendData(String sessionId, String cmd, InputStream data) throws SynchronizationException,
+			AuthenticationException {
+		try {
+			/* request construction */
+			PostMethod method = httpPostMethod(url);
+			StringPart sessionParam = new StringPart(PARAM_SESSION, sessionId);
+			StringPart cmdParam = new StringPart(PARAM_CMD, cmd);
+			SyncPartSource dataSource = new SyncPartSource(data, sessionId + ".cmodif", data.available());
+			FilePart dataFile = new FilePart("data", dataSource);
+			Part[] parts = { sessionParam, cmdParam, dataFile };
+			logger.debug("send data to url : " + url + " cmd : " + cmd);
+			/* execute the request */
+			MultipartRequestEntity mEntity = new MultipartRequestEntity(parts, method.getParams());
+			method.setRequestEntity(mEntity);
+			HttpClient client = new HttpClient();
+			int code = client.executeMethod(method);
+
+			// Check code and header
+			checkResponseCode(code);
+			checkHeader(method);
+
+			String body = new String(method.getResponseBody());
+			if (body.startsWith("ACK")) {
+				return 0;
+			} else {
+				throw new SynchronizationException("Command 'send' : Server error code returned.");
+			}
+		} catch (AuthenticationException e) {
+			throw e;
+		} catch (SynchronizationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SynchronizationException("Command 'send': " + e.getLocalizedMessage(), e,
+					SynchronizationException.ERROR_SEND);
+		}
+	}
+
+	private PostMethod httpPostMethod(String url) {
+		PostMethod post = new PostMethod(url);
+		setBasicAuthentication(post);
+		return post;
+	}
+
+	private GetMethod httpGetMethod(String url) {
+		GetMethod get = new GetMethod(url);
+		setBasicAuthentication(get);
+		return get;
+	}
+
+	private void setBasicAuthentication(HttpMethodBase method) {
+		String strAuth = login + ":" + password;
+		String encoding = new String(Base64.encodeBase64(strAuth.getBytes()));
+		method.setRequestHeader("Authorization", "Basic " + encoding);
+	}
+
+	private static void checkResponseCode(int code) throws HttpException {
+		if (code != HttpStatus.SC_OK) {
+			if (code == HttpStatus.SC_UNAUTHORIZED) {
+				throw new AuthenticationException("401 Unauthorized");
+			}
+			throw new HttpException("HTTP error code returned " + code);
+		}
+	}
+
+	private static void checkHeader(HttpMethod method) throws SynchronizationException {
+		Header header = method.getResponseHeader(HEADER_NAME);
+		if (header == null || !HEADER_VALUE.equals(header.getValue())) {
+			throw new SynchronizationException("HTTP header is invalid", SynchronizationException.ERROR_AUTH);
+		}
 	}
 
 	/**
@@ -269,7 +377,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	 * @param expectedLength the data length expected
 	 * @return 0 if done with success, -1 otherwise
 	 */
-	private int writeInFile(InputStream is, OutputStream out, long expectedLength) throws IOException {
+	private static int writeInFile(InputStream is, OutputStream out, long expectedLength) throws IOException {
 		boolean finished = false;
 		long bytesRead = 0;
 		int nbAttemps = 0;
@@ -315,68 +423,6 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			return 0;
 		else
 			return -1;
-	}
-
-	/**
-	 * Send data to the server
-	 * 
-	 * @param sessionId the synchronization session id
-	 * @param cmd the command
-	 * @param data the data to send
-	 * @return 0 if done with success, -1 otherwise
-	 */
-	private int sendData(String sessionId, String cmd, InputStream data) throws SynchronizationException {
-		try {
-			/* request construction */
-			PostMethod method = httpPostMethod(url);
-			StringPart sessionParam = new StringPart(SESSION_PARAM, sessionId);
-			StringPart cmdParam = new StringPart(CMD_PARAM, cmd);
-			SyncPartSource dataSource = new SyncPartSource(data, sessionId + ".cmodif", data.available());
-			FilePart dataFile = new FilePart("data", dataSource);
-			Part[] parts = { sessionParam, cmdParam, dataFile };
-			logger.debug("send data to url : " + url + " cmd : " + cmd);
-			/* execute the request */
-			MultipartRequestEntity mEntity = new MultipartRequestEntity(parts, method.getParams());
-			method.setRequestEntity(mEntity);
-			HttpClient client = new HttpClient();
-			int code = client.executeMethod(method);
-			if (code == HttpStatus.SC_OK) {
-				String body = new String(method.getResponseBody());
-				if (body.startsWith("ACK")) {
-					return 0;
-				} else {
-					throw new SynchronizationException("Command 'send' : Server error code returned.");
-				}
-			} else {
-				throw new Exception("HTTP error code returned : " + code);
-			}
-		} catch (Exception ex) {
-			throw new SynchronizationException("Command 'send': " + ex.getLocalizedMessage(), ex,
-					SynchronizationException.ERROR_SEND);
-		}
-	}
-
-	/** */
-	private PostMethod httpPostMethod(String url) {
-		PostMethod post = new PostMethod(url);
-		if (httpAuthentication)
-			setBasicAuthentication(post);
-		return post;
-	}
-
-	/** */
-	private GetMethod httpGetMethod(String url) {
-		GetMethod get = new GetMethod(url);
-		if (httpAuthentication)
-			setBasicAuthentication(get);
-		return get;
-	}
-
-	/** */
-	private void setBasicAuthentication(HttpMethodBase method) {
-		String strAuth = login + ":" + password;
-		String encoding = new String(Base64.encodeBase64(strAuth.getBytes()));
-		method.setRequestHeader("Authorization", "Basic " + encoding);
 	}
 
 }

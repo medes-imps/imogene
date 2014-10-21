@@ -7,13 +7,17 @@
 «FILE projectName.toLowerCase()+ "/server/handler/HandlerHelperImpl.java"»
 package org.imogene.«projectName.toLowerCase()».server.handler;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.web.server.handler.BasicHandlerHelper;
-«FOREACH entities AS e-»
-import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»;
-«ENDFOREACH-»
+import org.imogene.«projectName.toLowerCase()».domain.entity.*;
 
 public class HandlerHelperImpl extends BasicHandlerHelper {
+
+	private static final Logger logger = Logger.getLogger(HandlerHelperImpl.class);
 
 	«FOREACH entities AS e-»
 	private «e.name.toFirstUpper()»Handler «e.name.toFirstLower()»Handler;
@@ -39,6 +43,12 @@ public class HandlerHelperImpl extends BasicHandlerHelper {
 		«ENDFOREACH»
 	}
 	
+	@Override
+	public void detach(ImogActor actor) {
+		«EXPAND handleFilterFields FOREACH entities-»
+		super.detach(actor);
+	}
+	
 	«FOREACH entities AS e-»
 	/**
 	 * Setter for bean injection
@@ -53,3 +63,25 @@ public class HandlerHelperImpl extends BasicHandlerHelper {
 
 «ENDFILE»
 «ENDDEFINE»
+
+
+
+
+
+«DEFINE handleFilterFields FOR CardEntity-»
+«ENDDEFINE»
+
+«DEFINE handleFilterFields FOR Actor-»
+«IF filters.size > 0-»
+if (actor instanceof «name.toFirstUpper()») {
+	«FOREACH filters AS f-»
+	List<«f.entity.name.toFirstUpper()»> filters = ((«name.toFirstUpper()») actor).«EXPAND template::CommonFieldUtil::getterName FOR f»();
+	if (filters != null) {
+		for («f.entity.name.toFirstUpper()» filter : filters) {
+			logger.info("Has filter : " + filter.getId());
+		}
+	}
+	«ENDFOREACH-»
+}
+«ENDIF-»
+«ENDDEFINE-»

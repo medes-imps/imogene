@@ -8,7 +8,6 @@ package org.imogene.«projectName.toLowerCase()».handler;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.imogene.«projectName.toLowerCase()».domain.dao.«name.toFirstUpper()»Dao;
 import org.imogene.«projectName.toLowerCase()».domain.entity.*;
@@ -182,7 +181,7 @@ public class «name.toFirstUpper()»HandlerImpl extends «IF Actor.isAssignableFrom
 		/* add filter field for user «actorField.parentActor.name.toFirstUpper()» */
 		if(user instanceof «actorField.parentActor.name.toFirstUpper()»){	
 			ImogJunction «actorField.name.toFirstLower()»«entityField.name.toFirstUpper()» = new ImogDisjunction();
-			Set<«entityField.entity.name.toFirstUpper()»> filters = ((«actorField.parentActor.name.toFirstUpper()»)user).«EXPAND template::CommonFieldUtil::getterName FOR actorField»();
+			List<«entityField.entity.name.toFirstUpper()»> filters = ((«actorField.parentActor.name.toFirstUpper()»)user).«EXPAND template::CommonFieldUtil::getterName FOR actorField»();
 			if(filters!=null && !filters.isEmpty()){
 				for(Object «entityField.entity.name.toFirstLower()»:filters){
 					BasicCriteria criteria = new BasicCriteria();

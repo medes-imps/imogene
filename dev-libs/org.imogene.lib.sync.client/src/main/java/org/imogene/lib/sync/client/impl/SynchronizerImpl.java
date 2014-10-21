@@ -14,6 +14,7 @@ import java.util.Vector;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
 import org.imogene.encryption.EncryptionManager;
 import org.imogene.lib.common.binary.Binary;
@@ -185,10 +186,12 @@ public class SynchronizerImpl implements Synchronizer {
 			/* 2 - send client modification */
 			File outFile = new File(directory, sessionId + ".lmodif");
 			FileOutputStream fos = new FileOutputStream(outFile);
+
 			// we take the date just before to access the database and to serialize
 			Date tempDate = offset != null ? new Date(System.currentTimeMillis() + offset) : new Date();
 			getDataToSynchronize(login, fos);
 			fos.close();
+
 			// update sync history
 			SyncHistory history = new SyncHistory();
 			history.setId(sessionId);
@@ -196,23 +199,25 @@ public class SynchronizerImpl implements Synchronizer {
 			history.setStatus(SyncHistory.STATUS_ERROR);
 			history.setLevel(SyncHistory.LEVEL_SEND);
 			historyDao.saveOrUpdate(history);
+
 			// send data
 			FileInputStream fis = new FileInputStream(outFile);
 			int res = syncClient.sendClientModification(sessionId, fis);
 			fis.close();
 			logger.debug("number of server modifications applied: " + res);
-			if (res > -1) {
-				history.setLevel(SyncHistory.LEVEL_RECEIVE);
-				historyDao.saveOrUpdate(history);
-			} else {
+
+			if (res < 0) {
 				throw new SynchronizationException("Error sending data to the server.",
 						SynchronizationException.ERROR_SEND);
 			}
 
+			history.setLevel(SyncHistory.LEVEL_RECEIVE);
+			historyDao.saveOrUpdate(history);
+
 			/* 3 - get server modifications */
 			requestServerModification(sessionId);
+
 			// Update the sync history
-			history.setLevel(SyncHistory.LEVEL_RECEIVE);
 			history.setStatus(SyncHistory.STATUS_OK);
 			historyDao.saveOrUpdate(history);
 
@@ -230,92 +235,69 @@ public class SynchronizerImpl implements Synchronizer {
 	 * Resume a synchronization process that terminated with error.
 	 * 
 	 * @param error the synchronization history
-	 * @throws SynchronizationException if an error occurred
+	 * @throws ImogSerializationException
+	 * @throws Exception
 	 */
-	private void resumeOnError(SyncHistory error) throws SynchronizationException {
+	private void resumeOnError(SyncHistory error) throws AuthenticationException, SynchronizationException,
+			IOException, ImogSerializationException {
 		// we resume a sent, by re-sending local data an retrieving all the data from the server
 		if (error.getLevel() == SyncHistory.LEVEL_SEND) {
 			logger.debug("Resuming the sent for the session " + error.getId());
-			try {
-				/* 1 - initialize the resumed session */
-				String result = syncClient.resumeSend(error.getId());
-				if (result.equals("error")) {
-					throw new SynchronizationException("Error resuming the session, the server return an error code",
-							SynchronizationException.ERROR_SEND);
-				}
+			/* 1 - initialize the resumed session */
+			long bytesReceived = syncClient.resumeSend(error.getId());
 
-				/* 2 - sending local modifications */
-				long bytesReceived = Long.parseLong(result);
-				File outFile = new File(directory, error.getId() + ".lmodif");
-				FileInputStream fis = new FileInputStream(outFile);
-				long skipped = fis.skip(bytesReceived);
-				if (skipped != bytesReceived) {
-					fis.close();
-					throw new SynchronizationException("Error resuming the session: " + bytesReceived
-							+ " bytes already received, " + skipped + " bytes skipped",
-							SynchronizationException.ERROR_SEND);
-				}
-
-				logger.debug("Re-sending data from the file " + outFile.getAbsolutePath() + " skipping "
-						+ bytesReceived + " bytes");
-				syncClient.resumeSendModification(error.getId(), fis);
+			/* 2 - sending local modifications */
+			File outFile = new File(directory, error.getId() + ".lmodif");
+			FileInputStream fis = new FileInputStream(outFile);
+			long skipped = fis.skip(bytesReceived);
+			if (skipped != bytesReceived) {
 				fis.close();
-				error.setLevel(SyncHistory.LEVEL_RECEIVE);
-				historyDao.saveOrUpdate(error);
-
-				/* 3 - receiving the server modifications */
-				requestServerModification(error.getId());
-				error.setStatus(SyncHistory.STATUS_OK);
-				historyDao.saveOrUpdate(error);
-
-				/* 4 - closing the session */
-				syncClient.closeSession(error.getId());
-
-				// now we are sure that we never need this temp file
-				outFile.delete();
-			} catch (Exception ex) {
-				SynchronizationException syx = new SynchronizationException("Error resuming a sent: "
-						+ ex.getLocalizedMessage(), ex, SynchronizationException.DEFAULT_ERROR);
-				if (ex instanceof SynchronizationException)
-					syx.setCode(((SynchronizationException) ex).getCode());
-				throw syx;
+				throw new SynchronizationException("Error resuming the session: " + bytesReceived
+						+ " bytes already received, " + skipped + " bytes skipped", SynchronizationException.ERROR_SEND);
 			}
+
+			logger.debug("Re-sending data from the file " + outFile.getAbsolutePath() + " skipping " + bytesReceived
+					+ " bytes");
+			syncClient.resumeSendModification(error.getId(), fis);
+			fis.close();
+			error.setLevel(SyncHistory.LEVEL_RECEIVE);
+			historyDao.saveOrUpdate(error);
+
+			/* 3 - receiving the server modifications */
+			requestServerModification(error.getId());
+
+			error.setStatus(SyncHistory.STATUS_OK);
+			historyDao.saveOrUpdate(error);
+
+			/* 4 - closing the session */
+			syncClient.closeSession(error.getId());
+
+			// now we are sure that we never need this temp file
+			outFile.delete();
 		}
 		// We resume a reception, by re-receiving the server data
-		if (error.getLevel() == SyncHistory.LEVEL_RECEIVE) {
+		else if (error.getLevel() == SyncHistory.LEVEL_RECEIVE) {
 			logger.debug("Resuming the receive operation for the session " + error.getId());
-			try {
-				/* 1 - initialize the resumed session */
-				// clear the sent file
-				File tmp = new File(directory, error.getId() + ".lmodif");
-				if (tmp.exists()) {
-					tmp.delete();
-				}
-				File inFile = new File(directory, error.getId() + ".smodif");
-				String result = syncClient.resumeReceive(error.getId(), inFile.length());
-				if (result.equals("error")) {
-					throw new SynchronizationException("The server return an error code",
-							SynchronizationException.ERROR_RECEIVE);
-				}
-
-				/* 2 - receiving data */
-				FileOutputStream fos = new FileOutputStream(inFile, true);
-				syncClient.resumeRequestModification(error.getId(), fos, inFile.length());
-				FileInputStream sFis = new FileInputStream(inFile);
-				applyIncomingModifications(sFis);
-				error.setStatus(SyncHistory.STATUS_OK);
-				historyDao.saveOrUpdate(error);
-
-				/* 3 - closing the session */
-				syncClient.closeSession(error.getId());
-				inFile.delete();
-			} catch (Exception ex) {
-				SynchronizationException syx = new SynchronizationException("Error resuming a receive operation: "
-						+ ex.getLocalizedMessage(), ex, SynchronizationException.ERROR_RECEIVE);
-				if (ex instanceof SynchronizationException)
-					syx.setCode(((SynchronizationException) ex).getCode());
-				throw syx;
+			/* 1 - initialize the resumed session */
+			// clear the sent file
+			File tmp = new File(directory, error.getId() + ".lmodif");
+			if (tmp.exists()) {
+				tmp.delete();
 			}
+			File inFile = new File(directory, error.getId() + ".smodif");
+			syncClient.resumeReceive(error.getId(), inFile.length());
+
+			/* 2 - receiving data */
+			FileOutputStream fos = new FileOutputStream(inFile, true);
+			syncClient.resumeRequestModification(error.getId(), fos, inFile.length());
+			FileInputStream sFis = new FileInputStream(inFile);
+			applyIncomingModifications(sFis);
+			error.setStatus(SyncHistory.STATUS_OK);
+			historyDao.saveOrUpdate(error);
+
+			/* 3 - closing the session */
+			syncClient.closeSession(error.getId());
+			inFile.delete();
 		}
 	}
 
@@ -323,9 +305,13 @@ public class SynchronizerImpl implements Synchronizer {
 	 * Request the server modification in normal mode
 	 * 
 	 * @param sessionId the session Id
+	 * @throws SynchronizationException
+	 * @throws IOException
+	 * @throws ImogSerializationException
 	 * @throws Exception if an error occurred.
 	 */
-	private void requestServerModification(String sessionId) throws Exception {
+	private void requestServerModification(String sessionId) throws SynchronizationException, IOException,
+			ImogSerializationException {
 		File inFile = new File(directory, sessionId + ".smodif");
 		FileOutputStream sFos = new FileOutputStream(inFile);
 		syncClient.requestServerModifications(sessionId, sFos);
@@ -385,12 +371,10 @@ public class SynchronizerImpl implements Synchronizer {
 		try {
 			serializer.serialize(entities, os);
 			os.close();
-		} catch (ImogSerializationException se) {
-			throw new SynchronizationException("Error preparing the data to synchronize: " + se.getLocalizedMessage(),
-					se);
-		} catch (IOException ioe) {
-			throw new SynchronizationException("Error preparing the data to synchronize: " + ioe.getLocalizedMessage(),
-					ioe);
+		} catch (ImogSerializationException e) {
+			throw new SynchronizationException("Error preparing the data to synchronize: " + e.getLocalizedMessage(), e);
+		} catch (IOException e) {
+			throw new SynchronizationException("Error preparing the data to synchronize: " + e.getLocalizedMessage(), e);
 		}
 		return entities.size();
 	}
@@ -412,14 +396,11 @@ public class SynchronizerImpl implements Synchronizer {
 	 * Apply the incoming server modification locally.
 	 * 
 	 * @param data incoming bytes
+	 * @throws ImogSerializationException
 	 */
-	private <T extends ImogBean> void applyIncomingModifications(InputStream is) throws SynchronizationException {
-		try {
-			int i = serializer.processMulti(is, null);
-			logger.debug(i + " entitie(s) added or updated to the database");
-		} catch (ImogSerializationException ex) {
-			logger.error(ex.getMessage());
-		}
+	private <T extends ImogBean> void applyIncomingModifications(InputStream is) throws ImogSerializationException {
+		int i = serializer.processMulti(is, null);
+		logger.debug(i + " entitie(s) added or updated to the database");
 	}
 
 }

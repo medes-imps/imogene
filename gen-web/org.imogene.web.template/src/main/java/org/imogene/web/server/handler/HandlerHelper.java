@@ -1,5 +1,6 @@
 package org.imogene.web.server.handler;
 
+import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 
 public interface HandlerHelper {
@@ -9,5 +10,7 @@ public interface HandlerHelper {
 	public void save(ImogBean bean, boolean isNew);
 	
 	public void prepare(ImogBean bean);
+	
+	public void detach(ImogActor actor);
 
 }

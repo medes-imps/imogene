@@ -1,7 +1,9 @@
 package org.imogene.web.server.handler;
 
 import java.util.Date;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.CardEntity;
@@ -14,11 +16,14 @@ import org.imogene.web.server.util.HttpSessionUtil;
 
 public class BasicHandlerHelper implements HandlerHelper {
 
+	private static final Logger logger = Logger.getLogger(BasicHandlerHelper.class);
+
 	private ProfileHandler profileHandler;
 	private EntityProfileHandler entityProfileHandler;
 	private FieldGroupProfileHandler fieldGroupProfileHandler;
 	private CardEntityHandler cardEntityHandler;
 	private FieldGroupHandler fieldGroupHandler;
+	private GenericHandler genericHandler;
 
 	private SystemUtil systemUtil;
 
@@ -66,6 +71,28 @@ public class BasicHandlerHelper implements HandlerHelper {
 		}
 	}
 
+	@Override
+	public void detach(ImogActor actor) {
+		List<Profile> profiles = actor.getProfiles();
+		if (profiles != null) {
+			for (Profile profile : profiles) {
+				List<EntityProfile> entities = profile.getEntityProfiles();
+				if (entities != null) {
+					for (EntityProfile entity : entities) {
+						logger.info("has profile : " + entity.getId());
+					}
+				}
+				List<FieldGroupProfile> fieldGroups = profile.getFieldGroupProfiles();
+				if (fieldGroups != null) {
+					for (FieldGroupProfile fieldGroup : fieldGroups) {
+						logger.info("has profile : " + fieldGroup.getId());
+					}
+				}
+			}
+		}
+		genericHandler.detach(actor);
+	}
+
 	/**
 	 * Setter for bean injection
 	 * 
@@ -109,6 +136,15 @@ public class BasicHandlerHelper implements HandlerHelper {
 	 */
 	public void setFieldGroupHandler(FieldGroupHandler handler) {
 		this.fieldGroupHandler = handler;
+	}
+
+	/**
+	 * Setter for bean injection
+	 * 
+	 * @param genericHandler
+	 */
+	public void setGenericHandler(GenericHandler genericHandler) {
+		this.genericHandler = genericHandler;
 	}
 
 	/**
