@@ -37,7 +37,7 @@
 		<javax.mail.version>1.4.7</javax.mail.version>
 		<javax.servlet.version>2.5</javax.servlet.version>
 		<javax.validation.version>1.0.0.GA</javax.validation.version>
-		<derby.version>10.10.2.0</derby.version>
+		<h2.version>1.4.180</h2.version>
 		<slf4j.log4j12.version>1.7.5</slf4j.log4j12.version>
 	</properties>
 
@@ -177,6 +177,38 @@
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
 				</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-libraries</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy
+									file="${project.build.directory}/${project.build.finalName}.jar"
+									tofile="../../library/org.imogene.library/libs/jars/${project.build.finalName}.jar" />
+							</tasks>
+						</configuration>
+					</execution>
+					<execution>
+						<id>clean-libraries</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<delete file="../../library/org.imogene.library/libs/jars/${project.build.finalName}.jar" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

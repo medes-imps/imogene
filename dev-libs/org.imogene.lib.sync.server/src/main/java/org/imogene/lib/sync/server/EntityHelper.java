@@ -1,4 +1,4 @@
-package org.imogene.lib.sync;
+package org.imogene.lib.sync.server;
 
 import java.util.Date;
 import java.util.List;
@@ -14,8 +14,7 @@ import org.imogene.lib.common.entity.ImogBean;
 public interface EntityHelper {
 
 	/**
-	 * Get the entity ids associated to the specified entity. Works only for the
-	 * association 1<->N and 1<->*
+	 * Get the entity ids associated to the specified entity. Works only for the association 1<->N and 1<->*
 	 * 
 	 * @param entity the parent entity
 	 * @return list of associated entities
@@ -31,23 +30,12 @@ public interface EntityHelper {
 	public List<Binary> getAssociatedBinaries(List<ImogBean> entities);
 
 	/**
-	 * Get the binaries associated with the given set of entities uploaded after
-	 * the last synchronization date
+	 * Get the binaries associated with the given set of entities uploaded after the last synchronization date
 	 * 
 	 * @param entities the entities
 	 * @param lastDate last synchronization date
 	 * @return the list of associated binaries
 	 */
 	public List<Binary> getAssociatedBinariesUploaded(List<ImogBean> entities, Date lastDate);
-
-	/**
-	 * Get the binaries associated with the given set of entities modified after
-	 * the last synchronization date
-	 * 
-	 * @param entities the entities
-	 * @param lastDate last synchronization date
-	 * @return the list of associated binaries
-	 */
-	public List<Binary> getAssociatedBinariesModified(List<ImogBean> entities, Date lastDate);
 
 }

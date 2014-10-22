@@ -19,6 +19,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
+import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.sync.SyncConstants;
@@ -175,6 +176,9 @@ public class ImogXmlSerializer implements ImogSerializer {
 				if (entity != null) {
 					if (save(entity, user)) {
 						j++;
+						if (entity instanceof Binary) {
+							
+						}
 					}
 				}
 			}
@@ -246,5 +250,5 @@ public class ImogXmlSerializer implements ImogSerializer {
 			}
 		}
 	}
-
+	
 }

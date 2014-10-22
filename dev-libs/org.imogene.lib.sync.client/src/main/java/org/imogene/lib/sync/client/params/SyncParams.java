@@ -2,6 +2,7 @@ package org.imogene.lib.sync.client.params;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -33,6 +34,7 @@ public class SyncParams implements Serializable {
 
 	private boolean enabled;
 
+	@Column(name = "timeoffset") // offset is a reserved keyword in h2
 	private Long offset;
 
 	public String getId() {

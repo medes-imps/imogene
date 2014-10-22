@@ -1,15 +1,12 @@
 package org.imogene.android.common.binary;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
 
 import org.imogene.android.Constants;
 import org.imogene.android.common.entity.ImogBeanImpl;
 import org.imogene.android.database.BinaryCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
-import org.imogene.android.preference.Preferences;
-import org.imogene.android.util.BeanKeyGenerator;
-import org.imogene.android.util.NTPClock;
 import org.imogene.android.xml.converters.ContentConverter;
 
 import android.content.ContentResolver;
@@ -129,48 +126,36 @@ public final class BinaryFile extends ImogBeanImpl implements Binary {
 			return ImogOpenHelper.fromUri(data);
 		}
 
-		Preferences prefs = Preferences.getPreferences(context);
-
-		String login = prefs.getCurrentLogin();
-
-		String id = BeanKeyGenerator.getNewId(Binary.Columns.BEAN_TYPE);
-
 		ContentResolver r = context.getContentResolver();
+
+		long length = 0;
+		try {
+			ParcelFileDescriptor fd = r.openFileDescriptor(data, "r");
+			length = fd.getStatSize();
+		} catch (FileNotFoundException e1) {
+			return null;
+		}
 
 		MimeType mime = MimeType.getInstance(context);
 		String contentType = r.getType(data);
 		if (contentType == null) {
 			contentType = mime.guessMimeType(data.toString());
 		}
-
 		String extension = mime.getExtension(contentType);
-		String fileName = id + (extension == null ? ".bin" : extension);
 
 		BinaryFile binary = new BinaryFile();
-		binary.setId(id);
-		binary.setCreated(NTPClock.getInstance(context).getTime());
-		binary.setCreatedBy(login);
-		binary.setModified(new Date(0));
-		binary.setModifiedBy(login);
-		binary.setModifiedFrom(prefs.getSyncTerminal());
-		binary.setFlagSynchronized(false);
-
+		binary.prepareForSave(context);
 		binary.setContentType(contentType);
-		binary.setFileName(fileName);
+		binary.setFileName(binary.getId() + (extension == null ? ".bin" : extension));
+		binary.setLength(length);
+		binary.setModifiedFrom(Binary.Columns.SYNC_TMP);
 
 		Uri uri = binary.saveOrUpdate(context);
 
 		try {
 			FileUtils.appendFile(context.getContentResolver(), data, uri);
-
-			ParcelFileDescriptor fd = r.openFileDescriptor(uri, "r");
-			binary.setLength(fd.getStatSize());
-			fd.close();
-
-			binary.setModified(null);
-			binary.saveOrUpdate(context);
 			return binary;
-		} catch (Exception e) {
+		} catch (IOException e1) {
 			if (uri != null) {
 				r.delete(uri, null, null);
 			}

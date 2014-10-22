@@ -155,9 +155,9 @@
 
 		<!--JDBC -->
 		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>${derby.version}</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
 		</dependency>
 
 		<!-- logging -->
@@ -222,7 +222,7 @@
 			<artifactId>org.eclipse.birt.report.engine.emitter.csv</artifactId>
 			<version>${medes.birt.version}</version>
 		</dependency>
-		
+
 		<!-- Embedded specific dependencies -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
@@ -269,7 +269,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<extraJvmArgs>-Dimogene.identity.path=/tmp/imogene/identity -Dimogene.binary.path=/tmp/imogene/binary -Xmx2048m
+					<extraJvmArgs>-Dimogene.identity.path=/tmp/imogene/identity
+						-Dimogene.binary.path=/tmp/imogene/binary -Xmx2048m
 						-XX:MaxPermSize=512m</extraJvmArgs>
 					<runTarget>TBLabWebIndex.jsp</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
@@ -391,7 +392,8 @@ org.eclipse.jdt.apt.reconcileEnabled=true]]>
 						</file>
 						<file>
 							<name>.settings/org.eclipse.jdt.core.prefs</name>
-							<!-- instead of doing this add org.eclipse.jdt.core.compiler.processAnnotations=enabled to the file directly -->
+							<!-- instead of doing this add org.eclipse.jdt.core.compiler.processAnnotations=enabled 
+								to the file directly -->
 							<content>
 								<![CDATA[org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
 eclipse.preferences.version=1
@@ -455,7 +457,8 @@ warSrcDirIsOutput=false]]>
 
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>

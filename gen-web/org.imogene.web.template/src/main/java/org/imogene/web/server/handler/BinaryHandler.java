@@ -29,14 +29,6 @@ public class BinaryHandler {
 	 */
 	@Transactional
 	public void saveOrUpdateBinary(Binary bean) {
-		ImogActor actor = HttpSessionUtil.getCurrentUser();
-
-		bean.setCreated(new Date(systemUtil.getCurrentTimeMillis()));
-		bean.setCreatedBy(actor.getLogin());
-		bean.setModified(new Date(systemUtil.getCurrentTimeMillis()));
-		bean.setModifiedBy(actor.getLogin());
-		bean.setModifiedFrom(systemUtil.getTerminal());
-
 		dao.saveOrUpdate(bean, true);
 	}
 

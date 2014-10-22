@@ -19,8 +19,11 @@ import fr.medes.android.database.sqlite.stmt.Where;
 
 import org.imogene.android.Constants.Extras;
 import org.imogene.android.app.FieldFlipperActivity;
+import org.imogene.android.common.binary.Binary;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.notification.NotificationController;
+import org.imogene.android.preference.Preferences;
+import org.imogene.android.sync.SyncManager;
 import org.imogene.android.util.DatabaseUtils;
 import org.imogene.android.util.IamLost;
 import org.imogene.android.widget.field.FieldFlipper;
@@ -198,11 +201,16 @@ public class «name.toFirstUpper()-»Wizard extends FieldFlipperActivity implement
 	}
 	
 	private void save() {
-		«EXPAND android::template::EditorUtils::saveNestedForm FOREACH groups.fields-»
+		«EXPAND android::template::EditorUtils::updateAssociatedEntities FOREACH groups.fields-»
 		mEntity.prepareForSave(this);
 		Uri uri = mEntity.saveOrUpdate(this);
 		if (uri != null) {
 			Toast.makeText(this, R.string.«name.toLowerCase()»_des_registered, Toast.LENGTH_SHORT).show();
+
+			if (Preferences.getPreferences(this).isSyncOnSaveEnabled()) {
+				SyncManager.startManualSync(this);
+			}
+
 			setResult(RESULT_OK, new Intent().setData(uri));
 			finish();
 		} else {

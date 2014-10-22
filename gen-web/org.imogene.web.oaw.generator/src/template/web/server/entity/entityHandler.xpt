@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.imogene.«projectName.toLowerCase()».domain.dao.*;
 import org.imogene.«projectName.toLowerCase()».domain.entity.*;
+import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.criteria.ImogConjunction;
@@ -141,7 +142,7 @@ public class «name.toFirstUpper()»Handler {
 			
 			«EXPAND updateChilds("entity") FOREACH groups.fields-»
 			
-			«EXPAND removeFromParent FOREACH groups.fields-»	
+			«EXPAND removeFromParent FOREACH groups.fields-»
 		
 			dao.saveOrUpdate(entity, isNew);				
 		}
@@ -610,6 +611,12 @@ public class «name.toFirstUpper()»Handler {
 
 «REM» «ENDREM»
 «DEFINE updateChilds(String entityName) FOR FieldEntity-»«ENDDEFINE»
+«DEFINE updateChilds(String entityName) FOR BinaryField-»
+if («entityName».get«name.toFirstUpper()»() != null && «entityName».get«name.toFirstUpper()»().getModified() == null) {
+	Binary binary = «entityName».get«name.toFirstUpper()»();
+	handlerHelper.prepare(binary);
+}			
+«ENDDEFINE-»
 «DEFINE updateChilds(String entityName) FOR RelationFieldEntity-»
 «IF nestedForm-»
 	// manage related «name.toFirstLower()»

@@ -19,6 +19,7 @@ import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.server.handler.BinaryHandler;
+import org.imogene.web.server.handler.HandlerHelper;
 import org.imogene.web.server.servlet.util.MediaConverter;
 import org.imogene.web.server.servlet.util.PhotoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 	@Qualifier(value = "binaryHandler")
 	private BinaryHandler binaryHandler;
 
+	@Autowired
+	private HandlerHelper handlerHelper;
+
 	/**
 	 * Copy the uploaded file in the correct folder, Create the binary entity associated.
 	 */
@@ -53,6 +57,8 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 					binary.setContentType(item.getContentType());
 					binary.setLength(item.getSize());
 					binary.setFileName(item.getName());
+					handlerHelper.prepare(binary);
+					binary.setModified(null);
 					binaryHandler.saveOrUpdateBinary(binary);
 					/* binary file creation */
 					File localFile = getLocalFile(item.getName(), entityId);

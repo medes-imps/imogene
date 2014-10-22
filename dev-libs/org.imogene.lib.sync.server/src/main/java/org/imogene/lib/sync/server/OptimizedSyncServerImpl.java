@@ -19,7 +19,6 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.entity.ImogEntity;
 import org.imogene.lib.common.model.CardEntity;
-import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.BeanKeyGenerator;
 import org.imogene.lib.sync.handler.DataHandlerManager;

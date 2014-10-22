@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.lib.common.criteria.BasicCriteria;
 import org.imogene.lib.common.entity.ImogActor;
@@ -56,6 +57,8 @@ public class BasicHandlerHelper implements HandlerHelper {
 			cardEntityHandler.save((CardEntity) bean, isNew);
 		} else if (bean instanceof FieldGroup) {
 			fieldGroupHandler.save((FieldGroup) bean, isNew);
+		} else if (bean instanceof Binary) {
+			genericHandler.save((Binary) bean);
 		}
 	}
 

@@ -14,6 +14,8 @@ public interface Binary extends ImogBean {
 
 		public static final Uri CONTENT_URI = ContentUrisUtils.buildUriForFragment(Constants.AUTHORITY, TABLE_NAME);
 
+		public static final String SYNC_TMP = "temporary";
+
 		public static final String LENGTH = "length";
 		public static final String CONTENT_TYPE = "contentType";
 		public static final String FILE_NAME = "fileName";

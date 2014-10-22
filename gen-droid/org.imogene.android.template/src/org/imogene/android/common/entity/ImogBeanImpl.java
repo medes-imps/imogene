@@ -6,7 +6,6 @@ import org.imogene.android.database.DatabaseCache;
 import org.imogene.android.database.ImogBeanCursor;
 import org.imogene.android.database.sqlite.ImogOpenHelper;
 import org.imogene.android.preference.Preferences;
-import org.imogene.android.sync.SyncManager;
 import org.imogene.android.util.BeanKeyGenerator;
 import org.imogene.android.util.NTPClock;
 
@@ -256,11 +255,6 @@ public abstract class ImogBeanImpl implements ImogBean {
 		}
 
 		postCommit(context);
-
-		Preferences prefs = Preferences.getPreferences(context);
-		if (prefs.isSyncOnSaveEnabled() && prefs.getSyncTerminal().equals(modifiedFrom)) {
-			SyncManager.startManualSync(context);
-		}
 
 		return uri;
 	}

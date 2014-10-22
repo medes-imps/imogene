@@ -48,9 +48,6 @@
 	<!--  Initialize the DataHandler Manager -->	
 	<bean id="dataHandlerManager" class="org.imogene.«projectName.toLowerCase()».server.sync.handler.DataHandlerManagerImpl"/>
 
-	<!-- Entity helper -->
-	<bean id="entityHelper" class="org.imogene.«projectName.toLowerCase()».server.sync.EntityHelperImpl"/>
-	
 	<!-- Entity Handlers -->
 	<bean id="scDefaultUserHandler" class="org.imogene.lib.sync.handler.DefaultUserHandlerImpl" >
 		<property name="dao" ref="defaultUserDao"/>
@@ -103,7 +100,6 @@
 		<property name="serializer" ref="xmlSerializer" />
 		<property name="syncHistoryDao" ref="syncHistoryDao" />
 		<property name="genericDao" ref="genericDao" />
-		<property name="entityHelper" ref="entityHelper" />
 		<property name="encryptionManager" ref="encryptionManager" />
 	</bean>
 

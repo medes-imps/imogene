@@ -15,8 +15,8 @@
      «IF embedded == "true"-»
     <bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver" />
-		<property name="url" value="jdbc:derby:#{systemProperties['imogene.home']}/db/«projectName.toLowerCase()»;create=true" />
+		<property name="driverClassName" value="org.h2.Driver" />
+        <property name="url" value="jdbc:h2:#{systemProperties['imogene.home']}/h2/«projectName.toLowerCase()»;create=true" />
 		<property name="username" value="app" />
 		<property name="password" value="app" />
 	</bean>

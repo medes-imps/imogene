@@ -152,10 +152,18 @@
 
 
 
-«DEFINE saveNestedForm FOR FieldEntity-»
+«DEFINE updateAssociatedEntities FOR FieldEntity-»
 «ENDDEFINE»
 
-«DEFINE saveNestedForm FOR RelationFieldEntity-»
+«DEFINE updateAssociatedEntities FOR BinaryField-»
+if (mEntity.get«name.toFirstUpper()»() != null && Binary.Columns.SYNC_TMP.equals(mEntity.get«name.toFirstUpper()»().getModifiedFrom())) {
+	Binary binary = mEntity.get«name.toFirstUpper()»();
+	binary.prepareForSave(this);
+	binary.saveOrUpdate(this);
+}
+«ENDDEFINE»
+
+«DEFINE updateAssociatedEntities FOR RelationFieldEntity-»
 «IF nestedForm && cardinality == 1-»
 if (mEntity.get«name.toFirstUpper()»() != null) {
 	«entity.name.toFirstUpper()» nested = mEntity.get«name.toFirstUpper()»();
@@ -164,3 +172,5 @@ if (mEntity.get«name.toFirstUpper()»() != null) {
 }
 «ENDIF-»
 «ENDDEFINE»
+
+

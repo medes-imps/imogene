@@ -17,13 +17,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
 import org.imogene.encryption.EncryptionManager;
-import org.imogene.lib.common.binary.Binary;
-import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.dao.GenericDao;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.model.CardEntity;
-import org.imogene.lib.sync.EntityHelper;
 import org.imogene.lib.sync.client.OptimizedSyncClient;
 import org.imogene.lib.sync.client.SyncClient;
 import org.imogene.lib.sync.client.SynchronizationException;
@@ -47,7 +44,6 @@ public class SynchronizerImpl implements Synchronizer {
 	private GenericDao genericDao;
 	private DataHandlerManager dataManager;
 	private ImogSerializer serializer;
-	private EntityHelper entityHelper;
 	private EncryptionManager encryptionManager;
 	private File directory;
 
@@ -100,15 +96,6 @@ public class SynchronizerImpl implements Synchronizer {
 	 */
 	public void setSerializer(ImogSerializer serializer) {
 		this.serializer = serializer;
-	}
-
-	/**
-	 * Setter for bean injection.
-	 * 
-	 * @param entityHelper The {@link EntityHelper} implementation of the application.
-	 */
-	public void setEntityHelper(EntityHelper entityHelper) {
-		this.entityHelper = entityHelper;
 	}
 
 	public void setGenericDao(GenericDao genericDao) {
@@ -344,27 +331,9 @@ public class SynchronizerImpl implements Synchronizer {
 		List<CardEntity> synchronizables = actor.getSynchronizables();
 		List<ImogBean> entities = new Vector<ImogBean>();
 
-		boolean allowBinaries = false;
-
 		for (CardEntity classEntity : synchronizables) {
-			if (BinaryFile.class.getName().equals(classEntity.getClassName())) {
-				allowBinaries = true;
-			} else {
-				ImogBeanHandler<?> dao = dataManager.getHandler(classEntity.getClassName());
-				entities.addAll(dao.loadModified(lastSynchro, null));
-			}
-		}
-
-		if (allowBinaries) {
-			List<Binary> binaries = null;
-			if (lastSynchro == null) {
-				binaries = entityHelper.getAssociatedBinaries(entities);
-			} else {
-				binaries = entityHelper.getAssociatedBinariesModified(entities, lastSynchro);
-			}
-			if (binaries != null && binaries.size() > 0) {
-				entities.addAll(binaries);
-			}
+			ImogBeanHandler<?> dao = dataManager.getHandler(classEntity.getClassName());
+			entities.addAll(dao.loadModified(lastSynchro, null));
 		}
 
 		logger.debug("Number of entities to send : " + entities.size());
