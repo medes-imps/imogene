@@ -11,6 +11,7 @@ import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
 import org.imogene.web.client.ui.table.pager.ImogSimplePager;
 import org.imogene.web.client.util.FilterCriteria;
 import org.imogene.web.client.util.LocalSession;
+import org.imogene.web.client.util.ProfileUtil;
 import org.imogene.web.shared.ImogRequestFactory;
 import org.imogene.web.shared.proxy.ImogBeanProxy;
 import org.imogene.web.shared.proxy.criteria.BasicCriteriaProxy;
@@ -36,6 +37,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.AsyncHandler;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.Header;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
@@ -102,6 +104,18 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 		this.itemByPage = itemByPage;
 
 		table = new ImogDataGrid<T>(itemByPage, resource);
+
+		if (ProfileUtil.isAdmin()) {
+			RowStyles<T> deletedEntityStyle = new RowStyles<T>() {
+				@Override
+				public String getStyleNames(T row, int rowIndex) {
+					if (row != null && row.getDeleted() != null)
+						return "dataGridDeletedRow";
+					return null;
+				}
+			};
+			table.setRowStyles(deletedEntityStyle);
+		}
 
 		initWidget(imogDynaTableUiBinder.createAndBindUi(this));
 
@@ -290,13 +304,13 @@ public abstract class ImogDynaTable<T extends ImogBeanProxy> extends Composite {
 							pager.previousPage();
 					}
 				} else {
-//					// Scrolling down
-//					int maxScrollBottom = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
-//					if (lastScrollPos >= maxScrollBottom) {
-//						// We are near the end, so next page.
-//						if (pager.hasNextPage())
-//							pager.nextPage();
-//					}
+					// // Scrolling down
+					// int maxScrollBottom = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
+					// if (lastScrollPos >= maxScrollBottom) {
+					// // We are near the end, so next page.
+					// if (pager.hasNextPage())
+					// pager.nextPage();
+					// }
 				}
 			}
 		}));

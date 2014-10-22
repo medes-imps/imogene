@@ -177,4 +177,9 @@
 .dataGridKeyboardSelectedCell {
 	
 }
-@external .dataGridHeader, .dataGridSortableHeader;
+
+.dataGridDeletedRow {
+	background: #f5d2d2;
+}
+
+@external .dataGridHeader, .dataGridSortableHeader, .dataGridDeletedRow;

@@ -20,6 +20,8 @@ import org.imogene.«projectName.toLowerCase()».shared.proxy.*;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.lib.common.constants.CriteriaConstants;
 import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.ui.field.widget.ImogBooleanAsRadio;
+import org.imogene.web.client.i18n.BaseNLS;
 import org.imogene.web.client.ui.field.widget.ImogBooleanAsList;
 import org.imogene.web.client.ui.table.filter.ImogFilterBox;
 import org.imogene.web.client.ui.table.filter.ImogFilterPanel;
@@ -35,7 +37,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 «IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 import org.imogene.admin.client.i18n.AdminNLS;
-import org.imogene.web.client.util.ProfileUtil;
 «ENDIF-»
 
 
@@ -58,6 +59,9 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		«EXPAND declareFilter("") FOR c-»
 		«ENDFOREACH -»
 	«ENDIF-»
+	
+	private ImogBooleanAsRadio deletedEntityBox;
+	private ImogFilterBox deletedEntityBoxFilterBox;
 
 	«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 	private TextBox loginBox;
@@ -84,6 +88,7 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		«EXPAND resetWidget("") FOR c-»
 		«ENDFOREACH »
 	«ENDIF-»	
+	deletedEntityBox.setValue(false);
 
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
 		loginBox.setValue(null);
@@ -111,6 +116,14 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		loginFilterBox.setFilterLabel(AdminNLS.constants().imogActor_field_login());
 		addTableFilter(loginFilterBox);
 		«ENDIF-»
+		
+		deletedEntityBox = new ImogBooleanAsRadio();
+		deletedEntityBox.isStrict(true);
+		deletedEntityBox.setEnabled(true);
+		deletedEntityBox.setValue(false);
+		deletedEntityBoxFilterBox = new ImogFilterBox(deletedEntityBox);
+		deletedEntityBoxFilterBox.setFilterLabel(BaseNLS.constants().entity_field_deleted());
+		addTableFilter(deletedEntityBoxFilterBox);		
 	}
 
 	@Override
@@ -141,7 +154,22 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		loginCrit.setValue(loginBox.getValue());
 		loginCrit.setValueDisplayName(loginBox.getValue());
 		criteria.add(loginCrit);
-		«ENDIF-»		
+		«ENDIF-»
+		
+		FilterCriteria deletedEntityCrit = new FilterCriteria();
+		deletedEntityCrit.setField("deleted");
+		deletedEntityCrit.setFieldDisplayName(BaseNLS.constants().entity_field_deleted());
+		if (deletedEntityBox.getValue()) {
+			deletedEntityCrit.setOperation(CriteriaConstants.OPERATOR_ISNOTNULL);
+			deletedEntityCrit.setValue("true");
+			deletedEntityCrit.setValueDisplayName(BaseNLS.constants().boolean_true());
+		} else {
+			deletedEntityCrit.setOperation(CriteriaConstants.OPERATOR_ISNULL);
+			deletedEntityCrit.setValue("false");
+			deletedEntityCrit.setValueDisplayName(BaseNLS.constants().boolean_false());
+		}
+		criteria.add(deletedEntityCrit);
+						
 		return criteria;
 	}
 	
@@ -164,9 +192,12 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 	«ENDIF-»
 			
 		«IF applicationType.matches(adminType) && Actor.isAssignableFrom(metaType)-»
-		if (!ProfileUtil.isAdmin())
+		if (!AccessManager.isAdmin())
 			loginFilterBox.setVisible(false);
-		«ENDIF-»		
+		«ENDIF-»	
+		
+		if (!AccessManager.isAdmin())
+			deletedEntityBoxFilterBox.setVisible(false);	
 	}	
 }
 «ENDLET-»
