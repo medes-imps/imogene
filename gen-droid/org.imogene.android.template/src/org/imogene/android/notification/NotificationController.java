@@ -310,7 +310,7 @@ public class NotificationController {
 				return;
 			}
 			QueryBuilder builder = ImogOpenHelper.getHelper().queryBuilder(info.contentUri);
-			builder.where().eq(ImogBean.Columns.FLAG_READ, 0);
+			builder.where().eq(ImogBean.Columns.FLAG_READ, 0).and().isNull(ImogBean.Columns.DELETED);
 			builder.orderBy(ImogBean.Columns.MODIFIED, false);
 			ImogBeanCursor<?> c = (ImogBeanCursor<?>) builder.query();
 			if (c == null) {
