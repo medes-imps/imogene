@@ -15,10 +15,10 @@
      «IF embedded == "true"-»
     <bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:#{systemProperties['imogene.home']}/h2/«projectName.toLowerCase()»;create=true" />
-		<property name="username" value="app" />
-		<property name="password" value="app" />
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
 	</bean>
      «ELSE-»
      <!-- C3PO data source -->
@@ -74,7 +74,7 @@
 	
 	<!-- BinaryFile manager -->
 	<bean id="binaryFileManager" class="org.imogene.lib.common.binary.file.BinaryFileManager" factory-method="getInstance">
-		<property name="binaryPath" value="«IF embedded == "true"»#{systemProperties['imogene.home']}/binaries«ELSE»${binary.path}«ENDIF»"/>
+		<property name="binaryPath" value="${binary.path}"/>
 	</bean>
 	
 	<!-- Binary dao -->	

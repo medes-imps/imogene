@@ -3,11 +3,15 @@
 «FILE "application.properties"»
 «IF embedded == "true"-»
 # JDBC properties
-jdbc.driverClassName=org.apache.derby.jdbc.ClientDriver
-jdbc.url=jdbc:derby://localhost:1493/«name.toLowerCase()»;create=true
-jdbc.username=admin
-jdbc.password=admin
-hibernate.dialect=org.hibernate.dialect.DerbyDialect
+jdbc.driverClassName=org.h2.Driver
+jdbc.url=jdbc:h2:#{systemProperties['imogene.home']}/h2/«name.toLowerCase()»;create=true
+jdbc.username=app
+jdbc.password=app
+hibernate.dialect=org.hibernate.dialect.H2Dialect
+
+# The binary path 
+# WARNING : On windows, please use '/' in place of '\'
+binary.path=#{systemProperties['imogene.home']}/binaries
 
 # NTP job properties
 ntp.host=africa.pool.ntp.org
@@ -27,6 +31,7 @@ binary.path=«binariesPath»
 # Notification properties
 notifier.server=«notifierUrl»
 «ENDIF-»
+
 # The command line used to convert the video file to the flv format.
 # ie : ffmpeg -i %IN% -f flv %OUT%
 # WARNING : On windows, if replace '\' by "/" in your path.

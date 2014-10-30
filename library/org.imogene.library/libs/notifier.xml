@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <library desc="Imogene notifier library" id="org.imogene.library.notifier"
 	name="Imogene notifier library">
-	<jar file="common-library-2.1.0-SNAPSHOT.jar" />
+	<jar file="common-library-2.2.0-SNAPSHOT.jar" />
 	<jar file="hibernate-jpa-2.0-api-1.0.1.Final.jar" />
 	<jar file="hibernate-entitymanager-4.2.3.Final.jar" />
 	<jar file="jboss-logging-3.1.0.GA.jar" />

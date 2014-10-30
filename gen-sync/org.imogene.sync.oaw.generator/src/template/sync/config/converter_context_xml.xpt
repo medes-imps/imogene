@@ -145,6 +145,7 @@
 	<!-- Initialize the XML serializer -->
 	<bean id="xmlSerializer" class="org.imogene.lib.sync.serializer.xml.ImogXmlSerializer">
 		<property name="dataHandlerManager" ref="dataHandlerManager"/>
+		<property name="binaryOperation" ref="binaryOperation"/>
 		<property name="propertyConverters">
 			<set>
 				<ref bean="dynFieldInstanceTemplateConverter"/>

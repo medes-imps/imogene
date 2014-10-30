@@ -5,35 +5,31 @@ import gwtupload.shared.UConsts;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.IOUtils;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.file.BinaryFile;
+import org.imogene.lib.common.binary.file.BinaryFileManager;
+import org.imogene.lib.media.BinaryOperation;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.server.handler.BinaryHandler;
 import org.imogene.web.server.handler.HandlerHelper;
-import org.imogene.web.server.servlet.util.MediaConverter;
-import org.imogene.web.server.servlet.util.PhotoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public class BinaryUploadServiceImpl implements BinaryUploadService {
 
 	private static final String BINARY_SHORTNAME = "BIN";
-	private static final String DEFAULT_DIRECTORY = "/binaries/";
-	private String binaryPath = DEFAULT_DIRECTORY;
 
 	@Autowired
-	@Qualifier(value = "videoConverter")
-	private MediaConverter videoConverter;
+	@Qualifier(value = "binaryOperation")
+	private BinaryOperation binaryOperation;
 
 	@Autowired
 	@Qualifier(value = "binaryHandler")
@@ -64,20 +60,7 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 					File localFile = getLocalFile(item.getName(), entityId);
 					item.write(localFile);
 					/* binary file conversion to flv */
-					if (item.getContentType().contains("video")) {
-						File flvFile = new File(binaryPath + "/flv/" + localFile.getName() + ".flv");
-						if (!item.getContentType().contains("x-flash-video")) {
-							videoConverter.convert(localFile, new File(binaryPath + "flv/" + localFile.getName()
-									+ ".flv"), item.getContentType());
-						} else {
-							copy(new FileInputStream(localFile), new FileOutputStream(flvFile));
-						}
-					}
-					/* image file thumbnail */
-					if (item.getContentType().contains("image")) {
-						File thumbnail = new File(binaryPath + "/thumb_" + localFile.getName());
-						PhotoConverter.convert(localFile, thumbnail, item.getContentType());
-					}
+					binaryOperation.operate(binary);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -94,28 +77,16 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 		String entityId = request.getParameter(UConsts.PARAM_SHOW);
 		Binary binary = binaryHandler.getBinary(entityId);
 		if (binary != null) {
-			File thumbFile = getLocalThumbnail(binary);
+			File thumbFile = BinaryFileManager.getInstance().buildThumbFilePath(binary);
 			response.setHeader("Content-Disposition", "attachment; filename=\"" + binary.getFileName() + "\"");
 			response.setContentType(binary.getContentType());
 			response.setContentLength((int) thumbFile.length());
-			copy(new FileInputStream(thumbFile), response.getOutputStream());
+			FileInputStream fis = new FileInputStream(thumbFile);
+			IOUtils.copy(fis, response.getOutputStream());
+			fis.close();
 		} else {
 			response.sendError(404);
 		}
-	}
-
-	/**
-	 * Set the binary path of the application
-	 */
-	public void setBinaryPath(String path) {
-		if (path != null)
-			binaryPath = path;
-		if (!binaryPath.endsWith("/"))
-			binaryPath = binaryPath + "/";
-		/* flv directory */
-		File flvDir = new File(binaryPath + "flv/");
-		if (!flvDir.exists())
-			flvDir.mkdirs();
 	}
 
 	/**
@@ -126,46 +97,7 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 	 */
 	private File getLocalFile(String remoteName, String entityId) {
 		String basename = (new File(remoteName)).getName();
-		return new File(binaryPath + entityId + "-" + basename);
-	}
-
-	/**
-	 * Copy the binary file to the http response output stream
-	 * 
-	 * @param in input stream
-	 * @param out output stream
-	 * @throws IOException
-	 */
-	private static void copy(InputStream in, OutputStream out) throws IOException {
-		try {
-			byte[] buffer = new byte[1024];
-			int nrOfBytes = -1;
-			while ((nrOfBytes = in.read(buffer)) != -1) {
-				out.write(buffer, 0, nrOfBytes);
-			}
-			out.flush();
-		} finally {
-			try {
-				in.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			try {
-				out.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Get the local thumbnail
-	 * 
-	 * @param remoteName the remote name
-	 * @return the corresponding file.
-	 */
-	private File getLocalThumbnail(Binary binary) {
-		return new File(binaryPath + "/thumb_" + binary.getId() + "-" + binary.getFileName());
+		return BinaryFileManager.getInstance().buildFilePath(entityId, basename);
 	}
 
 }

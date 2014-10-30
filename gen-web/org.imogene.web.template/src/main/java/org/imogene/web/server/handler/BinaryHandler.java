@@ -1,16 +1,12 @@
 package org.imogene.web.server.handler;
 
 import java.io.File;
-import java.util.Date;
 
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.BinaryDao;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.binary.file.BinaryFileManager;
-import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.util.SystemUtil;
 import org.imogene.web.server.util.BinaryDesc;
-import org.imogene.web.server.util.HttpSessionUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -21,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BinaryHandler {
 
 	private BinaryDao<Binary> dao;
-	private SystemUtil systemUtil;
 
 	/**
 	 * 
@@ -69,12 +64,11 @@ public class BinaryHandler {
 	public void deleteBinary(Binary bean) {
 		// Delete attached file
 		BinaryFile binary = (BinaryFile) bean;
-		File attachedFile = new File(BinaryFileManager.getInstance()
-				.buildFilePath(binary.getId(), binary.getFileName()));
+		File attachedFile = BinaryFileManager.getInstance().buildFilePath(binary.getId(), binary.getFileName());
 		attachedFile.delete();
 
-		File attachedThumbFile = new File(BinaryFileManager.getInstance().buildFilePath("thumb_" + binary.getId(),
-				binary.getFileName()));
+		File attachedThumbFile = BinaryFileManager.getInstance().buildFilePath("thumb_" + binary.getId(),
+				binary.getFileName());
 		attachedThumbFile.delete();
 
 		// Delete binary bean
@@ -88,15 +82,6 @@ public class BinaryHandler {
 	 */
 	public void setDao(BinaryDao<Binary> binaryDao) {
 		this.dao = binaryDao;
-	}
-
-	/**
-	 * Setter for bean injection.
-	 * 
-	 * @param systemUtil
-	 */
-	public void setSystemUtil(SystemUtil systemUtil) {
-		this.systemUtil = systemUtil;
 	}
 
 }

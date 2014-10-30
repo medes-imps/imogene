@@ -77,7 +77,26 @@
 	<bean id="«e.name.toFirstLower()»Handler" class="org.imogene.«projectName.toLowerCase()».handler.«e.name.toFirstUpper()»HandlerImpl" >
 		<property name="filter" ref="beanFilter" />
 	</bean>
-	«ENDFOREACH»	
+	«ENDFOREACH»
+
+	<!-- Video converter -->
+	<bean name="videoConverter" class="org.imogene.lib.media.VideoConverter">
+		<property name="commandLine" value="${converter.video}" />
+	</bean>
+
+	<!-- Audio converter -->
+	<bean name="audioConverter" class="org.imogene.lib.media.AudioConverter">
+		<property name="commandLine" value="${converter.video}" />
+	</bean>
+
+	<!-- Photo converter -->
+	<bean name="photoConverter" class="org.imogene.lib.media.PhotoConverter" />
+
+	<bean id="binaryOperation" class="org.imogene.lib.media.BinaryOperation">
+		<property name="audioConverter" ref="audioConverter" />
+		<property name="videoConverter" ref="videoConverter" />
+		<property name="photoConverter" ref="photoConverter" />
+	</bean>
 	
 	<!-- Synchronization server -->
 	<bean id="syncServer" class="org.imogene.lib.sync.server.OptimizedSyncServerImpl">
@@ -99,34 +118,6 @@
 		<property name="syncServer" ref="syncServer"/>	
 	</bean>
 	
-  	<!-- Binary post operations catcher -->
-  	<!-- video conversion -->
-  	<bean id="videoConverter" class="org.imogene.sync.video.VideoConverter">
-  		<property name="commandLine" value="${converter.video}"/>
-  	</bean>
-  	<bean id="videoToFlv" class="org.imogene.sync.video.VideoToFlvOperation" />
-  	
-  	<!-- audio conversion -->
-  	<bean id="audioConverter" class="org.imogene.sync.audio.AudioConverter">
-  		<property name="commandLine" value="${converter.audio}"/>
-  	</bean>
-  	<bean id="audioToMp3" class="org.imogene.sync.audio.AudioToMp3Operation"/>
-  	
-  	<!-- photo thumbnail -->
-  	<bean id="photoToThumb" class="org.imogene.sync.photo.PhotoToThumbnailOperation"/>
-  	
-  	<!-- Binary post operations catcher -->
-  	<bean id="imogOperationCatcher" class="org.imogene.lib.sync.server.binary.BinaryOperationCatcher" factory-method="get">
-  		<property name="operations">
-    		<set>
-      			<!-- place your operations implemented binaryOperation here, like the sample bellow -->
-      			<ref bean="videoToFlv"/>
-      			<ref bean="audioToMp3"/>
-      			<ref bean="photoToThumb"/>
-    		</set>
-  		</property>
-  	</bean>	
-  	
   	<!--  Spring-security -->	
 	<bean id="imogSecurityDetailService" class="org.imogene.sync.security.SecurityDetailService" />
 	

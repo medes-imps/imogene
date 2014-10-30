@@ -1,10 +1,9 @@
-package org.imogene.sync.audio;
+package org.imogene.lib.media;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.imogene.sync.MediaConverter;
 
 public class AudioConverter implements MediaConverter {
 

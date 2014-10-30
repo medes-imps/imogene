@@ -49,17 +49,27 @@
     </bean> 
 		
 	<!-- Video converter -->
-	<bean name="videoConverter" class="org.imogene.web.server.servlet.util.VideoConverter">
-		<property name="commandLine" value="${converter.video}"/>
+	<bean name="videoConverter" class="org.imogene.lib.media.VideoConverter">
+		<property name="commandLine" value="${converter.video}" />
+	</bean>
+
+	<!-- Audio converter -->
+	<bean name="audioConverter" class="org.imogene.lib.media.AudioConverter">
+		<property name="commandLine" value="${converter.video}" />
+	</bean>
+
+	<!-- Photo converter -->
+	<bean name="photoConverter" class="org.imogene.lib.media.PhotoConverter" />
+
+	<bean id="binaryOperation" class="org.imogene.lib.media.BinaryOperation">
+		<property name="audioConverter" ref="audioConverter" />
+		<property name="videoConverter" ref="videoConverter" />
+		<property name="photoConverter" ref="photoConverter" />
 	</bean>
 	
 	<!-- Services -->
-	<bean id="binaryDownloadService" class="org.imogene.web.server.service.BinaryDownloadServiceImpl" >
-		<property name="binaryPath" value="«IF embedded == "true"»#{systemProperties['imogene.home']}/binaries«ELSE»${binary.path}«ENDIF»"/>
-	</bean>	
-	<bean id="binaryUploadService" class="org.imogene.web.server.service.BinaryUploadServiceImpl" >
-		<property name="binaryPath" value="«IF embedded == "true"»#{systemProperties['imogene.home']}/binaries«ELSE»${binary.path}«ENDIF»"/>
-	</bean>
+	<bean id="binaryDownloadService" class="org.imogene.web.server.service.BinaryDownloadServiceImpl" />
+	<bean id="binaryUploadService" class="org.imogene.web.server.service.BinaryUploadServiceImpl" />
 	
 	<!-- Handlers -->
 
@@ -71,7 +81,6 @@
 	<!-- Binary handler -->		
 	<bean id="binaryHandler" class="org.imogene.web.server.handler.BinaryHandler">
 		<property name="dao" ref="binaryDao" />
-		<property name="systemUtil" ref="systemUtil" />
 	</bean>
 
 	<!-- Session handler -->	

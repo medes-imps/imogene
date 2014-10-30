@@ -47,8 +47,8 @@ public class WebGenerationAction implements IObjectActionDelegate {
 			wizard.addPropertiesPage(specificWizardPage);
 			wizard.setWindowTitle("Generation of an Admin project");
 			wizard.setSelectedProject(mSelectedProject);
-			wizard.setArchive(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
-					"template-site/template.zip"), false));
+			wizard.setArchive(FileLocator.openStream(org.imogene.web.contrib.Activator.getDefault().getBundle(),
+					new Path("template-site/template.zip"), false));
 			wizard.setDefinition(FileLocator.openStream(Activator.getDefault().getBundle(), new Path(
 					"template-site/templates.xml"), false));
 			wizard.setWorkflow("workflow/generatorAdmin.mwe");

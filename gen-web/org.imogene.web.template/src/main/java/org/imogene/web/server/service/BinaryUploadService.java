@@ -16,6 +16,4 @@ public interface BinaryUploadService {
 
 	public void getUploadedFile(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-	public void setBinaryPath(String path);
-
 }

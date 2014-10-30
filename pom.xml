@@ -3,7 +3,7 @@
 	<groupId>org.imogene.lib</groupId>
 	<artifactId>imogene-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>2.1.0-SNAPSHOT</version>
+	<version>2.2.0-SNAPSHOT</version>
 	<name>Imogene Parent Module</name>
 
 	<properties>
@@ -65,6 +65,7 @@
 				<module>dev-libs/org.imogene.lib.sync.common</module>
 				<module>dev-libs/org.imogene.lib.sync.client</module>
 				<module>dev-libs/org.imogene.lib.sync.server</module>
+                                <module>dev-libs/org.imogene.lib.media</module>
 			</modules>
 			<build>
 				<resources>
@@ -189,9 +190,7 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<copy
-									file="${project.build.directory}/${project.build.finalName}.jar"
-									tofile="../../library/org.imogene.library/libs/jars/${project.build.finalName}.jar" />
+								<copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="../../library/org.imogene.library/libs/jars/${project.build.finalName}.jar" />
 							</tasks>
 						</configuration>
 					</execution>

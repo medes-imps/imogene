@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
+import org.imogene.lib.media.BinaryOperation;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.DataHandlerManager;
 import org.imogene.lib.sync.handler.ImogBeanHandler;
@@ -37,6 +38,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * Static class that helps to the bean XML serialization.
+ * 
  * @author MEDES-IMPS
  */
 public class ImogXmlSerializer implements ImogSerializer {
@@ -46,6 +48,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 	private XStream xstream;
 
 	private DataHandlerManager dataHandlerManager;
+	private BinaryOperation binaryOperation;
 
 	public ImogXmlSerializer() {
 		xstream = new XStream(new DomDriver("UTF-8"));
@@ -61,6 +64,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 
 	/**
 	 * Serialize a synchronizable entity.
+	 * 
 	 * @param entity the entity to serialize.
 	 * @return the string xml representation of the entity.
 	 */
@@ -73,8 +77,8 @@ public class ImogXmlSerializer implements ImogSerializer {
 	}
 
 	/**
-	 * serialize a list of objects, and write the result in the specified output
-	 * stream.
+	 * serialize a list of objects, and write the result in the specified output stream.
+	 * 
 	 * @param entities List of the entities to serialize
 	 * @param xml output stream where to write the result.
 	 * @throws IOException If an error occured writing to the stream.
@@ -98,6 +102,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 
 	/**
 	 * Unserialize an object represented by the specified xml stream.
+	 * 
 	 * @param xml the xml stream
 	 * @return the object
 	 */
@@ -109,6 +114,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 
 	/**
 	 * Unserialize severals entity enclosed in an xml document as string.
+	 * 
 	 * @param xml the string xml document
 	 * @return the list of the object unserialized
 	 */
@@ -177,7 +183,11 @@ public class ImogXmlSerializer implements ImogSerializer {
 					if (save(entity, user)) {
 						j++;
 						if (entity instanceof Binary) {
-							
+							try {
+								binaryOperation.operate((Binary) entity);
+							} catch (Exception e) {
+								logger.error("Error converting binary", e);
+							}
 						}
 					}
 				}
@@ -197,7 +207,8 @@ public class ImogXmlSerializer implements ImogSerializer {
 		// exist.getModified().before(entity.getModified())
 		if (exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom())
 				|| exist.getModified().before(entity.getModified())) {
-			handler.saveOrUpdate(entity, user, exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom()));
+			handler.saveOrUpdate(entity, user,
+					exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom()));
 			return true;
 		}
 		return false;
@@ -207,6 +218,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 
 	/**
 	 * Set the DataHandlerManager to use
+	 * 
 	 * @param dataHandlerManager the DataHandlerManager
 	 */
 	public void setDataHandlerManager(DataHandlerManager dataHandlerManager) {
@@ -214,13 +226,23 @@ public class ImogXmlSerializer implements ImogSerializer {
 	}
 
 	/**
+	 * 
+	 * @param binaryOperation
+	 */
+	public void setBinaryOperation(BinaryOperation binaryOperation) {
+		this.binaryOperation = binaryOperation;
+	}
+
+	/**
 	 * Setter for spring injection
+	 * 
 	 * @param converters
 	 */
 	public void setPropertyConverters(Set<PropertyConverter> converters) {
 		for (PropertyConverter conv : converters) {
 			try {
-				xstream.registerLocalConverter(Class.forName(conv.getClassName()), conv.getPropertyName(), conv.getConverter());
+				xstream.registerLocalConverter(Class.forName(conv.getClassName()), conv.getPropertyName(),
+						conv.getConverter());
 			} catch (ClassNotFoundException e) {
 				logger.error(e.getMessage());
 			}
@@ -229,6 +251,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 
 	/**
 	 * Setter for spring injection
+	 * 
 	 * @param converter
 	 */
 	public void setConverters(Set<Converter> converters) {
@@ -239,6 +262,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 
 	/**
 	 * Setter for spring injection
+	 * 
 	 * @param omit
 	 */
 	public void setOmittedProperties(Set<OmittedProperty> omit) {
@@ -250,5 +274,5 @@ public class ImogXmlSerializer implements ImogSerializer {
 			}
 		}
 	}
-	
+
 }

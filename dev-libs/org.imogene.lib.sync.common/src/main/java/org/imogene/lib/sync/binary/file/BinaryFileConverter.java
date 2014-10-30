@@ -193,7 +193,7 @@ public class BinaryFileConverter implements Converter {
 		reader.moveDown();
 		if (reader.hasMoreChildren()) {
 			try {
-				File resultFile = new File(BinaryFileManager.getInstance().buildFilePath(id, fileName));
+				File resultFile = BinaryFileManager.getInstance().buildFilePath(id, fileName);
 				OutputStream out = new FileOutputStream(resultFile);
 
 				// write content from xml to temp file
