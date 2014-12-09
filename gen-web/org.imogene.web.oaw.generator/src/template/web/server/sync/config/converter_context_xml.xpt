@@ -144,7 +144,7 @@
 	</bean>
 	
 	<!-- Initialize the XML serializer -->
-	<bean id="xmlSerializer" class="org.imogene.lib.sync.serializer.xml.ImogXmlSerializer">
+	<bean id="xmlSerializer" class="org.imogene.lib.sync.client.serializer.xml.ImogXmlSerializerImpl">
 		<property name="dataHandlerManager" ref="dataHandlerManager"/>
 		<property name="binaryOperation" ref="binaryOperation"/>
 		<property name="propertyConverters">

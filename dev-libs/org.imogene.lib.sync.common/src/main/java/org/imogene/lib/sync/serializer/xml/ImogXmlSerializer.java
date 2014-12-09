@@ -25,7 +25,6 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.media.BinaryOperation;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.DataHandlerManager;
-import org.imogene.lib.sync.handler.ImogBeanHandler;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.serializer.ImogSerializer;
 import org.w3c.dom.Document;
@@ -41,13 +40,13 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * 
  * @author MEDES-IMPS
  */
-public class ImogXmlSerializer implements ImogSerializer {
+public abstract class ImogXmlSerializer implements ImogSerializer {
 
 	private Logger logger = Logger.getLogger("org.imogene.sync.serializer.xml");
 
 	private XStream xstream;
 
-	private DataHandlerManager dataHandlerManager;
+	protected DataHandlerManager dataHandlerManager;
 	private BinaryOperation binaryOperation;
 
 	public ImogXmlSerializer() {
@@ -199,20 +198,7 @@ public class ImogXmlSerializer implements ImogSerializer {
 		return j;
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T extends ImogBean> boolean save(T entity, ImogActor user) {
-		ImogBeanHandler<T> handler = (ImogBeanHandler<T>) dataHandlerManager.getHandler(entity.getClass());
-		ImogBean exist = handler.loadEntity(entity.getId());
-		// TODO implement synchronization policy instead of
-		// exist.getModified().before(entity.getModified())
-		if (exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom())
-				|| exist.getModified().before(entity.getModified())) {
-			handler.saveOrUpdate(entity, user,
-					exist == null || SyncConstants.SYNC_ID_SYS.equals(exist.getModifiedFrom()));
-			return true;
-		}
-		return false;
-	}
+	abstract protected <T extends ImogBean> boolean save(T entity, ImogActor user);
 
 	/* Setters for bean injection */
 
