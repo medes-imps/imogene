@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.imogene.android.template.R;
+import org.imogene.android.widget.ErrorAdapter.ErrorEntry;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -71,6 +72,20 @@ public class DateFieldEdit extends DatesFieldEdit implements OnDateSetListener {
 		final Calendar cal = Calendar.getInstance();
 		cal.set(year, monthOfYear, dayOfMonth);
 		setValueInternal(cal.getTime(), true);
+	}
+
+	@Override
+	public ErrorEntry getErrorEntry(int tag) {
+		ErrorEntry entry = super.getErrorEntry(tag);
+		final Date min = getMin();
+		if (min != null) {
+			entry.addMessage(getResources().getString(R.string.imog__greater_than_date, min));
+		}
+		final Date max = getMax();
+		if (max != null) {
+			entry.addMessage(getResources().getString(R.string.imog__lower_than_date, max));
+		}
+		return entry;
 	}
 
 }

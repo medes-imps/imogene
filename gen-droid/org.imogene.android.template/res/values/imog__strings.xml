@@ -39,11 +39,13 @@
     <string name="imog__deleted">Deleted</string>
     <string name="imog__entity_id">Identifier</string>
     <string name="imog__field_unset">You have to fill out the field %s</string>
+    <string name="imog__greater_than_date">must be greater than %1$tm/%1$te/%1$tY</string>
     <string name="imog__greater_than_decimal">must be greater than %d</string>
     <string name="imog__greater_than_float">must be greater than %.2f</string>
     <string name="imog__iamlost_title">I am lost !</string>
     <string name="imog__insert_entity">New form</string>
     <string name="imog__list_availables_entities">Available forms</string>
+    <string name="imog__lower_than_date">must be lower than %1$tm/%1$te/%1$tY</string>
     <string name="imog__lower_than_decimal">must be lower than %d</string>
     <string name="imog__lower_than_float">must be lower than %.2f</string>
     <string name="imog__modified">Last modification date</string>

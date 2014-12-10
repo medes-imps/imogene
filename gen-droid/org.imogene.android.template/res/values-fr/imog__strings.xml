@@ -39,11 +39,13 @@
     <string name="imog__deleted">Supprimé</string>
     <string name="imog__entity_id">Identifiant</string>
     <string name="imog__field_unset">Vous devez remplir le champs %s</string>
+    <string name="imog__greater_than_date">doit être supérieure à %1$te/%1$tm/%1$tY</string>
     <string name="imog__greater_than_decimal">doit être supérieur à %d</string>
     <string name="imog__greater_than_float">doit être supérieur à %.2f</string>
     <string name="imog__iamlost_title">Je suis perdu !</string>
     <string name="imog__insert_entity">Nouveau formulaire</string>
     <string name="imog__list_availables_entities">Formulaires disponibles</string>
+    <string name="imog__lower_than_date">doit être inférieure à %1$te/%1$tm/%1$tY</string>
     <string name="imog__lower_than_decimal">doit être inférieur à %d</string>
     <string name="imog__lower_than_float">doit être inférieur à %.2f</string>
     <string name="imog__modified">Date de dernière modification</string>
