@@ -123,5 +123,13 @@ public class ImogTextBox extends Composite implements ImogField<String>,
 	public void showErrors(List<EditorError> errors) {
 		errorLabel.showErrors(errors);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

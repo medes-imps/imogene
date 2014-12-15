@@ -352,7 +352,7 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 				result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ENDDEFINE»
 «DEFINE fetchRelatedEntities FOR RelationFieldEntity-»
-	«IF cardinality == 1 -»
+	«REM» «IF cardinality == 1 -»«ENDREM»
 		result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 		«IF isSimpleRelationFieldPresent(entity.mainFields)-»
 			«FOREACH entity.mainFields AS mf-»		
@@ -364,7 +364,7 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 			result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this».«EXPAND template::CommonFieldUtil::propertyName FOR nf»");
 			«ENDIF-»
 		«ENDFOREACH-»	
-	«ENDIF -»
+	«REM»«ENDIF -»«ENDREM»
 «ENDDEFINE»
 
 «REM» If the related entity has relation fields in its mainfields, fetch the corresponding entity «ENDREM»

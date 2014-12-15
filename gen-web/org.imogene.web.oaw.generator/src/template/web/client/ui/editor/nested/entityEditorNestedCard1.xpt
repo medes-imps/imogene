@@ -147,7 +147,11 @@ public class «name.toFirstUpper()»EditorNestedForm extends Composite implements 
 		«IF f.fieldDependentVisibility!=null && !f.fieldDependentVisibility.isEmpty && !f.hidden-»		
 		// the visibility of «EXPAND template::CommonFieldUtil::propertyName FOR f» depends on the value of other fields
 		«EXPAND template::CommonFieldUtil::propertyName FOR f».addStyleName("dependentVisibility");
-		«ENDIF -»		
+		«ENDIF -»
+		«IF f.required==true && !(RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).nestedForm)-»
+		// required field
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».addIsRequiredStyle();
+		«ENDIF -»					
 		«ENDFOREACH -»	
 	}	
 		

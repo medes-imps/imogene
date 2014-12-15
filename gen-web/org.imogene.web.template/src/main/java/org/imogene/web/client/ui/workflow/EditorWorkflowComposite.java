@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 
-
 /**
  * Abstract class for Entity Workflows
  * @author Medes-IMPS
@@ -56,7 +55,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 	protected PushButton cancelButton;
 	protected PushButton closeButton;
 	// protected PushButton printButton;
-	
+
 	@UiField
 	protected ImogResources imogResources;
 
@@ -76,7 +75,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 	@UiField
 	VerticalPanel formContent;
 	private Widget content;
-		
+
 	/**
 	 * Constructor
 	 * @param eventBus the application event bus
@@ -91,7 +90,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 		this.titleContainer = titleContainer;
 
 		initWidget(uiBinder.createAndBindUi(this));
-		
+
 		imogResources.imogStyle().ensureInjected();
 
 		saveButton = new PushButton(BaseNLS.constants().button_save());
@@ -99,10 +98,10 @@ public abstract class EditorWorkflowComposite extends Composite {
 		cancelButton = new PushButton(BaseNLS.constants().button_cancel());
 		closeButton = new PushButton(BaseNLS.constants().button_close());
 		// printButton = new PushButton(BaseNLS.constants().button_print());
-		
+
 		properties();
 	}
-	
+
 	/**
 	 * Sets the main content of the wokflow (the form editor)
 	 * @param pContent content of the workflow
@@ -115,9 +114,9 @@ public abstract class EditorWorkflowComposite extends Composite {
 		formContent.setCellWidth(content, "100%");
 		formContent.setCellHeight(content, "100%");
 	}
-	
-	public void setCloseEvent(GwtEvent<?> closeEvent){
-		this.closeEvent = closeEvent;		
+
+	public void setCloseEvent(GwtEvent<?> closeEvent) {
+		this.closeEvent = closeEvent;
 	}
 
 	/**
@@ -127,7 +126,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 
 		// layout.setCellHeight(metaInfoPanel, "22px");
 		metaInfoPanel.setSpacing(0);
-		
+
 		saveButton.setStyleName(imogResources.imogStyle().imogButton());
 		saveButton.addStyleName(imogResources.imogStyle().imogButton2());
 		saveButton.addStyleName("imogene-Form-button");
@@ -157,12 +156,14 @@ public abstract class EditorWorkflowComposite extends Composite {
 		registrations.add(cancelButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// LocalSession.get().removeFromEdited(hashCode());
-				if (isNew) {
-					closeForm();
-				} else {
-					setEditable(false);
-					cancel();
+				if (Window.confirm(BaseNLS.constants().confirmation_cancel())) {
+					// LocalSession.get().removeFromEdited(hashCode());
+					if (isNew) {
+						closeForm();
+					} else {
+						setEditable(false);
+						cancel();
+					}
 				}
 			}
 		}));
@@ -252,20 +253,19 @@ public abstract class EditorWorkflowComposite extends Composite {
 		modificationLabel.setHTML(modifUpdate);
 		creationLabel.setHTML(createUpdate);
 	}
-	
 
 	/**
 	 * Closes the form
 	 */
 	protected void closeForm() {
-		
-		if(parent!=null)
+
+		if (parent != null)
 			parent.hide();
 		else {
 			eventBus.fireEvent(new HistoryBackEvent());
 		}
 	}
-	
+
 	public PushButton getSaveButton() {
 		return saveButton;
 	}
@@ -289,7 +289,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 		registrations.clear();
 		super.onUnload();
 	}
-	
+
 	@Override
 	protected void onLoad() {
 		setButtonHandlers();
@@ -312,8 +312,7 @@ public abstract class EditorWorkflowComposite extends Composite {
 	protected abstract void edit();
 
 	/**
-	 * Action when the intance list shall be displayed
-	 * after that the workflow is closed
+	 * Action when the intance list shall be displayed after that the workflow is closed
 	 */
 	protected abstract void returnToList();
 

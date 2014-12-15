@@ -1,8 +1,14 @@
 package org.imogene.web.server.security;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
+import org.imogene.lib.common.constants.UserActionConstants;
 import org.imogene.lib.common.entity.ImogActor;
+import org.imogene.lib.common.entity.ImogActorImpl;
 import org.imogene.lib.common.security.AccessPolicyFactory;
+import org.imogene.lib.common.useraction.UserAction;
 import org.imogene.web.server.handler.GenericHandler;
 import org.imogene.web.server.handler.HandlerHelper;
 import org.imogene.web.server.util.HttpSessionUtil;
@@ -14,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Manages the application access through spring security
- * 
  * @author MEDES-IMPS
  */
 public class SecurityDetailService implements UserDetailsService {
@@ -28,19 +33,47 @@ public class SecurityDetailService implements UserDetailsService {
 	private AccessPolicyFactory accessPolicyFactory;
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException, DataAccessException {
-		logger.debug("Validating auhtentication for user: " + login);
-		ImogActor actor = genericHandler.loadFromLogin(login);
+		logger.debug("Validating authentication for user: " + login);
+		ImogActorImpl actor = (ImogActorImpl) genericHandler.loadFromLogin(login);
 		if (actor != null) {
+			Date loginDate = new Date(System.currentTimeMillis());
+			saveLastLoginDate(actor, loginDate);
+			saveLoginAction(actor, loginDate);
 			return setSessionUser(actor);
 		}
 		return null;
 	}
 
 	/**
+	 * Configure the last login date in the application
+	 * and saves the new last login date in the database
+	 * @param actor
+	 */
+	private void saveLastLoginDate(ImogActorImpl actor, Date loginDate) {
+		HttpSessionUtil.setLastLoginDate(actor.getLastLoginDate());
+		actor.setLastLoginDate(loginDate);
+		genericHandler.save(actor);
+		genericHandler.flush();
+	}
+	
+	/**
+	 * Saves the login action in the application action journal in database
+	 * @param actor
+	 */
+	private void saveLoginAction(ImogActorImpl actor, Date loginDate) {
+		UserAction action = new UserAction();
+		action.setId(UUID.randomUUID().toString());
+		action.setActionDate(loginDate);
+		action.setUserId(actor.getId());
+		action.setActionType(UserActionConstants.USERACTION_TYPE_LOGIN);
+		genericHandler.save(action);
+		genericHandler.flush();
+	}
+
+	/**
 	 * Sets the current user in session
-	 * 
 	 * @param actor the current user
 	 * @return
 	 */
@@ -53,7 +86,6 @@ public class SecurityDetailService implements UserDetailsService {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param genericHandler
 	 */
 	public void setGenericHandler(GenericHandler genericHandler) {
@@ -62,7 +94,6 @@ public class SecurityDetailService implements UserDetailsService {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param securityPolicyFactory
 	 */
 	public void setAccessPolicyFactory(AccessPolicyFactory accessPolicyFactory) {
@@ -71,7 +102,6 @@ public class SecurityDetailService implements UserDetailsService {
 
 	/**
 	 * Setter for bean injection
-	 * 
 	 * @param handlerHelper
 	 */
 	public void setHandlerHelper(HandlerHelper handlerHelper) {

@@ -95,9 +95,6 @@
 			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
 				<imo2:ImogMultiRelationBox ui:field="profiles" />
 			</g:SimplePanel>
-			<g:SimplePanel stylePrimaryName="{style.imogene-field}">
-				<imo:ImogLinkBox ui:field="idLink" />
-			</g:SimplePanel>
 
 		</imo3:FieldGroupPanel>	
 	

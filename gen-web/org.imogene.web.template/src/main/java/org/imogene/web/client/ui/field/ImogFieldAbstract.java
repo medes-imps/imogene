@@ -92,6 +92,10 @@ public class ImogFieldAbstract extends Composite implements HasWidgets {
 		return fieldWidget.remove(w);
 	}
 	
+	public void addIsRequiredStyle() {
+		fieldLabel.addStyleName("imogene-FieldRequired");
+	}
+	
 
 
 		

@@ -1,12 +1,13 @@
 package org.imogene.web.server.handler;
 
+import java.util.Date;
+
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.SessionInfo;
 import org.imogene.web.server.util.HttpSessionUtil;
 
 /**
  * Handler to manage session information
- * 
  * @author MEDES-IMPS
  */
 public class SessionHandler {
@@ -16,11 +17,13 @@ public class SessionHandler {
 	 */
 	public SessionInfo getSessionInfo() {
 		ImogActor user = HttpSessionUtil.getCurrentUser();
+		Date lastLoginDate = HttpSessionUtil.getLastLoginDate();
 
 		if (user != null && user.getLogin() != null && !user.getLogin().isEmpty()) {
 			SessionInfo sessionInfo = new SessionInfo();
 			sessionInfo.setSessionId(HttpSessionUtil.getHttpSessionId());
 			sessionInfo.setActor(user);
+			sessionInfo.setLastLoginDate(lastLoginDate);
 			return sessionInfo;
 		} else
 			return null;
@@ -35,7 +38,6 @@ public class SessionHandler {
 
 	/**
 	 * Validates an existing session
-	 * 
 	 * @param sessionId the session id
 	 * @return The associated ImogActor or null if the session is not validated
 	 */

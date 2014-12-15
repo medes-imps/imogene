@@ -184,4 +184,12 @@ public class ImogBinaryBox extends Composite implements ImogUploader,
 	
 	public void setBoxWidth(int width) {
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 }

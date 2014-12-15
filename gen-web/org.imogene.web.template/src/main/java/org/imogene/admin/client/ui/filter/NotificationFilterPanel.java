@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author MEDES-IMPS
  */
 public class NotificationFilterPanel extends ImogFilterPanel {
-	
+
 	/* filter widgets */
 	private TextBox nameBox;
 	private ImogFilterBox nameFilterBox;
@@ -52,13 +52,12 @@ public class NotificationFilterPanel extends ImogFilterPanel {
 
 	@Override
 	public void createFilterWidgets() {
-		
+
 		formTypeBox = new ListBox();
 		formTypeBox.addItem("", BaseNLS.constants().enumeration_unknown());
 		formTypeBox.setSelectedIndex(0);
 		formTypeFilterBox = new ImogFilterBox(formTypeBox);
-		formTypeFilterBox.setFilterLabel(AdminNLS.constants()
-				.notification_field_formType());
+		formTypeFilterBox.setFilterLabel(AdminNLS.constants().notification_field_formType());
 		addTableFilter(formTypeFilterBox);
 
 		nameBox = new TextBox();
@@ -69,35 +68,28 @@ public class NotificationFilterPanel extends ImogFilterPanel {
 		methodBox = new ListBox();
 		methodBox.addItem("", BaseNLS.constants().enumeration_unknown());
 		methodBox.setSelectedIndex(0);
-		methodBox.addItem(AdminNLS.constants().notification_method_mail_option(),
-				NotificationConstants.EMAIL_NOTIF);
-		methodBox
-				.addItem(AdminNLS.constants().notification_method_sMS_option(), NotificationConstants.SMS_NOTIF);
+		methodBox.addItem(AdminNLS.constants().notification_method_mail_option(), NotificationConstants.MailMethod);
+		methodBox.addItem(AdminNLS.constants().notification_method_sMS_option(), NotificationConstants.SMSMethod);
 		methodFilterBox = new ImogFilterBox(methodBox);
-		methodFilterBox.setFilterLabel(AdminNLS.constants()
-				.notification_field_method());
+		methodFilterBox.setFilterLabel(AdminNLS.constants().notification_field_method());
 		addTableFilter(methodFilterBox);
 
 		operationBox = new ListBox();
 		operationBox.addItem("", BaseNLS.constants().enumeration_unknown());
 		operationBox.setSelectedIndex(0);
-		operationBox.addItem(AdminNLS.constants()
-				.notification_operation_create_option(), NotificationConstants.CREATE_OP);
-		operationBox.addItem(AdminNLS.constants()
-				.notification_operation_update_option(), NotificationConstants.UPDATE_OP);
-		operationBox.addItem(AdminNLS.constants()
-				.notification_operation_delete_option(), NotificationConstants.DELETE_OP);
+		operationBox.addItem(AdminNLS.constants().notification_operation_create_option(), NotificationConstants.CREATE_OP);
+		operationBox.addItem(AdminNLS.constants().notification_operation_update_option(), NotificationConstants.UPDATE_OP);
+		operationBox.addItem(AdminNLS.constants().notification_operation_delete_option(), NotificationConstants.DELETE_OP);
 		operationFilterBox = new ImogFilterBox(operationBox);
-		operationFilterBox.setFilterLabel(AdminNLS.constants()
-				.notification_field_operation());
+		operationFilterBox.setFilterLabel(AdminNLS.constants().notification_field_operation());
 		addTableFilter(operationFilterBox);
 
 	}
-	
+
 	private void populateFormTypes(FormTypeUtil formTypeUtil) {
 		List<FormType> formTypes = formTypeUtil.getFormTypes();
-		for(FormType type:formTypes)
-			formTypeBox.addItem(type.getDisplayValue(), type.getValue());	
+		for (FormType type : formTypes)
+			formTypeBox.addItem(type.getDisplayValue(), type.getValue());
 	}
 
 	@Override
@@ -115,46 +107,33 @@ public class NotificationFilterPanel extends ImogFilterPanel {
 
 		FilterCriteria formTypeCrit = new FilterCriteria();
 		formTypeCrit.setField("formType");
-		formTypeCrit.setFieldDisplayName(AdminNLS.constants()
-				.notification_field_formType());
+		formTypeCrit.setFieldDisplayName(AdminNLS.constants().notification_field_formType());
 		formTypeCrit.setOperation(CriteriaConstants.STRING_OPERATOR_EQUAL);
-		formTypeCrit.setValue(formTypeBox.getValue(formTypeBox
-				.getSelectedIndex()));
-		formTypeCrit.setValueDisplayName(AdminRenderer.get()
-				.getEnumDisplayValue(NotificationProxy.class, "formType",
-						formTypeBox.getValue(formTypeBox.getSelectedIndex())));
+		formTypeCrit.setValue(formTypeBox.getValue(formTypeBox.getSelectedIndex()));
+		formTypeCrit.setValueDisplayName(AdminRenderer.get().getEnumDisplayValue(NotificationProxy.class, "formType", formTypeBox.getValue(formTypeBox.getSelectedIndex())));
 		criteria.add(formTypeCrit);
 
 		FilterCriteria methodCrit = new FilterCriteria();
 		methodCrit.setField("method");
-		methodCrit.setFieldDisplayName(AdminNLS.constants()
-				.notification_field_method());
+		methodCrit.setFieldDisplayName(AdminNLS.constants().notification_field_method());
 		methodCrit.setOperation(CriteriaConstants.STRING_OPERATOR_EQUAL);
 		methodCrit.setValue(methodBox.getValue(methodBox.getSelectedIndex()));
-		methodCrit.setValueDisplayName(AdminRenderer.get().getEnumDisplayValue(
-				NotificationProxy.class, "method",
-				methodBox.getValue(methodBox.getSelectedIndex())));
+		methodCrit.setValueDisplayName(AdminRenderer.get().getEnumDisplayValue(NotificationProxy.class, "method", methodBox.getValue(methodBox.getSelectedIndex())));
 		criteria.add(methodCrit);
 
 		FilterCriteria operationCrit = new FilterCriteria();
 		operationCrit.setField("operation");
-		operationCrit.setFieldDisplayName(AdminNLS.constants()
-				.notification_field_operation());
+		operationCrit.setFieldDisplayName(AdminNLS.constants().notification_field_operation());
 		operationCrit.setOperation(CriteriaConstants.STRING_OPERATOR_EQUAL);
-		operationCrit.setValue(operationBox.getValue(operationBox
-				.getSelectedIndex()));
-		operationCrit
-				.setValueDisplayName(AdminRenderer.get().getEnumDisplayValue(
-						NotificationProxy.class, "operation",
-						operationBox.getValue(operationBox.getSelectedIndex())));
+		operationCrit.setValue(operationBox.getValue(operationBox.getSelectedIndex()));
+		operationCrit.setValueDisplayName(AdminRenderer.get().getEnumDisplayValue(NotificationProxy.class, "operation", operationBox.getValue(operationBox.getSelectedIndex())));
 		criteria.add(operationCrit);
 
 		return criteria;
 	}
 
 	/**
-	 * Configures the visibility of the fields 
-	 * in view mode depending on the user privileges
+	 * Configures the visibility of the fields in view mode depending on the user privileges
 	 */
 	public void setFieldReadAccess() {
 

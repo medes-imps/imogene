@@ -150,6 +150,8 @@ public interface ImogConstants extends Constants {
 	String confirmation_delete_several2();
 
 	String confirmation_save();
+	
+	String confirmation_cancel();
 
 	/* search operators */
 	String search_operator_string_equal();

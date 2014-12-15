@@ -62,7 +62,10 @@ public class PopupButton extends Composite {
 		ClickHandler clickHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				popupPanel.show(popupButton.getAbsoluteLeft(), popupButton.getAbsoluteTop() + popupButton.getOffsetHeight());
+				if(popupPanel.isShowing())
+					popupPanel.hide();
+				else
+					popupPanel.show(popupButton.getAbsoluteLeft(), popupButton.getAbsoluteTop() + popupButton.getOffsetHeight());
 			}
 		};
 		registrations.add(popupButton.addDomHandler(clickHandler, ClickEvent.getType()));
@@ -135,6 +138,8 @@ public class PopupButton extends Composite {
 		for (HandlerRegistration r : registrations)
 			r.removeHandler();
 		registrations.clear();
+		popupPanel.hide();
+		popupPanel = null;
 		super.onUnload();
 	}
 	

@@ -41,6 +41,9 @@ import org.imogene.«projectName.toLowerCase()».client.event.list.List«e.name.toF
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -508,7 +511,20 @@ public class HomePanel extends Composite {
 					if(searchValue!=null && !searchValue.isEmpty())
 						History.newItem(TokenHelper.TK_LIST + "/«name.toLowerCase()»/" + searchValue, true);
 				}
-			});	
+			});
+
+			«name.toFirstLower()».setSearchEnterKeyDownHandler(new KeyDownHandler() {
+				@Override
+				public void onKeyDown(KeyDownEvent event) {
+					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+						String searchValue = «name.toFirstLower()».getSearchValue();
+						if (searchValue != null && !searchValue.isEmpty())
+							History.newItem(TokenHelper.TK_LIST + "/«name.toLowerCase()»/" + searchValue, true);
+					}
+				}
+			});
+
+			
 		}
 		else {
 			«name.toFirstLower()».setListClickHandler(null);

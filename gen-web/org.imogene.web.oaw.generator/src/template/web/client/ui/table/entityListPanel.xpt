@@ -260,6 +260,7 @@ public class «name.toFirstUpper()»ListPanel extends Composite {
 								filterButton.removeButtonActivatedStyle();
 								wrapperPanel.clearMessageLabel();
 							}
+							filterButton.hidePopup();
 						}
 					}));
 		}

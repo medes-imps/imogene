@@ -190,5 +190,13 @@ public class ImogDoubleBox extends Composite implements ImogField<Double>,
 		unitBox.setVisible(true);
 		unitBox.setText(unit);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

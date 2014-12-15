@@ -439,7 +439,8 @@ public class «name.toFirstUpper()»Handler {
 		«ENDIF-»«ENDREM»	   
 	   «REM»«EXPAND deleteRelationFieldCard1Reference(this) FOREACH ((Project) eContainer).entities.groups.fields-»«ENDREM» 
 		handlerHelper.prepareForDelete(entity);
-		dao.saveOrUpdate(entity, false);	
+		// for action logging a deleted entity is saved as new and deleted
+		dao.saveOrUpdate(entity, true);	
 	}
 	
 	/**

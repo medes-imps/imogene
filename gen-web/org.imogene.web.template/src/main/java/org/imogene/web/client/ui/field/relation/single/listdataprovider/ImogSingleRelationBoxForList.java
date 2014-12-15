@@ -192,5 +192,13 @@ public class ImogSingleRelationBoxForList<T extends ImogBeanProxy> extends Compo
 	public void setButtonPanelWidth(String width) {
 		singleRelationBox.setButtonPanelWidth(width);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

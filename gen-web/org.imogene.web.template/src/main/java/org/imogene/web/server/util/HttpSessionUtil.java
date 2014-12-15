@@ -1,5 +1,7 @@
 package org.imogene.web.server.util;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 
 import org.imogene.lib.common.entity.ImogActor;
@@ -10,18 +12,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Http session tools to access attached session objects and perform session changes
- * 
  * @author MEDES-IMPS
- * 
  */
 public class HttpSessionUtil {
 
 	private static String SESSION_USER = "session_user";
 	private static String SESSION_SECURITY_POLICY = "session_security_policy";
+	private static String SESSION_USER_LASTLOGIN = "session_user_lastlogin";
 
 	/**
 	 * Gets the current HttpSession
-	 * 
 	 * @return the current HttpSession
 	 */
 	private static HttpSession getHttpSession() {
@@ -32,7 +32,6 @@ public class HttpSessionUtil {
 
 	/**
 	 * Get the current http session identifier
-	 * 
 	 * @return the current http session identifier
 	 */
 	public static String getHttpSessionId() {
@@ -48,7 +47,6 @@ public class HttpSessionUtil {
 
 	/**
 	 * Get the current user attached to the current http session
-	 * 
 	 * @return the current user
 	 */
 	public static ImogActor getCurrentUser() {
@@ -61,7 +59,6 @@ public class HttpSessionUtil {
 
 	/**
 	 * Attach the given user to the current http session
-	 * 
 	 * @param actor the current user
 	 */
 	public static void setCurrentUser(ImogActor actor) {
@@ -73,7 +70,6 @@ public class HttpSessionUtil {
 
 	/**
 	 * Attach the given access policy to the current http session
-	 * 
 	 * @param policy the access policy
 	 */
 	public static void setAccessPolicy(AccessPolicy policy) {
@@ -85,7 +81,6 @@ public class HttpSessionUtil {
 
 	/**
 	 * Attach the current access policy given a factory and a user
-	 * 
 	 * @param factory The access policy factory
 	 * @param actor The actor to create the access policy with
 	 */
@@ -95,7 +90,6 @@ public class HttpSessionUtil {
 
 	/**
 	 * Get the access policy attached to the current http session
-	 * 
 	 * @return the current access policy
 	 */
 	public static AccessPolicy getAccessPolicy() {
@@ -104,6 +98,29 @@ public class HttpSessionUtil {
 			return (AccessPolicy) session.getAttribute(SESSION_SECURITY_POLICY);
 		}
 		return null;
+	}
+
+	/**
+	 * Get the user previous login date attached to the current http session
+	 * @return he user last login date
+	 */
+	public static Date getLastLoginDate() {
+		HttpSession session = HttpSessionUtil.getHttpSession();
+		if (session != null) {
+			return (Date) session.getAttribute(SESSION_USER_LASTLOGIN);
+		}
+		return null;
+	}
+
+	/**
+	 * Attach the user previous login date to the current http session
+	 * @param date the user last login date
+	 */
+	public static void setLastLoginDate(Date date) {
+		HttpSession session = getHttpSession();
+		if (session != null) {
+			session.setAttribute(SESSION_USER_LASTLOGIN, date);
+		}
 	}
 
 }

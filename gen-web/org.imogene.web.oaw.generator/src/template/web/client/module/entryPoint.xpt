@@ -165,6 +165,7 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 					ImogActorProxy actor = sessionInfo.getActor();
 					LocalSession.get().setCurrentUser(actor);
 					LocalSession.get().setVersionNumber(APPLICATION_VERSION);
+					LocalSession.get().setLastLoginDate(sessionInfo.getLastLoginDate());
 					displayApplication(actor);
 					initializeCookie(sessionInfo.getSessionId());
 				}
@@ -320,12 +321,15 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	 * Clears the module from its panels
 	 */
 	private void clearModule() {
+		String locale = topPanel.getLocale();
 		RootPanel.get().clear();
 		topPanel = null;
 		content = null;
 		mainPanel = null;
 		removeHandlers();
 		String href = GWT.getHostPageBaseURL() + "jsp/Login.jsp";
+		if (locale != null && !locale.isEmpty())
+			href = href + "?locale=" + locale;
 		Window.Location.assign(href);
 	}
 	

@@ -286,39 +286,63 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE createWidget(String prefix, String projectName) FOR TextField-»
 		«prefix + name.toFirstLower()»Box = new TextBox();
 		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
-		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ELSE-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ENDIF-»		
 		addTableFilter(«prefix + name.toFirstLower()»FilterBox);		
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR DateField-»
 		«prefix + name.toFirstLower()»AfterBox = new DateBox();
 		«prefix + name.toFirstLower()»AfterBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
 		«prefix + name.toFirstLower()»AfterFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»AfterBox);
-		«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		«ELSE-»
+			«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		«ENDIF-»		
 		addTableFilter(«prefix + name.toFirstLower()»AfterFilterBox);		
 
 		«prefix + name.toFirstLower()»BeforeBox = new DateBox();
 		«prefix + name.toFirstLower()»BeforeBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
 		«prefix + name.toFirstLower()»BeforeFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»BeforeBox);
-		«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		«ELSE-»
+			«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		«ENDIF-»			
 		addTableFilter(«prefix + name.toFirstLower()»BeforeFilterBox);
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR DateTimeField-»
 		«prefix + name.toFirstLower()»AfterBox = new DateBox();
 		«prefix + name.toFirstLower()»AfterBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
 		«prefix + name.toFirstLower()»AfterFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»AfterBox);
-		«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		«ELSE-»
+			«prefix + name.toFirstLower()»AfterFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_superior());
+		«ENDIF-»
 		addTableFilter(«prefix + name.toFirstLower()»AfterFilterBox);		
 
 		«prefix + name.toFirstLower()»BeforeBox = new DateBox();
 		«prefix + name.toFirstLower()»BeforeBox.setFormat(new SimpleImogDateFormat(DateUtil.getDateFormater()));
 		«prefix + name.toFirstLower()»BeforeFilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»BeforeBox);
-		«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		«ELSE-»
+			«prefix + name.toFirstLower()»BeforeFilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»() + BaseNLS.constants().search_operator_inferior());
+		«ENDIF-»	
 		addTableFilter(«prefix + name.toFirstLower()»BeforeFilterBox);
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR IntegerField-»
 		«prefix + name.toFirstLower()»Box = new IntegerBox();
 		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
-		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ELSE-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ENDIF-»
 		addTableFilter(«prefix + name.toFirstLower()»FilterBox);
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR FloatField-»
@@ -330,7 +354,11 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 «DEFINE createWidget(String prefix, String projectName) FOR BooleanField-»
 		«prefix + name.toFirstLower()»Box = new ImogBooleanAsList();
 		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
-		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ELSE-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ENDIF-»
 		addTableFilter(«prefix + name.toFirstLower()»FilterBox);
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR EnumField-»
@@ -341,7 +369,11 @@ public class «name.toFirstUpper()»FilterPanel extends ImogFilterPanel {
 		«prefix + name.toFirstLower()»Box.addItem(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_«name.toFirstLower()»_«enumValue.name.toFirstLower()»_option(), «projectName.toFirstUpper()»EnumConstants.«parentGroup.parentCard.name.toUpperCase()»_«name.toUpperCase()»_«enumValue.name.toUpperCase()»);
 	«ENDFOREACH -»	
 		«prefix + name.toFirstLower()»FilterBox = new ImogFilterBox(«prefix + name.toFirstLower()»Box);
-		«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«IF prefix!=null && prefix.length>0-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_name() + "/" + NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ELSE-»
+			«prefix + name.toFirstLower()»FilterBox.setFilterLabel(NLS.constants().«parentGroup.parentCard.name.toFirstLower()»_field_«name.toFirstLower()»());
+		«ENDIF-»
 		addTableFilter(«prefix + name.toFirstLower()»FilterBox);		
 «ENDDEFINE»
 «DEFINE createWidget(String prefix, String projectName) FOR RelationFieldEntity-»

@@ -18,7 +18,6 @@ import org.imogene.web.shared.proxy.ProfileProxy;
 
 /**
  * Singleton that enables to render a display value of the beans
- * 
  * @author MEDES-IMPS
  */
 public class AdminRenderer extends ImogBeanRenderer {
@@ -37,7 +36,6 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 	/**
 	 * Get display representation for a ImogBeanProxy
-	 * 
 	 * @param bean the ImogBeanProxy
 	 * @return string representation for IHM display
 	 */
@@ -135,7 +133,6 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 	/**
 	 * Get an enumeration representation for a ImogBeanProxy type enumeration field
-	 * 
 	 * @param beanClass a ImogBeanProxy class type
 	 * @param fieldName the ImogBeanProxy field name
 	 * @param fieldValue the bean field value
@@ -226,9 +223,9 @@ public class AdminRenderer extends ImogBeanRenderer {
 
 		if (fieldName.equals("method")) {
 
-			if (fieldValue.equals(NotificationConstants.EMAIL_NOTIF))
+			if (fieldValue.equals(NotificationConstants.MailMethod))
 				value = AdminNLS.constants().notification_method_mail_option();
-			else if (fieldValue.equals(NotificationConstants.SMS_NOTIF))
+			else if (fieldValue.equals(NotificationConstants.SMSMethod))
 				value = AdminNLS.constants().notification_method_sMS_option();
 
 		}
@@ -265,7 +262,5 @@ public class AdminRenderer extends ImogBeanRenderer {
 	public void setFormTypeUtil(FormTypeUtil formTypeUtil) {
 		this.formTypeUtil = formTypeUtil;
 	}
-	
-
 
 }

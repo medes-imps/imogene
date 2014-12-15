@@ -107,8 +107,8 @@ public class NotificationEditor extends Composite implements Editor<Notification
 		descriptionSection.setGroupTitle(AdminNLS.constants().notification_group_description());
 		name.setLabel(AdminNLS.constants().notification_field_name());
 		method.setLabel(AdminNLS.constants().notification_field_method());
-		method.addItem(NotificationConstants.EMAIL_NOTIF, AdminNLS.constants().notification_method_mail_option());
-		method.addItem(NotificationConstants.SMS_NOTIF, AdminNLS.constants().notification_method_sMS_option());
+		method.addItem(NotificationConstants.MailMethod, AdminNLS.constants().notification_method_mail_option());
+		method.addItem(NotificationConstants.SMSMethod, AdminNLS.constants().notification_method_sMS_option());
 		formType.setLabel(AdminNLS.constants().notification_field_formType());
 		List<FormType> formTypes = formTypeUtil.getFormTypes();
 		for (FormType type : formTypes)

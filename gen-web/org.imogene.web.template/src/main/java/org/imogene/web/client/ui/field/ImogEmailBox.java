@@ -182,5 +182,13 @@ public class ImogEmailBox extends Composite implements ImogField<String>,
 	public void setBoxWidth(int width) {
 		textBox.getElement().getStyle().setProperty("width", width + "px");
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

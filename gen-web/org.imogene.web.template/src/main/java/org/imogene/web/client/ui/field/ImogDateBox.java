@@ -193,6 +193,14 @@ public class ImogDateBox extends Composite implements ImogField<Date>, LeafValue
 	public TextBox getTextBox() {
 		return dateBox.getTextBox();
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 	/**
 	 *

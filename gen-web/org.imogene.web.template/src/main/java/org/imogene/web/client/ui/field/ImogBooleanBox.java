@@ -113,5 +113,13 @@ public class ImogBooleanBox extends Composite implements ImogField<Boolean>,
 		booleanBox.isStrict(isStrict);
 	}
 	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
+	
 
 }

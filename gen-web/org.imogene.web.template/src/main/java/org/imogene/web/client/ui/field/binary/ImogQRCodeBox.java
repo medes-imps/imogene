@@ -102,5 +102,13 @@ public class ImogQRCodeBox extends Composite implements ImogField<String>, LeafV
 	public void setLabelWidth(String width) {
 		fieldBox.setLabelWidth(width);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

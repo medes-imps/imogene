@@ -157,5 +157,13 @@ public class ImogRadioBox extends Composite implements ImogField<String>,
 			eventBus.fireEvent(new FieldValueChangeEvent(ImogRadioBox.this));
 		}
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

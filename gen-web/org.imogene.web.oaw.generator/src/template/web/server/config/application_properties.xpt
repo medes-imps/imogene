@@ -1,4 +1,5 @@
 «IMPORT core»
+«EXTENSION template::CommonFieldUtilExt»
 «DEFINE generate(String projectName, String jdbcDriver, String jdbcPath, String jdbcLogin, String jdbcPassword, String hibernateDialect, String notifierUrl, String binariesPath, String videoConverter, String embedded) FOR Project»
 «FILE "application.properties"»
 «IF embedded == "true"-»
@@ -36,5 +37,13 @@ notifier.server=«notifierUrl»
 # ie : ffmpeg -i %IN% -f flv %OUT%
 # WARNING : On windows, if replace '\' by "/" in your path.
 converter.video=«videoConverter»
+
+# For password recovery
+application.name=«getDisplayFromDescription(this)»
+# URL of the application
+application.url=http://localhost:8080/«projectName.toFirstUpper()»
+#mail sender
+smtp.host=toto.tata.fr
+smtp.sender=toto@tata.fr
 «ENDFILE»
 «ENDDEFINE»

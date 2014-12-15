@@ -7,8 +7,10 @@ package org.imogene.lib.common.constants;
  */
 public class NotificationConstants {
 	
-	public static final String EMAIL_NOTIF = "email";
-	public static final String SMS_NOTIF = "sms";
+	public static final String MailMethod = "email";
+	public static final String SMSMethod = "sms";
+	public static final String VocalMethod = "vocal";
+	public static final String WebServiceMethod = "ws";
 	
 	public static final String CREATE_OP = "create";
 	public static final String UPDATE_OP = "update";

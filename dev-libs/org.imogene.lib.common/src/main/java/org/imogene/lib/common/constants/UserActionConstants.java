@@ -6,5 +6,6 @@ public class UserActionConstants {
 	public static final String USERACTION_TYPE_READ = "read";
 	public static final String USERACTION_TYPE_UPDATE = "update";
 	public static final String USERACTION_TYPE_DELETE = "delete";
+	public static final String USERACTION_TYPE_LOGIN = "login";
 
 }

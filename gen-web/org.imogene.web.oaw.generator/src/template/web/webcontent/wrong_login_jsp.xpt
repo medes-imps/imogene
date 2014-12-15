@@ -1,7 +1,8 @@
 «IMPORT core»
 «EXTENSION template::CommonFieldUtilExt»
-«DEFINE generate(String projectName) FOR Project»
+«DEFINE generate(String projectName, String applicationType) FOR Project»
 «FILE "WrongLogin.jsp"»
+«LET "admin" AS adminType-»
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -54,12 +55,17 @@
 	<!-- Login Box -->
 	<center>
 		<table cellspacing="0" cellpadding="0" class="login-centerPanel">
-			<tr>	
-				<!-- 	
-				<td align="right" style="vertical-align: middle;" width="100px">
-					<img src="../imog«projectName.toLowerCase()»/images/logo_web.png" style="opacity:0.6; filter:alpha(opacity=60)">
+			<!--<tr>
+				<td align="center" style="vertical-align: middle;">
+					«IF applicationType.matches(adminType)-»
+					<img src="../imog«projectName.toLowerCase()»/images/logo_admin.png" class="imogene-LoginLogo" >
+					«ELSE-»
+					<img src="../imog«projectName.toLowerCase()»/images/imog__logo_android.png" class="imogene-LoginLogo" >
+					«ENDIF-»
 				</td>
-				-->		
+			</tr>	-->			
+		
+			<tr>		
 				<td>
 					<div>
 						<div class="imogene-LoginMessage"><%=rb.getString("login_wrong_id")%></div>
@@ -120,5 +126,6 @@
 </body>
 
 </html>
+«ENDLET»
 «ENDFILE»
 «ENDDEFINE»
