@@ -166,4 +166,12 @@ public class ImogSingleEnumBox extends Composite implements ImogField<String>, L
 	public void setLabelWidth(String width) {
 		fieldBox.setLabelWidth(width);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 }

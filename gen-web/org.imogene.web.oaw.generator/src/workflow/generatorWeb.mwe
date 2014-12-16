@@ -478,7 +478,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::web_xml::generate("${projectName}","${modelName}", "${embedded}") FOR project' />
+		<expand value='template::web::server::config::web_xml::generate("${projectName}","${modelName}","${embedded}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
@@ -518,7 +518,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::project_servlet_xml::generate("${projectName}") FOR project' />
+		<expand value='template::web::server::config::project_servlet_xml::generate("${projectName}", "${embedded}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/WEB-INF/'/>
 	</component>
 	
@@ -526,7 +526,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::server::config::application_properties::generate("${modelName}","${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}","${embedded}") FOR project' />
+		<expand value='template::web::server::config::application_properties::generate("${projectName}","${JDBCDRIVER}","${JDBCPATH}","${JDBCLOGIN}","${JDBCPASSWORD}", "${HIBERNATEDIALECT}","${SMSSERVER}","${BINARIESPATH}","${videoConverter}","${embedded}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/WEB-INF/' />
 	</component>
 	
@@ -616,7 +616,7 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::login_jsp::generate("${projectName}", "${embedded}") FOR project' />
+		<expand value='template::web::webcontent::login_jsp::generate("${projectName}", "${embedded}","${applicationType}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/jsp' />		
 	</component>
 	
@@ -624,15 +624,31 @@
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::wrong_login_jsp::generate("${projectName}") FOR project' />
+		<expand value='template::web::webcontent::wrong_login_jsp::generate("${projectName}","${applicationType}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/jsp' />		
 	</component>
 	
-	<!-- JSP change password file -->
+	<!-- JSP request password file -->
 	<component class="org.eclipse.xpand2.Generator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::webcontent::change_password_jsp::generate("${projectName}") FOR project' />
+		<expand value='template::web::webcontent::request_password_jsp::generate("${projectName}","${applicationType}") FOR project' />
+		<outlet path='${home-gen}/src/main/webapp/jsp' />		
+	</component>
+	
+	<!-- JSP reset password file -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::webcontent::reset_password_jsp::generate("${projectName}","${applicationType}") FOR project' />
+		<outlet path='${home-gen}/src/main/webapp/jsp' />		
+	</component>
+	
+	<!-- JSP timeout password file -->
+	<component class="org.eclipse.xpand2.Generator">
+		<fileEncoding value="iso-8859-1"/>
+		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
+		<expand value='template::web::webcontent::timeout_password_jsp::generate("${projectName}","${applicationType}") FOR project' />
 		<outlet path='${home-gen}/src/main/webapp/jsp' />		
 	</component>
 	

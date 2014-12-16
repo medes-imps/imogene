@@ -11,6 +11,7 @@ import java.util.List;
 import org.imogene.«projectName.toLowerCase()».client.i18n.NLS;
 import org.imogene.web.client.event.LogoutEvent;
 import org.imogene.web.client.i18n.BaseNLS;
+import org.imogene.web.client.util.DateUtil;
 import org.imogene.web.client.util.LocalSession;
 import org.imogene.web.client.util.TokenHelper;
 import org.imogene.web.shared.proxy.ImogActorProxy;
@@ -93,12 +94,12 @@ public class TopBannerPanel extends Composite  {
 	 * @param actor the current actor
 	 */
 	public void setActor(ImogActorProxy actor) {
-		if(actor!=null) {
-			//Date cDate = actor.getLastLoginDate();
-			//if (cDate == null)
-			//	cDate = new Date();
-			//String lastLoginDate = TextFormatUtil.getDateTime(cDate);
-			String metadata = BaseNLS.messages().form_metadata_current_user(actor.getLogin());
+		if (actor != null) {
+			Date cDate = LocalSession.get().getLastLoginDate();
+			if (cDate == null)
+				cDate = new Date();
+			String lastLoginDate = DateUtil.getDateTime(cDate);
+			String metadata = BaseNLS.messages().form_metadata_current_user(actor.getLogin()) + "<br>" + BaseNLS.messages().form_metadata_lastlogindate(lastLoginDate);
 			actorInfo.setHTML(metadata);
 		}
 	}
@@ -146,6 +147,13 @@ public class TopBannerPanel extends Composite  {
 	public void showLocaleList(boolean show) {
 		locBox.setVisible(show);
 	}
+	
+	/**
+	 */	
+	public String getLocale() {
+		return locBox.getValue(locBox.getSelectedIndex());
+	}
+
 	
 	@Override
 	protected void onUnload() {

@@ -4,3 +4,6 @@ import core;
 // Generate a unique serial version UID
 String generateSerialVersionUID() :
   JAVA org.imogene.dao.oaw.generator.DaoUtil.generateSerialVersionUID();
+  
+Void log(String message) :
+  JAVA org.imogene.dao.oaw.generator.DaoUtil.log(java.lang.String);

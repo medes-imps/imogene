@@ -27,7 +27,7 @@ import org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUppe
 public class «projectName.toFirstUpper()»ServerRenderer {
 
 	private final static String propertyFile = "org.imogene.«projectName.toLowerCase()».client.i18n.«projectName.toFirstUpper()»Translations";
-	private static ResourceBundle rb;
+	private ResourceBundle rb;
 
 	private static «projectName.toFirstUpper()»ServerRenderer instance = new «projectName.toFirstUpper()»ServerRenderer();
 	
@@ -157,7 +157,7 @@ public class «projectName.toFirstUpper()»ServerRenderer {
 	}	
 	
 	
-	public static String getBooleanDisplayValue(Boolean bool) {
+	public String getBooleanDisplayValue(Boolean bool) {
 		if (bool!=null)
 		{
 			if(bool.booleanValue())

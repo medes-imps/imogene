@@ -18,7 +18,6 @@
 		<!-- for web application -->
 		<intercept-url pattern="/jsp/Login.jsp" access="permitAll" />
 		<intercept-url pattern="/jsp/WrongLogin.jsp" access="permitAll" />
-		<intercept-url pattern="/jsp/ChangePassword.jsp" access="permitAll" />
 		
 		<!-- for web embedded  application -->
 		<intercept-url pattern="/j_client_authentication" access="permitAll" />
@@ -29,6 +28,11 @@
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_web.png" access="permitAll" />
 		<intercept-url pattern="/imog«projectName.toLowerCase()»/images/logo_admin.png" access="permitAll" />
 		<intercept-url pattern="/images/hborder.png" access="permitAll" />
+		<!-- password recovery -->
+		<intercept-url pattern="/resetpwd" access="permitAll" />
+		<intercept-url pattern="/requestpwd" access="permitAll" />
+		<intercept-url pattern="/js/jquery-2.0.3.min.js" access="permitAll"/>
+		<intercept-url pattern="/images/invalid.png" access="permitAll"/>		
 		<!-- all other URLs, access control -->
 		<intercept-url pattern="/**" access="«IF applicationType == "admin"-»hasRole('administrator')«ELSE-»isAuthenticated()«ENDIF-»" />
 		
@@ -36,9 +40,6 @@
 		<form-login login-page="/jsp/Login.jsp"
 			authentication-success-handler-ref="localeAuthenticationHandler"
 			authentication-failure-handler-ref="securityExceptionHandler"/>		
-			
-		<access-denied-handler ref="imogAccessDeniedUrl" />
-		
 		<logout invalidate-session="true" logout-success-url="/" logout-url="/logout"/>
 	</http>
 	
@@ -51,8 +52,6 @@
 	        </beans:props>
 	    </beans:property>
 	    <beans:property name="defaultFailureUrl" value="/jsp/WrongLogin.jsp"/>
-	    <!-- for web application in rcp container
-	    <beans:property name="defaultFailureUrl" value="/jsp_rcp/WrongLogin.jsp"/>-->
 	</beans:bean>	
 	
 	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">

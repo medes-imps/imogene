@@ -42,11 +42,6 @@
 		<property name="handlerHelper" ref="handlerHelper"/>
 		<property name="accessPolicyFactory" ref="accessPolicyFactory" />
   	</bean>
-  	
-	<!-- Spring-security access denied handler -->
-	<bean class="org.imogene.web.server.security.ImogAccessDeniedHandler" id="imogAccessDeniedUrl">
-        <property name="accessDeniedUrl" value="jsp/WrongLogin.jsp" />
-    </bean> 
 		
 	<!-- Video converter -->
 	<bean name="videoConverter" class="org.imogene.lib.media.VideoConverter">
@@ -194,6 +189,21 @@
 	
 	<!-- Bean filter handler for Birt --> 
 	<bean id="filter" class="org.imogene.«projectName.toLowerCase()».server.security.ImogBeanFilterImpl" />
+
+	<!-- ====================================== PASSWORD RECOVERY ======================================= -->
+	<!-- SMTP sender -->
+	<bean id="smtpSender" class="org.imogene.web.server.util.SMTPSender">
+		<property name="mailHost" value="${smtp.host}"/>
+		<property name="fromAddress" value="${smtp.sender}"/>
+	</bean>	
+	
+	<!-- Password recovery controller -->
+	<bean id="resetPasswordController" class="org.imogene.web.server.security.PasswordRecoveryController">
+		<property name="smtpSender"  ref="smtpSender" />
+		<property name="frontendUrl" value="${application.url}" />
+		<property name="applicationName"  value="${application.name}"/>
+		<property name="genericDao"  ref="genericDao"/>
+	</bean>		
 
 	<task:scheduler id="scheduler" />
 	

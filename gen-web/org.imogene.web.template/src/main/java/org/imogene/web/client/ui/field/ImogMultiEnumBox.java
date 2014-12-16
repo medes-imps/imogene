@@ -163,5 +163,13 @@ public class ImogMultiEnumBox extends Composite implements ImogField<String>,
 			eventBus.fireEvent(new FieldValueChangeEvent(ImogMultiEnumBox.this));
 		}
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

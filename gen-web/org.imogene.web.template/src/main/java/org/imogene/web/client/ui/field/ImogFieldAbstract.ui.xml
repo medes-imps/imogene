@@ -19,6 +19,14 @@
 		.imogene-FieldWidget {
 			vertical-align: middle;
 		}
+
+		.imogene-FieldRequired {
+    		background-image: url("images/red-star.png");
+    		background-repeat: no-repeat;
+    		background-position: right top;
+		}
+
+		@external .imogene-FieldRequired;
 		
 		/*@external .imogene-Button, .imogene-Button .html-face, .imogene-TabBar, .imogene-TabBar .gwt-TabBarFirst, .imogene-TabBar .gwt-TabBarRest, .imogene-TabBar .gwt-TabBarItem, .imogene-TabBar .gwt-TabBarItem-selected, .imogene-TabBar .gwt-TabBarItem-disabled, .imogene-TabBar .gwt-TabBarItem-disabled, .imogene-TabBar .gwt-TabPanel, .imogene-TabBar .gwt-TabPanelBottom;*/
 	</ui:style>

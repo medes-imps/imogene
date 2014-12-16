@@ -78,4 +78,9 @@ public class GenericDaoImpl implements GenericDao {
 		return em.createQuery(query).getSingleResult();
 	}
 
+	@Override
+	public void flush() {
+		em.flush();
+	}
+
 }

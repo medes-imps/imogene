@@ -255,7 +255,6 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 		/* update field widgets in editor */
 		editor.computeVisibility(null, true);
 		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
-		editor.updateIdLink(current.getId());	
 		editor.setCurrentLogin();	
 		«ENDIF -»
 		
@@ -327,8 +326,7 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 	 * Persist the current instance of «name.toFirstUpper()»
 	 */
 	@Override
-	protected void save() {		
-	
+	protected void save() {			
 		«IF isBinaryFieldPresent(groups.fields) || hasDynamicFields-»
 		if (editor.isUploading()) {			
 			Timer timer = new Timer() {
@@ -340,31 +338,48 @@ public class «name.toFirstUpper()»EditorWorkflow extends EditorWorkflowComposite
 			timer.schedule(2000);
 			return;
 		}		
-		«ENDIF-»
-		
+		«ENDIF-»		
+		checkErrorsOnTheClientSide();
+	}
+	
+	/**
+	 * 
+	 */
+	private void checkErrorsOnTheClientSide() {	
 		editor.validateFields();		
 		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
 		boolean passwordValid = editor.validatePasword();
 		editor.validateLoginWithPassword();
-		«ENDIF-»
-	
+		«ENDIF-»		
 		editorDriver.flush();
 		
 		// Check for errors on the client side
 		if (editorDriver.hasErrors()) {
 			//Window.alert("«name.toFirstUpper()» form not validated locally");
 			return;
-		}
-		
+		}	
 		«IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
+		fireSaveRequest(passwordValid);
+		«ELSE-»
+		fireSaveRequest();
+		«ENDIF-»
+	}	
+	
+	/**
+	 * 
+	 */
+	 «IF applicationType == "admin" && Actor.isAssignableFrom(metaType)-»
+	private void fireSaveRequest(boolean passwordValid) {					
 		Request<Void> saveRequest = null;
 		if(passwordValid && editor.passwordChanged())
 			saveRequest = request.save(current, isNew, true);
 		else
 			saveRequest = request.save(current, isNew, false);
 		«ELSE-»
+	private void fireSaveRequest() {	
 		Request<Void> saveRequest = request.save(current, isNew);		
 		«ENDIF-»					
+		
 		saveRequest.to(new Receiver<Void>() {
 			@Override
 			public void onSuccess(Void response) {

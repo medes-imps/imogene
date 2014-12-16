@@ -27,9 +27,7 @@ import com.google.web.bindery.requestfactory.shared.RequestContext;
  * Data provider to feed the Notification entry Table and Selection List
  * @author MEDES-IMPS
  */
-public class NotificationDataProvider
-		extends
-			ImogBeanDataProvider<NotificationProxy> {
+public class NotificationDataProvider extends ImogBeanDataProvider<NotificationProxy> {
 
 	private final AdminRequestFactory requestFactory;
 	private boolean nonAffected = false;
@@ -38,8 +36,7 @@ public class NotificationDataProvider
 	private FormTypeUtil formTypeUtil;
 
 	/**
-	 * For Relation Fields
-	 * Provides instances of entity Notification with pagination
+	 * For Relation Fields Provides instances of entity Notification with pagination
 	 */
 	public NotificationDataProvider(AdminRequestFactory requestFactory, FormTypeUtil formTypeUtil) {
 		this.requestFactory = requestFactory;
@@ -47,12 +44,10 @@ public class NotificationDataProvider
 	}
 
 	/**
-	 * For Relation Fields
-	 * Provides instances of entity Notification that have non affected values for a given property (RelationField with card==1) with pagination
+	 * For Relation Fields Provides instances of entity Notification that have non affected values for a given property (RelationField with card==1) with pagination
 	 * @param pProperty the property for which non affected values are searched
 	 */
-	public NotificationDataProvider(AdminRequestFactory requestFactory,
-			String pProperty, FormTypeUtil formTypeUtil) {
+	public NotificationDataProvider(AdminRequestFactory requestFactory, String pProperty, FormTypeUtil formTypeUtil) {
 		this.requestFactory = requestFactory;
 		nonAffected = true;
 		property = pProperty;
@@ -60,13 +55,11 @@ public class NotificationDataProvider
 	}
 
 	/**
-	 * For Relation Fields
-	 * Provides filtered instances of entity Notification that have non affected values for a given property (RelationField with card==1) with pagination
+	 * For Relation Fields Provides filtered instances of entity Notification that have non affected values for a given property (RelationField with card==1) with pagination
 	 * @param pProperty the property for which non affected values are searched
 	 * @param searchInReverse true for 1:1 relations, if the property for which non affected values are searched shall be looked in reverse relation
 	 */
-	public NotificationDataProvider(AdminRequestFactory requestFactory,
-			String pProperty, boolean searchInReverse, FormTypeUtil formTypeUtil) {
+	public NotificationDataProvider(AdminRequestFactory requestFactory, String pProperty, boolean searchInReverse, FormTypeUtil formTypeUtil) {
 		this.requestFactory = requestFactory;
 		nonAffected = true;
 		property = pProperty;
@@ -91,32 +84,20 @@ public class NotificationDataProvider
 					/* permanent filter added to search criterion */
 					if (nonAffected) {
 						if (!searchInReverse)
-							result = request.listNonAffectedNotification(start,
-									numRows, "name", true, searchCriterions,
-									property);
+							result = request.listNonAffectedNotification(start, numRows, "name", true, searchCriterions, property);
 						else
-							result = request
-									.listNonAffectedNotificationReverse(start,
-											numRows, "name", true,
-											searchCriterions, property);
+							result = request.listNonAffectedNotificationReverse(start, numRows, "name", true, searchCriterions, property);
 					} else
-						result = request.listNotification(start, numRows,
-								"name", true, searchCriterions);
+						result = request.listNotification(start, numRows, "name", true, searchCriterions);
 				} else {
 					/* permanent filter only */
 					if (nonAffected) {
 						if (!searchInReverse)
-							result = request.listNonAffectedNotification(start,
-									numRows, "name", true, filterCriteria,
-									property);
+							result = request.listNonAffectedNotification(start, numRows, "name", true, filterCriteria, property);
 						else
-							result = request
-									.listNonAffectedNotificationReverse(start,
-											numRows, "name", true,
-											filterCriteria, property);
+							result = request.listNonAffectedNotificationReverse(start, numRows, "name", true, filterCriteria, property);
 					} else
-						result = request.listNotification(start, numRows,
-								"name", true, filterCriteria);
+						result = request.listNotification(start, numRows, "name", true, filterCriteria);
 				}
 
 			} else
@@ -126,28 +107,20 @@ public class NotificationDataProvider
 
 				if (nonAffected) {
 					if (!searchInReverse)
-						result = request.listNonAffectedNotification(start,
-								numRows, "name", true, searchCriterions,
-								property);
+						result = request.listNonAffectedNotification(start, numRows, "name", true, searchCriterions, property);
 					else
-						result = request.listNonAffectedNotificationReverse(
-								start, numRows, "name", true, searchCriterions,
-								property);
+						result = request.listNonAffectedNotificationReverse(start, numRows, "name", true, searchCriterions, property);
 				} else
-					result = request.listNotification(start, numRows, "name",
-							true, searchCriterions);
+					result = request.listNotification(start, numRows, "name", true, searchCriterions);
 			} else {
 
 				if (nonAffected) {
 					if (!searchInReverse)
-						result = request.listNonAffectedNotification(start,
-								numRows, "name", true, property);
+						result = request.listNonAffectedNotification(start, numRows, "name", true, property);
 					else
-						result = request.listNonAffectedNotificationReverse(
-								start, numRows, "name", true, property);
+						result = request.listNonAffectedNotificationReverse(start, numRows, "name", true, property);
 				} else
-					result = request.listNotification(start, numRows, "name",
-							true);
+					result = request.listNotification(start, numRows, "name", true);
 			}
 		}
 
@@ -164,16 +137,14 @@ public class NotificationDataProvider
 	 * Called by Dynatable
 	 */
 	@Override
-	public Request<List<NotificationProxy>> getList(String property, int start,
-			int numRows, boolean asc) {
+	public Request<List<NotificationProxy>> getList(String property, int start, int numRows, boolean asc) {
 
 		NotificationRequest request = (NotificationRequest) getContext();
 		Request<List<NotificationProxy>> result = null;
 		if (getSearchCriterions() == null)
 			result = request.listNotification(start, numRows, property, asc);
 		else
-			result = request.listNotification(start, numRows, property, asc,
-					getSearchCriterions());
+			result = request.listNotification(start, numRows, property, asc, getSearchCriterions());
 
 		return result;
 	}
@@ -190,22 +161,18 @@ public class NotificationDataProvider
 					/* permanent filter added to search criterion */
 					if (nonAffected) {
 						if (!searchInReverse)
-							return request.countNonAffectedNotification(
-									property, searchCriterions);
+							return request.countNonAffectedNotification(property, searchCriterions);
 						else
-							return request.countNonAffectedNotificationReverse(
-									property, searchCriterions);
+							return request.countNonAffectedNotificationReverse(property, searchCriterions);
 					} else
 						return request.countNotification(searchCriterions);
 				} else {
 					/* permanent filter only */
 					if (nonAffected) {
 						if (!searchInReverse)
-							return request.countNonAffectedNotification(
-									property, filterCriteria);
+							return request.countNonAffectedNotification(property, filterCriteria);
 						else
-							return request.countNonAffectedNotificationReverse(
-									property, filterCriteria);
+							return request.countNonAffectedNotificationReverse(property, filterCriteria);
 					} else
 						return request.countNotification(filterCriteria);
 				}
@@ -217,11 +184,9 @@ public class NotificationDataProvider
 			if (searchCriterions != null) {
 				if (nonAffected) {
 					if (!searchInReverse)
-						return request.countNonAffectedNotification(property,
-								searchCriterions);
+						return request.countNonAffectedNotification(property, searchCriterions);
 					else
-						return request.countNonAffectedNotificationReverse(
-								property, searchCriterions);
+						return request.countNonAffectedNotificationReverse(property, searchCriterions);
 				} else
 					return request.countNotification(searchCriterions);
 			} else {
@@ -230,8 +195,7 @@ public class NotificationDataProvider
 					if (!searchInReverse)
 						return request.countNonAffectedNotification(property);
 					else
-						return request
-								.countNonAffectedNotificationReverse(property);
+						return request.countNonAffectedNotificationReverse(property);
 				} else
 					return request.countNotification();
 			}
@@ -247,8 +211,7 @@ public class NotificationDataProvider
 	public String fullTextSearch(String text) {
 
 		boolean fullTextSearch = false;
-		StringBuffer buffer = new StringBuffer(BaseNLS.constants()
-				.label_filtered() + " ");
+		StringBuffer buffer = new StringBuffer(BaseNLS.constants().label_filtered() + " ");
 
 		if (text == null || (text != null && text.equals(""))) {
 			setSearchCriterions(null);
@@ -257,118 +220,81 @@ public class NotificationDataProvider
 			NotificationRequest request = (NotificationRequest) getContext();
 			newRequest = false;
 
-			ImogJunctionProxy disJunction = request
-					.create(ImogDisjunctionProxy.class);
+			ImogJunctionProxy disJunction = request.create(ImogDisjunctionProxy.class);
 			List<ImogCriterionProxy> criterionList = new ArrayList<ImogCriterionProxy>();
 
 			// Search field Name
-			BasicCriteriaProxy nameCrit = request
-					.create(BasicCriteriaProxy.class);
+			BasicCriteriaProxy nameCrit = request.create(BasicCriteriaProxy.class);
 			nameCrit.setField("name");
 			nameCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 			nameCrit.setValue(text);
-			buffer.append("(" + AdminNLS.constants().notification_field_name()
-					+ ": " + text + ") " + SYMBOL_OR + " ");
+			buffer.append("(" + AdminNLS.constants().notification_field_name() + ": " + text + ") " + SYMBOL_OR + " ");
 			criterionList.add(nameCrit);
-			
+
 			// Search field FormType
 			List<FormType> formTypes = formTypeUtil.getFormTypes();
-			for(FormType type:formTypes) {
-				
+			for (FormType type : formTypes) {
+
 				if (text.toLowerCase().equals(type.getDisplayValue().toLowerCase())) {
-					BasicCriteriaProxy formTypeCrit = request
-							.create(BasicCriteriaProxy.class);
+					BasicCriteriaProxy formTypeCrit = request.create(BasicCriteriaProxy.class);
 					formTypeCrit.setField("formType");
-					formTypeCrit
-							.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+					formTypeCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 					formTypeCrit.setValue(type.getValue());
-					buffer.append("("
-							+ DynFieldsNLS.constants()
-									.dynamicField_Template_field_formType() + ": "
-							+ text + ") " + SYMBOL_OR + " ");
+					buffer.append("(" + DynFieldsNLS.constants().dynamicField_Template_field_formType() + ": " + text + ") " + SYMBOL_OR + " ");
 					criterionList.add(formTypeCrit);
 				}
-			}	
+			}
 
 			// Search field Method
-			if (text.toLowerCase().equals(
-					AdminNLS.constants().notification_method_mail_option()
-							.toLowerCase())) {
-				BasicCriteriaProxy methodCrit = request
-						.create(BasicCriteriaProxy.class);
+			if (text.toLowerCase().equals(AdminNLS.constants().notification_method_mail_option().toLowerCase())) {
+				BasicCriteriaProxy methodCrit = request.create(BasicCriteriaProxy.class);
 				methodCrit.setField("method");
-				methodCrit
-						.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
-				methodCrit.setValue(NotificationConstants.EMAIL_NOTIF);
-				buffer.append("(" + AdminNLS.constants().notification_field_method()
-						+ ": " + text + ") " + SYMBOL_OR + " ");
+				methodCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+				methodCrit.setValue(NotificationConstants.MailMethod);
+				buffer.append("(" + AdminNLS.constants().notification_field_method() + ": " + text + ") " + SYMBOL_OR + " ");
 				criterionList.add(methodCrit);
 			}
-			if (text.toLowerCase().equals(
-					AdminNLS.constants().notification_method_sMS_option()
-							.toLowerCase())) {
-				BasicCriteriaProxy methodCrit = request
-						.create(BasicCriteriaProxy.class);
+			if (text.toLowerCase().equals(AdminNLS.constants().notification_method_sMS_option().toLowerCase())) {
+				BasicCriteriaProxy methodCrit = request.create(BasicCriteriaProxy.class);
 				methodCrit.setField("method");
-				methodCrit
-						.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
-				methodCrit.setValue(NotificationConstants.SMS_NOTIF);
-				buffer.append("(" + AdminNLS.constants().notification_field_method()
-						+ ": " + text + ") " + SYMBOL_OR + " ");
+				methodCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+				methodCrit.setValue(NotificationConstants.SMSMethod);
+				buffer.append("(" + AdminNLS.constants().notification_field_method() + ": " + text + ") " + SYMBOL_OR + " ");
 				criterionList.add(methodCrit);
 			}
 
 			// Search field Operation
-			if (text.toLowerCase().equals(
-					AdminNLS.constants().notification_operation_create_option()
-							.toLowerCase())) {
-				BasicCriteriaProxy operationCrit = request
-						.create(BasicCriteriaProxy.class);
+			if (text.toLowerCase().equals(AdminNLS.constants().notification_operation_create_option().toLowerCase())) {
+				BasicCriteriaProxy operationCrit = request.create(BasicCriteriaProxy.class);
 				operationCrit.setField("operation");
-				operationCrit
-						.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+				operationCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 				operationCrit.setValue(NotificationConstants.CREATE_OP);
-				buffer.append("("
-						+ AdminNLS.constants().notification_field_operation() + ": "
-						+ text + ") " + SYMBOL_OR + " ");
+				buffer.append("(" + AdminNLS.constants().notification_field_operation() + ": " + text + ") " + SYMBOL_OR + " ");
 				criterionList.add(operationCrit);
 			}
-			if (text.toLowerCase().equals(
-					AdminNLS.constants().notification_operation_update_option()
-							.toLowerCase())) {
-				BasicCriteriaProxy operationCrit = request
-						.create(BasicCriteriaProxy.class);
+			if (text.toLowerCase().equals(AdminNLS.constants().notification_operation_update_option().toLowerCase())) {
+				BasicCriteriaProxy operationCrit = request.create(BasicCriteriaProxy.class);
 				operationCrit.setField("operation");
-				operationCrit
-						.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+				operationCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 				operationCrit.setValue(NotificationConstants.UPDATE_OP);
-				buffer.append("("
-						+ AdminNLS.constants().notification_field_operation() + ": "
-						+ text + ") " + SYMBOL_OR + " ");
+				buffer.append("(" + AdminNLS.constants().notification_field_operation() + ": " + text + ") " + SYMBOL_OR + " ");
 				criterionList.add(operationCrit);
 			}
-			if (text.toLowerCase().equals(
-					AdminNLS.constants().notification_operation_delete_option()
-							.toLowerCase())) {
-				BasicCriteriaProxy operationCrit = request
-						.create(BasicCriteriaProxy.class);
+			if (text.toLowerCase().equals(AdminNLS.constants().notification_operation_delete_option().toLowerCase())) {
+				BasicCriteriaProxy operationCrit = request.create(BasicCriteriaProxy.class);
 				operationCrit.setField("operation");
-				operationCrit
-						.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
+				operationCrit.setOperation(CriteriaConstants.STRING_OPERATOR_CONTAINS);
 				operationCrit.setValue(NotificationConstants.DELETE_OP);
-				buffer.append("("
-						+ AdminNLS.constants().notification_field_operation() + ": "
-						+ text + ") " + SYMBOL_OR + " ");
+				buffer.append("(" + AdminNLS.constants().notification_field_operation() + ": " + text + ") " + SYMBOL_OR + " ");
 				criterionList.add(operationCrit);
 			}
 
 			disJunction.setCriterions(criterionList);
 			fullTextSearch = true;
 
-			//add FilterCriteria if exists
+			// add FilterCriteria if exists
 			if (isFiltered && filterCriteria != null) {
-				ImogJunctionProxy conJunctionFilt = request
-						.create(ImogConjunctionProxy.class);
+				ImogJunctionProxy conJunctionFilt = request.create(ImogConjunctionProxy.class);
 				List<ImogCriterionProxy> criterionListFilt = new ArrayList<ImogCriterionProxy>();
 				criterionListFilt.add(filterCriteria);
 				criterionListFilt.add(disJunction);

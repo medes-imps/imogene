@@ -1,7 +1,8 @@
 «IMPORT core»
 «EXTENSION template::CommonFieldUtilExt»
-«DEFINE generate(String projectName, String embedded) FOR Project»
+«DEFINE generate(String projectName, String embedded, String applicationType) FOR Project»
 «FILE "Login.jsp"»
+«LET "admin" AS adminType-»
 «IF embedded == "true"-»
 <%@page import="org.imogene.lib.sync.client.params.SyncParams"%>
 <%@page import="org.imogene.web.server.handler.GenericHandler"%>
@@ -37,8 +38,10 @@
 	«ENDIF-»
 	ResourceBundle rb = null;
 	String locale = request.getParameter("locale");
-	if (locale==null)
+	if (locale==null) {
 		rb = ResourceBundle.getBundle("org.imogene.web.client.i18n.ImogConstants", request.getLocale());
+		locale = request.getLocale().getLanguage();
+	}
 	else {
 		try {
 			rb = ResourceBundle.getBundle("org.imogene.web.client.i18n.ImogConstants_" + locale);
@@ -65,12 +68,18 @@
 	<!-- Login Box -->
 	<center>
 		<table cellspacing="0" cellpadding="0" class="login-centerPanel">
-			<tr>
-				<!-- 	
-				<td align="right" style="vertical-align: middle;" width="100px">
-					<img src="../imog«projectName.toLowerCase()»/images/logo_web.png" style="opacity:0.6; filter:alpha(opacity=60)">
+		
+			<!-- <tr>
+				<td align="center" style="vertical-align: middle;">
+					«IF applicationType.matches(adminType)-»
+					<img src="../imog«projectName.toLowerCase()»/images/logo_admin.png" class="imogene-LoginLogo" >
+					«ELSE-»
+					<img src="../imog«projectName.toLowerCase()»/images/imog__logo_android.png" class="imogene-LoginLogo" >
+					«ENDIF-»
 				</td>
-				-->		
+			</tr>	-->
+					
+			<tr>
 				<td>
 					<div>
 						<div class="imogene-LoginMessage"></div>
@@ -106,6 +115,11 @@
 									</div>
 									
 									<button class="Login-Button" type="submit"><%=rb.getString("login_button")%></button>
+									«IF embedded == "false"-»
+									<div align="right" >
+										<a href="../requestpwd?locale=<%=locale%>"><%=rb.getString("pass_recovery_message")%></a>
+									</div>
+									«ENDIF-»									
 								</form>
 							</div>
 						</div>
@@ -139,5 +153,6 @@
 </body>
 
 </html>
+«ENDLET»
 «ENDFILE»
 «ENDDEFINE»

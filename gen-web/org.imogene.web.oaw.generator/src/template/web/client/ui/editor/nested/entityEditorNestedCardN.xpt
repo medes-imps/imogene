@@ -138,6 +138,10 @@ public class «name.toFirstUpper()»EditorNestedRow extends Composite implements E
 		// the value of «EXPAND template::CommonFieldUtil::propertyName FOR f» affects the visibility of other fields
 		«EXPAND template::CommonFieldUtil::propertyName FOR f».notifyChanges(requestFactory.getEventBus());
 		«ENDIF -»
+		«IF f.required==true && !(RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).nestedForm)-»
+		// required field
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».addIsRequiredStyle();
+		«ENDIF -»		
 		«ENDIF-»
 		«ENDFOREACH -»	
 	}	

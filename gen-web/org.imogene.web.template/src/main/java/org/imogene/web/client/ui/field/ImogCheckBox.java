@@ -103,5 +103,13 @@ public class ImogCheckBox extends Composite implements ImogField<Boolean>, LeafV
 	public void setBoxWidth(int width) {
 		checkBox.getElement().getStyle().setProperty("width", width + "px");
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

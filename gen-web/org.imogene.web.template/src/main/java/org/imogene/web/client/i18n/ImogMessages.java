@@ -25,6 +25,9 @@ public interface ImogMessages extends Messages{
 	String error_format_bool();
 	String error_format_bool_field(String field);
 	String error_not_unique();
+	String error_date_after_current();
+	String error_date1_after_date2(String field);
+	String error_date1_before_date2(String field);
 
 	String banner_user_label(String currentUser);
 	String banner_lastlogindate_label(String lastLoginDate);
@@ -37,6 +40,7 @@ public interface ImogMessages extends Messages{
 	String form_metadata_creation(String creationDate, String creator);
 	String form_metadata_modification(String modificationDate, String modifier);
 	String form_metadata_current_user(String currentUser);
+	String form_metadata_lastlogindate(String date);
 	
 	String error_num_range(String minValue, String maxValue);
 	String error_num_min(String minValue);

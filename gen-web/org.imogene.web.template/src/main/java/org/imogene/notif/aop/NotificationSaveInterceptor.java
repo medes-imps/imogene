@@ -35,30 +35,32 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	 */
 	@Override
 	public void afterReturning(Object result, Method method, Object[] args, Object target) throws Throwable {
-		handleAction(method, args, result);
+		try {
+			handleAction(method, args, result);
+		} catch (Throwable t) {
+			// No matter what happened we should not stop execution of a query for that
+		}
 	}
 
 	/**
-	 * 
 	 * @param method
 	 * @param args
 	 * @param result
 	 */
 	@Transactional
 	private void handleAction(Method method, Object[] args, Object result) {
-
 		if (method.getName().equals("saveOrUpdate") || method.getName().equals("merge")) {
 			handleSaveAction(args);
 		} else if (method.getName().equals("load") && args != null && args.length == 1 && args[0] instanceof String) {
 			handleViewAction(result);
 		} else if (method.getName().equals("delete")) {
+			// not called anymore by new way of managing deleted entities
 			handleDeleteAction(args);
 		}
 	}
 
 	/**
 	 * Handle the saveOrUpdate method
-	 * 
 	 * @param args arguments of the method
 	 */
 	private void handleSaveAction(Object[] args) {
@@ -69,10 +71,15 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 		String idFormulaire = bean.getId();
 		String className = bean.getClass().getName();
 		String typeFormulaire = bean.getClass().getSimpleName();
-
 		String typeAction = null;
-		if (isNew)
-			typeAction = UserActionConstants.USERACTION_TYPE_CREATE;
+		
+		if(isNew) {
+			if(bean.getDeleted()!=null)
+				// a deleted entity is saved as new and deleted
+				typeAction = UserActionConstants.USERACTION_TYPE_DELETE;
+			else
+				typeAction = UserActionConstants.USERACTION_TYPE_CREATE;
+		}
 		else
 			typeAction = UserActionConstants.USERACTION_TYPE_UPDATE;
 
@@ -88,7 +95,6 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	}
 
 	/**
-	 * 
 	 * @param args
 	 * @param result
 	 */
@@ -105,7 +111,6 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	}
 
 	/**
-	 * 
 	 * @param args
 	 */
 	private void handleDeleteAction(Object[] args) {
@@ -128,7 +133,6 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 	/**
 	 * Notify the notifier by http.
-	 * 
 	 * @param type the card type
 	 * @param operation the operation on the card
 	 * @param id the card id
@@ -155,7 +159,6 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	}
 
 	/**
-	 * 
 	 * @param typeAction
 	 * @param typeFormulaire
 	 * @param idFormulaire
@@ -175,8 +178,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	}
 
 	/**
-	 * For bean injection
-	 * 
+	 * Setter for bean injection
 	 * @param notifier the notifier URL
 	 */
 	public void setNotifierUrl(String notifier) {
@@ -184,17 +186,15 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	}
 
 	/**
-	 * For bean injection
-	 * 
+	 * Setter for bean injection
 	 * @param dao
 	 */
-	public void setDao(GenericDao dao) {
+	public void setGenericDao(GenericDao dao) {
 		genericDao = dao;
 	}
 
 	/**
-	 * For bean injection
-	 * 
+	 * Setter for bean injection
 	 * @param cloneFactory
 	 */
 	public void setCloneFactory(CloneFactory cloneFactory) {

@@ -9,4 +9,8 @@ public class DaoUtil {
 		return Long.toString(random.nextLong());
 	}
 
+	public static final void log(String message) {
+		System.out.println("+++INFO: " + message);
+	}
+
 }

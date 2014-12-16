@@ -115,5 +115,13 @@ public class ImogTimeBox extends Composite implements ImogField<Date>,
 	public void setMinuteStep(int minuteStep) {
 		timeBox.setMinuteStep(minuteStep);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

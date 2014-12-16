@@ -2,20 +2,32 @@
 «EXTENSION template::CommonFieldUtilExt»
 «DEFINE generate(String projectName, boolean gmaps) FOR Project»
 «FILE projectName.toFirstUpper() + "Index.jsp"-»
+<%@page import="java.util.Locale"%>
 <!DOCTYPE html>
 
 <html>
 
-  <head> 
+  <head>
+	<%
+		Locale locale = null;
+		String localeCode = request.getParameter("locale");
+		if (localeCode==null)
+			locale = request.getLocale();	
+		else
+			locale = new Locale(localeCode);
+	%>    
+  
   	<meta http-equiv="X-UA-Compatible" content="IE=9">
     <meta http-equiv="Cache-Control" content="no-cache"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="-1"/>
     
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="gwt:property" content="locale=<%=locale%>">    
+   «REM»
     «IF languages.size != 0 -»
 	<meta name="gwt:property" content="locale=«languages.get(0).isoCode»">
-	«ENDIF-»
+	«ENDIF-»«ENDREM»
 	
 	<link rel="icon" href="imog«projectName.toLowerCase()»/images/logo_16x16.png" type="image/png">  
 	<link type="text/css" rel="stylesheet" href="«projectName.toFirstUpper()».css">

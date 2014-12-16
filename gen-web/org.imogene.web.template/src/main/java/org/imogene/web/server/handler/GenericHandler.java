@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A data handler for the Generic dao
- * 
  * @author Medes-IMPS
  */
 public class GenericHandler {
@@ -17,7 +16,6 @@ public class GenericHandler {
 
 	/**
 	 * Loads an entity instance
-	 * 
 	 * @param className the entity class name
 	 * @param id the instance id
 	 * @return the entity instance if it exists
@@ -29,7 +27,6 @@ public class GenericHandler {
 
 	/**
 	 * Loads an entity instance
-	 * 
 	 * @param className the entity class name
 	 * @param id the instance id
 	 * @return the entity instance if it exists
@@ -41,7 +38,6 @@ public class GenericHandler {
 
 	/**
 	 * Load an actor with the given login
-	 * 
 	 * @param login the login to search
 	 * @return the actor or {@code null} if not found
 	 */
@@ -52,7 +48,6 @@ public class GenericHandler {
 
 	/**
 	 * Saves or updates the entity
-	 * 
 	 * @param entity the entity to be saved or updated
 	 */
 	@Transactional
@@ -62,7 +57,6 @@ public class GenericHandler {
 
 	/**
 	 * Detach an entity instance from the persistence session
-	 * 
 	 * @param o the entity instance to be evicted from persistence session
 	 */
 	public void detach(Object o) {
@@ -70,8 +64,14 @@ public class GenericHandler {
 	}
 
 	/**
-	 * Setter for bean injection
 	 * 
+	 */
+	public void flush() {
+		dao.flush();
+	}
+
+	/**
+	 * Setter for bean injection
 	 * @param dao
 	 */
 	public void setDao(GenericDao dao) {

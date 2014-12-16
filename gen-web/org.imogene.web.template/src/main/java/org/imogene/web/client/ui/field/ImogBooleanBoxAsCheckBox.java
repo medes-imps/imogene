@@ -113,5 +113,13 @@ public class ImogBooleanBoxAsCheckBox extends Composite implements ImogField<Boo
 //		booleanBox.isStrict(isStrict);
 	}
 	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
+	
 
 }

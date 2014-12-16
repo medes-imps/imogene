@@ -141,9 +141,6 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	ImogPasswordBox passwordConfirm;
 	@UiField(provided = true)
 	ImogMultiRelationBox<ProfileProxy> profiles;
-	@UiField
-	@Ignore
-	ImogLinkBox idLink;
 	
 	/* Synchronization section widgets */
 	@UiField
@@ -221,7 +218,11 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«IF f.fieldDependentVisibility!=null && !f.fieldDependentVisibility.isEmpty && !f.hidden-»		
 		// the visibility of «EXPAND template::CommonFieldUtil::propertyName FOR f» depends on the value of other fields
 		«EXPAND template::CommonFieldUtil::propertyName FOR f».addStyleName("dependentVisibility");
-		«ENDIF -»		
+		«ENDIF -»	
+		«IF f.required==true && !(RelationFieldEntity.isAssignableFrom(f.metaType) && ((RelationFieldEntity)f).nestedForm)-»
+		// required field
+		«EXPAND template::CommonFieldUtil::propertyName FOR f».addIsRequiredStyle();
+		«ENDIF -»	
 		«ENDFOREACH -»	
 		«ENDFOREACH»
 		
@@ -233,7 +234,6 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		passwordConfirm.setLabel(AdminNLS.constants().imogActor_field_passwordConfirm());
 		profiles.setLabel(AdminNLS.constants().imogActor_field_roleList());
 		profiles.hideButtons(true);
-		idLink.setLabel(AdminNLS.constants().imogActor_field_idFile());
 
 		/* Synchronization section widgets */
 		synchronizationSection.setGroupTitle(AdminNLS.constants().imogActor_group_synchronization());
@@ -326,7 +326,6 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		password.setEdited(isEdited);
 		passwordConfirm.setEdited(isEdited);
 		profiles.setEdited(isEdited);
-		idLink.setVisible(!isEdited);
 
 		/* Synchronization section widgets */
 		synchronizables.setEdited(isEdited);
@@ -438,9 +437,8 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 		«EXPAND setRelationFieldHierarchicalFilterBehavior FOR f -»
 	«ENDFOREACH»
 	
-	«EXPAND setterForRelation FOREACH groups.fields-»		
-	
-	
+	«EXPAND setterForRelation FOREACH groups.fields-»			
+		
 	«IF isSimpleRelationFieldPresent(this.groups.fields) || isMultiRelationFieldPresent(this.groups.fields) -»
 	/**
 	 * Configures the handlers of the widgets that manage relation fields
@@ -585,16 +583,6 @@ public class «name.toFirstUpper()»Editor extends Composite implements Editor<«na
 	public void setCurrentLogin() {
 		this.currentLogin = login.getValue(); 
 	}	
-	
-	/**
-	 * Set the link to download 
-	 * the associated identification file
-	 */
-	public void updateIdLink(String entityId) {
-			idLink.setValue("<a href=\"" + GWT.getHostPageBaseURL()
-					+ "encrypt?type=«shortName»&id=" + entityId
-					+ "\">" + AdminNLS.constants().imogActor_field_idFile_text() + "</a>");
-	}
 	«ENDIF-»
 	
 	/**

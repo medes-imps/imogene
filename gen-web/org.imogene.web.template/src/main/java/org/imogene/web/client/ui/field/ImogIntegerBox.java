@@ -192,5 +192,13 @@ public class ImogIntegerBox extends Composite implements ImogField<Integer>,
 		unitBox.setVisible(true);
 		unitBox.setText(unit);
 	}
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

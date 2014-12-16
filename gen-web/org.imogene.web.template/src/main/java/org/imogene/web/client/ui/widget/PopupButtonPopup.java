@@ -20,7 +20,7 @@ public class PopupButtonPopup {
 
 
 	public PopupButtonPopup() {
-		popup = new PopupPanel(true);
+		popup = new PopupPanel(false);
 		Binder.BINDER.createAndBindUi(this);
 	}
 	
@@ -63,5 +63,13 @@ public class PopupButtonPopup {
 	public void setPopupWidth(String width) {
 		popup.getElement().getStyle().clearWidth();
 		popup.getElement().getStyle().setProperty("Width", width);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isShowing() {
+		return popup.isShowing();
 	}
 }

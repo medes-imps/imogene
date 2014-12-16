@@ -52,7 +52,11 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
 import org.imogene.admin.client.i18n.AdminNLS;
 import org.imogene.web.client.util.ProfileUtil;
 «ENDIF-»
-
+«FOREACH columnFields.union(mainFields) AS c -»
+	«IF RelationFieldEntity.isAssignableFrom(c.metaType) && (((RelationFieldEntity)c).cardinality!=1)-»
+import org.imogene.«projectName.toLowerCase()».shared.proxy.«((RelationFieldEntity)c).entity.name.toFirstUpper()»Proxy;	
+	«ENDIF-»
+«ENDFOREACH -»
 
 
 /**
@@ -286,7 +290,7 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 
 		@Override
 		public String getValue(«name.toFirstUpper()»Proxy object) {
-			String value = null;
+			String value = "";
 			if(object!=null) {
 				«EXPAND getColumnValue FOR c-»
 			}
@@ -313,12 +317,9 @@ public class «name.toFirstUpper()»DynaTable extends ImogDynaTable<«name.toFirstU
 	
 			@Override
 			public String getValue(«name.toFirstUpper()»Proxy object) {
-				String value = null;
-				if (object.getLogin() == null)
-					value = "";
-				else
+				String value = "";
+				if (object!=null && object.getLogin() != null)
 					value = object.getLogin();
-	
 				return value;
 			}
 	
@@ -344,9 +345,9 @@ private «projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUppe
 «ENDDEFINE»
 «DEFINE getRenderer(String projectName) FOR EnumField-»private «projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUpper()»Renderer.get();«ENDDEFINE»
 «DEFINE getRenderer(String projectName) FOR RelationFieldEntity-»
-	«IF cardinality == 1 -»
+	«REM»«IF cardinality == 1 -»«ENDREM»
 private «projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUpper()»Renderer.get();
-	«ENDIF -»
+	«REM»«ENDIF -»«ENDREM»
 «ENDDEFINE»
 
 
@@ -365,83 +366,73 @@ private «projectName.toFirstUpper()»Renderer renderer = «projectName.toFirstUppe
 
 «REM» Get value for column «ENDREM»
 «DEFINE getColumnValue FOR GeoField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = object.«EXPAND template::CommonFieldUtil::getterName FOR this»().getLatitude() + "," + object.«EXPAND template::CommonFieldUtil::getterName FOR this»().getLongitude();
 «ENDDEFINE»
 «DEFINE getColumnValue FOR FieldEntity-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = object.«EXPAND template::CommonFieldUtil::getterName FOR this»();
 «ENDDEFINE»
 «DEFINE getColumnValue FOR TextField-»
 	«IF translatable-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = renderer.getLocalizedText(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 	«ELSE-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = object.«EXPAND template::CommonFieldUtil::getterName FOR this»();
 	«ENDIF-»
 «ENDDEFINE»
 «DEFINE getColumnValue FOR IntegerField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = object.«EXPAND template::CommonFieldUtil::getterName FOR this»().toString();
 «ENDDEFINE»
 «DEFINE getColumnValue FOR FloatField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = object.«EXPAND template::CommonFieldUtil::getterName FOR this»().toString();
 «ENDDEFINE»
 «DEFINE getColumnValue FOR BooleanField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = BooleanUtil.getBooleanDisplayValue(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 «ENDDEFINE»
 «DEFINE getColumnValue FOR DateField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = DateUtil.getFormatedDate(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 «ENDDEFINE»
 «DEFINE getColumnValue FOR TimeField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = DateUtil.getFormatedTime(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 «ENDDEFINE»
 «DEFINE getColumnValue FOR DateTimeField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = DateUtil.getDateTime(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 «ENDDEFINE»
 «DEFINE getColumnValue FOR EnumField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = renderer.getEnumDisplayValue(«parentGroup.parentCard.name.toFirstUpper()»Proxy.class, "«EXPAND template::CommonFieldUtil::propertyName FOR this»", object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
 «ENDDEFINE»
 «DEFINE getColumnValue FOR RelationFieldEntity-»
 	«IF cardinality == 1 -»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = renderer.getDisplayValue(object.«EXPAND template::CommonFieldUtil::getterName FOR this»());
+	«ELSE -»
+		List<«entity.name.toFirstUpper()»Proxy> entities = object.«EXPAND template::CommonFieldUtil::getterName FOR this»();
+		if(entities != null && !entities.isEmpty()) {
+			if(entities.size()>2)
+				value = entities.size() + " " + NLS.constants().«entity.name.toFirstLower()»_name_plur();
+			else {
+				int i = 0;
+				for(«entity.name.toFirstUpper()»Proxy entity:entities) {
+					value = value + renderer.getDisplayValue(entity);
+					if(i<entities.size()-1)
+						value = value  + ",";
+					value = value + " ";
+					i = i+1;
+				}
+			}
+		}	
 	«ENDIF -»
 «ENDDEFINE»
 «DEFINE getColumnValue FOR BinaryField-»
-		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() == null)
-			value = "";
-		else
+		if (object.«EXPAND template::CommonFieldUtil::getterName FOR this»() != null)
 			value = BaseNLS.constants().boolean_true();
 «ENDDEFINE»

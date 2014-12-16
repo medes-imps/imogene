@@ -137,8 +137,19 @@
 	  <servlet-mapping>
 		<servlet-name>«projectName.toFirstUpper()»</servlet-name>
 		<url-pattern>*.txt</url-pattern>
-	  </servlet-mapping> 
- 
+	  </servlet-mapping>
+	  
+	  «IF embedded == "false"-»
+	  <!-- Password recovery -->
+	  <servlet-mapping>
+		<servlet-name>«projectName.toFirstUpper()»</servlet-name>
+		<url-pattern>/requestpwd</url-pattern>
+	  </servlet-mapping>
+	  <servlet-mapping>
+		<servlet-name>«projectName.toFirstUpper()»</servlet-name>
+		<url-pattern>/resetpwd</url-pattern>
+	  </servlet-mapping>
+ 	«ENDIF-»
   
 </web-app>
 «ENDFILE»

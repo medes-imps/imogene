@@ -166,5 +166,13 @@ public class ImogDateTimeBox extends Composite implements ImogField<Date>,
 	public void showErrors(List<EditorError> errors) {		
 		errorLabel.showErrors(errors);
 	}	
+	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
 
 }

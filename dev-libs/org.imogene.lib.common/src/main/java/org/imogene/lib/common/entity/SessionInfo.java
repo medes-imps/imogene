@@ -1,10 +1,10 @@
 package org.imogene.lib.common.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Session information for the current user
- * 
  * @author Medes-IMPS
  */
 public class SessionInfo implements Serializable {
@@ -13,6 +13,7 @@ public class SessionInfo implements Serializable {
 
 	private String sessionId;
 	private ImogActor actor;
+	private Date lastLoginDate;
 
 	public SessionInfo() {
 	}
@@ -37,4 +38,13 @@ public class SessionInfo implements Serializable {
 	public void setActor(ImogActor actor) {
 		this.actor = actor;
 	}
+
+	public Date getLastLoginDate() {
+		return lastLoginDate;
+	}
+
+	public void setLastLoginDate(Date lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
+	}
+
 }

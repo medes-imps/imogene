@@ -456,6 +456,14 @@ public class ImogMultiRelationBox<T extends ImogBeanProxy> extends Composite imp
 	public void setBoxWidth(int width) {
 	}
 	
+	/**
+	 * Adds a specific style to the field to show that
+	 * it is required
+	 */
+	public void addIsRequiredStyle() {
+		fieldBox.addIsRequiredStyle();
+	}
+	
 	@Override
 	protected void onUnload() {
 		for(HandlerRegistration r : registrations)

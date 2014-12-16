@@ -75,7 +75,10 @@ public class URLBuilder {
 
     // http://www.google.com:80/path/to/file.html
     if (path != null && !"".equals(path)) {
-      url.append("/").append(path);
+      if(!path.startsWith("/")){
+    	  url.append("/");
+      }
+      url.append(path);
     }
 
     // Generate the query string.

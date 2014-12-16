@@ -31,7 +31,8 @@
 		
 		.actorInfo {
 			color: #BBB !important;
-			font-size: 12px;
+			font-size: 8px;
+			text-align: left;
 		}
 		.imogene-locBox {
 			border: 1px solid #FFFFFF;

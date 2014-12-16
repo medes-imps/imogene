@@ -1,5 +1,6 @@
 package org.imogene.web.client.util;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,51 +8,48 @@ import org.imogene.web.shared.proxy.ImogActorProxy;
 import org.imogene.web.shared.proxy.criteria.ImogJunctionProxy;
 
 public class LocalSession {
-	
-	
+
 	private static LocalSession instance = new LocalSession();
-	
-	
-	private ImogActorProxy currentUser;	
-	private Set<Integer> edited = new HashSet<Integer>();	
+
+	private ImogActorProxy currentUser;
+	private Set<Integer> edited = new HashSet<Integer>();
 	private ImogJunctionProxy searchCriterions = null;
 	private String filteringMessage = null;
 	private String versionNumber;
-	
-	
-	public static LocalSession get(){
+	private Date lastLoginDate;
+
+	public static LocalSession get() {
 		return instance;
 	}
-	
-	
-	public void setCurrentUser(ImogActorProxy actor){
+
+	public void setCurrentUser(ImogActorProxy actor) {
 		currentUser = actor;
 	}
-	
-	public ImogActorProxy getCurrentUser(){
+
+	public ImogActorProxy getCurrentUser() {
 		return currentUser;
 	}
 
-	public void addToEdited(Integer code){
+	public void addToEdited(Integer code) {
 		edited.add(code);
 	}
-	
-	public void removeFromEdited(Integer code){
+
+	public void removeFromEdited(Integer code) {
 		edited.remove(code);
 	}
-	
-	public boolean isEditing(){
+
+	public boolean isEditing() {
 		return !edited.isEmpty();
 	}
-	
-	public void clearEdited(){
+
+	public void clearEdited() {
 		edited.clear();
 	}
 
 	public ImogJunctionProxy getSearchCriterions() {
 		return searchCriterions;
 	}
-	
+
 	public void setSearchCriterions(ImogJunctionProxy criterions, String message) {
 		this.searchCriterions = criterions;
 		this.filteringMessage = message;
@@ -60,14 +58,21 @@ public class LocalSession {
 	public String getFilteringMessage() {
 		return filteringMessage;
 	}
-	
+
 	public String getVersionNumber() {
 		return versionNumber;
 	}
 
-
 	public void setVersionNumber(String versionNumber) {
 		this.versionNumber = versionNumber;
 	}
-	
+
+	public Date getLastLoginDate() {
+		return lastLoginDate;
+	}
+
+	public void setLastLoginDate(Date lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
+	}
+
 }
