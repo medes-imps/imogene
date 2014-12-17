@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -165,10 +167,10 @@ public class DaoUtil {
 		return null;
 	}
 
-	public static final <T> Path<T> getCascadeRoot(Path<?> root, String property) {
+	public static final <T> Path<T> getCascadeRoot(From<?, ?> root, String property) {
 		if (property.contains(".")) {
 			String[] split = property.split("\\.", 2);
-			return DaoUtil.<T> getCascadeRoot(root.get(split[0]), split[1]);
+			return DaoUtil.<T> getCascadeRoot(((From<?, ?>) root).join(split[0], JoinType.LEFT), split[1]);
 		} else {
 			return root.<T> get(property);
 		}
