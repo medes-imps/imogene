@@ -7,8 +7,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpStatus;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.imogene.admin.server.security.SecurityUtils;
 import org.imogene.lib.common.constants.NotificationConstants;
 import org.imogene.lib.common.dao.GenericDao;
@@ -35,7 +35,7 @@ public class PasswordRecoveryController {
 	public static final long TIMEOUT = 60 * 60 * 1000;
 
 	public static final String RECOVERY_TOKEN = "t";
-	
+
 	public static final String LOCALE_PARAM = "locale";
 
 	public static final String PASSWORD_CONSTRAINT_DEFAULT = "^\\w{8,}$";
@@ -70,7 +70,8 @@ public class PasswordRecoveryController {
 	 */
 	@Transactional
 	@RequestMapping(value = "requestpwd", method = RequestMethod.POST)
-	public String requestPassword(@ModelAttribute("request") RequestUser user, HttpServletRequest req, HttpServletResponse resp, Model model) {
+	public String requestPassword(@ModelAttribute("request") RequestUser user, HttpServletRequest req,
+			HttpServletResponse resp, Model model) {
 
 		if (user.getUsername() != null) {
 			String username = user.getUsername();
@@ -100,14 +101,15 @@ public class PasswordRecoveryController {
 	private void sendEmailWithToken(String token, String login, String locale) {
 		ImogActor actor = getActorFromLogin(login);
 		String email = null;
-		if(actor instanceof DefaultUser)
-			email = ((DefaultUser)actor).getEmail();
+		if (actor instanceof DefaultUser)
+			email = ((DefaultUser) actor).getEmail();
 		else
 			email = actor.getNotificationData(NotificationConstants.MailMethod);
-		
-		if(email!=null && !email.isEmpty()) {
+
+		if (email != null && !email.isEmpty()) {
 			try {
-				smtpSender.sendMessage("[" + applicationName + "] - " + getSmsTitle(locale), getSmsContent(token, locale), new String[] { email });
+				smtpSender.sendMessage("[" + applicationName + "] - " + getSmsTitle(locale),
+						getSmsContent(token, locale), new String[] { email });
 			} catch (Exception e) {
 				logger.error("Error sending email for password recovery.", e);
 			}
@@ -155,7 +157,8 @@ public class PasswordRecoveryController {
 	 * @return
 	 */
 	private String getUrl(String token, String locale) {
-		return frontendUrl.endsWith("/") ? frontendUrl + "resetpwd?t=" + token : frontendUrl + "/resetpwd?t=" + token + "&" + LOCALE_PARAM + "=" + locale;
+		return frontendUrl.endsWith("/") ? frontendUrl + "resetpwd?t=" + token : frontendUrl + "/resetpwd?t=" + token
+				+ "&" + LOCALE_PARAM + "=" + locale;
 	}
 
 	/**
@@ -333,7 +336,7 @@ public class PasswordRecoveryController {
 		private String password;
 
 		private String confirm;
-		
+
 		private String locale;
 
 		public String getToken() {
@@ -359,7 +362,7 @@ public class PasswordRecoveryController {
 		public void setConfirm(String confirm) {
 			this.confirm = confirm;
 		}
-		
+
 		public String getLocale() {
 			return locale;
 		}
