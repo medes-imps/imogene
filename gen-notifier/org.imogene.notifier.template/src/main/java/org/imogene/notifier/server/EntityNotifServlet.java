@@ -57,9 +57,9 @@ public class EntityNotifServlet extends HttpServlet {
 			Set<NotificationInstance> instances = factory.createNotification(type, id, op);
 			// System.out.println("Nb. of instances : "+instances.size());
 			for (NotificationInstance instance : instances) {
-				if (NotificationConstants.SMS_NOTIF.equals(instance.getMethod()))
+				if (NotificationConstants.SMSMethod.equals(instance.getMethod()))
 					smsService.sendNotification(instance);
-				else if (NotificationConstants.EMAIL_NOTIF.equals(instance.getMethod()))
+				else if (NotificationConstants.MailMethod.equals(instance.getMethod()))
 					emailService.sendNotification(instance);
 				else
 					logger.warn("The notification method with the code '" + instance.getMethod() + "' is not implemented.");

@@ -33,7 +33,7 @@ public class EmailNotification implements NotificationService {
 			message.setFrom(FROM);
 			message.setSubject(notification.getTitle());
 			message.setText(notification.getMessage());
-			message.setTo(actor.getNotificationData(NotificationConstants.EMAIL_NOTIF));
+			message.setTo(actor.getNotificationData(NotificationConstants.MailMethod));
 			messages.add(message);
 		}
 		mailSender.send(messages.toArray(new SimpleMailMessage[messages.size()]));

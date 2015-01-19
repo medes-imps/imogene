@@ -3,7 +3,6 @@ package org.imogene.notifier.server;
 import java.util.Set;
 
 import org.imogene.lib.common.entity.ImogActor;
-import org.imogene.lib.common.role.ImogRole;
 
 public class NotificationInstance {
 
@@ -19,7 +18,7 @@ public class NotificationInstance {
 
 	private String method;
 
-	private Set<ImogRole> roleRecipients;
+	// private Set<ImogRole> roleRecipients;
 
 	private Set<ImogActor> userRecipients;
 
@@ -39,9 +38,9 @@ public class NotificationInstance {
 		return method;
 	}
 
-	public Set<ImogRole> getRoleRecipients() {
-		return roleRecipients;
-	}
+	// public Set<ImogRole> getRoleRecipients() {
+	// return roleRecipients;
+	// }
 
 	public String getSourceCard() {
 		return sourceCard;
@@ -63,9 +62,9 @@ public class NotificationInstance {
 		name = pName;
 	}
 
-	public void setRoleRecipients(Set<ImogRole> roles) {
-		roleRecipients = roles;
-	}
+	// public void setRoleRecipients(Set<ImogRole> roles) {
+	// roleRecipients = roles;
+	// }
 
 	public void setSourceCard(String pSource) {
 		sourceCard = pSource;

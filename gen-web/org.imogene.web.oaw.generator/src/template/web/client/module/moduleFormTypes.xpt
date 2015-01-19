@@ -34,11 +34,11 @@ public class «projectName.toFirstUpper()»FormTypes implements FormTypeUtil {
 		List<FormType> list = new ArrayList<FormType>();
 		
 		«FOREACH entities AS e -»
-		FormType «e.name.toFirstLower()» = new FormType("«e.shortName»", NLS.constants().«e.name.toFirstLower()»_name());
+		FormType «e.name.toFirstLower()» = new FormType("org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»", NLS.constants().«e.name.toFirstLower()»_name());
 		list.add(«e.name.toFirstLower()»);
 		«ENDFOREACH -»
 		«IF applicationType.matches(adminType)-»
-		FormType binaryFile = new FormType("BIN", AdminNLS.constants().binary_name());
+		FormType binaryFile = new FormType("org.imogene.lib.common.binary.file.BinaryFile", AdminNLS.constants().binary_name());
 		list.add(binaryFile);
 		«ENDIF-»
 		return list;
@@ -50,7 +50,7 @@ public class «projectName.toFirstUpper()»FormTypes implements FormTypeUtil {
 		
 		«FOREACH entities AS e -»
 		«IF e.hasDynamicFields-»
-		FormType «e.name.toFirstLower()» = new FormType("«e.shortName»", NLS.constants().«e.name.toFirstLower()»_name());
+		FormType «e.name.toFirstLower()» = new FormType("org.imogene.«projectName.toLowerCase()».domain.entity.«e.name.toFirstUpper()»", NLS.constants().«e.name.toFirstLower()»_name());
 		list.add(«e.name.toFirstLower()»);
 		«ENDIF-»
 		«ENDFOREACH -»	

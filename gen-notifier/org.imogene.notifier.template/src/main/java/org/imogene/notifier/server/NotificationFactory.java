@@ -11,8 +11,6 @@ import org.imogene.lib.common.entity.ImogBean;
 import org.imogene.lib.common.entity.ImogBeanImpl;
 import org.imogene.lib.common.notification.Notification;
 import org.imogene.lib.common.notification.NotificationDao;
-import org.imogene.lib.common.role.ImogRole;
-import org.imogene.lib.common.role.RoleActorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -25,9 +23,9 @@ public class NotificationFactory {
 
 	private Logger logger = Logger.getLogger("org.imogene.notifier.server");
 
-	@Autowired
-	@Qualifier(value = "roleActorDao")
-	private RoleActorDao roleActorDao;
+	// @Autowired
+	// @Qualifier(value = "roleActorDao")
+	// private RoleActorDao roleActorDao;
 
 	@Autowired
 	@Qualifier(value = "notificationDao")
@@ -58,8 +56,7 @@ public class NotificationFactory {
 	}
 
 	/**
-	 * Create a notification instance for the specified entity, based on the
-	 * specified notification template
+	 * Create a notification instance for the specified entity, based on the specified notification template
 	 * 
 	 * @param template the notification template
 	 * @param id the id of the entity
@@ -108,15 +105,15 @@ public class NotificationFactory {
 			actors.addAll(recipients);
 		}
 		/* add role users */
-		List<ImogRole> roles = template.getRoleRecipients();
-		if (roles != null) {
-			for (ImogRole role : roles) {
-				recipients = roleActorDao.listActorsForRole(role);
-				if (recipients != null) {
-					actors.addAll(recipients);
-				}
-			}
-		}
+		// List<ImogRole> roles = template.getRoleRecipients();
+		// if (roles != null) {
+		// for (ImogRole role : roles) {
+		// recipients = roleActorDao.listActorsForRole(role);
+		// if (recipients != null) {
+		// actors.addAll(recipients);
+		// }
+		// }
+		// }
 		// TODO add user implied by the entity (ie: creator, user field ... ).
 		logger.debug("Numbers of recipient added : " + actors.size());
 		return actors;

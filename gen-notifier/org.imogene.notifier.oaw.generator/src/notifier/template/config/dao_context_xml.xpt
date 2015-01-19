@@ -66,9 +66,6 @@
 	<!-- DAO layer configuration -->
 	<!--						 -->
 	
-	<!-- Role dao -->
-	<bean id="roleActorDao" class="org.imogene.lib.common.role.RoleActorDaoImpl" />
-  	
   	<!-- Generic DAO -->
   	<bean id="genericDao" class="org.imogene.lib.common.dao.GenericDaoImpl" />
   	
