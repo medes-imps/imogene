@@ -39,5 +39,18 @@ public class ProfileUtil {
 		}
 		return false;
 	}
+	
+	/**
+	 * 
+	 * @param profileName
+	 * @return
+	 */
+	public static boolean hasProfile(String profileName) {
+		for (ProfileProxy profile : LocalSession.get().getCurrentUser().getProfiles()) {
+			if (profile.getName().equals(profileName))
+				return true;
+		}
+		return false;
+	}
 
 }

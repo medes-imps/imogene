@@ -17,6 +17,7 @@ public class LocalSession {
 	private String filteringMessage = null;
 	private String versionNumber;
 	private Date lastLoginDate;
+	private boolean specificHome = false;
 
 	public static LocalSession get() {
 		return instance;
@@ -74,5 +75,15 @@ public class LocalSession {
 	public void setLastLoginDate(Date lastLoginDate) {
 		this.lastLoginDate = lastLoginDate;
 	}
+
+	public boolean isSpecificHome() {
+		return specificHome;
+	}
+
+	public void setSpecificHome(boolean specificHome) {
+		this.specificHome = specificHome;
+	}
+	
+	
 
 }

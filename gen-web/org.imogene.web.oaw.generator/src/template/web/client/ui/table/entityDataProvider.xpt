@@ -201,7 +201,7 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 				result = request.list«name.toFirstUpper()»(start, numRows, property, asc);
 		}			
 		
-		«EXPAND fetchRelatedEntities FOREACH columnFields.union(mainFields)»
+		«EXPAND fetchRelatedEntities FOREACH columnFields.union(mainFields)-»
 		return result;
 	}
 
@@ -344,7 +344,7 @@ public class «name.toFirstUpper()»DataProvider extends ImogBeanDataProvider<«nam
 	«IF translatable-»
 				result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 	«ENDIF-»
-«ENDDEFINE»
+«ENDDEFINE-»
 «DEFINE fetchRelatedEntities FOR BinaryField-»
 				result.with("«EXPAND template::CommonFieldUtil::propertyName FOR this»");
 «ENDDEFINE»

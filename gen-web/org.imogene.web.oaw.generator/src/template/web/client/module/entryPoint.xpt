@@ -87,6 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.ServerFailure;
+import org.imogene.web.client.event.GoSpecificHomeEvent;
 
 /**
  * Entry point of the application on the client side
@@ -228,6 +229,14 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	 * Gets the module Home panel
 	 * @return
 	 */
+	protected Composite getSpecificHomePanel() {
+		return null;
+	}	
+	
+	/**
+	 * Gets the module Home panel
+	 * @return
+	 */
 	protected Composite getHomePanel() {
 		return new HomePanel(eventBus);
 	}
@@ -363,6 +372,16 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 	 * Set the application level handlers
 	 */
 	private void setHandlers() {
+	
+		/* Handler to go to the application home page */
+		registrations.add(eventBus.addHandler(GoSpecificHomeEvent.TYPE, new GoSpecificHomeEvent.Handler() {
+			public void goHome() {
+				LocalSession.get().setSearchCriterions(null, null);
+				content.setContent(getSpecificHomePanel());
+				topPanel.hideTitle();
+				// topPanel.showLocaleList(true);
+			}
+		}));	
 
 		/* Handler to go to the application home page */
 		registrations.add(eventBus.addHandler(GoHomeEvent.TYPE, new GoHomeEvent.Handler() {
@@ -587,6 +606,10 @@ public class «projectName.toFirstUpper()»EntryPoint implements EntryPoint, Value
 		EntityToken entityToken = TokenHelper.getToken(token);
 		
 		if (entityToken != null) {
+		
+			if (entityToken.getType().equals(TokenHelper.TK_SPECIFIC)) {
+				eventBus.fireEvent(new GoSpecificHomeEvent());
+			}		
 
 			if (entityToken.getType().equals(TokenHelper.TK_CLASSIC)) {
 				eventBus.fireEvent(new GoHomeEvent());

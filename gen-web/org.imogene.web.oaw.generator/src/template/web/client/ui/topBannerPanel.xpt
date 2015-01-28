@@ -34,6 +34,11 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import org.imogene.web.client.css.ImogResources;
+import org.imogene.web.client.util.TokenHelper;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 
 
@@ -49,11 +54,16 @@ public class TopBannerPanel extends Composite  {
 	
 	private List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 	private EventBus eventBus;
+	
+	@UiField
+	protected ImogResources imogResources;
 
 	@UiField(provided=true)
 	Image appliIcon;
 	@UiField
 	Label appliTitle;
+	@UiField(provided = true)
+	ToggleButton modeButton;	
 	@UiField
 	ListBox locBox;
 	@UiField
@@ -68,13 +78,45 @@ public class TopBannerPanel extends Composite  {
 		
 		this.eventBus = eventBus;
 		appliIcon = new Image(GWT.getModuleBaseURL() + "/images/logo_32x32.png");
+		modeButton = new ToggleButton("", "");
+		modeButton.setDown(false);		
 		logout = new PushButton(BaseNLS.constants().disconnect());
 		
 		initWidget(BINDER.createAndBindUi(this));
 		setActor(actor);
 		setLocaleList();
 		versionNumber.setText("version:"+LocalSession.get().getVersionNumber());
+		imogResources.imogStyle().ensureInjected();
 	}
+	
+	/**
+	 * 
+	 */
+	private void setModeButtonHandler() {
+
+		// Click handler
+		registrations.add(modeButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+
+				if (modeButton.isDown()) {
+					modeButton.addStyleName(imogResources.imogStyle().imogButtonDown());
+					modeButton.addStyleName(imogResources.imogStyle().imogButton1Down());
+					LocalSession.get().setSpecificHome(false);
+					History.newItem(TokenHelper.TK_CLASSIC, true);
+				} else {
+					modeButton.removeStyleName(imogResources.imogStyle().imogButtonDown());
+					modeButton.removeStyleName(imogResources.imogStyle().imogButton1Down());
+					LocalSession.get().setSpecificHome(true);
+					History.newItem(TokenHelper.TK_SPECIFIC, true);
+				}
+			}
+		}));
+	}
+	
+	public void setModalButtonStatus(boolean down) {
+		modeButton.setDown(down);
+	}	
 	
 	@UiHandler("logout")
 	void onLogout(ClickEvent e) {		
@@ -168,6 +210,7 @@ public class TopBannerPanel extends Composite  {
 		«IF languages!=null && languages.size>0-»
 		registrations.add(locBox.addChangeHandler(new LocaleHandler()));
 		«ENDIF-»
+		setModeButtonHandler();
 		super.onLoad();
 	}	
 

@@ -291,7 +291,10 @@ public class «name.toFirstUpper()»ListPanel extends Composite {
 		if(goHomeButton!=null) {
 			registrations.add(goHomeButton.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent event) {
-						History.newItem(TokenHelper.TK_CLASSIC, true);				
+					if (!LocalSession.get().isSpecificHome())
+						History.newItem(TokenHelper.TK_CLASSIC, true);
+					else
+						History.newItem(TokenHelper.TK_SPECIFIC, true);		
 				}
 			}));		
 		}

@@ -4,6 +4,8 @@
 «FILE projectName.toLowerCase()+"/client/ui/panel/TopBannerPanel.ui.xml"»
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	
+    <ui:with field='imogResources' type='org.imogene.web.client.css.ImogResources' />
 
 	<ui:style src="../../../../web/client/css/ImogCss.css">
 		
@@ -65,6 +67,19 @@
 			}
 		}
 		
+		@if user.agent ie6 ie8 ie9 {
+			.modeButton {
+				margin-top: 3px;
+				margin-bottom: 3px;
+				margin-right: 10px;
+			}
+		}
+		@else {
+			.modeButton {
+				margin-right: 10px;
+			}
+		}			
+		
 		.versionNumber {
 			margin-left: 20px;
 			margin-bottom: 5px;
@@ -86,6 +101,9 @@
 		<g:cell horizontalAlignment="center" verticalAlignment="middle">
 			<g:Label ui:field="appliTitle" styleName="{style.title}"/>
 		</g:cell>
+		<g:cell horizontalAlignment="right" verticalAlignment="middle" width="70px">
+			<g:ToggleButton ui:field="modeButton" styleName="{style.imogButton} {style.imogButton1} {style.modeButton}" visible="false"/>
+		</g:cell>			
 		<g:cell horizontalAlignment="right" verticalAlignment="middle" width="70px">
 			<g:ListBox ui:field="locBox" styleName="{style.imogene-locBox}"/>
 		</g:cell>		

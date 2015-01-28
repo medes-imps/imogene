@@ -78,7 +78,7 @@ public class PasswordRecoveryController {
 			String locale = user.getLocale();
 			PasswordRecovery pr = new PasswordRecovery();
 			String token = UUID.randomUUID().toString() + "-" + username;
-			pr.setToken(Base64.encodeBase64String(token.getBytes()));
+			pr.setToken(Base64.encodeBase64(token.getBytes()).toString());
 			pr.setUserId(username);
 			pr.setRequested(new Date());
 			genericDao.saveOrUpdate(pr);

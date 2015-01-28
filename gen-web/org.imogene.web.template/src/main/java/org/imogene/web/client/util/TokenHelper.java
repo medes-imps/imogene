@@ -10,7 +10,8 @@ public class TokenHelper {
 	public static String TK_VIEW = "view";
 	public static String TK_NEW = "new";
 	public static String TK_XLS = "xls";
-	
+
+	public static String TK_SPECIFIC = "spec_home";
 	public static String TK_CLASSIC = "classic";
 
 	public static EntityToken getToken(String token) {
@@ -33,7 +34,10 @@ public class TokenHelper {
 			} else if (params[0].equals(TK_CLASSIC)) {
 				return new EntityToken(TK_CLASSIC, TK_CLASSIC, "");
 
-			} else {
+			} else if (params[0].equals(TK_SPECIFIC)) {
+				return new EntityToken(TK_SPECIFIC, TK_SPECIFIC, "");
+				
+			}else {
 				return null;
 			}
 		}
