@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.entity.ImogActor;
 import org.imogene.lib.common.entity.ImogBean;
-import org.imogene.lib.media.BinaryOperationImpl;
+import org.imogene.lib.media.BinaryOperation;
 import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.handler.DataHandlerManager;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
@@ -47,7 +47,7 @@ public abstract class ImogXmlSerializer implements ImogSerializer {
 	private XStream xstream;
 
 	protected DataHandlerManager dataHandlerManager;
-	private BinaryOperationImpl binaryOperation;
+	private BinaryOperation binaryOperation;
 
 	public ImogXmlSerializer() {
 		xstream = new XStream(new DomDriver("UTF-8"));
@@ -215,7 +215,7 @@ public abstract class ImogXmlSerializer implements ImogSerializer {
 	 * 
 	 * @param binaryOperation
 	 */
-	public void setBinaryOperation(BinaryOperationImpl binaryOperation) {
+	public void setBinaryOperation(BinaryOperation binaryOperation) {
 		this.binaryOperation = binaryOperation;
 	}
 
