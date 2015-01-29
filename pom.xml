@@ -9,7 +9,7 @@
 	<properties>
 		<gwt.version>2.5.1</gwt.version>
 		<gwt.voices.version>3.2.0</gwt.voices.version>
-		<gwt.upload.version>0.6.6</gwt.upload.version>
+		<gwt.upload.version>1.0.3</gwt.upload.version>
 		<gwt.dnd.version>3.2.3</gwt.dnd.version>
 		<eclipse.birt.version>4.2.0</eclipse.birt.version>
 		<hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>

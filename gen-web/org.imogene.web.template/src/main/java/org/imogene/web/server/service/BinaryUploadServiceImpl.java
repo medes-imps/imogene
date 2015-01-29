@@ -16,7 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.imogene.lib.common.binary.Binary;
 import org.imogene.lib.common.binary.file.BinaryFile;
 import org.imogene.lib.common.binary.file.BinaryFileManager;
-import org.imogene.lib.media.BinaryOperation;
+import org.imogene.lib.media.BinaryOperationImpl;
 import org.imogene.web.client.util.ImogKeyGenerator;
 import org.imogene.web.server.handler.BinaryHandler;
 import org.imogene.web.server.handler.HandlerHelper;
@@ -29,7 +29,7 @@ public class BinaryUploadServiceImpl implements BinaryUploadService {
 
 	@Autowired
 	@Qualifier(value = "binaryOperation")
-	private BinaryOperation binaryOperation;
+	private BinaryOperationImpl binaryOperation;
 
 	@Autowired
 	@Qualifier(value = "binaryHandler")

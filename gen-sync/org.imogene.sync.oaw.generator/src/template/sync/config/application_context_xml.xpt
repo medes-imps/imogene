@@ -79,22 +79,22 @@
 	</bean>
 	«ENDFOREACH»
 
-	<!-- Video converter -->
+	<!-- Video converter
 	<bean name="videoConverter" class="org.imogene.lib.media.VideoConverter">
 		<property name="commandLine" value="${converter.video}" />
-	</bean>
+	</bean> -->
 
-	<!-- Audio converter -->
+	<!-- Audio converter
 	<bean name="audioConverter" class="org.imogene.lib.media.AudioConverter">
 		<property name="commandLine" value="${converter.video}" />
-	</bean>
+	</bean> -->
 
 	<!-- Photo converter -->
 	<bean name="photoConverter" class="org.imogene.lib.media.PhotoConverter" />
 
-	<bean id="binaryOperation" class="org.imogene.lib.media.BinaryOperation">
-		<property name="audioConverter" ref="audioConverter" />
-		<property name="videoConverter" ref="videoConverter" />
+	<bean id="binaryOperation" class="org.imogene.lib.media.BinaryOperationImpl">
+		<!-- <property name="audioConverter" ref="audioConverter"/>
+		<property name="videoConverter" ref="videoConverter"/> -->
 		<property name="photoConverter" ref="photoConverter" />
 	</bean>
 	

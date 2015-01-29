@@ -2,8 +2,9 @@ package org.imogene.web.client.ui.field.binary.upload;
 
 import gwtupload.client.HasProgress;
 import gwtupload.client.IUploadStatus;
-import gwtupload.client.IUploader;
+import gwtupload.client.Utils;
 
+import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
@@ -52,7 +53,7 @@ public class ImogUploadStatus implements IUploadStatus {
 		public void setProgress(long done, long total) {
 			if (statusBar == null)
 				return;
-			int percent = IUploader.Utils.getPercent(done, total);
+			int percent = Utils.getPercent(done, total);
 			statusBar.setWidth(percent + "px");
 			statusMsg.setText(percent + "%");
 		}
@@ -284,6 +285,23 @@ public class ImogUploadStatus implements IUploadStatus {
 	public void setStatusChangedHandler(UploadStatusChangedHandler handler) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Widget asWidget() {
+		return panel;
+	}
+
+	@Override
+	public void setFileNames(List<String> names) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<CancelBehavior> getCancelConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

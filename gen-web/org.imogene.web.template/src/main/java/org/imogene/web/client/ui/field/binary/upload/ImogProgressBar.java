@@ -1,7 +1,7 @@
 package org.imogene.web.client.ui.field.binary.upload;
 
 import gwtupload.client.HasProgress;
-import gwtupload.client.IUploader;
+import gwtupload.client.Utils;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -35,7 +35,7 @@ public class ImogProgressBar extends FlowPanel implements HasProgress {
 	public void setProgress(long done, long total) {
 		if (statusBar == null)
 			return;
-		int percent = IUploader.Utils.getPercent(done, total);
+		int percent = Utils.getPercent(done, total);
 		statusBar.setWidth(percent + "px");
 		statusMsg.setText(percent + "%");
 	}
