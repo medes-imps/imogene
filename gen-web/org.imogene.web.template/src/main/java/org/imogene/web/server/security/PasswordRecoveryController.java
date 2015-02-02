@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpStatus;
+import org.apache.commons.httpclient.HttpStatus;
 import org.imogene.admin.server.security.SecurityUtils;
 import org.imogene.lib.common.constants.NotificationConstants;
 import org.imogene.lib.common.dao.GenericDao;
