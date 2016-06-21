@@ -37,7 +37,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	public void afterReturning(Object result, Method method, Object[] args, Object target) throws Throwable {
 		try {
 			handleAction(method, args, result);
-		} catch (Throwable t) {
+		} catch (Exception e) {
 			// No matter what happened we should not stop execution of a query for that
 		}
 	}
@@ -61,6 +61,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 	/**
 	 * Handle the saveOrUpdate method
+	 * 
 	 * @param args arguments of the method
 	 */
 	private void handleSaveAction(Object[] args) {
@@ -72,15 +73,14 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 		String className = bean.getClass().getName();
 		String typeFormulaire = bean.getClass().getSimpleName();
 		String typeAction = null;
-		
-		if(isNew) {
-			if(bean.getDeleted()!=null)
+
+		if (isNew) {
+			if (bean.getDeleted() != null)
 				// a deleted entity is saved as new and deleted
 				typeAction = UserActionConstants.USERACTION_TYPE_DELETE;
 			else
 				typeAction = UserActionConstants.USERACTION_TYPE_CREATE;
-		}
-		else
+		} else
 			typeAction = UserActionConstants.USERACTION_TYPE_UPDATE;
 
 		saveAction(typeAction, typeFormulaire, idFormulaire);
@@ -133,6 +133,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 	/**
 	 * Notify the notifier by http.
+	 * 
 	 * @param type the card type
 	 * @param operation the operation on the card
 	 * @param id the card id
@@ -179,6 +180,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 	/**
 	 * Setter for bean injection
+	 * 
 	 * @param notifier the notifier URL
 	 */
 	public void setNotifierUrl(String notifier) {
@@ -187,6 +189,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 	/**
 	 * Setter for bean injection
+	 * 
 	 * @param dao
 	 */
 	public void setGenericDao(GenericDao dao) {
@@ -195,6 +198,7 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 
 	/**
 	 * Setter for bean injection
+	 * 
 	 * @param cloneFactory
 	 */
 	public void setCloneFactory(CloneFactory cloneFactory) {

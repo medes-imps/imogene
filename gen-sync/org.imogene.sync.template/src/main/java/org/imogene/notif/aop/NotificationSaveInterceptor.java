@@ -35,7 +35,11 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	 */
 	@Override
 	public void afterReturning(Object result, Method method, Object[] args, Object target) throws Throwable {
-		handleAction(method, args, result);
+		try {
+			handleAction(method, args, result);
+		} catch (Exception e) {
+			// No matter what happened we should not stop execution of a query for that
+		}
 	}
 
 	/**
@@ -46,7 +50,6 @@ public class NotificationSaveInterceptor implements AfterReturningAdvice {
 	 */
 	@Transactional
 	private void handleAction(Method method, Object[] args, Object result) {
-
 		if (method.getName().equals("saveOrUpdate") || method.getName().equals("merge")) {
 			handleSaveAction(args);
 		} else if (method.getName().equals("load") && args != null && args.length == 1 && args[0] instanceof String) {
