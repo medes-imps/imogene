@@ -112,3 +112,9 @@ public class «name.toFirstUpper()»Bck extends ImogBeanBck {
     	@AttributeOverride(name="longitude", column=@Column(name="«name.toFirstLower()»_Longitude"))
   	})
 «ENDDEFINE»
+
+«DEFINE jpaAnnotation FOR RelationFieldEntity»
+	«IF cardinality != 1»
+	@Column(columnDefinition="TEXT")
+	«ENDIF»
+«ENDDEFINE»
