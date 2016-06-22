@@ -81,6 +81,11 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<!--  Default is 30 minutes and is sometimes not enough for sync to achieve -->
+	<session-config>
+	    <session-timeout>300</session-timeout>
+	</session-config>
   
 </web-app>
 «ENDFILE»
