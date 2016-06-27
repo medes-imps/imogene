@@ -161,6 +161,9 @@ public class JettyServer {
 
 		wac.addServerClass("org.slf4j.");
 		wac.addServerClass("org.apache.log4j.");
+		
+		wac.prependServerClass("-org.eclipse.jetty.util.");
+		wac.prependServerClass("-org.eclipse.jetty.server.handler.");
 
 		handlers.addHandler(wac);
 	}
