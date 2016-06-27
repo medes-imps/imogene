@@ -26,6 +26,7 @@ public interface OptimizedSyncClient {
 	public static final String PARAM_TERMINALID = "terminal";
 	public static final String PARAM_LENGTH = "len";
 	public static final String PARAM_SESSION = "session";
+	public static final String PARAM_DEBUG = "debug";
 
 	/* command constants */
 	public static final String CMD_AUTH = "auth";
@@ -79,8 +80,8 @@ public interface OptimizedSyncClient {
 	 * @return Acknowledge or Error
 	 * @throws AuthenticationException
 	 */
-	public void resumeReceive(String sessionId, long bytesReceived) throws SynchronizationException,
-			AuthenticationException;
+	public void resumeReceive(String sessionId, long bytesReceived)
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Resume the sent of the client modifications to the server
@@ -101,8 +102,8 @@ public interface OptimizedSyncClient {
 	 * @return the number of entity processed by the server
 	 * @throws AuthenticationException
 	 */
-	public int sendClientModification(String sessionId, InputStream in) throws SynchronizationException,
-			AuthenticationException;
+	public int sendClientModification(String sessionId, InputStream in)
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Resume the sent of the client modifications to the server
@@ -112,8 +113,8 @@ public interface OptimizedSyncClient {
 	 * @return the number of entity processed by the server
 	 * @throws AuthenticationException
 	 */
-	public int resumeSendModification(String sessionId, InputStream in) throws SynchronizationException,
-			AuthenticationException;
+	public int resumeSendModification(String sessionId, InputStream in)
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Get server modifications
@@ -122,8 +123,8 @@ public interface OptimizedSyncClient {
 	 * @return the stream received from the server.
 	 * @throws AuthenticationException
 	 */
-	public void requestServerModifications(String sessionId, OutputStream out) throws SynchronizationException,
-			AuthenticationException;
+	public void requestServerModifications(String sessionId, OutputStream out)
+			throws SynchronizationException, AuthenticationException;
 
 	/**
 	 * Close an opened session

@@ -87,7 +87,7 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 			// request construction
 			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_CLOSE);
 			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
-			NameValuePair debugParam = new NameValuePair("debug", "true");
+			NameValuePair debugParam = new NameValuePair(PARAM_DEBUG, "false");
 			NameValuePair[] params = new NameValuePair[] { cmdParam, sessionParam, debugParam };
 			GetMethod method = httpGetMethod(url);
 			method.setQueryString(params);
@@ -142,8 +142,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public void resumeReceive(String sessionId, long bytesReceived) throws SynchronizationException,
-			AuthenticationException {
+	public void resumeReceive(String sessionId, long bytesReceived)
+			throws SynchronizationException, AuthenticationException {
 		try {
 			// request construction
 			NameValuePair cmdParam = new NameValuePair(PARAM_CMD, CMD_RESUME_RECEIVE_INIT);
@@ -239,14 +239,14 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public int resumeSendModification(String sessionId, InputStream in) throws SynchronizationException,
-			AuthenticationException {
+	public int resumeSendModification(String sessionId, InputStream in)
+			throws SynchronizationException, AuthenticationException {
 		return sendData(sessionId, CMD_RESUME_SEND, in);
 	}
 
 	@Override
-	public void requestServerModifications(String sessionId, OutputStream out) throws SynchronizationException,
-			AuthenticationException {
+	public void requestServerModifications(String sessionId, OutputStream out)
+			throws SynchronizationException, AuthenticationException {
 		try {
 			// request construction
 			NameValuePair sessionParam = new NameValuePair(PARAM_SESSION, sessionId);
@@ -279,8 +279,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	}
 
 	@Override
-	public int sendClientModification(String sessionId, InputStream data) throws SynchronizationException,
-			AuthenticationException {
+	public int sendClientModification(String sessionId, InputStream data)
+			throws SynchronizationException, AuthenticationException {
 		return sendData(sessionId, CMD_SENDMODIF, data);
 	}
 
@@ -298,8 +298,8 @@ public class OptimizedSyncClientHttp implements OptimizedSyncClient {
 	 * @return 0 if done with success, -1 otherwise
 	 * @throws AuthenticationException
 	 */
-	private int sendData(String sessionId, String cmd, InputStream data) throws SynchronizationException,
-			AuthenticationException {
+	private int sendData(String sessionId, String cmd, InputStream data)
+			throws SynchronizationException, AuthenticationException {
 		try {
 			/* request construction */
 			PostMethod method = httpPostMethod(url);
