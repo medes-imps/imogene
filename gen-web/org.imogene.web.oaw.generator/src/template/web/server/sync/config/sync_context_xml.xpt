@@ -93,14 +93,19 @@
 	<bean id="sc«e.name.toFirstUpper()»Handler" class="org.imogene.«projectName.toLowerCase()».server.sync.handler.«e.name.toFirstUpper()»HandlerImpl" />
 	«ENDFOREACH»
 	
-	<!-- Initialize the Synchronizer -->
-	<bean id="synchronizer" class="org.imogene.lib.sync.client.impl.SynchronizerImpl">
-		<property name="directoryPath" value="#{systemProperties['imogene.home']}/sync" />
+	<!-- Initialize the SyncHandler -->
+	<bean id="syncHandler" class="org.imogene.lib.sync.client.impl.SyncHandlerImpl">
 		<property name="dataManager" ref="dataHandlerManager" />
 		<property name="serializer" ref="xmlSerializer" />
 		<property name="syncHistoryDao" ref="syncHistoryDao" />
 		<property name="genericDao" ref="genericDao" />
+	</bean>
+	
+	<!-- Initialize the Synchronizer -->
+	<bean id="synchronizer" class="org.imogene.lib.sync.client.impl.SynchronizerImpl">
+		<property name="directoryPath" value="#{systemProperties['imogene.home']}/sync" />
 		<property name="encryptionManager" ref="encryptionManager" />
+		<property name="syncHandler" ref="syncHandler" />
 	</bean>
 
 	<task:annotation-driven />
