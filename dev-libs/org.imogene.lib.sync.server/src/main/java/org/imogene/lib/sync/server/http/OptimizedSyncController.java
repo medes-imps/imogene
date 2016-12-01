@@ -11,7 +11,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
 import org.imogene.lib.sync.server.OptimizedSyncServer;
 import org.imogene.lib.sync.server.http.command.ClientUploadCommand;
@@ -28,10 +30,6 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
  * @author MEDES-IMPS
  */
 public class OptimizedSyncController extends MultiActionController {
-
-	/* headers */
-	public static final String HEADER_NAME = "medoo-sync";
-	public static final String HEADER_VALUE = "synchro";
 
 	/* response messages */
 	public static final String RESPONSE_OK = "OK";
@@ -141,7 +139,7 @@ public class OptimizedSyncController extends MultiActionController {
 		setHeader(resp);
 		String sessionId = command.getSession();
 		long bytesReceived = 0;
-		File received = new File(getSyncWorkDirectory(req), sessionId + ".cmodif");
+		File received = new File(getSyncWorkDirectory(req), sessionId + SyncConstants.SUFFIX_CLIENT_MODIF);
 		logger.debug("ResSend: Initialize a resumed 'send' session");
 		if (received.exists())
 			bytesReceived = received.length();
@@ -171,9 +169,7 @@ public class OptimizedSyncController extends MultiActionController {
 			/* sending the result */
 			InputStream fis = new FileInputStream(tempFile);
 			resp.setContentLength(fis.available());
-			while (fis.available() > 0) {
-				resp.getOutputStream().write(fis.read());
-			}
+			IOUtils.copyLarge(fis, resp.getOutputStream());
 			resp.getOutputStream().flush();
 			resp.flushBuffer();
 			fis.close();
@@ -193,16 +189,17 @@ public class OptimizedSyncController extends MultiActionController {
 		setHeader(resp);
 		try {
 			logger.debug("SeMo: Requesting server modification for session " + command.getSession());
+
 			/* write the result in a temporary file */
-			File tempFile = new File(getSyncWorkDirectory(req), command.getSession() + ".smodif");
-			OutputStream fos = new FileOutputStream(tempFile);
-			syncServer.getServerModifications(command.getSession(), fos);
+			File tempFile = new File(getSyncWorkDirectory(req),
+					command.getSession() + SyncConstants.SUFFIX_SERVER_MODIF);
+
+			writeServerModifications(tempFile, command.getSession());
+
 			/* read the file and wrote the result as response */
-			InputStream fis = new FileInputStream(tempFile);
+			FileInputStream fis = new FileInputStream(tempFile);
 			resp.setContentLength(fis.available());
-			while (fis.available() > 0) {
-				resp.getOutputStream().write(fis.read());
-			}
+			IOUtils.copyLarge(fis, resp.getOutputStream());
 			resp.getOutputStream().flush();
 			resp.flushBuffer();
 			fis.close();
@@ -236,33 +233,34 @@ public class OptimizedSyncController extends MultiActionController {
 		try {
 			logger.debug("ResRec: Resume a 'receive' session with session id " + command.getSession()
 					+ " this client already received " + command.getLen() + " bytes");
+
 			/* write the result in a temporary file */
-			File tempFile = new File(this.getSyncWorkDirectory(req), command.getSession() + ".smodif");
+			File tempFile = new File(this.getSyncWorkDirectory(req),
+					command.getSession() + SyncConstants.SUFFIX_SERVER_MODIF);
+
 			/* create the file if it doesn't exist */
 			if (!tempFile.exists()) {
+				// TODO This may be problem if already received length != 0
 				logger.debug("ResRec: the file doesn't exist, so we created it by serializing the entities");
 				try {
-					OutputStream fos = new FileOutputStream(tempFile);
-					syncServer.getServerModifications(command.getSession(), fos);
-					fos.close();
+					writeServerModifications(tempFile, command.getSession());
 				} catch (ImogSerializationException e) {
 					logger.error(e.getMessage(), e);
 				}
 			}
+
 			/* read the file and wrote the result as response */
-			InputStream fis = new FileInputStream(tempFile);
+			FileInputStream fis = new FileInputStream(tempFile);
 			long skipped = fis.skip(command.getLen());
 			if (skipped != command.getLen()) {
-				logger.error("Error skipping bytes: " + command.getLen() + " bytes to skip," + skipped
-						+ " bytes skipped");
+				logger.error(
+						"Error skipping bytes: " + command.getLen() + " bytes to skip," + skipped + " bytes skipped");
 				fis.close();
 				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
 			resp.setContentLength(fis.available());
-			while (fis.available() > 0) {
-				resp.getOutputStream().write(fis.read());
-			}
+			IOUtils.copyLarge(fis, resp.getOutputStream());
 			resp.getOutputStream().flush();
 			resp.flushBuffer();
 			fis.close();
@@ -281,8 +279,8 @@ public class OptimizedSyncController extends MultiActionController {
 	public void ackservmodif(HttpServletRequest req, HttpServletResponse resp, SessionCommand command) {
 		setHeader(resp);
 		syncServer.closeSession(command.getSession(), command.getStatus());
-		File cmodif = new File(getSyncWorkDirectory(req), command.getSession() + ".cmodif");
-		File smodif = new File(getSyncWorkDirectory(req), command.getSession() + ".smodif");
+		File cmodif = new File(getSyncWorkDirectory(req), command.getSession() + SyncConstants.SUFFIX_CLIENT_MODIF);
+		File smodif = new File(getSyncWorkDirectory(req), command.getSession() + SyncConstants.SUFFIX_SERVER_MODIF);
 		if (!command.getDebug()) {
 			logger.debug("SeMo: Server modification ACK received, so i delete the temp files.");
 			if (cmodif.exists())
@@ -393,8 +391,14 @@ public class OptimizedSyncController extends MultiActionController {
 		return workDirectory;
 	}
 
+	private void writeServerModifications(File file, String session) throws IOException, ImogSerializationException {
+		FileOutputStream fos = new FileOutputStream(file);
+		syncServer.getServerModifications(session, fos);
+		fos.close();
+	}
+
 	private void setHeader(HttpServletResponse response) {
-		response.setHeader(HEADER_NAME, HEADER_VALUE);
+		response.setHeader(SyncConstants.HEADER_NAME_MEDOO_SYNC, SyncConstants.HEADER_VALUE_SYNCHRO);
 	}
 
 }

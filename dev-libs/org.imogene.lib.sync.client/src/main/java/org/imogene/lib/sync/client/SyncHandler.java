@@ -28,10 +28,44 @@ public interface SyncHandler {
 	 */
 	public int applyIncomingModifications(InputStream is) throws ImogSerializationException;
 
+	/**
+	 * Load the last unsuccessful history record.
+	 * 
+	 * @return the last unsuccessful history
+	 */
 	public SyncHistory loadLastError();
 
+	/**
+	 * Update the given history in the database.
+	 * 
+	 * @param history The history to update.
+	 */
 	public void updateHistory(SyncHistory history);
 
+	/**
+	 * Remove the given history from the database.
+	 * 
+	 * @param history The history to remove.
+	 */
+	public void deleteHistory(SyncHistory history);
+
+	/**
+	 * Reset the synchronization history by removing last error history from the database.
+	 */
+	public void resetSyncHistory();
+
+	/**
+	 * Load the stored synchronization parameters
+	 * 
+	 * @return The synchronization parameters.
+	 */
 	public SyncParams loadParams();
+
+	/**
+	 * Load the last sync history registered.
+	 * 
+	 * @return The last history.
+	 */
+	public SyncHistory loadLastSyncHistory();
 
 }

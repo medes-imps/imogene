@@ -17,10 +17,6 @@ public interface OptimizedSyncClient {
 	/* response messages */
 	public static final String RESPONSE_OK = "OK";
 
-	/* headers */
-	public static final String HEADER_NAME = "medoo-sync";
-	public static final String HEADER_VALUE = "synchro";
-
 	/* parameters constants */
 	public static final String PARAM_CMD = "cmd";
 	public static final String PARAM_TERMINALID = "terminal";
@@ -84,11 +80,13 @@ public interface OptimizedSyncClient {
 			throws SynchronizationException, AuthenticationException;
 
 	/**
-	 * Resume the sent of the client modifications to the server
+	 * Resume the reception of the server modifications.
 	 * 
-	 * @param sessionId the session id;
-	 * @param data the modified entity, serialized
-	 * @return the number of entity processed by the server
+	 * @param sessionId The session identifier.
+	 * @param out The output stream to write to.
+	 * @param bytesReceived Number of bytes already received.
+	 * @return 0 if success, -1 otherwise.
+	 * @throws SynchronizationException
 	 * @throws AuthenticationException
 	 */
 	public int resumeRequestModification(String sessionId, OutputStream out, long bytesReceived)
@@ -117,13 +115,15 @@ public interface OptimizedSyncClient {
 			throws SynchronizationException, AuthenticationException;
 
 	/**
-	 * Get server modifications
+	 * Download the server modifications.
 	 * 
-	 * @param sessionId the session id
-	 * @return the stream received from the server.
+	 * @param sessionId The session identifier.
+	 * @param out The stream to write to.
+	 * @return 0 if success, -1 otherwise.
+	 * @throws SynchronizationException
 	 * @throws AuthenticationException
 	 */
-	public void requestServerModifications(String sessionId, OutputStream out)
+	public int requestServerModifications(String sessionId, OutputStream out)
 			throws SynchronizationException, AuthenticationException;
 
 	/**

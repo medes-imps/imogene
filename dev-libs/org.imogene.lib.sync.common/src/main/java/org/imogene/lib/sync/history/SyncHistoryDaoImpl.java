@@ -91,8 +91,27 @@ public class SyncHistoryDaoImpl implements SyncHistoryDao {
 	}
 
 	@Override
+	public SyncHistory loadLast() {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<SyncHistory> query = builder.createQuery(SyncHistory.class);
+		Root<SyncHistory> root = query.from(SyncHistory.class);
+		query.select(root);
+		query.orderBy(builder.desc(root.<Date> get("time")));
+		try {
+			return em.createQuery(query).setMaxResults(1).getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+
+	@Override
 	public void delete() {
-		em.createQuery("DELETE FROM SyncHostory").executeUpdate();
+		em.createQuery("DELETE FROM SyncHistory").executeUpdate();
+	}
+
+	@Override
+	public void removeErrors() {
+		em.createQuery("DELETE FROM SyncHistory WHERE status = 1").executeUpdate();
 	}
 
 	@Override
@@ -140,7 +159,11 @@ public class SyncHistoryDaoImpl implements SyncHistoryDao {
 
 			}
 		}
+	}
 
+	@Override
+	public void delete(SyncHistory history) {
+		em.remove(history);
 	}
 
 }

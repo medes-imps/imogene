@@ -14,6 +14,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.log4j.Logger;
+import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.client.SyncClient;
 
 @Deprecated
@@ -115,8 +116,7 @@ public class SyncClientHttp implements SyncClient {
 	}
 
 	/**
-	 * Write the request result data incoming in the input stream into the
-	 * output stream
+	 * Write the request result data incoming in the input stream into the output stream
 	 * 
 	 * @param is the request result input stream
 	 * @param out the outputStream
@@ -182,7 +182,8 @@ public class SyncClientHttp implements SyncClient {
 			PostMethod method = new PostMethod(url);
 			StringPart sessionParam = new StringPart(SESSION_PARAM, sessionId);
 			StringPart cmdParam = new StringPart(CMD_PARAM, cmd);
-			SyncPartSource dataSource = new SyncPartSource(data, sessionId + ".cmodif", data.available());
+			SyncPartSource dataSource = new SyncPartSource(data, sessionId + SyncConstants.SUFFIX_CLIENT_MODIF,
+					data.available());
 			FilePart dataFile = new FilePart("data", dataSource);
 			Part[] parts = { sessionParam, cmdParam, dataFile };
 

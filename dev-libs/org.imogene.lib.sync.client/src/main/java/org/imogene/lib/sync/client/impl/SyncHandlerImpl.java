@@ -1,6 +1,5 @@
 package org.imogene.lib.sync.client.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -84,9 +83,27 @@ public class SyncHandlerImpl implements SyncHandler {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
+	public SyncHistory loadLastSyncHistory() {
+		return historyDao.loadLast();
+	}
+
+	@Override
 	@Transactional
 	public void updateHistory(SyncHistory history) {
 		historyDao.saveOrUpdate(history);
+	}
+
+	@Override
+	@Transactional
+	public void deleteHistory(SyncHistory history) {
+		historyDao.delete(history);
+	}
+
+	@Override
+	@Transactional
+	public void resetSyncHistory() {
+		historyDao.removeErrors();
 	}
 
 	@Override
@@ -115,13 +132,8 @@ public class SyncHandlerImpl implements SyncHandler {
 		logger.debug("Number of entities to send : " + entities.size());
 		try {
 			serializer.serialize(entities, os);
-			os.close();
 		} catch (ImogSerializationException e) {
-			throw new SynchronizationException("Error preparing the data to synchronize: " + e.getLocalizedMessage(),
-					e);
-		} catch (IOException e) {
-			throw new SynchronizationException("Error preparing the data to synchronize: " + e.getLocalizedMessage(),
-					e);
+			throw new SynchronizationException("Error serializing data: " + e.getLocalizedMessage(), e);
 		}
 		return entities.size();
 	}

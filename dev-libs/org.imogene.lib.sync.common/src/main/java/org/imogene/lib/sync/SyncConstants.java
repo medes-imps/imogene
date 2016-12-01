@@ -52,4 +52,16 @@ public class SyncConstants {
 	public static String XML_TYPE = "xml";
 
 	public static String BYTES_TYPE = "bin";
+
+	/* headers */
+	public static final String HEADER_NAME_MEDOO_SYNC = "medoo-sync";
+	// public static final String HEADER_NAME_CONTENT_TYPE = "Content-Type";
+
+	public static final String HEADER_VALUE_SYNCHRO = "synchro";
+	// public static final String HEADER_VALUE_GZIP = "application/gzip";
+
+	/* suffixes */
+	public static final String SUFFIX_CLIENT_MODIF = ".cmodif";
+	public static final String SUFFIX_SERVER_MODIF = ".smodif";
+
 }

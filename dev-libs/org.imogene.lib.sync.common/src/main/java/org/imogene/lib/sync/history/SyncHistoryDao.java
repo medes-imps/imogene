@@ -20,6 +20,13 @@ public interface SyncHistoryDao {
 	public List<SyncHistory> load(String terminalId);
 
 	/**
+	 * Load the last sync history registered.
+	 * 
+	 * @return The last history.
+	 */
+	public SyncHistory loadLast();
+
+	/**
 	 * Load the last successful history record
 	 * 
 	 * @return the last successful history
@@ -64,5 +71,17 @@ public interface SyncHistoryDao {
 	 * @param terminalId the terminal id
 	 */
 	public void deleteOld(String terminalId);
+
+	/**
+	 * Delete history from database.
+	 * 
+	 * @param history The sync history to delete.
+	 */
+	public void delete(SyncHistory history);
+
+	/**
+	 * Remove errors from sync history table.
+	 */
+	public void removeErrors();
 
 }

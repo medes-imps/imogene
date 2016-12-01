@@ -10,6 +10,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.log4j.Logger;
 import org.imogene.encryption.EncryptionManager;
+import org.imogene.lib.sync.SyncConstants;
 import org.imogene.lib.sync.client.OptimizedSyncClient;
 import org.imogene.lib.sync.client.SyncClient;
 import org.imogene.lib.sync.client.SyncHandler;
@@ -19,7 +20,6 @@ import org.imogene.lib.sync.client.http.OptimizedSyncClientHttp;
 import org.imogene.lib.sync.client.params.SyncParams;
 import org.imogene.lib.sync.history.SyncHistory;
 import org.imogene.lib.sync.serializer.ImogSerializationException;
-import org.springframework.transaction.annotation.Transactional;
 
 public class SynchronizerImpl implements Synchronizer {
 
@@ -130,13 +130,14 @@ public class SynchronizerImpl implements Synchronizer {
 			}
 
 			/* 2 - send client modification */
-			File outFile = new File(directory, sessionId + ".lmodif");
+			File outFile = new File(directory, sessionId + SyncConstants.SUFFIX_CLIENT_MODIF);
 			FileOutputStream fos = new FileOutputStream(outFile);
 
 			// we take the date just before to access the database and to serialize
 			Date tempDate = offset != null ? new Date(System.currentTimeMillis() + offset) : new Date();
 
 			syncHandler.getDataToSynchronize(fos, sessionId, login);
+			fos.close();
 
 			// update sync history
 			SyncHistory history = new SyncHistory();
@@ -161,11 +162,7 @@ public class SynchronizerImpl implements Synchronizer {
 			syncHandler.updateHistory(history);
 
 			/* 3 - get server modifications */
-			requestServerModification(sessionId);
-
-			// Update the sync history
-			history.setStatus(SyncHistory.STATUS_OK);
-			syncHandler.updateHistory(history);
+			requestServerModification(history);
 
 			/* 4 - close the session */
 			syncClient.closeSession(sessionId);
@@ -193,8 +190,14 @@ public class SynchronizerImpl implements Synchronizer {
 			long bytesReceived = syncClient.resumeSend(error.getId());
 
 			/* 2 - sending local modifications */
-			File outFile = new File(directory, error.getId() + ".lmodif");
-			FileInputStream fis = new FileInputStream(outFile);
+			File file = new File(directory, error.getId() + SyncConstants.SUFFIX_CLIENT_MODIF);
+			if (!file.exists()) {
+				// If the local file doesn't exist we have no way to build it again so we delete the session in error
+				// and resume to start a new session
+				syncHandler.deleteHistory(error);
+				return;
+			}
+			FileInputStream fis = new FileInputStream(file);
 			long skipped = fis.skip(bytesReceived);
 			if (skipped != bytesReceived) {
 				fis.close();
@@ -203,7 +206,7 @@ public class SynchronizerImpl implements Synchronizer {
 						SynchronizationException.ERROR_SEND);
 			}
 
-			logger.debug("Re-sending data from the file " + outFile.getAbsolutePath() + " skipping " + bytesReceived
+			logger.debug("Re-sending data from the file " + file.getAbsolutePath() + " skipping " + bytesReceived
 					+ " bytes");
 			syncClient.resumeSendModification(error.getId(), fis);
 			fis.close();
@@ -211,34 +214,34 @@ public class SynchronizerImpl implements Synchronizer {
 			syncHandler.updateHistory(error);
 
 			/* 3 - receiving the server modifications */
-			requestServerModification(error.getId());
-
-			error.setStatus(SyncHistory.STATUS_OK);
-			syncHandler.updateHistory(error);
+			requestServerModification(error);
 
 			/* 4 - closing the session */
 			syncClient.closeSession(error.getId());
 
 			// now we are sure that we never need this temp file
-			outFile.delete();
+			file.delete();
 		}
 		// We resume a reception, by re-receiving the server data
 		else if (error.getLevel() == SyncHistory.LEVEL_RECEIVE) {
 			logger.debug("Resuming the receive operation for the session " + error.getId());
+
 			/* 1 - initialize the resumed session */
 			// clear the sent file
-			File tmp = new File(directory, error.getId() + ".lmodif");
+			File tmp = new File(directory, error.getId() + SyncConstants.SUFFIX_CLIENT_MODIF);
 			if (tmp.exists()) {
 				tmp.delete();
 			}
-			File inFile = new File(directory, error.getId() + ".smodif");
+			File inFile = new File(directory, error.getId() + SyncConstants.SUFFIX_SERVER_MODIF);
 			syncClient.resumeReceive(error.getId(), inFile.length());
 
 			/* 2 - receiving data */
 			FileOutputStream fos = new FileOutputStream(inFile, true);
 			syncClient.resumeRequestModification(error.getId(), fos, inFile.length());
-			FileInputStream sFis = new FileInputStream(inFile);
-			syncHandler.applyIncomingModifications(sFis);
+			fos.close();
+
+			applyIncomingModifications(inFile);
+
 			error.setStatus(SyncHistory.STATUS_OK);
 			syncHandler.updateHistory(error);
 
@@ -248,16 +251,27 @@ public class SynchronizerImpl implements Synchronizer {
 		}
 	}
 
-	private void requestServerModification(String sessionId)
+	private void requestServerModification(SyncHistory history)
 			throws SynchronizationException, IOException, ImogSerializationException {
-		File inFile = new File(directory, sessionId + ".smodif");
-		FileOutputStream sFos = new FileOutputStream(inFile);
-		syncClient.requestServerModifications(sessionId, sFos);
-		sFos.close();
-		FileInputStream sFis = new FileInputStream(inFile);
-		syncHandler.applyIncomingModifications(sFis);
-		sFis.close();
-		inFile.delete();
+		File file = new File(directory, history.getId() + SyncConstants.SUFFIX_SERVER_MODIF);
+
+		FileOutputStream fos = new FileOutputStream(file);
+		syncClient.requestServerModifications(history.getId(), fos);
+		fos.close();
+
+		applyIncomingModifications(file);
+
+		// Update the sync history
+		history.setStatus(SyncHistory.STATUS_OK);
+		syncHandler.updateHistory(history);
+
+		file.delete();
+	}
+
+	private void applyIncomingModifications(File file) throws IOException, ImogSerializationException {
+		FileInputStream fis = new FileInputStream(file);
+		syncHandler.applyIncomingModifications(fis);
+		fis.close();
 	}
 
 }
