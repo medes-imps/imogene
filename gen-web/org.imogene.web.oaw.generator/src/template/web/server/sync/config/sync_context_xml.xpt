@@ -119,7 +119,9 @@
 		<property name="delay" value="${ntp.delay}" />
 	</bean>
 	
-	<bean id="synchronizationScheduler" class="org.imogene.web.server.sync.SynchronizationScheduler" />
+	<bean id="synchronizationScheduler" class="org.imogene.web.server.sync.SynchronizationSchedulerImpl" />
+
+	<bean id="syncStatusHandler" class="org.imogene.web.server.sync.SyncStatusHandler" />
 
 </beans>
 «ENDFILE»

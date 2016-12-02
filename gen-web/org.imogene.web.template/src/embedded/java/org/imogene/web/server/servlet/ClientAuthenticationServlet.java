@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.imogene.web.server.sync.SynchronizationHelper;
+import org.imogene.web.server.sync.SynchronizationScheduler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -21,7 +21,7 @@ public class ClientAuthenticationServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-		SynchronizationHelper helper = (SynchronizationHelper) context.getBean("synchronizationScheduler");
+		SynchronizationScheduler helper = context.getBean(SynchronizationScheduler.class);
 
 		String url = req.getParameter("j_url");
 		String login = req.getParameter("j_username");

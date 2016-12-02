@@ -26,13 +26,16 @@ public class AddEmbeddedSourceFolderTask implements PostGenerationTask {
 			IProject project = manager.getGeneratedProject();
 			IJavaProject javaProject = JavaCore.create(project);
 
-			IFolder sourceFolder = project.getFolder("src/embedded/java");
+			IFolder javaFolder = project.getFolder("src/embedded/java");
+			IFolder resourcesFolder = project.getFolder("src/embedded/resources");
 
-			IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(sourceFolder);
+			IPackageFragmentRoot javaRoot = javaProject.getPackageFragmentRoot(javaFolder);
+			IPackageFragmentRoot resourcesRoot = javaProject.getPackageFragmentRoot(resourcesFolder);
 			IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-			IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
+			IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 2];
 			System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-			newEntries[oldEntries.length] = JavaCore.newSourceEntry(root.getPath());
+			newEntries[oldEntries.length] = JavaCore.newSourceEntry(javaRoot.getPath());
+			newEntries[oldEntries.length + 1] = JavaCore.newSourceEntry(resourcesRoot.getPath());
 			javaProject.setRawClasspath(newEntries, null);
 		}
 	}

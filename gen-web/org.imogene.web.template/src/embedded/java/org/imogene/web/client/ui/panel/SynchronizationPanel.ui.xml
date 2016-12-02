@@ -1,24 +1,47 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	xmlns:g='urn:import:com.google.gwt.user.client.ui' xmlns:imo='urn:import:org.imogene.web.client.ui.field.group'>
 
-	<g:HorizontalPanel verticalAlignment="middle">
+	<ui:style src="../../../../web/client/css/ImogCss.css">
+		.title {
+			font-size: 14px;
+			font-weight: bold;
+		}
+	</ui:style>
 
-		<g:cell horizontalAlignment="left" verticalAlignment="middle"
-			width="32px">
-			<g:Label ui:field="statusLabel" width="32px" />
-		</g:cell>
+	<imo:FieldGroupPanel ui:field="syncFieldGroup">
 
-		<g:cell horizontalAlignment="left" verticalAlignment="middle"
-			width="180px">
-			<g:Image ui:field="statusImage" width="32px" />
-		</g:cell>
+		<g:HorizontalPanel verticalAlignment="middle"
+			spacing="5">
 
-		<g:cell horizontalAlignment="right" verticalAlignment="middle"
-			width="80px">
-			<g:PushButton ui:field="resetButton" />
-		</g:cell>
+			<g:cell horizontalAlignment="right" verticalAlignment="middle"
+				width="250px">
+				<g:Label ui:field="dateTitle" width="250px" styleName="{style.title}" />
+			</g:cell>
 
-	</g:HorizontalPanel>
+			<g:cell horizontalAlignment="left" verticalAlignment="middle"
+				width="250px">
+				<g:Label ui:field="dateValue" width="250px" styleName="{style.title}" />
+			</g:cell>
+
+			<g:cell horizontalAlignment="right" verticalAlignment="middle"
+				width="100px">
+				<g:Label ui:field="statusTitle" width="100px" styleName="{style.title}" />
+			</g:cell>
+
+			<g:cell horizontalAlignment="left" verticalAlignment="middle"
+				width="32px">
+				<g:Image ui:field="statusValue" width="32px" />
+			</g:cell>
+
+			<g:cell horizontalAlignment="right" verticalAlignment="middle"
+				width="80px">
+				<g:PushButton ui:field="resetButton"
+					styleName="{style.imogButton} {style.imogButton2}" />
+			</g:cell>
+
+		</g:HorizontalPanel>
+
+	</imo:FieldGroupPanel>
 
 
 </ui:UiBinder>

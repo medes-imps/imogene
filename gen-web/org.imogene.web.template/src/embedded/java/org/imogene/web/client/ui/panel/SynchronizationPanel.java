@@ -1,13 +1,19 @@
 package org.imogene.web.client.ui.panel;
 
+import java.util.Date;
+
+import org.imogene.web.client.i18n.SyncConstants;
+import org.imogene.web.client.ui.field.group.FieldGroupPanel;
+import org.imogene.web.server.sync.SyncStatus;
 import org.imogene.web.shared.SynchronizationRequestFactory;
-import org.imogene.web.shared.proxy.SyncHistoryProxy;
-import org.imogene.web.shared.request.SyncHistoryRequest;
+import org.imogene.web.shared.proxy.SyncStatusProxy;
+import org.imogene.web.shared.request.SyncStatusRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -25,29 +31,45 @@ public class SynchronizationPanel extends Composite {
 	}
 
 	private static final Binder BINDER = GWT.create(Binder.class);
+	private static final SyncConstants SYNC_CONSTANTS = GWT.create(SyncConstants.class);
 
 	private final SynchronizationRequestFactory factory = GWT.create(SynchronizationRequestFactory.class);
+	private final DateTimeFormat pattern = DateTimeFormat.getFormat(SYNC_CONSTANTS.sync_date_format());
 
 	@UiField
-	Image statusImage;
+	Label dateTitle;
 
 	@UiField
-	Label statusLabel;
+	Label dateValue;
+
+	@UiField
+	Label statusTitle;
+
+	@UiField
+	Image statusValue;
 
 	@UiField
 	PushButton resetButton;
+
+	@UiField
+	FieldGroupPanel syncFieldGroup;
 
 	public SynchronizationPanel() {
 		factory.initialize(new SimpleEventBus());
 		initWidget(BINDER.createAndBindUi(this));
 
-		resetButton.setText("Reset");
+		syncFieldGroup.setGroupTitle(SYNC_CONSTANTS.sync_title());
+
+		dateTitle.setText(SYNC_CONSTANTS.sync_date_title());
+		statusTitle.setText(SYNC_CONSTANTS.sync_status_title());
+
+		resetButton.setText(SYNC_CONSTANTS.sync_reset());
 		resetButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (Window.confirm("Are you sure ?")) {
-					SyncHistoryRequest request = factory.syncHistoryRequest();
+				if (Window.confirm(SYNC_CONSTANTS.sync_areyousure())) {
+					SyncStatusRequest request = factory.syncHistoryRequest();
 					request.resetSyncHistory().fire(new Receiver<Void>() {
 						public void onSuccess(Void response) {
 							checkSyncHistory();
@@ -56,6 +78,8 @@ public class SynchronizationPanel extends Composite {
 				}
 			}
 		});
+
+		checkSyncHistory();
 
 		Timer timer = new Timer() {
 			public void run() {
@@ -66,20 +90,39 @@ public class SynchronizationPanel extends Composite {
 	}
 
 	private void checkSyncHistory() {
-		SyncHistoryRequest request = factory.syncHistoryRequest();
-		request.loadLastSyncHistory().fire(new Receiver<SyncHistoryProxy>() {
+		SyncStatusRequest request = factory.syncHistoryRequest();
+		request.getSyncStatus().fire(new Receiver<SyncStatusProxy>() {
 			@Override
-			public void onSuccess(SyncHistoryProxy response) {
+			public void onSuccess(SyncStatusProxy response) {
 				updateUI(response);
 			}
 		});
 	}
 
-	private void updateUI(SyncHistoryProxy history) {
-		if (history != null) {
-			statusLabel.setText(history.getTime().toGMTString());
+	private void updateUI(SyncStatusProxy status) {
+		Date lastSyncTime = status.getLastSyncTime();
+		if (lastSyncTime == null) {
+			dateValue.setText(SYNC_CONSTANTS.sync_date_empty());
 		} else {
-			statusLabel.setText("No synchronization");
+			dateValue.setText(pattern.format(lastSyncTime));
+		}
+		switch (status.getCurrentStatus()) {
+		case SyncStatus.STATUS_OK:
+			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_ok.png");
+			resetButton.setVisible(false);
+			break;
+		case SyncStatus.STATUS_ERROR:
+			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_error.png");
+			resetButton.setVisible(true);
+			break;
+		case SyncStatus.STATUS_RUNNING:
+			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_running.png");
+			resetButton.setVisible(false);
+			break;
+		case SyncStatus.STATUS_UNKNOWN:
+			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_unknown.png");
+			resetButton.setVisible(true);
+			break;
 		}
 	}
 
