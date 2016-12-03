@@ -41,7 +41,7 @@ public class PopupButton extends Composite {
 
 	public PopupButton(String title) {
 		buttonLabel = new Label(title);
-		buttonArrow = new Image(GWT.getModuleBaseURL() + "/images/arrow_down.png");
+		buttonArrow = new Image(GWT.getModuleBaseURL() + "images/arrow_down.png");
 		initWidget(uiBinder.createAndBindUi(this));		
 		popupPanel = new PopupButtonPopup();
 	}

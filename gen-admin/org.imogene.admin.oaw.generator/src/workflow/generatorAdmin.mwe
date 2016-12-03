@@ -243,7 +243,7 @@
 	<component class="org.eclipse.xpand2.Generator" id="javaGenerator">
 		<fileEncoding value="iso-8859-1"/>
 		<metaModel class="org.eclipse.xtend.typesystem.emf.EmfMetaModel"><metaModelFile value="${imogeneMetaModel}" /></metaModel>
-		<expand value='template::web::client::ui::homePanel_xml::generate("${packageName}","${modelName}","${applicationType}") FOR project' />
+		<expand value='template::web::client::ui::homePanel_xml::generate("${packageName}","${modelName}","${applicationType}", "${embedded}") FOR project' />
 		<outlet path='${home-gen}/src/main/java/${packagePath}'/>
 	</component>
 	

@@ -77,7 +77,7 @@ public class TopBannerPanel extends Composite  {
 	public TopBannerPanel(EventBus eventBus, ImogActorProxy actor) {
 		
 		this.eventBus = eventBus;
-		appliIcon = new Image(GWT.getModuleBaseURL() + "/images/logo_32x32.png");
+		appliIcon = new Image(GWT.getModuleBaseURL() + "images/logo_32x32.png");
 		modeButton = new ToggleButton("", "");
 		modeButton.setDown(false);		
 		logout = new PushButton(BaseNLS.constants().disconnect());

@@ -14,13 +14,13 @@
 			spacing="5">
 
 			<g:cell horizontalAlignment="right" verticalAlignment="middle"
-				width="250px">
-				<g:Label ui:field="dateTitle" width="250px" styleName="{style.title}" />
+				width="300px">
+				<g:Label ui:field="dateTitle" width="300px" styleName="{style.title}" />
 			</g:cell>
 
 			<g:cell horizontalAlignment="left" verticalAlignment="middle"
-				width="250px">
-				<g:Label ui:field="dateValue" width="250px" styleName="{style.title}" />
+				width="300px">
+				<g:Label ui:field="dateValue" width="300px" styleName="{style.title}" />
 			</g:cell>
 
 			<g:cell horizontalAlignment="right" verticalAlignment="middle"

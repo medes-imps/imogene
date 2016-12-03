@@ -87,7 +87,7 @@ public class ImogGeoBoxAsString extends Composite implements ImogField<String>,
 		} else {
 			thisBehavior = behavior;
 		}
-		viewOnMap.setUrl(GWT.getModuleBaseURL() + "/images/view_on_map-24.png");
+		viewOnMap.setUrl(GWT.getModuleBaseURL() + "images/view_on_map-24.png");
 	}
 
 	public void setEdited(boolean enabled) {

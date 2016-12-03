@@ -108,19 +108,19 @@ public class SynchronizationPanel extends Composite {
 		}
 		switch (status.getCurrentStatus()) {
 		case SyncStatus.STATUS_OK:
-			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_ok.png");
+			statusValue.setUrl(GWT.getModuleBaseURL() + "images/sync_ok.png");
 			resetButton.setVisible(false);
 			break;
 		case SyncStatus.STATUS_ERROR:
-			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_error.png");
+			statusValue.setUrl(GWT.getModuleBaseURL() + "images/sync_error.png");
 			resetButton.setVisible(true);
 			break;
 		case SyncStatus.STATUS_RUNNING:
-			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_running.png");
+			statusValue.setUrl(GWT.getModuleBaseURL() + "images/sync_running.png");
 			resetButton.setVisible(false);
 			break;
 		case SyncStatus.STATUS_UNKNOWN:
-			statusValue.setUrl(GWT.getModuleBaseURL() + "/images/sync_unknown.png");
+			statusValue.setUrl(GWT.getModuleBaseURL() + "images/sync_unknown.png");
 			resetButton.setVisible(true);
 			break;
 		}

@@ -63,7 +63,7 @@ public class ImogEmailBox extends Composite implements ImogField<String>,
 
 	public ImogEmailBox() {
 		initWidget(uiBinder.createAndBindUi(this));
-		email.setUrl(GWT.getModuleBaseURL() + "/images/email.png");
+		email.setUrl(GWT.getModuleBaseURL() + "images/email.png");
 	}
 
 	public void setEdited(boolean enabled) {
